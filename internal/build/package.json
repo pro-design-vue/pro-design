@@ -1,0 +1,42 @@
+{
+  "name": "@pro-design-vue/build",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Build Toolchain for Pro Design Vue",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "start": "gulp --require tsx/dist/loader.cjs -f gulpfile.ts",
+    "dev": "pnpm run stub",
+    "stub": "unbuild --stub"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@pro-design-vue/build-constants": "workspace:*",
+    "@microsoft/api-extractor": "catalog:",
+    "@pnpm/find-workspace-packages": "catalog:",
+    "@pnpm/logger": "catalog:",
+    "@rollup/plugin-commonjs": "catalog:",
+    "@rollup/plugin-node-resolve": "catalog:",
+    "@rollup/plugin-replace": "catalog:",
+    "chalk": "catalog:",
+    "components-helper": "^2.2.0",
+    "consola": "catalog:",
+    "esbuild": "catalog:",
+    "fast-glob": "catalog:",
+    "fs-extra": "catalog:",
+    "gulp": "catalog:",
+    "lodash": "catalog:",
+    "rollup": "catalog:",
+    "rollup-plugin-esbuild": "catalog:"
+  },
+  "devDependencies": {
+    "@pnpm/types": "catalog:",
+    "tsx": "catalog:",
+    "unbuild": "catalog:",
+    "vue": "catalog:"
+  }
+}

@@ -1,0 +1,93 @@
+@import url('common/index.less');
+
+.@{table-prefix-cls}-bordered {
+  border: @table-border;
+  border-right: 0;
+  .@{table-prefix-cls}-cell-box {
+    &::before {
+      background-color: transparent;
+    }
+  }
+  .@{table-prefix-cls}-cell.@{table-prefix-cls}-body-cell-range-selected:not(
+      .@{table-prefix-cls}-body-cell-range-right
+    ):not(.@{table-prefix-cls}-body-cell-range-single-cell) {
+    border-right: @table-border;
+  }
+  .@{table-prefix-cls}-cell:not(.@{table-prefix-cls}-body-cell-range-single-cell):not(
+      .@{table-prefix-cls}-body-cell-range-selected
+    ) {
+    border-right: @table-border;
+  }
+  .@{table-prefix-cls}-extra-cell,
+  .@{table-prefix-cls}-header-extra-cell,
+  .@{table-prefix-cls}-cell-group {
+    border-right: none;
+  }
+  .@{table-prefix-cls}-cell-group-title {
+    background-color: @table-header-bg !important;
+    border-bottom: @table-border;
+  }
+  .@{table-prefix-cls}-cell-no-right-bordered {
+    border-right: none;
+  }
+  .@{table-prefix-cls}-header-scrollbar,
+  .@{table-prefix-cls}-summary-scrollbar {
+    position: relative;
+    z-index: 0;
+    border-right: @table-border;
+    border-left: @table-border;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -1px;
+      width: 1px;
+      pointer-events: none;
+      content: '';
+      background: @table-header-bg;
+    }
+  }
+  .@{table-prefix-cls}-empty-container {
+    border-right: @table-border;
+  }
+  .@{table-prefix-cls}-header {
+    background: @table-header-bg;
+    border-bottom: none;
+
+    &-cell {
+      background: @table-header-bg;
+    }
+  }
+  .@{table-prefix-cls}-header-container .@{table-prefix-cls}-header-cell-title::before,
+  .@{table-prefix-cls}-header-container .@{table-prefix-cls}-cell-group::before {
+    background-color: transparent;
+  }
+
+  .@{table-prefix-cls}-summary-fixed {
+    border-right: @table-border;
+  }
+  .@{table-prefix-cls}-summary-fixed-bottom,
+  .@{table-prefix-cls}-summary-fixed-top {
+    border-right: none;
+  }
+  .@{table-prefix-cls}-cell-fix-left-first::after,
+  .@{table-prefix-cls}-cell-fix-left-last::after {
+    right: -1px;
+  }
+}
+
+.@{table-prefix-cls}-wrapper-bordered {
+  .@{table-prefix-cls}-title {
+    border-right: @table-border;
+    border-bottom: @table-border;
+  }
+  .@{table-prefix-cls}-title + .@{table-prefix-cls} {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .@{table-prefix-cls}-footer {
+    border: @table-border;
+    border-top: 0;
+  }
+}

@@ -1,0 +1,117 @@
+@import url('common/index.less');
+
+@drag-prefix-cls: ~'@{table-prefix-cls}-drag';
+
+.@{drag-prefix-cls} {
+  &-handle {
+    display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
+    min-width: 1px;
+    height: 100%;
+    margin-left: 16px;
+    font-style: normal;
+    line-height: 0;
+    vertical-align: middle;
+    color: inherit;
+    text-align: center;
+    text-transform: none;
+    cursor: grab;
+    user-select: none;
+    text-rendering: optimizelegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  &-handle-disabled {
+    color: hsl(var(--pro-muted-foreground) / 50%);
+    cursor: not-allowed;
+  }
+
+  &-icon {
+    display: inline-block;
+  }
+
+  &-dragging {
+    cursor: move;
+  }
+
+  &-column-dragging {
+    background: hsl(var(--pro-accent)) !important;
+    .@{table-prefix-cls}-header-cell,
+    .@{table-prefix-cls}-cell-group-title {
+      background: hsl(var(--pro-accent)) !important;
+    }
+  }
+
+  &-ghost {
+    cursor: move;
+    background: @table-row-hover-bg;
+  }
+
+  &-placeholder {
+    position: absolute;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 2px;
+    background-color: hsl(var(--pro-primary));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &-column-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 2px;
+    height: 100%;
+    background-color: hsl(var(--pro-primary));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &-ghost-image {
+    position: absolute;
+    z-index: 99999;
+    display: inline-flex;
+    align-items: center;
+    padding: @table-padding-vertical-sm @table-padding-horizontal;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: @table-font-size;
+    color: @text-color;
+    // transform: translateY(12px);
+    white-space: nowrap;
+    cursor: move;
+    user-select: none;
+    background: @table-row-hover-bg;
+    // min-height: 30px;
+    border: solid 1px;
+    border-color: @table-border-color;
+    border-radius: @border-radius-base;
+    box-shadow: 0 1px 2px 1px hsl(var(--pro-muted-foreground) / 30%);
+
+    &-icon {
+      display: inline-block;
+      margin-right: 6px;
+      font-style: normal;
+      line-height: 0;
+      vertical-align: -0.125em;
+      color: inherit;
+      text-align: center;
+      text-transform: none;
+      text-rendering: optimizelegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    &-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      overflow-wrap: break-word;
+    }
+  }
+}

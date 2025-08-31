@@ -1,0 +1,70 @@
+@import 'common/var';
+
+.@{pro-prefix}-page {
+  position: relative;
+
+  &-header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 16px 24px;
+    background-color: hsl(var(--pro-card));
+    border-color: hsl(var(--pro-border));
+    border-bottom-width: 1px;
+
+    &-wrap {
+      flex: 1 1 auto;
+    }
+  }
+
+  &-title {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+
+  &-description {
+    color: hsl(var(--pro-muted-foreground));
+  }
+
+  &-tabs {
+    padding: 10px 24px 0;
+    background-color: hsl(var(--pro-card));
+    border-color: hsl(var(--pro-border));
+    border-bottom-width: 1px;
+
+    .pro-ant-tabs-top > .pro-ant-tabs-nav {
+      margin-bottom: 0;
+
+      &::before {
+        border-bottom: none;
+      }
+    }
+    & + .@{pro-prefix}-page {
+      border-bottom: none;
+    }
+  }
+
+  &-content {
+    height: 100%;
+    padding: 16px;
+  }
+
+  &-footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: hsl(var(--pro-card));
+  }
+
+  &.is-tabs &-header {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}

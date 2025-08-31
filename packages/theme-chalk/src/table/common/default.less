@@ -1,0 +1,85 @@
+@table-prefix-cls: ~'@{pro-prefix}-table';
+// -------- Colors -----------
+@background: #fff;
+@background-dark: #141414;
+@white: #fff;
+@black: #000;
+
+@font-variant-base: tabular-nums;
+@line-height-base: 1.5715;
+@font-feature-settings-base: 'tnum';
+@table-font-size: 14px;
+@table-font-size-md: 14px;
+@table-font-size-sm: 12px;
+@padding-xs: 8px; // small items
+@padding-xss: 4px; // more small
+@border-radius-base: var(--pro-radius);
+@table-padding-vertical: 16px;
+@table-padding-horizontal: 16px;
+@table-selection-column-width: 60px;
+
+@table-border-style-base: solid; // style of a components border
+@table-border-color: hsl(var(--pro-border)); // split border inside a component
+@table-border-width-base: 1px; // width of the border for a component
+
+@table-body-sort-bg: hsl(var(--pro-table-header));
+@text-color: hsl(var(--pro-accent-foreground));
+@heading-color: @text-color;
+
+@link-color: hsl(var(--pro-primary));
+@link-hover-color: hsl(var(--pro-primary-500));
+@link-active-color: hsl(var(--pro-primary-300));
+@table-ping-box-shadow-color: hsl(var(--pro-shadow));
+@table-expanded-row-bg: hsl(var(--pro-background-deep));
+@table-header-filter-active-bg: hsl(var(--pro-table-header-filter-active-bg));
+
+@table-footer-color: @heading-color;
+@table-border-radius-base: @border-radius-base;
+@table-footer-bg: hsl(var(--pro-footer-bg));
+
+@background-color-selected: hsl(var(--pro-accent));
+@background-color-summary: hsl(var(--pro-table-header));
+@table-header-bg: hsl(var(--pro-table-header));
+@table-header-sort-active-bg: hsl(var(--pro-table-header-sort-active-bg));
+@table-header-cell-split-color: hsl(var(--pro-table-header-cell-split-color));
+@table-row-hover-bg: hsl(var(--pro-accent));
+
+@table-border: @table-border-width-base @table-border-style-base @table-border-color;
+@table-expand-icon-bg: hsl(var(--pro-background));
+@table-filter-dropdown-bg: hsl(var(--pro-background));
+@table-filter-btns-bg: inherit;
+@table-row-insert-bg: hsl(var(--pro-table-row-insert-bg));
+@table-selected-row-bg: hsl(var(--pro-primary-100));
+@table-selected-row-hover-bg: hsl(var(--pro-primary-200));
+@border-color-base: hsl(var(--pro-border)); // base border outline a component
+@table-padding-vertical-md: (@table-padding-vertical * 3 / 4);
+@table-padding-horizontal-md: (@table-padding-horizontal / 2);
+@table-padding-vertical-sm: (@table-padding-vertical / 2);
+@table-padding-horizontal-sm: (@table-padding-horizontal / 2);
+
+// animation
+@ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
+@ease-out-back: cubic-bezier(0.12, 0.4, 0.29, 1.46);
+@ease-in-out-circ: cubic-bezier(0.78, 0.14, 0.15, 0.86);
+
+// Checkbox
+@checkbox-size: 16px;
+@checkbox-color: hsl(var(--pro-primary));
+@checkbox-check-bg: hsl(var(--pro-background));
+@checkbox-border-width: @table-border-width-base;
+@checkbox-border-radius: 4px;
+@checkbox-group-item-margin-right: 8px;
+@checkbox-prefix-cls: ~'@{table-prefix-cls}-checkbox';
+@checkbox-inner-prefix-cls: ~'@{checkbox-prefix-cls}-inner';
+
+// Radio
+@radio-size: 16px;
+@radio-border-width: 1px;
+@radio-dot-size: @radio-size - 8px;
+@radio-dot-color: hsl(var(--pro-primary));
+@radio-dot-disabled-color: hsl(var(--pro-muted-foreground) / 50%);
+@radio-prefix-cls: ~'@{table-prefix-cls}-radio';
+@radio-inner-prefix-cls: ~'@{radio-prefix-cls}-inner';
+@radio-duration: 0.3s;
+@radio-focus-shadow: 0 0 0 3px hsl(var(--pro-primary-900));
+@radio-button-focus-shadow: @radio-focus-shadow;

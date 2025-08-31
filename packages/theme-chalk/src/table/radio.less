@@ -1,0 +1,135 @@
+@import url('common/index.less');
+
+.@{radio-prefix-cls} {
+  .reset-component();
+
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+
+  .@{radio-prefix-cls}-wrapper:hover &,
+  &:hover .@{radio-inner-prefix-cls},
+  &-input:focus + .@{radio-inner-prefix-cls} {
+    border-color: @radio-dot-color;
+  }
+
+  &-input:focus + .@{radio-inner-prefix-cls} {
+    box-shadow: @radio-focus-shadow;
+  }
+
+  &-checked::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+    content: '';
+    border: 1px solid @radio-dot-color;
+    border-radius: 50%;
+    animation: radio-effect 0.36s ease-in-out;
+    animation-fill-mode: both;
+  }
+
+  &:hover::after,
+  .@{radio-prefix-cls}-wrapper:hover &::after {
+    visibility: visible;
+  }
+
+  &-inner {
+    position: relative;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    display: block;
+    width: @radio-size;
+    height: @radio-size;
+    border-color: hsl(var(--pro-muted-foreground) / 50%);
+    border-style: solid;
+    border-width: @radio-border-width;
+    border-radius: 50%;
+    transition: all @radio-duration;
+
+    &::after {
+      position: absolute;
+      top: ((@radio-size - @radio-dot-size) / 2) - @radio-border-width;
+      left: ((@radio-size - @radio-dot-size) / 2) - @radio-border-width;
+      box-sizing: border-box;
+      display: block;
+      width: @radio-dot-size;
+      height: @radio-dot-size;
+      content: ' ';
+      background-color: @radio-dot-color;
+      border-top: 0;
+      border-left: 0;
+      border-radius: @radio-dot-size;
+      opacity: 0;
+      transform: scale(0);
+      transition: all @radio-duration @ease-in-out-circ;
+    }
+  }
+
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
+    border-radius: unset;
+    opacity: 0;
+  }
+}
+
+// 选中状态
+.@{radio-prefix-cls}-checked {
+  .@{radio-inner-prefix-cls} {
+    border-color: @radio-dot-color;
+
+    &::after {
+      opacity: 1;
+      transform: scale(1);
+      transition: all @radio-duration @ease-in-out-circ;
+    }
+  }
+}
+
+.@{radio-prefix-cls}-disabled {
+  cursor: not-allowed;
+
+  .@{radio-inner-prefix-cls} {
+    cursor: not-allowed;
+    background-color: hsl(var(--pro-accent));
+    border-color: @border-color-base !important;
+
+    &::after {
+      background-color: @radio-dot-disabled-color;
+    }
+  }
+
+  .@{radio-prefix-cls}-input {
+    cursor: not-allowed;
+  }
+
+  & + span {
+    color: hsl(var(--pro-accent));
+    cursor: not-allowed;
+  }
+}
+
+span.@{radio-prefix-cls} + * {
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+@keyframes radio-effect {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}

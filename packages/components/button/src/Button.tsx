@@ -1,0 +1,182 @@
+/*
+ * @Author: shen
+ * @Date: 2024-03-09 11:41:13
+ * @LastEditors: shen
+ * @LastEditTime: 2025-08-26 20:54:53
+ * @Description:
+ */
+import { type PropType, defineComponent, type CSSProperties, type VNode } from 'vue'
+import {
+  Button,
+  Tooltip,
+  type TooltipProps,
+  Popconfirm,
+  type PopconfirmProps,
+  Dropdown,
+  type DropdownProps,
+  Menu,
+  type MenuProps,
+  type ItemType,
+  type ModalFuncProps,
+} from 'ant-design-vue'
+import { usePrefixCls } from '@pro-design-vue/hooks'
+import { confirm, ensureValidVNode } from '@pro-design-vue/utils'
+import { ProIcon } from '@pro-design-vue/components/icon'
+type ConfirmType = 'danger' | 'warning'
+export default defineComponent({
+  name: 'ProButton',
+  inheritAttrs: false,
+  props: {
+    mode: {
+      type: String as PropType<'default' | 'popconfirm' | 'confirm' | 'dropdown'>,
+      default: 'default',
+    },
+    tooltip: {
+      type: String,
+      default: '',
+    },
+    tooltipProps: {
+      type: Object as PropType<TooltipProps>,
+    },
+    dropdownProps: {
+      type: Object as PropType<DropdownProps>,
+    },
+    menuProps: {
+      type: Object as PropType<Omit<MenuProps, 'onClick' | 'items'>>,
+    },
+    popconfirmProps: {
+      type: Object as PropType<Omit<PopconfirmProps, 'onConfirm' | 'onCancel'>>,
+    },
+    confirmProps: {
+      type: Object as PropType<
+        Omit<ModalFuncProps, 'type' | 'onCancel' | 'onOk'> & { type?: ConfirmType }
+      >,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    icon: {
+      type: String,
+      default: '',
+    },
+    iconStyle: {
+      type: Object as PropType<CSSProperties>,
+    },
+    permission: {
+      type: String,
+      default: '',
+    },
+    items: {
+      type: Array as PropType<ItemType[]>,
+      default: () => [],
+    },
+    onClick: Function as PropType<(e: MouseEvent) => void>,
+    onConfirm: Function as PropType<(e: MouseEvent) => void>,
+    onCancel: Function as PropType<(e: MouseEvent) => void>,
+    onMenuClick: Function as PropType<MenuProps['onClick']>,
+  },
+  emits: ['confirm', 'click', 'cancel', 'menu-click'],
+  setup(props, { attrs, slots }) {
+    const prefixCls = usePrefixCls('button')
+
+    const renderConfirmContent = (key: string) => {
+      if (slots[key]) {
+        const vnodes = slots[key]?.()
+        if (ensureValidVNode(vnodes)) {
+          return vnodes
+        }
+      }
+      return undefined
+    }
+
+    const onClick = (e: MouseEvent) => {
+      if (props.mode === 'default') {
+        props.onClick?.(e)
+        return
+      }
+
+      if (props.mode === 'confirm') {
+        confirm({
+          ...props.confirmProps,
+          content:
+            renderConfirmContent(props.confirmProps?.content as string) ||
+            props.confirmProps?.content,
+          title:
+            renderConfirmContent(props.confirmProps?.title as string) || props.confirmProps?.title,
+          onCancel() {
+            return props.onCancel?.()
+          },
+          onOk() {
+            return props.onConfirm?.()
+          },
+        })
+      }
+    }
+
+    return () => {
+      let icon: VNode | null = null
+      if (slots.icon || props.icon) {
+        icon = (
+          <span class="anticon" style={props.iconStyle}>
+            {slots.icon ? slots.icon() : <ProIcon icon={props.icon} />}
+          </span>
+        )
+      }
+      let defaultDom = (
+        <Button
+          {...attrs}
+          disabled={props.disabled}
+          class={prefixCls}
+          v-slots={{
+            icon: () => icon,
+          }}
+          onClick={props.mode === 'popconfirm' || props.mode === 'dropdown' ? undefined : onClick}
+        >
+          {slots.default?.()}
+        </Button>
+      )
+
+      if (props.disabled) {
+        return defaultDom
+      }
+
+      if (props.tooltip) {
+        defaultDom = (
+          <Tooltip {...props.tooltipProps} title={props.tooltip}>
+            {defaultDom}
+          </Tooltip>
+        )
+      }
+
+      if (props.mode === 'popconfirm') {
+        return (
+          <Popconfirm
+            {...props.popconfirmProps}
+            onConfirm={props.onConfirm}
+            onCancel={props.onCancel}
+          >
+            {defaultDom}
+          </Popconfirm>
+        )
+      }
+
+      if (props.mode === 'dropdown') {
+        return (
+          <Dropdown
+            {...props.dropdownProps}
+            v-slots={{
+              overlay: () => (
+                <Menu {...props.menuProps} items={props.items} onClick={props.onMenuClick} />
+              ),
+            }}
+          >
+            {defaultDom}
+          </Dropdown>
+        )
+      }
+
+      return defaultDom
+    }
+  },
+})

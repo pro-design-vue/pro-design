@@ -1,0 +1,48 @@
+@import url('common/index.less');
+
+@toolbar-prefix-cls: ~'@{table-prefix-cls}-toolbar';
+
+.@{toolbar-prefix-cls} {
+  line-height: 1;
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-inline-end: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: hsl(var(--pro-foreground));
+  }
+
+  &-subtitle {
+    margin-inline-start: 8px;
+    font-size: 14px;
+    font-weight: normal;
+    color: hsl(var(--pro-muted-foreground));
+    white-space: nowrap;
+  }
+
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 0;
+    padding-bottom: 12px;
+  }
+
+  &-left {
+    display: flex;
+    align-items: center;
+  }
+
+  &-actions {
+    &-item {
+      padding: 5px 0;
+      margin-block: 0;
+      margin-inline: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+}

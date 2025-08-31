@@ -1,0 +1,6 @@
+{
+  "name": "@pro-design-vue/constants",
+  "private": true,
+  "license": "MIT",
+  "main": "index.ts"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@pro-design-vue/build-constants",
+  "version": "0.0.1",
+  "description": "Build constants for Pro Design Uue",
+  "keywords": [
+    "pro-design-vue"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "unbuild",
+    "dev": "pnpm run stub",
+    "stub": "unbuild --stub"
+  },
+  "devDependencies": {
+    "unbuild": "catalog:"
+  }
+}

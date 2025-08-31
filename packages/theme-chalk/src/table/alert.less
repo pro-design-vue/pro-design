@@ -1,0 +1,17 @@
+@import url('common/index.less');
+
+@alert-prefix-cls: ~'@{table-prefix-cls}-alert';
+
+.@{alert-prefix-cls} {
+  padding-block-end: 12px;
+
+  &-container {
+    display: flex;
+    justify-content: space-between;
+    padding-block: 12px;
+    padding-inline: 24px;
+    color: hsl(var(--pro-muted-foreground) / 60%);
+    background-color: hsl(var(--pro-muted) / 60%);
+    border-radius: var(--pro-radius);
+  }
+}

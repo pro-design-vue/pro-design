@@ -1,0 +1,113 @@
+@import 'common/var';
+*,
+::after,
+::before {
+  box-sizing: border-box;
+  border-color: hsl(var(--pro-border));
+  border-style: solid;
+  border-width: 0;
+}
+
+html {
+  font-family: var(--pro-font-family);
+  font-size: 100%;
+  font-variation-settings: normal;
+  line-height: 1.15;
+  color: hsl(var(--pro-foreground));
+  tab-size: 4;
+  background-color: hsl(var(--pro-background));
+  text-size-adjust: 100%;
+  font-synthesis-weight: none;
+  scroll-behavior: smooth;
+  text-rendering: optimizelegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app,
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  line-height: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+a,
+a:active,
+a:hover,
+a:link,
+a:visited {
+  text-decoration-line: none;
+}
+
+ol,
+ul,
+menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+::view-transition-new(root),
+::view-transition-old(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+
+html.dark::view-transition-old(root) {
+  z-index: 2147483646;
+}
+
+html.dark::view-transition-new(root) {
+  z-index: 1;
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.@{ant-prefix}-app {
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+  color: inherit;
+}

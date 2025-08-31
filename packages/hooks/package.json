@@ -1,0 +1,6 @@
+{
+  "name": "@pro-design-vue/hooks",
+  "private": true,
+  "license": "MIT",
+  "main": "index.ts"
+}

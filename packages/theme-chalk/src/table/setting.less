@@ -1,0 +1,66 @@
+@import url('common/index.less');
+
+@setting-prefix-cls: ~'@{table-prefix-cls}-column-setting';
+
+.@{setting-prefix-cls} {
+  &-popover {
+    .@{ant-prefix}-popover-arrow {
+      display: none !important;
+    }
+
+    .@{ant-prefix}-tree-treenode:hover .@{setting-prefix-cls}-list-item-option {
+      display: block;
+    }
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+  }
+
+  &-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-block-start: 8px;
+
+    &&--group {
+      padding-block-start: 0;
+    }
+
+    &-title {
+      margin-block: 6px;
+      font-size: 12px;
+      color: @text-color;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-height: 24px;
+
+      &-title {
+        flex: 1;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        white-space: nowrap;
+      }
+
+      &-option {
+        float: right;
+        display: none;
+        cursor: pointer;
+
+        & > span > span.anticon {
+          padding: 0 2px;
+          color: hsl(var(--pro-primary));
+        }
+      }
+    }
+  }
+}

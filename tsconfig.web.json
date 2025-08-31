@@ -1,0 +1,35 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["typings/env.d.ts", "packages"],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/__tests__/**/*",
+    "**/gulpfile.ts",
+    "**/test-helper",
+    "packages/test-utils",
+    "**/*.md"
+  ],
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "noImplicitAny": false,
+    "noUnusedLocals": false, //暂时定义为false
+    "noUnusedParameters": false, //暂时定义为false
+
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2021.String"],
+    "paths": {
+      "@pro-design-vue/components": ["packages/components"],
+      "@pro-design-vue/components/*": ["packages/components/*"],
+      "@pro-design-vue/utils": ["packages/utils"],
+      "@pro-design-vue/utils/*": ["packages/utils/*"],
+      "@pro-design-vue/hooks": ["packages/hooks"],
+      "@pro-design-vue/directives": ["packages/directives"],
+      "@pro-design-vue/constants": ["packages/constants"],
+      "pro-design-vue": ["packages/pro-design-vue"]
+    }
+  }
+}

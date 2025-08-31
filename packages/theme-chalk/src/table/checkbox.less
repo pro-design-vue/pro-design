@@ -1,0 +1,191 @@
+@import url('common/index.less');
+
+.@{checkbox-prefix-cls} {
+  .reset-component();
+
+  position: relative;
+  display: inline-block;
+  align-items: center;
+  line-height: unset;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  &:hover &-inner,
+  &-input:focus + &-inner {
+    border-color: @checkbox-color;
+  }
+
+  &-checked::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+    content: '';
+    border: 1px solid @checkbox-color;
+    border-radius: @border-radius-base;
+    animation: checkbox-effect 0.36s ease-in-out;
+    animation-fill-mode: backwards;
+  }
+
+  &:hover::after {
+    visibility: visible;
+  }
+
+  &-inner {
+    position: relative;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    display: block;
+    width: @checkbox-size;
+    height: @checkbox-size;
+    border-collapse: separate;
+    background-color: @checkbox-check-bg;
+    border: @checkbox-border-width @table-border-style-base hsl(var(--pro-muted-foreground) / 50%);
+    border-radius: @checkbox-border-radius;
+    transition: all 0.3s;
+    direction: ltr;
+
+    &::after {
+      @check-width: (@checkbox-size / 14) * 5px;
+      @check-height: (@checkbox-size / 14) * 8px;
+
+      position: absolute;
+      top: 50%;
+      left: 21.5%;
+      box-sizing: border-box;
+      display: table;
+      width: @check-width;
+      height: @check-height;
+      content: ' ';
+      border: 2px solid @checkbox-color;
+      border-top: 0;
+      border-left: 0;
+      opacity: 0;
+      transform: rotate(45deg) scale(0) translate(-50%, -50%);
+      transition:
+        all 0.1s @ease-in-back,
+        opacity 0.1s;
+    }
+  }
+
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+}
+
+// 选中状态
+.@{checkbox-prefix-cls}-checked .@{checkbox-inner-prefix-cls}::after {
+  position: absolute;
+  display: table;
+  content: ' ';
+  border: 2px solid @white;
+  border-top: 0;
+  border-left: 0;
+  opacity: 1;
+  transform: rotate(45deg) scale(1) translate(-50%, -50%);
+  transition: all 0.2s @ease-out-back 0.1s;
+}
+
+.@{checkbox-prefix-cls}-checked {
+  .@{checkbox-inner-prefix-cls} {
+    background-color: @checkbox-color;
+    border-color: @checkbox-color;
+  }
+}
+
+.@{checkbox-prefix-cls}-disabled {
+  cursor: not-allowed;
+
+  &.@{checkbox-prefix-cls}-checked {
+    .@{checkbox-inner-prefix-cls}::after {
+      border-color: hsl(var(--pro-accent));
+      animation-name: none;
+    }
+  }
+
+  .@{checkbox-prefix-cls}-input {
+    cursor: not-allowed;
+  }
+
+  .@{checkbox-inner-prefix-cls} {
+    background-color: hsl(var(--pro-accent));
+    border-color: @border-color-base !important;
+
+    &::after {
+      border-collapse: separate;
+      border-color: hsl(var(--pro-accent));
+      animation-name: none;
+    }
+  }
+
+  & + span {
+    color: hsl(var(--pro-muted-foreground) / 50%);
+    cursor: not-allowed;
+  }
+
+  // Not show highlight border of checkbox when disabled
+  &:hover::after {
+    visibility: hidden;
+  }
+}
+
+.@{checkbox-prefix-cls} + span {
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+// 半选状态
+.@{checkbox-prefix-cls}-indeterminate {
+  .@{checkbox-inner-prefix-cls} {
+    background-color: @checkbox-check-bg;
+    border-color: @border-color-base;
+  }
+  .@{checkbox-inner-prefix-cls}::after {
+    @indeterminate-width: @checkbox-size - 8px;
+    @indeterminate-height: @checkbox-size - 8px;
+
+    top: 50%;
+    left: 50%;
+    width: @indeterminate-width;
+    height: @indeterminate-height;
+    content: ' ';
+    background-color: @checkbox-color;
+    border: 0;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &.@{checkbox-prefix-cls}-disabled .@{checkbox-inner-prefix-cls}::after {
+    background-color: hsl(var(--pro-muted-foreground) / 50%);
+    border-color: hsl(var(--pro-muted-foreground) / 50%);
+  }
+}
+
+@keyframes checkbox-effect {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}

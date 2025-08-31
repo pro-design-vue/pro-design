@@ -1,0 +1,171 @@
+/*
+ * @Author: shen
+ * @Date: 2023-11-07 15:07:59
+ * @LastEditors: shen
+ * @LastEditTime: 2025-08-27 13:45:47
+ * @Description:
+ */
+import type { PropType } from 'vue'
+import type { Bordered, ColumnGroupType, ColumnsType, SearchConfig } from '../interface'
+import type { ProFormItemType, ProQueryFilterProps } from '@pro-design-vue/components/form'
+
+import { computed, defineComponent, ref } from 'vue'
+import { ProQueryFilter } from '@pro-design-vue/components/form'
+import { Card } from 'ant-design-vue'
+import { isBordered } from '../../utils/util'
+import { omit, omitUndefined } from '@pro-design-vue/utils'
+
+const flatColumnsHandle = (columns: ColumnsType) => {
+  const flatColumns: ColumnsType = []
+  const loopColumns = (columns: ColumnsType) => {
+    columns.forEach((column: ColumnGroupType) => {
+      if (column?.children?.length) {
+        loopColumns(column?.children)
+      } else {
+        flatColumns.push(column)
+      }
+    })
+  }
+  loopColumns(columns)
+  return flatColumns
+}
+
+export default defineComponent({
+  props: {
+    prefixCls: String,
+    columns: {
+      type: Array as PropType<ColumnsType>,
+      default: () => [],
+    },
+    search: {
+      type: Object as PropType<SearchConfig>,
+      default: undefined,
+    },
+    cardBordered: {
+      type: [Boolean, Object] as PropType<Bordered>,
+      default: undefined,
+    },
+    loading: Boolean,
+    manual: Boolean,
+    beforeSearchSubmit: {
+      type: Function as PropType<(params: Partial<any>) => any>,
+      default: (searchParams: Partial<any>) => searchParams,
+    },
+    onSubmit: {
+      type: Function as PropType<ProQueryFilterProps['onFinish']>,
+      default: undefined,
+    },
+    onReset: {
+      type: Function as PropType<ProQueryFilterProps['onReset']>,
+      default: undefined,
+    },
+    onFormSearchSubmit: {
+      type: Function as PropType<(params: any) => void>,
+      default: undefined,
+    },
+    onSearchTabChange: {
+      type: Function as PropType<(params: any) => void>,
+      default: undefined,
+    },
+  },
+  setup: (props) => {
+    const activeTabKey = ref(
+      props.search?.cardProps !== false ? props.search?.cardProps?.activeTabKey : '',
+    )
+    const formItems = computed(() => {
+      if (props.search?.items?.length) {
+        return props.search?.items
+      }
+      return flatColumnsHandle(props.columns)
+        .filter((item) => {
+          if (item.hideInSearch) {
+            return false
+          }
+          return true
+        })
+        .map((item) => {
+          return {
+            ...item,
+            width: undefined,
+            tooltip: item.headerTooltip,
+            name: item.dataIndex,
+          } as ProFormItemType
+        })
+    })
+
+    const cardProps = computed(() => {
+      if (!props.search?.cardProps) {
+        return {}
+      }
+      return props.search?.cardProps
+    })
+
+    /** 提交表单，根据两种模式不同，方法不相同 */
+    const submit = async (values: any, firstLoad: boolean) => {
+      const tabParams = cardProps.value?.tabList?.length
+        ? {
+            [props.search?.tabName ?? 'tab']:
+              cardProps.value.activeTabKey || cardProps.value?.tabList?.[0]?.key,
+          }
+        : {}
+      const submitParams = omitUndefined(
+        props.beforeSearchSubmit({
+          ...values,
+          ...tabParams,
+        }),
+      )
+      props.onFormSearchSubmit?.(submitParams)
+      if (props.onSubmit && !firstLoad) {
+        props.onSubmit(submitParams)
+      }
+    }
+
+    const onTabChange = (key: string) => {
+      activeTabKey.value = key
+      props.onSearchTabChange?.({
+        [props.search?.tabName ?? 'tab']: key,
+      })
+      cardProps.value?.onTabChange?.(key)
+    }
+
+    return () => {
+      const searchDom = (
+        <ProQueryFilter
+          class={`${props.prefixCls}-form`}
+          {...omit(props.search || {}, ['cardProps', 'tabName'])}
+          items={formItems.value}
+          loading={props.loading}
+          style={{ marginBlockEnd: props.search?.cardProps !== false ? 0 : '40px' }}
+          onReset={props.onReset}
+          onFinish={(values) => {
+            submit(values, false)
+          }}
+          onValuesChange={(values) => {
+            if (props.search?.submitter === false) {
+              submit(values, true)
+            }
+            props.search?.onValuesChange?.(values)
+          }}
+          onInit={(values) => {
+            submit(values, true)
+          }}
+        />
+      )
+      if (props.search?.cardProps !== false) {
+        return (
+          <Card
+            class={`${props.prefixCls}-search`}
+            activeTabKey={activeTabKey.value}
+            bordered={isBordered('search', props.cardBordered)}
+            style={{ marginBlockEnd: '16px' }}
+            {...omit(cardProps.value ?? {}, ['onTabChange', 'activeTabKey'])}
+            onTabChange={onTabChange}
+          >
+            {searchDom}
+          </Card>
+        )
+      }
+      return searchDom
+    }
+  },
+})

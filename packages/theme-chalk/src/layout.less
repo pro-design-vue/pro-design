@@ -1,0 +1,205 @@
+@import 'common/var';
+
+.@{pro-prefix}-layout {
+  position: relative;
+  display: flex;
+  width: 100%;
+  color: inherit;
+  background: transparent;
+
+  &-wrapper {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    overflow: auto;
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    transition-duration: 300ms;
+    transition-property: all;
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  &-header-wrapper {
+    overflow: hidden;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-property: all;
+    animation-duration: 200ms;
+
+    &--shadow {
+      box-shadow:
+        0 0 rgb(0 0 0 / 0%),
+        0 0 rgb(0 0 0 / 0%),
+        0 16px 24px hsl(var(--pro-background));
+    }
+  }
+
+  &-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: hsl(var(--pro-overlay));
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-property: background-color;
+    animation-duration: 200ms;
+  }
+
+  &-header {
+    top: 0;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    width: 100%;
+    padding-left: 8px;
+    background-color: hsl(var(--pro-header));
+    border-color: hsl(var(--pro-border));
+    border-bottom-width: 1px;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-property: margin-top;
+    animation-duration: 200ms;
+  }
+
+  &-content {
+    position: relative;
+    background-color: hsl(var(--pro-background-deep));
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-property: margin-top;
+    animation-duration: 200ms;
+  }
+
+  &-sidebar {
+    height: 100%;
+    border-right-width: 1px;
+    transition-duration: 150ms;
+    transition-property: all;
+    animation-duration: 150ms;
+
+    &--fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    &--mixed {
+      background-color: hsl(var(--pro-sidebar-deep));
+    }
+
+    &--no-mixed {
+      background-color: hsl(var(--pro-sidebar));
+      border-color: hsl(var(--pro-border));
+      border-right-width: 1px;
+    }
+
+    &-content {
+      position: relative;
+      overflow: hidden;
+    }
+
+    &-scroll {
+      width: 100%;
+      height: 100%;
+      overflow: hidden auto;
+      border-radius: inherit;
+    }
+
+    &-extra {
+      position: fixed;
+      top: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: hsl(var(--pro-sidebar));
+      border-color: hsl(var(--pro-border));
+      border-right-width: 1px;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 200ms;
+      transition-property: all;
+      animation-duration: 200ms;
+
+      &--border {
+        border-left-width: 1px;
+      }
+
+      &-title {
+        padding-left: 8px;
+      }
+
+      &-content {
+        position: relative;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        overflow: hidden;
+        border-color: hsl(var(--pro-border));
+      }
+    }
+
+    &-collapse-button {
+      position: absolute;
+      bottom: 8px;
+      left: 12px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      color: hsl(var(--pro-foreground) / 60%);
+      cursor: pointer;
+      background-color: hsl(var(--pro-accent));
+      border-radius: calc(var(--pro-radius) - 4px);
+
+      &:hover {
+        color: hsl(var(--pro-foreground));
+        background-color: hsl(var(--pro-accent-hover));
+      }
+    }
+
+    &-fixed-button {
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      color: hsl(var(--pro-foreground) / 60%);
+      cursor: pointer;
+      background-color: hsl(var(--pro-accent));
+      border-radius: calc(var(--pro-radius) - 4px);
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 300ms;
+      transition-property: all;
+      animation-duration: 300ms;
+
+      &:hover {
+        color: hsl(var(--pro-foreground));
+        background-color: hsl(var(--pro-accent-hover));
+      }
+    }
+  }
+
+  &-tabbar {
+    display: flex;
+    width: 100%;
+    background-color: hsl(var(--pro-background));
+    border-color: hsl(var(--pro-border));
+    border-bottom-width: 1px;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-property: all;
+  }
+
+  &-footer {
+    bottom: 0;
+    width: 100%;
+    background-color: hsl(var(--pro-background-deep));
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-property: all;
+    animation-duration: 200ms;
+  }
+}

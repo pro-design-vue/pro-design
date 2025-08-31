@@ -1,0 +1,70 @@
+/*
+ * @Author: shen
+ * @Date: 2025-07-26 18:04:51
+ * @LastEditors: shen
+ * @LastEditTime: 2025-07-27 09:27:41
+ * @Description:
+ */
+export default {
+  moneySymbol: '$',
+  form: {
+    search: 'ابحث',
+    reset: 'إعادة تعيين',
+    submit: 'ارسال',
+    collapsed: 'مُقلص',
+    expand: 'مُوسع',
+    inputPlaceholder: 'الرجاء الإدخال',
+    selectPlaceholder: 'الرجاء الإختيار',
+  },
+  alert: {
+    clear: 'نظف',
+    selected: 'محدد',
+    item: 'عنصر',
+  },
+  pagination: {
+    total: {
+      range: ' ',
+      total: 'من',
+      item: 'عناصر',
+    },
+  },
+  tableToolBar: {
+    leftPin: 'ثبت على اليسار',
+    rightPin: 'ثبت على اليمين',
+    noPin: 'الغاء التثبيت',
+    leftFixedTitle: 'لصق على اليسار',
+    rightFixedTitle: 'لصق على اليمين',
+    noFixedTitle: 'إلغاء الإلصاق',
+    reset: 'إعادة تعيين',
+    columnDisplay: 'الأعمدة المعروضة',
+    columnSetting: 'الإعدادات',
+    fullScreen: 'وضع كامل الشاشة',
+    exitFullScreen: 'الخروج من وضع كامل الشاشة',
+    reload: 'تحديث',
+    density: 'الكثافة',
+    densityDefault: 'افتراضي',
+    densityLarger: 'أكبر',
+    densityMiddle: 'وسط',
+    densitySmall: 'مدمج',
+  },
+  stepsForm: {
+    next: 'التالي',
+    prev: 'السابق',
+    submit: 'أنهى',
+  },
+  loginForm: {
+    submitText: 'تسجيل الدخول',
+  },
+  editableTable: {
+    action: {
+      save: 'أنقذ',
+      cancel: 'إلغاء الأمر',
+      delete: 'حذف',
+      add: 'إضافة صف من البيانات',
+    },
+  },
+  switch: {
+    open: 'مفتوح',
+    close: 'غلق',
+  },
+}

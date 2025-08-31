@@ -1,0 +1,55 @@
+@import 'common/var';
+
+.@{pro-prefix}-drawer {
+  .@{ant-prefix}-drawer-header {
+    padding: 12px 16px;
+  }
+
+  .@{ant-prefix}-drawer-body {
+    padding: 16px;
+  }
+  .@{ant-prefix}-drawer-title {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .@{ant-prefix}-drawer-extra {
+    display: flex;
+    align-items: center;
+  }
+
+  &-title {
+    color: hsl(var(--pro-foreground));
+  }
+
+  &-description {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: hsl(var(--pro-muted-foreground));
+  }
+
+  & &-close {
+    margin-left: 2px;
+    font-size: 12px;
+    color: hsl(var(--pro-foreground) / 80%);
+    opacity: 0.8;
+
+    &:hover {
+      color: hsl(var(--pro-foreground));
+      opacity: 1;
+    }
+  }
+
+  & &-fullscreen {
+    margin-left: 2px;
+    font-size: 12px;
+    color: hsl(var(--pro-foreground) / 80%);
+    opacity: 0.8;
+
+    &:hover {
+      color: hsl(var(--pro-foreground));
+      opacity: 1;
+    }
+  }
+}

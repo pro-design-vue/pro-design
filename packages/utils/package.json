@@ -1,0 +1,6 @@
+{
+  "name": "@pro-design-vue/utils",
+  "private": true,
+  "license": "MIT",
+  "main": "index.ts"
+}

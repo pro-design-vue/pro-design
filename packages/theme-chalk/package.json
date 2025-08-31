@@ -1,0 +1,21 @@
+{
+  "name": "@pro-design-vue/theme-chalk",
+  "main": "index.css",
+  "style": "index.css",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "gulp --require tsx/dist/loader.cjs"
+  },
+  "devDependencies": {
+    "@pro-design-vue/build": "workspace:*",
+    "@types/gulp-autoprefixer": "catalog:",
+    "@types/gulp-rename": "catalog:",
+    "@types/gulp-less": "catalog:",
+    "cssnano": "catalog:",
+    "gulp-autoprefixer": "catalog:",
+    "gulp-rename": "catalog:",
+    "gulp-less": "catalog:",
+    "postcss": "catalog:",
+    "tsx": "catalog:"
+  }
+}
