@@ -2,10 +2,11 @@
  * @Author: shen
  * @Date: 2025-08-26 21:19:07
  * @LastEditors: shen
- * @LastEditTime: 2025-08-26 21:20:12
+ * @LastEditTime: 2025-08-31 17:46:54
  * @Description:
  */
 import { INSTALLED_KEY } from '@pro-design-vue/constants'
+import { version } from './version'
 
 import type { App, Plugin } from 'vue'
 
@@ -18,5 +19,6 @@ export const makeInstaller = (components: Plugin[] = []) => {
 
   return {
     install,
+    version,
   }
 }

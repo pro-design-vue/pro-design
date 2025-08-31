@@ -10,6 +10,7 @@
   "scripts": {
     "prepare": "lefthook install",
     "dev": "pnpm -C play dev",
+    "gen:version": "tsx scripts/gen-version.ts",
     "clean": "pnpm run clean:dist && pnpm run -r --parallel clean",
     "clean:dist": "rimraf dist",
     "build": "pnpm run -C internal/build start",
@@ -26,7 +27,7 @@
     "docs:build": "pnpm run -C docs build",
     "docs:serve": "pnpm run -C docs serve",
     "stub": "pnpm run -r --parallel stub",
-    "postinstall": "pnpm stub"
+    "postinstall": "pnpm stub && concurrently \"pnpm gen:version\""
   },
   "author": {
     "name": "shene",
@@ -59,6 +60,7 @@
     "@pro-design-vue/build-utils": "workspace:^0.0.1",
     "@pnpm/logger": "catalog:",
     "@pnpm/types": "catalog:",
+    "@pnpm/find-workspace-packages": "catalog:",
     "@stylistic/stylelint-plugin": "catalog:",
     "@tsconfig/node22": "catalog:",
     "@types/gulp": "catalog:",
