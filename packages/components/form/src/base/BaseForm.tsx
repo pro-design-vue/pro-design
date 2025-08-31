@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:22
+ * @LastEditTime: 2025-08-31 22:27:50
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -29,7 +29,7 @@ export default defineComponent({
   name: 'BaseForm',
   inheritAttrs: false,
   props: {
-    ...baseFormProps,
+    ...baseFormProps(),
   },
   setup(props, { slots, expose, attrs }) {
     // const loading = ref(false)

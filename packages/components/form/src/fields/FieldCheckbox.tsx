@@ -13,7 +13,7 @@ import FieldReadonly from './FieldReadonly'
 export default defineComponent({
   name: 'FieldCheckbox',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
   },
   emits: ['change'],
   setup(props, { attrs }) {

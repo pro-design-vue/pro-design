@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:13
+ * @LastEditTime: 2025-08-31 22:28:28
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -25,7 +25,7 @@ export default defineComponent({
       type: String as PropType<'Form' | 'DrawerForm' | 'ModalForm' | 'QueryFilter' | 'StepForm'>,
       default: 'Form',
     },
-    ...formProps,
+    ...formProps(),
   },
   setup(props, { slots, expose, attrs }) {
     const formRef = ref<InstanceType<typeof BaseForm> & ProFormActionType>()

@@ -20,7 +20,7 @@ const SLOT_NAMES = ['downloadIcon', 'itemRender', 'previewIcon', 'removeIcon']
 export default defineComponent({
   name: 'FieldUploadButton',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     iconRender: {
       type: String,
       default: '',

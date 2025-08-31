@@ -11,17 +11,24 @@
     "**/*.md"
   ],
   "compilerOptions": {
+    "noEmit": false,
+    "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "baseUrl": ".",
     "rootDir": ".",
+    "outDir": "dist",
     "noImplicitAny": false,
     "noUnusedLocals": false, //暂时定义为false
     "noUnusedParameters": false, //暂时定义为false
 
     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
+    "allowJs": false,
     "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2021.String"],
     "paths": {
+      "vue-types": ["node_modules/vue-types"],
+      "csstype": ["node_modules/csstype"],
+      "@vue/shared": ["node_modules/@vue/shared"],
+      "scroll-into-view-if-needed": ["node_modules/scroll-into-view-if-needed"],
       "@pro-design-vue/components": ["packages/components"],
       "@pro-design-vue/components/*": ["packages/components/*"],
       "@pro-design-vue/utils": ["packages/utils"],

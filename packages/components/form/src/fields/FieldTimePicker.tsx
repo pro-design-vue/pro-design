@@ -22,7 +22,7 @@ const SLOT_NAMES = ['clearIcon', 'renderExtraFooter', 'suffixIcon']
 export default defineComponent({
   name: 'FieldTimePicker',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     clearIcon: {
       type: String,
       default: '',

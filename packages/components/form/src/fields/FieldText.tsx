@@ -19,7 +19,7 @@ const SLOT_NAMES = ['addonAfter', 'addonBefore', 'suffix', 'prefix']
 export default defineComponent({
   name: 'FieldText',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     addonAfter: {
       type: String,
       default: '',

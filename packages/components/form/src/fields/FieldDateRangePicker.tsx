@@ -33,7 +33,7 @@ const SLOT_NAMES = [
 export default defineComponent({
   name: 'FieldDateRangePicker',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     dateRender: {
       type: String,
       default: '',

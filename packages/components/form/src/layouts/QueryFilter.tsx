@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:52
+ * @LastEditTime: 2025-08-31 22:28:48
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -109,7 +109,7 @@ export default defineComponent({
   name: 'ProQueryFilter',
   inheritAttrs: false,
   props: {
-    ...queryFilterProps,
+    ...queryFilterProps(),
   },
   emits: ['collapse', 'resize'],
   setup(props, { slots, emit, expose, attrs }) {

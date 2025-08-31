@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:36
+ * @LastEditTime: 2025-08-31 22:28:38
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -30,7 +30,7 @@ export default defineComponent({
   name: 'ProDrawerForm',
   inheritAttrs: false,
   props: {
-    ...drawerOrModalFormProps,
+    ...drawerOrModalFormProps(),
     drawerProps: {
       type: Object as PropType<ProDrawerProps & { okText?: string; cancelText?: string }>,
       default: undefined,

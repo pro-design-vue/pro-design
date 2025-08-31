@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:42
+ * @LastEditTime: 2025-08-31 22:28:43
  * @Description:
  */
 import { ref, computed, watch, defineComponent } from 'vue'
@@ -28,7 +28,7 @@ export default defineComponent({
   name: 'ProModalForm',
   inheritAttrs: false,
   props: {
-    ...drawerOrModalFormProps,
+    ...drawerOrModalFormProps(),
     modalProps: {
       type: Object as PropType<ProModalProps>,
       default: undefined,

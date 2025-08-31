@@ -33,7 +33,7 @@ export default defineComponent({
   name: 'FieldSelect',
   inheritAttrs: false,
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     menuItemSelectedIcon: {
       type: String,
       default: '',

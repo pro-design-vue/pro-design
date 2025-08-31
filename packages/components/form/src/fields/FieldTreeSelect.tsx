@@ -28,7 +28,7 @@ const SLOT_NAMES = [
 export default defineComponent({
   name: 'FieldTreeSelect',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     maxTagPlaceholder: {
       type: String,
       default: '',

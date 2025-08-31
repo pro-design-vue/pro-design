@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:41:44
+ * @LastEditTime: 2025-08-31 22:35:13
  * @Description:
  */
 import { defineComponent, computed } from 'vue'
@@ -30,7 +30,7 @@ const SLOT_NAMES = [
 export default defineComponent({
   name: 'FieldCascader',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     expandIcon: {
       type: String,
       default: '',

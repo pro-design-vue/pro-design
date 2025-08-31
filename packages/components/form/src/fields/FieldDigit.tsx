@@ -19,7 +19,7 @@ const SLOT_NAMES = ['addonAfter', 'addonBefore', 'prefix', 'upIcon', 'downIcon']
 export default defineComponent({
   name: 'FieldDigit',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     addonAfter: {
       type: String,
       default: '',

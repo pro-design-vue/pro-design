@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-27 17:00:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:18:36
+ * @LastEditTime: 2025-09-01 00:08:38
  * @Description:
  */
 import path from 'path'
@@ -51,13 +51,12 @@ export default series(
     runTask('buildModules'),
     runTask('buildFullBundle'),
     runTask('generateTypesDefinitions'),
-    // runTask('buildHelper'),
     series(
       withTaskName('buildThemeChalk', () => run('pnpm run -C packages/theme-chalk build')),
       copyFullStyle,
     ),
   ),
-  // parallel(copyTypesDefinitions, copyFiles),
+  parallel(copyTypesDefinitions, copyFiles),
   parallel(copyFiles),
 )
 

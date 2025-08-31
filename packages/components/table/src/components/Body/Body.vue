@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 13:56:43
+ * @LastEditTime: 2025-08-31 22:40:57
  * @Description:
 -->
 <script lang="ts">
@@ -352,14 +352,17 @@ export default defineComponent({
       maxHeight: 'number' == typeof props.height ? `${props.height}px` : props.height,
       overflowY: 'hidden',
     }))
-    const bodyContainerStyle = computed<CSSProperties>(() => ({
-      height: tableContext.showHorizontalScrollbar.value
-        ? `calc(100% + ${tableContext.scrollBarSize.value || 15}px)`
-        : 'calc(100%)',
-      zIndex: 'unset !important',
-      overflowX: 'auto',
-      overflowY: 'hidden',
-    }))
+    const bodyContainerStyle = computed<CSSProperties>(
+      () =>
+        ({
+          height: tableContext.showHorizontalScrollbar.value
+            ? `calc(100% + ${tableContext.scrollBarSize.value || 15}px)`
+            : 'calc(100%)',
+          zIndex: 'unset !important',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+        }) as any,
+    )
     const centerStyle = computed<CSSProperties>(() => ({ height: `${viewportHeight.value}px` }))
     const leftStyle = computed<CSSProperties>(() => {
       const width = `${tableContext.leftWidth.value}px`

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-27 16:07:19
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 16:07:33
+ * @LastEditTime: 2025-08-31 21:56:37
  * @Description:
  */
 import type { vShow } from 'vue'
@@ -12,7 +12,6 @@ declare global {
   const process: {
     env: {
       NODE_ENV: string
-      RUN_TEST_WITH_PERSISTENT: string
     }
   }
 

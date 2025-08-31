@@ -30,7 +30,7 @@ export default defineComponent({
   name: 'FieldUploadPicture',
   inheritAttrs: false,
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     title: {
       type: String,
     },

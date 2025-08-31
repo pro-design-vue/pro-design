@@ -19,7 +19,7 @@ const SLOT_NAMES = ['checkedChildren', 'unCheckedChildren']
 export default defineComponent({
   name: 'FieldSwitch',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     checkedChildren: {
       type: String,
     },

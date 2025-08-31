@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'FieldDigitRange',
   inheritAttrs: false,
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     addonAfter: {
       type: String,
       default: '',

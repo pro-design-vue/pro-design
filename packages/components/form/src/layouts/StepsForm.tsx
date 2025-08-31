@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:33:16
+ * @LastEditTime: 2025-08-31 22:28:53
  * @Description:
  */
 import type { Ref, VNode } from 'vue'
@@ -67,7 +67,7 @@ export default defineComponent({
   name: 'ProStepsForm',
   inheritAttrs: false,
   props: {
-    ...stepsFormProps,
+    ...stepsFormProps(),
   },
   emits: [],
   setup(props, { slots }) {

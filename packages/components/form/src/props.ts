@@ -2,11 +2,10 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:35:20
+ * @LastEditTime: 2025-08-31 22:35:25
  * @Description:
  */
 import { formProps as antFormProps } from 'ant-design-vue/lib/form'
-import { buildProps } from '@pro-design-vue/utils'
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
 import type {
   ProFormPropsType,
@@ -17,7 +16,7 @@ import type {
 } from './type'
 import type { StepsProps, StepProps } from 'ant-design-vue'
 
-export const commonFieldProps = buildProps({
+export const commonFieldProps = () => ({
   value: {
     type: [String, Array, Number, Object, Boolean] as PropType<any>,
   },
@@ -54,7 +53,7 @@ export const commonFieldProps = buildProps({
   },
 })
 
-export const baseFormProps = buildProps({
+export const baseFormProps = () => ({
   ...antFormProps(),
   // name: String,
   loading: {
@@ -139,8 +138,8 @@ export const baseFormProps = buildProps({
   },
 })
 
-export const drawerOrModalFormProps = buildProps({
-  ...baseFormProps,
+export const drawerOrModalFormProps = () => ({
+  ...baseFormProps(),
   submitTimeout: {
     type: Number,
     default: undefined,
@@ -171,8 +170,8 @@ export const drawerOrModalFormProps = buildProps({
   },
 })
 
-export const queryFilterProps = buildProps({
-  ...baseFormProps,
+export const queryFilterProps = () => ({
+  ...baseFormProps(),
   preserve: {
     type: Boolean,
     default: true,
@@ -213,8 +212,8 @@ export const queryFilterProps = buildProps({
     default: undefined,
   },
 })
-export const stepsFormProps = buildProps({
-  ...baseFormProps,
+export const stepsFormProps = () => ({
+  ...baseFormProps(),
   current: {
     type: Number,
     default: undefined,
@@ -239,20 +238,22 @@ export const stepsFormProps = buildProps({
   },
 })
 
-export const formProps = buildProps({
-  ...baseFormProps,
-  ...drawerOrModalFormProps,
-  ...queryFilterProps,
-  ...stepsFormProps,
+export const formProps = () => ({
+  ...baseFormProps(),
+  ...drawerOrModalFormProps(),
+  ...queryFilterProps(),
+  ...stepsFormProps(),
   items: {
     type: Array as PropType<Array<ProFormItemType<Entity, any>[]> | ProFormItemType<Entity, any>[]>,
     default: () => [],
   },
 })
 
-export type BaseFormProps = Partial<ExtractPropTypes<typeof baseFormProps>>
+export type BaseFormProps = Partial<ExtractPropTypes<ReturnType<typeof baseFormProps>>>
 
-export type ProFormProps = Partial<ExtractPropTypes<typeof formProps>>
-export type ProQueryFilterProps = Partial<ExtractPropTypes<typeof queryFilterProps>>
-export type ProStepsFormProps = Partial<ExtractPropTypes<typeof stepsFormProps>>
-export type ProDrawerOrModalFormProps = Partial<ExtractPropTypes<typeof drawerOrModalFormProps>>
+export type ProFormProps = Partial<ExtractPropTypes<ReturnType<typeof formProps>>>
+export type ProQueryFilterProps = Partial<ExtractPropTypes<ReturnType<typeof queryFilterProps>>>
+export type ProStepsFormProps = Partial<ExtractPropTypes<ReturnType<typeof stepsFormProps>>>
+export type ProDrawerOrModalFormProps = Partial<
+  ExtractPropTypes<ReturnType<typeof drawerOrModalFormProps>>
+>

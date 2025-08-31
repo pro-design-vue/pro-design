@@ -16,7 +16,7 @@ import FieldReadonly from './FieldReadonly'
 export default defineComponent({
   name: 'FieldCheckboxGroup',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
   },
   setup(props, { attrs }) {
     const { disabled } = useInjectForm()

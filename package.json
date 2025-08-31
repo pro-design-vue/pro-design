@@ -71,6 +71,7 @@
     "@vitejs/plugin-vue-jsx": "catalog:",
     "@vue/eslint-config-prettier": "catalog:",
     "@vue/eslint-config-typescript": "catalog:",
+    "@vue/shared": "catalog:",
     "@vue/tsconfig": "catalog:",
     "autoprefixer": "catalog:",
     "commitlint-plugin-function-rules": "catalog:",
@@ -109,7 +110,9 @@
     "vite": "catalog:",
     "vite-plugin-vue-devtools": "catalog:",
     "vue": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "vue-types": "catalog:",
+    "scroll-into-view-if-needed": "catalog:"
   },
   "engines": {
     "node": ">= 20"

@@ -18,7 +18,7 @@ const SLOT_NAMES = ['mark']
 export default defineComponent({
   name: 'FieldSlider',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     mark: {
       type: String,
       default: '',

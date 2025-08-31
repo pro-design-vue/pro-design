@@ -14,7 +14,7 @@ import FieldReadonly from './FieldReadonly'
 export default defineComponent({
   name: 'FieldTextarea',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     addonAfter: {
       type: String,
       default: '',

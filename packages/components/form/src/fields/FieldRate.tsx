@@ -18,7 +18,7 @@ const SLOT_NAMES = ['character']
 export default defineComponent({
   name: 'FieldRate',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     character: {
       type: String,
       default: '',

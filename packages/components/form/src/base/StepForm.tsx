@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:28:27
+ * @LastEditTime: 2025-08-31 22:29:23
  * @Description:
  */
 import type { ProFormActionType } from '../type'
@@ -20,7 +20,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     index: Number,
-    ...baseFormProps,
+    ...baseFormProps(),
   },
   emits: [],
   setup(props, { slots }) {

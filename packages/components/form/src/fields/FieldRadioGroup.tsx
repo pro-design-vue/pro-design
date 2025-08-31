@@ -19,7 +19,7 @@ import { RenderVNode } from '@pro-design-vue/utils'
 export default defineComponent({
   name: 'FieldRadioGroup',
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     radioLabel: {
       type: String,
       default: '',

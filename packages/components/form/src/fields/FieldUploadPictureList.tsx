@@ -20,7 +20,7 @@ export default defineComponent({
   name: 'FieldUploadPictureList',
   inheritAttrs: false,
   props: {
-    ...commonFieldProps,
+    ...commonFieldProps(),
     name: {
       type: String,
       default: 'file',
