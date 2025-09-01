@@ -93,7 +93,11 @@
   },
   "devDependencies": {
     "@types/node": "*",
-    "vue": "^3.5.0"
+    "ant-design-vue": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:",
+    "vue-types": "catalog:",
+    "scroll-into-view-if-needed": "catalog:"
   },
   "browserslist": [
     "> 1%",

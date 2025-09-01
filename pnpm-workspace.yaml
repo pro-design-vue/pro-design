@@ -86,7 +86,8 @@ catalog:
   vitepress: 2.0.0-alpha.12
   vue: 3.5.20
   vue-router: ^4.5.1
-  vue-tsc: ^3.0.4
+  vue-tsc: ^2.0.28
   vue-types: ^6.0.0
   '@vue/shared': ^3.5.20
   scroll-into-view-if-needed: ^3.1.0
+  unplugin-vue-macros: ^2.7.11

@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:35:25
+ * @LastEditTime: 2025-09-01 10:29:43
  * @Description:
  */
-import { formProps as antFormProps } from 'ant-design-vue/lib/form'
+import { formProps as antFormProps } from 'ant-design-vue/es/form'
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
 import type {
   ProFormPropsType,

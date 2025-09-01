@@ -40,7 +40,6 @@ async function buildModulesComponents() {
       onlyFiles: true,
     }),
   )
-  console.log('🚀 ~ buildModulesComponents ~ input:', input)
   const bundle = await rollup({
     input,
     plugins,
@@ -72,7 +71,6 @@ async function buildModulesStyles() {
       onlyFiles: true,
     }),
   )
-  console.log('🚀 ~ buildModulesStyles ~ input:', input)
 
   const bundle = await rollup({
     input,

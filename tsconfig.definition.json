@@ -1,30 +1,30 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["typings/env.d.ts", "packages"],
-  "exclude": [
-    "node_modules",
-    "**/dist",
-    "**/__tests__/**/*",
-    "**/gulpfile.ts",
-    "**/test-helper",
-    "packages/test-utils",
-    "**/*.md"
-  ],
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "baseUrl": ".",
-    "rootDir": ".",
     "outDir": "dist",
-    "noEmit": false,
-    "composite": true, // 启用复合项目模式
-    "emitDeclarationOnly": true,
+    "target": "es2018",
+    "module": "esnext",
+    "baseUrl": ".",
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "moduleDetection": "force",
+    "allowJs": false,
+    "strict": true,
     "noImplicitAny": false,
     "noUnusedLocals": false, //暂时定义为false
     "noUnusedParameters": false, //暂时定义为false
-
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "allowJs": false,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "rootDir": ".",
+    "preserveSymlinks": true,
+    "composite": true,
+    "verbatimModuleSyntax": true,
+    "useDefineForClassFields": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2021.String"],
+    "skipLibCheck": true,
     "paths": {
       "vue-types": ["node_modules/vue-types"],
       "csstype": ["node_modules/csstype"],
@@ -39,5 +39,15 @@
       "@pro-design-vue/constants": ["packages/constants"],
       "pro-design-vue": ["packages/pro-design-vue"]
     }
-  }
+  },
+  "include": ["packages", "typings/env.d.ts"],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/__tests__/**/*",
+    "**/gulpfile.ts",
+    "**/test-helper",
+    "packages/test-utils",
+    "**/*.md"
+  ]
 }
