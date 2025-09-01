@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-27 20:11:52
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 10:03:09
+ * @LastEditTime: 2025-09-01 13:13:16
  * @Description:
  */
 import path from 'path'
@@ -25,10 +25,9 @@ export const generateTypesDefinitions = async () => {
   // Generate .d.ts files
   await run(
     'npx vue-tsc -p tsconfig.web.json --declaration --emitDeclarationOnly --declarationDir dist/types',
-    // 'npx vue-tsc -p tsconfig.definition.json',
   )
 
-  // Rollup all .d.ts files into index.d.ts
+  // // Rollup all .d.ts files into index.d.ts
   const extractorConfig = ExtractorConfig.prepare({
     configObject: {
       projectFolder: typesDir,

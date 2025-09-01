@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-05 13:44:32
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:27:07
+ * @LastEditTime: 2025-09-01 13:24:32
  * @Description:
  */
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
@@ -126,10 +126,10 @@ export const useProvideRangeStore = (parmas: {
   })
 
   let cell: RangeCell | null = null
-  let M = false
+  let hasSelectedFirst = false
   let isDragging = false
   let mouseEventCache: CustomMouseEvent | null = null
-  let F = false
+  let hasSelectedLast = false
   let lastCellRange: CellRangesItem | null = null
   let cellLevel: number | null = null
   const onDragStart = (mouseEvent: CustomMouseEvent) => {
@@ -150,7 +150,7 @@ export const useProvideRangeStore = (parmas: {
     if (!cell) return
     isDragging = true
     mouseEventCache = mouseEvent
-    F = isMultiple && getCellRangeCount(cell) > 1
+    hasSelectedLast = isMultiple && getCellRangeCount(cell) > 1
     if (!isRangeSelected) {
       latestRangeStartCell.value = cell
     }
@@ -172,7 +172,7 @@ export const useProvideRangeStore = (parmas: {
   }
 
   const setCurrentCell = (cellPosition: RangeCell) => {
-    M = false
+    hasSelectedFirst = false
     if (
       cellPosition &&
       !(
@@ -183,7 +183,7 @@ export const useProvideRangeStore = (parmas: {
       )
     ) {
       if (cell) {
-        M = true
+        hasSelectedFirst = true
         cell = cellPosition
       }
     }
@@ -202,7 +202,7 @@ export const useProvideRangeStore = (parmas: {
       cell && cell.rowPinned === dir && latestRangeStartCell.value!.rowPinned === dir
     const forceSkipVerticalScroll = getDirection('top') || getDirection('bottom')
     check(mouseEvent, !!forceSkipVerticalScroll)
-    if (!M) return
+    if (!hasSelectedFirst) return
     const i2 = J(latestRangeStartCell.value!.column, cell!.column)
     if (i2) {
       lastCellRange!.endRow = {
@@ -223,8 +223,8 @@ export const useProvideRangeStore = (parmas: {
       isDragging = false
       lastCellRange = null
       cell = null
-      if (F) {
-        F = false
+      if (hasSelectedLast) {
+        hasSelectedLast = false
         intersectLastRange()
       }
     }
@@ -626,7 +626,7 @@ export const useProvideRangeStore = (parmas: {
             o2: any = [],
             l2 = getIndexsByKey(n3)
           for (let r3 = s2; r3 <= u2; r3++) {
-            const originColumn = allDisplayedColumns.value[r3]?.originColumn!
+            const originColumn = allDisplayedColumns.value[r3]!.originColumn!
             const i3 = originColumn.dataIndex
               ? getPathValue(t3.record, originColumn.dataIndex)
               : void 0

@@ -19,9 +19,6 @@
     "composite": true, // 启用复合项目模式
     "emitDeclarationOnly": true,
     "noImplicitAny": false,
-    "noUnusedLocals": false, //暂时定义为false
-    "noUnusedParameters": false, //暂时定义为false
-
     "allowSyntheticDefaultImports": true,
     "allowJs": false,
     "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2021.String"],

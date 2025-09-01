@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-27 17:25:20
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:51:52
+ * @LastEditTime: 2025-09-01 11:05:35
  * @Description:
  */
 import path from 'path'
@@ -50,6 +50,7 @@ async function buildFullEntry(minify: boolean) {
       legalComments: 'eof',
     }),
     replace({
+      preventAssignment: true, // 显式设置为true
       'import.meta.env.NODE_ENV': JSON.stringify('production'),
     }),
   ]
