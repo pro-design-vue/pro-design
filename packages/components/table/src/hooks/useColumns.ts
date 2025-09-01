@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-04 16:42:09
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:14:28
+ * @LastEditTime: 2025-09-01 11:00:18
  * @Description:
  */
 import type {
@@ -500,16 +500,16 @@ export default function useColumns({
       for (let i = 0; i < len; i += 1) {
         if (dir === 'rtl') {
           rightOffsets[i] = rightOffset
-          rightOffset += columns[i]!.finallyWidth || 0
+          rightOffset += columns[i]?.finallyWidth || 0
           const index = len - i - 1
           leftOffsets[index] = leftOffset
-          leftOffset += columns[index]!.finallyWidth || 0
+          leftOffset += columns[index]?.finallyWidth || 0
         } else {
           leftOffsets[i] = leftOffset
-          leftOffset += columns[i]!.finallyWidth || 0
+          leftOffset += columns[i]?.finallyWidth || 0
           const index = len - i - 1
           rightOffsets[index] = rightOffset
-          rightOffset += columns[index]!.finallyWidth || 0
+          rightOffset += columns[index]?.finallyWidth || 0
         }
       }
 
@@ -549,9 +549,10 @@ export default function useColumns({
     if (columns[index]) {
       const left = columns[index].left
       for (let i = index, len = index + colSpan; i < len; i++) {
-        width += columns[i]?.finallyWidth || 0
-        minWidth += columns[i]?.minWidth!
-        maxWidth += columns[i]?.maxWidth!
+        const column = columns[i]!
+        width += column.finallyWidth || 0
+        minWidth += column.minWidth!
+        maxWidth += column.maxWidth!
       }
       cacheColumnKeyPositonMap[`${index}-${colSpan}`] = {
         width,

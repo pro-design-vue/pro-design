@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:05:03
+ * @LastEditTime: 2025-09-01 11:01:23
  * @Description:
 -->
 <script lang="ts">
@@ -40,8 +40,8 @@ export default defineComponent({
       const { x, y } = currentTarget.getBoundingClientRect()
       const { left, top, width } = rootRef.value.getBoundingClientRect()
       const offsetWidth = targetDom.offsetWidth
-      const firstChild = targetDom.children[0]
-      const scrollHeight = Math.min(targetDom.scrollHeight, firstChild?.scrollHeight || 0)
+      const firstChild = targetDom.children[0]!
+      const scrollHeight = Math.min(targetDom.scrollHeight, firstChild.scrollHeight!)
       targetDom.style.opacity = '1'
       targetDom.style.height = `${scrollHeight}px`
       let targetLeft = x - left

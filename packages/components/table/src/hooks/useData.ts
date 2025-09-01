@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-05 14:00:27
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:16:54
+ * @LastEditTime: 2025-09-01 10:54:47
  * @Description:
  */
 import type { FlatRecord, Key, ProTableProps } from '../components/interface'
@@ -62,7 +62,7 @@ export default function useData(
         }
       }
       sliceData.forEach((record, index) => {
-        const rowKeyIndex = rowKeyIndexMap[record.rowKey] || 0
+        const rowKeyIndex = rowKeyIndexMap[record.rowKey]
         if (rowKeyIndex !== undefined) {
           newData[rowKeyIndex] = record
           newPos[rowKeyIndex] = sliceRowPosition[index]!

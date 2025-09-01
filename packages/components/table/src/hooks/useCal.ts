@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-05 12:49:15
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:11:32
+ * @LastEditTime: 2025-09-01 10:50:22
  * @Description:
  */
 import type { FlatRecord, Key, ProTableProps } from '../components/interface'
@@ -166,6 +166,7 @@ export default function useCal(
         const mrhs = mergedRowHeights.value
         const data = flattenData.value
         const len = data.length
+        console.log('🚀 ~ watch ~ data:', data)
         const newMergedRowHeights = {}
         let newViewportHeight = 0
         const newRowPosition: number[] = []
@@ -177,11 +178,14 @@ export default function useCal(
               : crhs[rowKey] === undefined
                 ? mrhs[rowKey]
                 : crhs[rowKey]
+          console.log('🚀 ~ watch ~ rowHeight:', rowHeight)
+
           newMergedRowHeights[rowKey] = rowHeight
           newRowPosition.push(newViewportHeight)
           newViewportHeight += rowHeight === undefined ? defaultHeight : rowHeight
         }
         mergedRowHeights.value = newMergedRowHeights
+        console.log('🚀 ~ watch ~ newViewportHeight:', newViewportHeight)
         viewportHeight.value = newViewportHeight
         rowPosition.value = newRowPosition
       },
@@ -227,7 +231,7 @@ export default function useCal(
           newRowHeights[rowKey] = undefined as any
           newCacheRowHeights[rowKey] =
             rowKey in cacheRowHeights ? cacheRowHeights[rowKey] : undefined
-          newCurrentRowHeights[rowKey] = crhs[rowKey] || 0
+          newCurrentRowHeights[rowKey] = crhs[rowKey]!
         }
       }
     }

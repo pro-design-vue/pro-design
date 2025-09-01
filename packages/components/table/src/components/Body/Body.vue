@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:40:57
+ * @LastEditTime: 2025-09-01 11:01:06
  * @Description:
 -->
 <script lang="ts">
@@ -122,10 +122,10 @@ export default defineComponent({
       }
       target.style.display = 'block'
       const { left, top } = target.parentElement!.getBoundingClientRect()
-      const firstChild = target.children[0]
+      const firstChild = target.children[0]!
       const minHeight = Math.min(
         target.scrollHeight,
-        firstChild?.scrollHeight || 0,
+        firstChild.scrollHeight!,
         viewportHeight.value - 4,
       )
       target.style.opacity = '1'
@@ -329,6 +329,7 @@ export default defineComponent({
         tableContext.viewportHeight.value +
         (props.summaryFixed ? emptyHeight.value : summaryHeight.value + emptyHeight.value),
     )
+    console.log(viewportHeight.value)
     const containerStyle = computed<CSSProperties>(() => ({
       width: `${tableContext.centerWidth.value}px`,
       height: `${viewportHeight.value}px`,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:02:19
+ * @LastEditTime: 2025-09-01 10:49:14
  * @Description:
 -->
 <script lang="ts">
@@ -131,7 +131,7 @@ export default defineComponent({
         columnIndex = tableContext.columnKeyIndexMap.value[props.column.columnKey],
         colSpan = 1,
       } = props.column
-      return tableContext.getColumnPosition(columnIndex || 0, colSpan)
+      return tableContext.getColumnPosition(columnIndex!, colSpan)
     })
 
     const customColProps = computed(() =>

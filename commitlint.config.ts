@@ -1,6 +1,23 @@
 import { execSync } from 'node:child_process'
 
-const allowedScopes = ['project', 'style', 'lint', 'ci', 'dev', 'deploy', 'other']
+const allowedScopes = [
+  'components',
+  'constants',
+  'directives',
+  'hooks',
+  'theme-chalk',
+  'utils',
+  'scripts',
+  'internal',
+  'docs',
+  'play',
+  'style',
+  'lint',
+  'ci',
+  'dev',
+  'deploy',
+  'other',
+]
 
 // precomputed scope
 const scopeComplete = execSync('git status --porcelain || true')
