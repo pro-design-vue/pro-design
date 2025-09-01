@@ -2,19 +2,19 @@
  * @Author: shen
  * @Date: 2022-11-03 17:43:37
  * @LastEditors: shen
- * @LastEditTime: 2025-08-28 09:10:01
+ * @LastEditTime: 2025-09-01 14:45:08
  * @Description:
  */
 let warned: Record<string, boolean> = {}
 
 export function warning(valid: boolean, message: string) {
-  // if (import.meta.env.NODE_ENV !== 'production' && !valid && console !== undefined) {
+  // if ((import.meta as any).env.NODE_ENV !== 'production' && !valid && console !== undefined) {
   console.error(`Warning: ${message}`)
   // }
 }
 
 export function note(valid: boolean, message: string) {
-  // if (import.meta.env.NODE_ENV !== 'production' && !valid && console !== undefined) {
+  // if ((import.meta as any).env.NODE_ENV !== 'production' && !valid && console !== undefined) {
   console.warn(`Note: ${message}`)
   // }
 }

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-27 17:25:20
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 11:05:35
+ * @LastEditTime: 2025-09-01 15:15:27
  * @Description:
  */
 import path from 'path'
@@ -16,7 +16,7 @@ import esbuild, { minify as minifyPlugin } from 'rollup-plugin-esbuild'
 import { parallel } from 'gulp'
 import { PKG_BRAND_NAME, PKG_CAMELCASE_NAME } from '@pro-design-vue/build-constants'
 import { pdOutput, pdRoot } from '@pro-design-vue/build-utils'
-// import { version } from '../../../../packages/pro-design-vue/version'
+import { version } from '../../../../packages/pro-design-vue/version'
 import { ProDesignAlias } from '../plugins/pro-design-vue-alias'
 import { formatBundleFilename, generateExternal, withTaskName, writeBundles } from '../utils'
 import { target } from '../build-info'
@@ -24,8 +24,7 @@ import { target } from '../build-info'
 import type { TaskFunction } from 'gulp'
 import type { Plugin } from 'rollup'
 
-// const banner = `/*! ${PKG_BRAND_NAME} v${version} */\n`
-const banner = `/*! ${PKG_BRAND_NAME} v1.0.0 */\n`
+const banner = `/*! ${PKG_BRAND_NAME} v${version} */\n`
 
 async function buildFullEntry(minify: boolean) {
   const plugins: Plugin[] = [
@@ -62,7 +61,6 @@ async function buildFullEntry(minify: boolean) {
       }),
     )
   }
-
   const bundle = await rollup({
     input: path.resolve(pdRoot, 'index.ts'),
     plugins,
@@ -77,13 +75,16 @@ async function buildFullEntry(minify: boolean) {
       name: PKG_CAMELCASE_NAME,
       globals: {
         vue: 'Vue',
-        'ant-design-vue/es': 'AntDesignVue',
+        'ant-design-vue': 'AntDesignVue',
+        'ant-design-vue/es/form': 'AntDesignVue.form',
       },
+      inlineDynamicImports: true,
       sourcemap: minify,
       banner,
     },
     {
       format: 'esm',
+      inlineDynamicImports: true,
       file: path.resolve(pdOutput, 'dist', formatBundleFilename('index.full', minify, 'mjs')),
       sourcemap: minify,
       banner,

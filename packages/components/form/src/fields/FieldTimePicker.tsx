@@ -2,19 +2,19 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 23:53:53
+ * @LastEditTime: 2025-09-01 13:34:28
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
 import { TimePicker } from 'ant-design-vue'
 import { useInjectSlots } from '../context/FormSlotsContext'
 import { commonFieldProps } from '../props'
-import { fieldDateFormatterMap } from '../fieldMap'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { RenderVNode } from '@pro-design-vue/utils'
 import dayjs from 'dayjs'
 import getSlot from '../utils/getSlot'
 import parseValueToDay from '../utils/parseValueToMoment'
+import fieldDateFormatterMap from '../utils/fieldDateFormatterMap'
 import FieldReadonly from './FieldReadonly'
 
 const SLOT_NAMES = ['clearIcon', 'renderExtraFooter', 'suffixIcon']

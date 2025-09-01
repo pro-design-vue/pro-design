@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 11:16:34
+ * @LastEditTime: 2025-09-01 13:32:49
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -14,7 +14,7 @@ import { useInjectSlots } from '../context/FormSlotsContext'
 import { useInjectForm } from '../context/FormContext'
 import { useFieldValue } from '../hooks/useFieldValue'
 import { useInjectFormList } from '../context/FormListContext'
-import { fieldComponentMap, fieldPropsMap, fieldWidthSizeMap } from '../fieldMap'
+import { fieldComponentMap } from '../fieldMap'
 import {
   get,
   isEqual,
@@ -30,6 +30,8 @@ import getSlot from '../utils/getSlot'
 import FormColWrapper from './FormColWrapper'
 import FormTitle from './FormTitle'
 import covertFormName from '../utils/namePath'
+import fieldPropsMap from '../utils/fieldPropsMap'
+import fieldWidthSizeMap from '../utils/fieldWidthSizeMap'
 
 const ALL_ANTD_PROP_KEYS = [
   'autoLink',
