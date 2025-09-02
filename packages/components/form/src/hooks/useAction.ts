@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 12:01:35
+ * @LastEditTime: 2025-09-02 17:20:26
  * @Description:
  */
 
@@ -14,8 +14,6 @@ import { cloneDeep, get, isObject, merge, set } from '@pro-design-vue/utils'
 import covertFormName from '../utils/namePath'
 
 const transformKey = (values: any, paramsOmitNil: boolean, parentKey?: NamePath) => {
-  console.log('🚀 ~ transformKey ~ parentKey:', parentKey)
-  console.log('🚀 ~ transformKey ~ paramsOmitNil:', paramsOmitNil)
   return values
 }
 

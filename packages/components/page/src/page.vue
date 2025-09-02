@@ -34,10 +34,10 @@ const shouldAutoHeight = ref(false)
 
 const { contentOffsetTop } = useProConfigInject()
 const tabActiveKey = defineModel<TabsProps['activeKey']>('activeKey')
-const pageRef = useTemplateRef<HTMLDivElement>('pageRef')
-const headerRef = useTemplateRef<HTMLDivElement>('headerRef')
-const footerRef = useTemplateRef<HTMLDivElement>('footerRef')
-const tabsRef = useTemplateRef<HTMLDivElement>('tabsRef')
+const pageRef = useTemplateRef<HTMLDivElement>('page')
+const headerRef = useTemplateRef<HTMLDivElement>('header')
+const footerRef = useTemplateRef<HTMLDivElement>('footer')
+const tabsRef = useTemplateRef<HTMLDivElement>('tabs')
 const headerCls = computed(() => ({
   [`${prefixCls}-header`]: true,
   [headerClass]: true,
@@ -111,12 +111,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="pageRef" :class="[prefixCls, tabList?.length ? `is-tabs` : '']">
+  <div ref="page" :class="[prefixCls, tabList?.length ? `is-tabs` : '']">
     <div
       v-if="
         $slots.header || description || $slots.description || title || $slots.title || $slots.extra
       "
-      ref="headerRef"
+      ref="header"
       :class="headerCls"
     >
       <slot name="header">
@@ -137,7 +137,7 @@ onMounted(() => {
         </div>
       </slot>
     </div>
-    <div v-if="tabList?.length" ref="tabsRef" :class="`${prefixCls}-tabs`">
+    <div v-if="tabList?.length" ref="tabs" :class="`${prefixCls}-tabs`">
       <Tabs v-model:activeKey="tabActiveKey" v-bind="mergeTabsProps">
         <template v-for="tab in tabList" :key="tab.key">
           <TabPane v-bind="tab" />
@@ -157,7 +157,7 @@ onMounted(() => {
       </slot>
     </div>
 
-    <div v-if="$slots.footer" ref="footerRef" :class="footerCls">
+    <div v-if="$slots.footer" ref="footer" :class="footerCls">
       <slot name="footer"></slot>
     </div>
   </div>

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 10:37:36
+ * @LastEditTime: 2025-09-02 17:20:13
  * @Description:
 -->
 <script setup lang="ts">
@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{ close: [e: Event]; fullScreen: [value: boolean] }>()
 
 const prefixCls = usePrefixCls('drawer')
-console.log('🚀 ~ prefixCls:', prefixCls)
 const { isMobile } = useIsMobile()
 const fullscreen = ref(props.defaultFullscreen)
 const hasFullscreen = computed(() => isMobile.value || fullscreen.value)

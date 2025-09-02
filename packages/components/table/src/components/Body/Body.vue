@@ -329,7 +329,6 @@ export default defineComponent({
         tableContext.viewportHeight.value +
         (props.summaryFixed ? emptyHeight.value : summaryHeight.value + emptyHeight.value),
     )
-    console.log(viewportHeight.value)
     const containerStyle = computed<CSSProperties>(() => ({
       width: `${tableContext.centerWidth.value}px`,
       height: `${viewportHeight.value}px`,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:28:48
+ * @LastEditTime: 2025-09-02 17:20:35
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -285,7 +285,6 @@ export default defineComponent({
                   totalSize.value > showLength.value) &&
                 !!index)
 
-            // console.log(item, item.fieldType, hidden)
             if (hidden) {
               if (!props.preserve) {
                 return {
