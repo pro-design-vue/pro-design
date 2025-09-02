@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:04:19
+ * @LastEditTime: 2025-09-02 14:42:09
  * @Description:
 -->
 <script lang="ts">
@@ -722,7 +722,7 @@ export default defineComponent({
                 deleteNestItemData(rawData.value, fromIndexs, childrenColumnName.value)
                 addNestItemData(
                   rawData.value,
-                  preTargetInfo?.indexs ? [preTargetInfo?.indexs[0]!] : [],
+                  preTargetInfo?.indexs ? [preTargetInfo!.indexs[0]!] : [],
                   childrenColumnName.value,
                   rawRecord,
                 )

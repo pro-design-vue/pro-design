@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 13:39:31
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 13:57:20
+ * @LastEditTime: 2025-09-02 14:41:27
  * @Description:
 -->
 <script lang="ts">
@@ -101,7 +101,7 @@ export default defineComponent({
         checkedKeys.value = []
         const newData = loopData(props.list)
         triggerRef(checkedKeys)
-        treeData.value = newData?.map(({ disabled, ...config }) => {
+        treeData.value = newData?.map((config) => {
           return omit(config, ['disabled'])
         })
       },

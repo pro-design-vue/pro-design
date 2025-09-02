@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2022-11-07 18:17:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:06:44
+ * @LastEditTime: 2025-09-02 14:42:26
  * @Description:
 -->
 <script lang="ts">
-import type { PropType, CSSProperties } from 'vue'
+import type { PropType } from 'vue'
 import type { SummaryCellConfig } from '../context/SummaryContext'
 import type { AlignType, FinallyColumnType, DefaultRecordType } from '../interface'
 
