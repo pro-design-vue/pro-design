@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-14 14:02:10
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 12:04:37
+ * @LastEditTime: 2025-09-02 15:15:00
  * @Description:
  */
 import type { Ref, ComputedRef } from 'vue'
@@ -12,7 +12,7 @@ import type {
   ProFieldValueEnumType,
   ProValueEnumMap,
 } from '../type'
-import type { DebouncedFunc } from 'lodash-es/debounce'
+import type { DebouncedFunc } from 'lodash-unified'
 
 import { ref, watch, computed, onMounted } from 'vue'
 import { useInjectForm } from '../context/FormContext'

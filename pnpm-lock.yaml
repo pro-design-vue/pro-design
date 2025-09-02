@@ -172,7 +172,7 @@ catalogs:
       specifier: ^4.17.21
       version: 4.17.21
     lodash-unified:
-      specifier: ^1.0.2
+      specifier: ^1.0.3
       version: 1.0.3
     npm-run-all2:
       specifier: ^8.0.4
@@ -287,6 +287,9 @@ importers:
       '@pro-design-vue/utils':
         specifier: workspace:*
         version: link:packages/utils
+      '@types/lodash-es':
+        specifier: 'catalog:'
+        version: 4.17.12
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.8.0(vue@3.5.20(typescript@5.8.3))
@@ -342,9 +345,6 @@ importers:
       '@types/jsdom':
         specifier: 'catalog:'
         version: 21.1.7
-      '@types/lodash-es':
-        specifier: 'catalog:'
-        version: 4.17.12
       '@types/node':
         specifier: 'catalog:'
         version: 24.3.0
@@ -598,6 +598,9 @@ importers:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
         version: 7.0.1(vue@3.5.20(typescript@5.8.3))
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       '@vueuse/core':
         specifier: ^13.3.0
         version: 13.8.0(vue@3.5.20(typescript@5.8.3))
@@ -610,6 +613,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      lodash-unified:
+        specifier: ^1.0.3
+        version: 1.0.3(@types/lodash-es@4.17.12)(lodash-es@4.17.21)(lodash@4.17.21)
       resize-observer-polyfill:
         specifier: ^1.5.1
         version: 1.5.1

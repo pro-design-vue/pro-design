@@ -60,7 +60,7 @@ catalog:
   less: ^4.4.1
   lodash: ^4.17.21
   lodash-es: ^4.17.21
-  lodash-unified: ^1.0.2
+  lodash-unified: ^1.0.3
   npm-run-all2: ^8.0.4
   pkg-types: ^2.3.0
   postcss: ^8.5.6

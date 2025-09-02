@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-10 15:44:38
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 12:02:47
+ * @LastEditTime: 2025-09-02 15:14:56
  * @Description:
  */
 import type { ComputedRef, Ref } from 'vue'
@@ -10,8 +10,7 @@ import type { NamePath, SearchConvertKeyFn, SearchTransformKeyFn } from '../type
 
 import { computed, shallowRef, watch } from 'vue'
 import { useInjectForm } from '../context/FormContext'
-import get from 'lodash-es/get'
-import { cloneDeep, set } from '@pro-design-vue/utils'
+import { cloneDeep, set, get } from '@pro-design-vue/utils'
 
 export function useFieldValue<T>({
   namePath,

@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-11-09 22:29:52
  * @LastEditors: shen
- * @LastEditTime: 2025-07-28 08:58:46
+ * @LastEditTime: 2025-09-02 15:15:42
  * @Description:
 -->
 <script lang="ts">
 import { defineComponent, ref, shallowRef, onMounted, nextTick, computed } from 'vue'
-import { set } from 'lodash-es'
+import { set, isPromise } from '@pro-design-vue/utils'
 import { useInjectSlots } from '../context/TableSlotsContext'
 import { useInjectTable } from '../context/TableContext'
 import { useInjectPopup } from '../context/PopupContext'
@@ -16,7 +16,6 @@ import KeyCode from '../../utils/KeyCode'
 
 import type { PropType } from 'vue'
 import type { CellEditorArgs, FinallyColumnType } from '../interface'
-import { isPromise } from '@pro-design-vue/utils'
 
 export default defineComponent({
   inheritAttrs: false,

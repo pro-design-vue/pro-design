@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 14:42:09
+ * @LastEditTime: 2025-09-02 15:15:21
  * @Description:
 -->
 <script lang="ts">
@@ -22,7 +22,6 @@ import {
   toRef,
 } from 'vue'
 import { Spin, Pagination } from 'ant-design-vue'
-import { debounce } from 'lodash-es'
 import { animateRows as globalAnimateRows } from './config'
 import { baseTableProps } from './interface'
 import { DOWN, LEFT, UP } from './Drag/constant'
@@ -35,7 +34,7 @@ import { useProvideTable } from './context/TableContext'
 import { useProvideRangeStore } from '../hooks/useRangeStore'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { resize } from '@pro-design-vue/directives'
-import { omit } from '@pro-design-vue/utils'
+import { omit, debounce } from '@pro-design-vue/utils'
 import useKVMap from '../hooks/useKVMap'
 import useLicense from '../hooks/useLicense'
 import devWarning from '../utils/devWarning'
