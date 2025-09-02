@@ -34,7 +34,6 @@ const shouldAutoHeight = ref(false)
 
 const { contentOffsetTop } = useProConfigInject()
 const tabActiveKey = defineModel<TabsProps['activeKey']>('activeKey')
-const pageRef = useTemplateRef<HTMLDivElement>('page')
 const headerRef = useTemplateRef<HTMLDivElement>('header')
 const footerRef = useTemplateRef<HTMLDivElement>('footer')
 const tabsRef = useTemplateRef<HTMLDivElement>('tabs')
@@ -111,7 +110,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="page" :class="[prefixCls, tabList?.length ? `is-tabs` : '']">
+  <div :class="[prefixCls, tabList?.length ? `is-tabs` : '']">
     <div
       v-if="
         $slots.header || description || $slots.description || title || $slots.title || $slots.extra
