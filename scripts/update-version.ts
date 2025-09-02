@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-01 20:18:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 20:18:27
+ * @LastEditTime: 2025-09-02 11:11:12
  * @Description:
  */
 import consola from 'consola'
@@ -26,33 +26,25 @@ async function main() {
   consola.log(chalk.cyan(`$TAG_VERSION: ${tagVersion}`))
   consola.log(chalk.cyan(`$GIT_HEAD: ${gitHead}`))
 
-  consola.debug(chalk.yellow(`Updating package.json for element-plus`))
+  consola.debug(chalk.yellow(`Updating package.json for pro-design-vue`))
 
   const pkgs = Object.fromEntries(
     (await getWorkspacePackages()).map((pkg) => [pkg.manifest.name!, pkg]),
   )
-  const elementPlus = pkgs['element-plus'] || pkgs['@element-plus/nightly']
-  const eslintConfig = pkgs['@element-plus/eslint-config']
-  const metadata = pkgs['@element-plus/metadata']
+  const proDesign = pkgs['pro-design-vue']
 
   const writeVersion = async (project: Project) => {
     await project.writeProjectManifest({
       ...project.manifest,
       version: tagVersion,
-      gitHead,
-    } as any)
+    })
   }
 
   try {
-    await writeVersion(elementPlus)
-    await writeVersion(eslintConfig)
-    await writeVersion(metadata)
+    await writeVersion(proDesign)
   } catch (err: any) {
     errorAndExit(err)
   }
-
-  consola.debug(chalk.green(`$GIT_HEAD: ${gitHead}`))
-  consola.success(chalk.green(`Git head updated to ${gitHead}`))
 }
 
 main()
