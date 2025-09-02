@@ -62,6 +62,9 @@
     "type": "git",
     "url": "git+https://github.com/pro-design-vue/pro-design"
   },
+  "bugs": {
+    "url": "https://github.com/pro-design-vue/pro-design/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
