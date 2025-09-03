@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 14:37:53
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 10:40:20
+ * @LastEditTime: 2025-09-02 22:24:42
  * @Description:
  */
 import { fileURLToPath, URL } from 'node:url'
@@ -19,6 +19,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  server: {
+    port: 3000,
+    host: true,
   },
   css: {
     preprocessorOptions: {

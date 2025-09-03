@@ -1,55 +1,58 @@
+
 <h1 align="center">
   <a href="https://www.antdv.com/" target="_blank">Pro Design Vue</a>
 </h1>
 
 <div align="center">
 
-An enterprise-class UI components based on Ant Design Vue and Vue3.
+基于 Ant Design Vue 和 Vue 3 的企业级 UI 组件库。
 
 [![npm package](https://img.shields.io/npm/v/pro-design-vue.svg?style=flat-square)](https://www.npmjs.org/package/pro-design-vue) [![NPM downloads](http://img.shields.io/npm/dm/pro-design-vue.svg?style=flat-square)](http://www.npmtrends.com/pro-design-vue) 
 
 </div>
 
-English | [简体中文](./README-zh_CN.md)
+[English](./README.md) | 简体中文
 
-## Features
+## 特性
 
-- An enterprise-class UI design system for desktop applications.
-- A set of high-quality Vue components out of the box.
+- 提炼自企业级中后台产品的交互语言和视觉风格。
+- 开箱即用的高质量 Vue 组件。
 
-## Environment Support
+## 支持环境
 
-- Modern browsers
-- Support Vue 3
+- 现代浏览器
+- 支持 Vue 3
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
 | --- | --- | --- | --- | --- |
 | Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
-## Using npm or yarn or pnpm
+## 安装
 
-**We recommend using npm or yarn or pnpm to install**, it not only makes development easier, but also allow you to take advantage of the rich ecosystem of Javascript packages and tooling.
+### 使用 npm 或 yarn 或 pnpm 安装
 
 ```bash
-$ npm install pro-design-vue --save
+$ npm install ant-design-vue --save
 ```
 
 ```bash
-$ yarn add pro-design-vue
+$ yarn add ant-design-vue
 ```
 
 ```bash
 $ pnpm add pro-design-vue
 ```
-## Links
 
-- [Home page](https://github.com/pro-design-vue)
-- [Vue](https://vuejs.org/)
+
+## 链接
+
+- [首页](https://github.com/pro-design-vue)
+- [Vue 官方文档](https://cn.vuejs.org/)
 - [Ant Design Vue](https://www.antdv.com/)
 
-## Contributors
+## 贡献者
 
-Thank you to all the people who already contributed to pro-design-vue!
+感谢所有为 pro-design-vue 做出贡献的人!
 
 <a href="https://github.com/pro-design-vue/pro-design/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=pro-design-vue/pro-design&max=100&columns=15" />
