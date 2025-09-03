@@ -23,7 +23,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -53,21 +53,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: docs/.vitepress/dist
-          git-config-name: ElementPlusBot
-          git-config-email: element-plus@outlook.com
+          git-config-name: xh-shen
+          git-config-email: 9509394@qq.com
           commit-message: website deploy
 
       - name: Deploy to vercel
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          token: ${{ secrets.EP_BOT_TOKEN }}
+          token: ${{ secrets.PRO_BOT_TOKEN }}
           branch: main
           folder: docs/.vitepress/dist
-          repository-name: element-plus/vercel-publish
-          git-config-name: ElementPlusBot
-          git-config-email: element-plus@outlook.com
-
-      - name: Sync
-        env:
-          TRIGGERSYNCURL: ${{ secrets.TRIGGERSYNCURL }}
-        run: curl -k "$TRIGGERSYNCURL"
+          folder: docs/.vitepress/dist
+          repository-name: pro-design-vue/staging
+          git-config-name: xh-shen
+          git-config-email: 9509394@qq.com

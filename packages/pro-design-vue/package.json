@@ -58,6 +58,7 @@
   },
   "unpkg": "dist/index.full.js",
   "jsdelivr": "dist/index.full.js",
+  "homepage": "https://pro-design.shene.org.cn/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pro-design-vue/pro-design"

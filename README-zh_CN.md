@@ -44,7 +44,7 @@ $ pnpm add pro-design-vue
 
 ## 链接
 
-- [首页](https://github.com/pro-design-vue)
+- [首页](https://pro-design.shene.org.cn/)
 - [Vue 官方文档](https://cn.vuejs.org/)
 - [Ant Design Vue](https://www.antdv.com/)
 
