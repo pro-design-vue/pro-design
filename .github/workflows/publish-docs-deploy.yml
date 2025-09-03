@@ -63,7 +63,6 @@ jobs:
           token: ${{ secrets.PRO_BOT_TOKEN }}
           branch: main
           folder: docs/.vitepress/dist
-          folder: docs/.vitepress/dist
           repository-name: pro-design-vue/staging
           git-config-name: xh-shen
           git-config-email: 9509394@qq.com
