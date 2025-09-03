@@ -6,7 +6,7 @@
 
 An enterprise-class UI components based on Ant Design Vue and Vue3.
 
-[![npm package](https://img.shields.io/npm/v/pro-design-vue.svg?style=flat-square)](https://www.npmjs.org/package/pro-design-vue) [![NPM downloads](http://img.shields.io/npm/dm/pro-design-vue.svg?style=flat-square)](http://www.npmtrends.com/pro-design-vue) 
+[![npm package](https://img.shields.io/npm/v/pro-design-vue.svg?style=flat-square)](https://www.npmjs.org/package/pro-design-vue) [![NPM downloads](http://img.shields.io/npm/dm/pro-design-vue.svg?style=flat-square)](http://www.npmtrends.com/pro-design-vue)
 
 </div>
 
@@ -23,8 +23,8 @@ English | [简体中文](./README-zh_CN.md)
 - Support Vue 3
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
-| --- | --- | --- | --- | --- |
-| Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Edge                                                                                                                                                                                                       | last 2 versions                                                                                                                                                                                                   | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                           |
 
 ## Using npm or yarn or pnpm
 
@@ -41,6 +41,7 @@ $ yarn add pro-design-vue
 ```bash
 $ pnpm add pro-design-vue
 ```
+
 ## Links
 
 - [Home page](https://github.com/pro-design-vue)
@@ -54,7 +55,6 @@ Thank you to all the people who already contributed to pro-design-vue!
 <a href="https://github.com/pro-design-vue/pro-design/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=pro-design-vue/pro-design&max=100&columns=15" />
 </a>
-
 
 ## License
 
