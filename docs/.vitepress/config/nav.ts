@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-04 09:14:33
+ * @LastEditTime: 2025-09-04 20:56:50
  * @Description:
  */
 import { createRequire } from 'module'
@@ -15,17 +15,18 @@ function getNav(): DefaultTheme.NavItem[] {
   return [
     { text: '首页', link: '/' },
     { text: '指南', link: '/guide/introduction/what-is', activeMatch: '/guide/' },
-    { text: '组件', link: '/markdown-examples', activeMatch: '/component/' },
+    { text: '组件', link: '/component/overview', activeMatch: '/component/' },
     {
       text: pkg.version,
+      activeMatch: '/changelog/',
       items: [
         {
-          text: 'Changelog',
-          link: 'https://github.com/vuejs/vitepress/blob/main/CHANGELOG.md',
+          text: 'Pro Design Vue',
+          link: '/changelog/pro-design-vue',
         },
         {
-          text: 'Contributing',
-          link: 'https://github.com/vuejs/vitepress/blob/main/.github/contributing.md',
+          text: 'Pro Design Admin',
+          link: '/changelog/pro-design-admin',
         },
       ],
     },

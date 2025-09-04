@@ -62,5 +62,4 @@ $ pnpm add pro-design-vue
 
 ## License
 
-Pro Design Vue is open source software licensed as
-[MIT](https://github.com/pro-design-vue/pro-design/blob/master/LICENSE).
+Pro Design Vue是一款采用[MIT](https://github.com/pro-design-vue/pro-design/blob/master/LICENSE)许可协议的开源软件。

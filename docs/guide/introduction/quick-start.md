@@ -4,108 +4,123 @@ outline: deep
 
 # 快速开始 {#quick-start}
 
-## 前置准备
+::: tip 建议
 
-::: info 环境要求
+- 在开始之前，推荐先学习 [Vue](https://www.vuejs.org/) 和 [ES2015](http://babeljs.io/docs/learn-es2015/)，并正确安装和配置了 [Node.js](https://nodejs.org/) v20 或以上。官方指南假设你已了解关于 HTML、CSS 和 JavaScript 的中级知识，并且已经完全掌握了 Vue 的正确开发方式。如果你刚开始学习前端或者 Vue，将 UI 框架作为你的第一步可能不是最好的主意。
 
-在启动项目前，你需要确保你的环境满足以下要求：
-
-- [Node.js](https://nodejs.org/en) 20.15.0 及以上版本，推荐使用 [fnm](https://github.com/Schniz/fnm) 、 [nvm](https://github.com/nvm-sh/nvm) 或者直接使用[pnpm](https://pnpm.io/cli/env) 进行版本管理。
-- [Git](https://git-scm.com/) 任意版本。
-
-验证你的环境是否满足以上要求，你可以通过以下命令查看版本：
-
-```bash
-# 出现相应 node LTS版本即可
-node -v
-# 出现相应 git 版本即可
-git -v
-```
+- 如果您正在从0开始一个中后台项目，建议您直接使用 `Pro Design Admin` 搭建项目，跳转到[最佳实践](/guide/introduction/best-practices)。
 
 :::
 
-## 启动项目
+## 兼容性
 
-### 获取源码
+Pro Design Vue 支持最近两个版本的浏览器。
+
+由于 Vue 3 不再支持 IE11，Pro Design Vue 也不支持 IE 浏览器。
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Edge                                                                                                                                                                                                       | last 2 versions                                                                                                                                                                                                   | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                           |
+## 引入 pro-design-vue
+
+### 新建项目
+
+如果你需要新建一个项目，可以使用 [Vite](https://github.com/vitejs/vite)、[Rsbuild](https://github.com/web-infra-dev/rsbuild) 或 [Vue CLI](https://github.com/vuejs/vue-cli)。
+
+请使用命令行来初始化项目：
+
+- Vite:
+
+```bash
+$ npm create vite@latest
+```
+
+- Rsbuild:
+
+```bash
+$ npm create rsbuild@latest
+```
+
+- Vue CLI:
+
+```bash
+$ npm install -g @vue/cli
+# OR
+$ yarn global add @vue/cli
+
+$ vue create pro-demo
+```
+
+> Vue CLI 已经停止迭代，因此不推荐使用。
+
+### 安装
+
 
 ::: code-group
 
-```sh [GitHub]
-# clone 代码
-git clone https://github.com/vbenjs/vue-vben-admin.git
+```sh [npm]
+$ npm install pro-design-vue --save
 ```
 
-```sh [Gitee]
-# clone 代码
-# Gitee 的代码可能不是最新的
-git clone https://gitee.com/annsion/vue-vben-admin.git
+```sh [yarn]
+$ yarn add pro-design-vue
 ```
 
+```sh [pnpm]
+$ pnpm install pro-design-vue
+```
 :::
 
-::: danger 注意
 
-注意存放代码的目录及所有父级目录不能存在中文、韩文、日文以及空格，否则安装依赖后启动会出错。
+### 注册
 
-:::
+如果使用 Vue 默认的模板语法，需要注册组件后方可使用，有如下三种方式注册组件：
 
-### 安装依赖
+**全局完整注册**
 
-在你的代码目录内打开终端，并执行以下命令:
+```jsx
+import { createApp } from 'vue';
+import ProDesign from 'pro-design-vue';
+import App from './App';
+import 'pro-design-vue/dist/index.css';
 
-```bash
-# 进入项目目录
-cd vue-vben-admin
+const app = createApp(App);
 
-# 使用项目指定的pnpm版本进行依赖安装
-npm i -g corepack
-
-# 安装依赖
-pnpm install
+app.use(ProDesign).mount('#app');
 ```
 
-::: tip 注意
+以上代码便完成了 ProDesign 的全局注册。需要注意的是，样式文件需要单独引入。
 
-- 项目只支持使用 `pnpm` 进行依赖安装，默认会使用 `corepack` 来安装指定版本的 `pnpm`。:
-- 如果你的网络环境无法访问npm源，你可以设置系统的环境变量`COREPACK_NPM_REGISTRY=https://registry.npmmirror.com`，然后再执行`pnpm install`。
-- 如果你不想使用`corepack`，你需要禁用`corepack`，然后使用你自己的`pnpm`进行安装。
+**全局部分注册**
 
-:::
+```jsx
+import { createApp } from 'vue';
+import { ProForm } from 'pro-design-vue';
+import App from './App';
+import 'pro-design-vue/dist/index.css';
 
-### 运行项目
+const app = createApp(App);
 
-#### 选择项目
+/* 会自动注册 ProForm 下的子组件, 例如 ProForm.Drawer */
+app.use(ProForm).mount('#app');
 
-执行以下命令运行项目:
-
-```bash
-# 启动项目
-pnpm dev
 ```
 
-此时，你会看到类似如下的输出，选择你需要运行的项目：
+**局部注册组件**
 
-```bash
-│
-◆  Select the app you need to run [dev]:
-│  ○ @vben/web-antd
-│  ○ @vben/web-ele
-│  ○ @vben/web-naive
-│  ○ @vben/docs
-│  ● @vben/playground
-└
+此种方式需要分别注册组件子组件，如 Button、ButtonGroup，并且注册后仅在当前组件中有效。所以我们推荐使用上述两种方式。
+
+```html
+<template>
+  <pro-button>Add</pro-button>
+</template>
+<script>
+  import { ProButton } from 'pro-design-vue';
+
+  export default {
+    components: {
+      ProButton
+    },
+  };
+</script>
 ```
 
-现在，你可以在浏览器访问 `http://localhost:5555` 查看项目。
-
-#### 运行指定项目
-
-如果你不想选择项目，可以直接运行以下命令运行你需要的应用：
-
-```bash
-pnpm run dev:antd
-pnpm run dev:ele
-pnpm run dev:naive
-pnpm run dev:docs
-pnpm run dev:play
-```

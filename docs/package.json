@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "ant-design-vue": "catalog:",
+    "medium-zoom": "catalog:"
+  },
   "devDependencies": {
     "vitepress": "catalog:"
   }

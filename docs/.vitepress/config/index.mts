@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 14:48:43
  * @LastEditors: shen
- * @LastEditTime: 2025-09-04 10:12:32
+ * @LastEditTime: 2025-09-04 21:29:58
  * @Description:
  */
 import { defineConfig } from 'vitepress'
@@ -12,7 +12,13 @@ import { sidebar } from './sidebar'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Pro Design',
+
+  lastUpdated: true,
+  cleanUrls: true,
+  metaChunk: true,
+  lang: 'zh-CN',
   description: '基于 Vue 3 和 Ant Design Vue，企业级管理系统框架和组件库',
+  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav,
@@ -54,7 +60,7 @@ export default defineConfig({
     },
 
     outline: {
-      label: '页面导航',
+      label: '本页目录',
     },
 
     lastUpdated: {
@@ -75,5 +81,18 @@ export default defineConfig({
     lightModeSwitchTitle: '切换到浅色模式',
     darkModeSwitchTitle: '切换到深色模式',
     skipToContentLabel: '跳转到内容',
+  },
+  locales: {
+    en: { label: 'English', lang: 'en-US', dir: 'ltr' },
+    root: { label: '简体中文', lang: 'zh-CN', dir: 'ltr' },
+  },
+  markdown: {
+    container: {
+      tipLabel: '提示',
+      warningLabel: '警告',
+      dangerLabel: '危险',
+      infoLabel: '信息',
+      detailsLabel: '详细信息',
+    },
   },
 })

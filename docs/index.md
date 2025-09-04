@@ -9,13 +9,19 @@ hero:
   actions:
     - theme: brand
       text: 快速开始 ->
-      link: /guide/introduction/vben
+      link: /guide/introduction/quick-start
+    - theme: alt
+      text: 最佳实践 ->
+      link: /guide/introduction/best-practices
     - theme: alt
       text: 在线预览
       link: https://github.com/pro-design-vue
     - theme: alt
       text: 在 GitHub 查看
       link: https://github.com/pro-design-vue
+    - theme: alt
+      text: 在 Gitee 查看
+      link: https://gitee.com/pro-design-vue
 
 features:
   - icon: 🚀
@@ -47,7 +53,6 @@ features:
     icon:
       src: /logos/micro-app.png
     details: 基于Micro App微前端框架，主子同构框架，一套框架既可以是主应用，也可以是子应用。
-    # link: https://jd-opensource.github.io/micro-app/
     link: /guide/in-depth/access
     linkText: 微前端文档
   - title: Vite
@@ -70,3 +75,21 @@ features:
     link: https://www.typescriptlang.org/
     linkText: 官方站点
 ---
+
+
+<!-- <script setup>
+import { VPTeamMembers } from 'vitepress/theme'
+
+const members = [
+  {
+    avatar: 'https://www.github.com/yyx990803.png',
+    name: 'Shen',
+    title: '创建人',
+    links: [
+      { icon: 'github', link: 'https://github.com/xh-shen' },
+    ]
+  },
+]
+</script>
+
+<VPTeamMembers size="small" :members /> -->
