@@ -1,10 +1,9 @@
 <p align="center">
-  <img width="300px" src="https://raw.githubusercontent.com/pro-design-vue/staging/refs/heads/main/logo.png
-  ">
+  <img width="300px" src="https://pro-design.shene.org.cn/logo.png">
 </p>
 
 <h1 align="center">
-  <a href="https://www.antdv.com/" target="_blank">Pro Design Vue</a>
+  <a href="https://github.com/pro-design-vue/pro-design" target="_blank">Pro Design Vue</a>
 </h1>
 
 <div align="center">
