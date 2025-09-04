@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "Pro Design"
-  text: "🏆 让中后台开发更简单"
+  name: 'Pro Design'
+  text: '🏆 让中后台开发更简单'
   tagline: 基于 Vue 3 和 Ant Design Vue，企业级管理系统框架和组件库
   actions:
     - theme: brand
@@ -62,7 +62,7 @@ features:
     details: 基于 Ant Design Vue 的二次封装，无缝对接 Ant Design Vue 项目。
     link: https://www.antdv.com/
     linkText: 官方站点
- 
+
   - title: TypeScript
     icon:
       src: /logos/ts.svg
