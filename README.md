@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300px" src="https://pro-design.shene.org.cn/logo.png">
+  <img width="200px" src="https://pro-design.shene.org.cn/logo.png">
 </p>
 
 <h1 align="center">
