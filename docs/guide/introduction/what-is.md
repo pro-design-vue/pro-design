@@ -1,3 +1,8 @@
+---
+title: 关于 Pro Design
+outline: deep
+---
+
 # 关于 Pro Design
 
 [Pro Design](https://github.com/pro-design-vue) 是一个基于 [Vue3.0](https://github.com/vuejs/core)、[Vite](https://github.com/vitejs/vite)、 [TypeScript](https://www.typescriptlang.org/)、[Ant Design Vue](https://www.antdv.com/)、[Micro App](https://jd-opensource.github.io/micro-app/) 的企业级管理系统框架和组件库，目标是让中后台开发更简单。包括微前端、二次封装组件、utils、hooks、动态菜单、权限校验、多主题配置、按钮级别权限控制等功能。项目会使用前端较新的技术栈，可以作为项目的启动模板，以帮助你快速搭建企业级中后台产品原型。也可以作为一个示例，用于学习 `vue3`、`vite`、`ts` 等主流技术。该项目会持续跟进最新技术，并将其应用在项目中。

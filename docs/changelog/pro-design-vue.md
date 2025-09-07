@@ -6,7 +6,6 @@ outline: deep
 
 `pro-design-vue` 严格遵循 Semantic Versioning 2.0.0 语义化版本规范。
 
-
 #### 发布周期
 
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）

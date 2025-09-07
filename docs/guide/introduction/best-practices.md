@@ -3,9 +3,10 @@ outline: deep
 ---
 
 # 最佳实践 {#best-practices}
-欢迎使用  `Pro Design Admin`, 快速搭建你的项目!
 
-[在线预览](https://pro-design-admin.shene.org.cn/)｜[代码仓库](https://github.com/pro-design-vue/pro-design-admin.git) 
+欢迎使用 `Pro Design Admin`, 快速搭建你的项目!
+
+[在线预览](https://pro-design-admin.shene.org.cn/)｜[代码仓库](https://github.com/pro-design-vue/pro-design-admin.git)
 
 ![pro design admin](/guide/admin_02.png)
 

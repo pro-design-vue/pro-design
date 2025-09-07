@@ -19,7 +19,8 @@ Pro Design Vue 支持最近两个版本的浏览器。
 由于 Vue 3 不再支持 IE11，Pro Design Vue 也不支持 IE 浏览器。
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Edge                                                                                                                                                                                                       | last 2 versions                                                                                                                                                                                                   | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                           |
+| Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+
 ## 引入 pro-design-vue
 
 ### 新建项目
@@ -54,7 +55,6 @@ $ vue create pro-demo
 
 ### 安装
 
-
 ::: code-group
 
 ```sh [npm]
@@ -68,8 +68,8 @@ $ yarn add pro-design-vue
 ```sh [pnpm]
 $ pnpm install pro-design-vue
 ```
-:::
 
+:::
 
 ### 注册
 
@@ -78,14 +78,14 @@ $ pnpm install pro-design-vue
 **全局完整注册**
 
 ```jsx
-import { createApp } from 'vue';
-import ProDesign from 'pro-design-vue';
-import App from './App';
-import 'pro-design-vue/dist/index.css';
+import { createApp } from 'vue'
+import ProDesign from 'pro-design-vue'
+import App from './App'
+import 'pro-design-vue/dist/index.css'
 
-const app = createApp(App);
+const app = createApp(App)
 
-app.use(ProDesign).mount('#app');
+app.use(ProDesign).mount('#app')
 ```
 
 以上代码便完成了 ProDesign 的全局注册。需要注意的是，样式文件需要单独引入。
@@ -93,16 +93,15 @@ app.use(ProDesign).mount('#app');
 **全局部分注册**
 
 ```jsx
-import { createApp } from 'vue';
-import { ProForm } from 'pro-design-vue';
-import App from './App';
-import 'pro-design-vue/dist/index.css';
+import { createApp } from 'vue'
+import { ProForm } from 'pro-design-vue'
+import App from './App'
+import 'pro-design-vue/dist/index.css'
 
-const app = createApp(App);
+const app = createApp(App)
 
 /* 会自动注册 ProForm 下的子组件, 例如 ProForm.Drawer */
-app.use(ProForm).mount('#app');
-
+app.use(ProForm).mount('#app')
 ```
 
 **局部注册组件**
@@ -114,13 +113,12 @@ app.use(ProForm).mount('#app');
   <pro-button>Add</pro-button>
 </template>
 <script>
-  import { ProButton } from 'pro-design-vue';
+  import { ProButton } from 'pro-design-vue'
 
   export default {
     components: {
-      ProButton
+      ProButton,
     },
-  };
+  }
 </script>
 ```
-

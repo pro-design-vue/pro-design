@@ -12,9 +12,22 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "ant-design-vue": "catalog:",
-    "medium-zoom": "catalog:"
+    "medium-zoom": "catalog:",
+    "nprogress": "catalog:"
   },
   "devDependencies": {
+    "@pro-design-vue/build": "workspace:*",
+    "@pro-design-vue/build-constants": "workspace:*",
+    "@pro-design-vue/build-utils": "workspace:*",
+    "@types/nprogress": "catalog:",
+    "@vitejs/plugin-vue-jsx": "catalog:",
+    "consola": "catalog:",
+    "esbuild": "catalog:",
+    "fast-glob": "catalog:",
+    "markdown-it-container": "^3.0.0",
+    "prismjs": "^1.28.0",
+    "vite-plugin-inspect": "catalog:",
+    "vite-plugin-mkcert": "catalog:",
     "vitepress": "catalog:"
   }
 }

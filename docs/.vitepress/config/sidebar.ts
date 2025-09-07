@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-04 21:20:10
+ * @LastEditTime: 2025-09-07 12:30:23
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -53,8 +53,29 @@ function getComponentSidebar(): DefaultTheme.SidebarItem[] {
     {
       text: '布局',
       items: [
-        { text: 'ProLayout - 高级布局', link: '/layout/layout' },
-        { text: 'ProPage - 页面容器', link: '/layout/page' },
+        { text: 'ProLayout - 高级布局', link: '/layout' },
+        { text: 'ProPage - 页面容器', link: '/page' },
+      ],
+    },
+    {
+      text: '通用',
+      items: [
+        { text: 'ProButton - 按钮', link: '/button' },
+        { text: 'ProClipboard - 复制', link: '/clipboard' },
+        { text: 'ProCounter - 数字动画', link: '/counter' },
+        { text: 'ProCropper - 图片裁剪', link: '/cropper' },
+        { text: 'ProDrawer - 抽屉', link: '/drawer' },
+        { text: 'ProIcon - 图标', link: '/icon' },
+        { text: 'ProLoading - 加载中', link: '/loading' },
+        { text: 'ProModal - 对话框', link: '/modal' },
+        { text: 'ProSpinner - 加载动画', link: '/spinner' },
+      ],
+    },
+    {
+      text: '高级',
+      items: [
+        { text: 'ProTable - 高级表格', link: '/table' },
+        { text: 'ProForm - 高级表单', link: '/form' },
       ],
     },
   ]

@@ -1,5 +1,4 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
@@ -75,7 +74,6 @@ features:
     link: https://www.typescriptlang.org/
     linkText: 官方站点
 ---
-
 
 <!-- <script setup>
 import { VPTeamMembers } from 'vitepress/theme'
