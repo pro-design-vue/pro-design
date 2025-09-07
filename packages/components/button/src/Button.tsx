@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 18:42:58
+ * @LastEditTime: 2025-09-07 23:38:12
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties, type VNode, computed } from 'vue'
@@ -86,12 +86,12 @@ export default defineComponent({
       default: () => [],
     },
     onClick: Function as PropType<(e: MouseEvent) => void>,
-    onMousedown: Function as PropType<(e: MouseEvent) => void>,
+    // onMousedown: Function as PropType<(e: MouseEvent) => void>,
     onConfirm: Function as PropType<(e: MouseEvent) => void>,
     onCancel: Function as PropType<(e: MouseEvent) => void>,
     onMenuClick: Function as PropType<MenuProps['onClick']>,
   },
-  emits: ['confirm', 'click', 'cancel', 'menu-click', 'mousedown'],
+  emits: ['confirm', 'click', 'cancel', 'menu-click'],
   setup(props, { attrs, slots }) {
     const prefixCls = usePrefixCls('button')
     const renderConfirmContent = (key: string) => {
