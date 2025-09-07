@@ -7,7 +7,7 @@
     position: relative;
     display: flex;
     align-items: flex-end;
-    padding: 16px 24px;
+    padding: 16px;
     background-color: hsl(var(--pro-card));
     border-color: hsl(var(--pro-border));
     border-bottom-width: 1px;
@@ -19,7 +19,7 @@
 
   &-title {
     display: flex;
-    margin-bottom: 8px;
+    // margin-bottom: 8px;
     font-size: 18px;
     font-weight: 600;
     line-height: 28px;
@@ -30,12 +30,12 @@
   }
 
   &-tabs {
-    padding: 10px 24px 0;
+    padding: 10px 16px 0;
     background-color: hsl(var(--pro-card));
     border-color: hsl(var(--pro-border));
     border-bottom-width: 1px;
 
-    .pro-ant-tabs-top > .pro-ant-tabs-nav {
+    .@{ant-prefix}-tabs-top > .@{ant-prefix}-tabs-nav {
       margin-bottom: 0;
 
       &::before {

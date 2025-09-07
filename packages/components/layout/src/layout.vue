@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-11 09:22:42
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 15:56:08
+ * @LastEditTime: 2025-09-05 13:45:32
  * @Description:
 -->
 <script setup lang="ts">
@@ -469,7 +469,7 @@ const { setContentOffsetTop } = useProConfigInject()
 watch(
   () => contentOffsetTop.value,
   (newValue) => {
-    setContentOffsetTop(newValue)
+    setContentOffsetTop?.(newValue)
   },
   {
     immediate: true,

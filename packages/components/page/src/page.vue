@@ -80,7 +80,9 @@ const contentStyles = computed<StyleValue>(() => {
   }
 })
 
-const mergeTabsProps = computed(() => omit(tabProps ?? {}, ['activeKey', 'onChange']))
+const mergeTabsProps = computed(() =>
+  omit(tabProps ?? {}, ['activeKey', 'tabPosition', 'onChange']),
+)
 
 async function calcContentHeight() {
   if (!autoContentHeight) {
@@ -137,7 +139,7 @@ onMounted(() => {
       </slot>
     </div>
     <div v-if="tabList?.length" ref="tabs" :class="`${prefixCls}-tabs`">
-      <Tabs v-model:activeKey="tabActiveKey" v-bind="mergeTabsProps">
+      <Tabs v-model:activeKey="tabActiveKey" v-bind="mergeTabsProps" tab-position="top">
         <template v-for="tab in tabList" :key="tab.key">
           <TabPane v-bind="tab" />
         </template>

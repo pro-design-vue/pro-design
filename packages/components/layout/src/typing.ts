@@ -98,9 +98,11 @@ interface ProLayoutProps {
   /**
    * 布局方式
    * sidebar-nav 侧边菜单布局
-   * header-nav 顶部菜单布局
-   * mixed-nav 侧边&顶部菜单布局
    * sidebar-mixed-nav 侧边混合菜单布局
+   * header-nav 顶部菜单布局
+   * header-sidebar-nav 顶部通栏，侧边导航模式
+   * mixed-nav 侧边&顶部菜单布局
+   * header-mixed-nav 混合双列菜单布局
    * full-content 全屏内容布局
    * @default sidebar-nav
    */
