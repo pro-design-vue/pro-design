@@ -2,10 +2,9 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 10:29:43
+ * @LastEditTime: 2025-09-08 09:37:42
  * @Description:
  */
-import { formProps as antFormProps } from 'ant-design-vue/es/form'
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
 import type {
   ProFormPropsType,
@@ -14,7 +13,50 @@ import type {
   SpanConfig,
   ProFormActionType,
 } from './type'
-import type { StepsProps, StepProps } from 'ant-design-vue'
+
+import type { StepsProps, StepProps, FormProps } from 'ant-design-vue'
+
+export const antFormProps = () => ({
+  layout: {
+    type: String as PropType<FormProps['layout']>,
+    default: 'horizontal',
+  },
+  labelCol: {
+    type: Object as PropType<FormProps['labelCol']>,
+  },
+  wrapperCol: {
+    type: Object as PropType<FormProps['wrapperCol']>,
+  },
+  colon: {
+    type: Boolean as PropType<FormProps['colon']>,
+    default: true,
+  },
+  labelAlign: {
+    type: String as PropType<FormProps['labelAlign']>,
+    default: 'right',
+  },
+  labelWrap: Boolean as PropType<FormProps['labelWrap']>,
+  disabled: {
+    type: Boolean as PropType<FormProps['disabled']>,
+    default: false,
+  },
+  prefixCls: String as PropType<FormProps['prefixCls']>,
+  requiredMark: [String, Boolean] as PropType<FormProps['requiredMark']>,
+  validateMessages: Object as PropType<FormProps['validateMessages']>,
+  validateTrigger: {
+    type: [String, Array] as PropType<FormProps['validateTrigger']>,
+    default: 'change',
+  },
+  validateOnRuleChange: {
+    type: Boolean as PropType<FormProps['validateOnRuleChange']>,
+    default: true,
+  },
+  scrollToFirstError: {
+    type: [Boolean, Object] as PropType<FormProps['scrollToFirstError']>,
+    default: false,
+  },
+  name: String,
+})
 
 export const commonFieldProps = () => ({
   value: {
