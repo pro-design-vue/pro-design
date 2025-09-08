@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-08 09:49:10
+ * @LastEditTime: 2025-09-08 13:25:17
  * @Description:
  */
 import path from 'path'
@@ -37,22 +37,21 @@ optimizeDeps.push(
     onlyFiles: true,
   })),
 )
-console.log('🚀 ~ process.env.DOC_ENV:', process.env.DOC_ENV)
 
-const alias: AliasOptions = [
-  ...(process.env.DOC_ENV === 'production'
-    ? []
-    : [
-        {
-          find: /^pro-design-vue(\/(es|lib))?$/,
-          replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
-        },
-        {
-          find: /^pro-design-vue\/(.*)$/,
-          replacement: `${path.resolve(projRoot, 'packages')}/$2`,
-        },
-      ]),
-]
+// const alias: AliasOptions = [
+//   ...(process.env.DOC_ENV === 'production'
+//     ? []
+//     : [
+//         {
+//           find: /^pro-design-vue(\/(es|lib))?$/,
+//           replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
+//         },
+//         {
+//           find: /^pro-design-vue\/(.*)$/,
+//           replacement: `${path.resolve(projRoot, 'packages')}/$2`,
+//         },
+//       ]),
+// ]
 
 export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -66,7 +65,14 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
     },
     resolve: {
       alias: [
-        ...alias,
+        {
+          find: /^pro-design-vue(\/(es|lib))?$/,
+          replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
+        },
+        {
+          find: /^pro-design-vue\/(.*)$/,
+          replacement: `${path.resolve(projRoot, 'packages')}/$2`,
+        },
         {
           find: /^ant-design-vue\/(es|lib)\/(.*)$/,
           replacement: `${path.resolve(docRoot, './node_modules/ant-design-vue')}/$2`,
