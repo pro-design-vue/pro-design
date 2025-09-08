@@ -48,7 +48,7 @@ $ pnpm add pro-design-vue
 
 ## Links
 
-- [Home page](https://github.com/pro-design-vue)
+- [Home page](https://pro-design.shene.org.cn/)
 - [Vue](https://vuejs.org/)
 - [Ant Design Vue](https://www.antdv.com/)
 
