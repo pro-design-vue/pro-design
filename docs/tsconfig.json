@@ -12,8 +12,7 @@
     "skipLibCheck": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "pro-design-vue": ["../packages/pro-design-vue"],
-      "~/*": ["./.vitepress/vitepress/*"]
+      "pro-design-vue": ["../packages/pro-design-vue"]
     },
     "jsx": "preserve"
   },

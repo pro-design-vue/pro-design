@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 22:09:14
+ * @LastEditTime: 2025-09-08 09:49:10
  * @Description:
  */
 import path from 'path'
@@ -16,6 +16,7 @@ import {
   pdPackage,
   getPackageDependencies,
   projRoot,
+  docRoot,
 } from '@pro-design-vue/build-utils'
 import { MarkdownTransform } from '../plugins/markdown-transform'
 
@@ -25,10 +26,10 @@ type ViteConfig = Required<UserConfig>['vite']
 type ResolveOptions = Required<ViteConfig>['resolve']
 type AliasOptions = Required<ResolveOptions>['alias']
 
-const { dependencies: epDeps } = getPackageDependencies(pdPackage)
+const { dependencies: pdDeps } = getPackageDependencies(pdPackage)
 const { dependencies: docsDeps } = getPackageDependencies(docPackage)
-const optimizeDeps = [...new Set([...epDeps, ...docsDeps])].filter(
-  (dep) => !dep.startsWith('@types/') && !['element-plus'].includes(dep),
+const optimizeDeps = [...new Set([...pdDeps, ...docsDeps])].filter(
+  (dep) => !dep.startsWith('@types/') && !['pro-design-vue'].includes(dep),
 )
 optimizeDeps.push(
   ...(await glob(['dayjs/plugin/*.js'], {
@@ -39,10 +40,6 @@ optimizeDeps.push(
 console.log('🚀 ~ process.env.DOC_ENV:', process.env.DOC_ENV)
 
 const alias: AliasOptions = [
-  {
-    find: '~/',
-    replacement: `${path.resolve(__dirname, '../vitepress')}/`,
-  },
   ...(process.env.DOC_ENV === 'production'
     ? []
     : [
@@ -51,7 +48,7 @@ const alias: AliasOptions = [
           replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
         },
         {
-          find: /^pro-design-vue\/(es|lib)\/(.*)$/,
+          find: /^pro-design-vue\/(.*)$/,
           replacement: `${path.resolve(projRoot, 'packages')}/$2`,
         },
       ]),
@@ -68,7 +65,13 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
       },
     },
     resolve: {
-      alias,
+      alias: [
+        ...alias,
+        {
+          find: /^ant-design-vue\/(es|lib)\/(.*)$/,
+          replacement: `${path.resolve(docRoot, './node_modules/ant-design-vue')}/$2`,
+        },
+      ],
     },
     plugins: [
       vueJsx(),
