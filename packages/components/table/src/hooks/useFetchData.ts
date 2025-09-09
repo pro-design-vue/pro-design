@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:40:03
+ * @LastEditTime: 2025-09-09 14:15:32
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -405,14 +405,20 @@ export const useFetchData = (
     },
   )
 
-  watch(formSearch, () => {
-    setPagination({
-      ...pagination.value,
-      current: 1,
-    })
-    abortFetch()
-    fetchListDebounce(false)
-  })
+  watch(
+    formSearch,
+    () => {
+      setPagination({
+        ...pagination.value,
+        current: 1,
+      })
+      abortFetch()
+      fetchListDebounce(false)
+    },
+    {
+      immediate: true,
+    },
+  )
 
   const onTableChange: ProTableProps['onChange'] = (pageInfo, filt, sort, extra) => {
     if (extra.action === 'paginate') {
