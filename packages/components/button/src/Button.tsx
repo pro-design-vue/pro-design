@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-09-09 16:04:39
+ * @LastEditTime: 2025-09-09 17:03:25
  * @Description:
  */
-import { type PropType, defineComponent, type CSSProperties, type VNode, computed } from 'vue'
+import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
 import {
   Button,
   Tooltip,
