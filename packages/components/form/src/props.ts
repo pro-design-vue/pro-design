@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-09-08 09:37:42
+ * @LastEditTime: 2025-09-09 16:58:33
  * @Description:
  */
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
@@ -31,6 +31,10 @@ export const antFormProps = () => ({
     type: Boolean as PropType<FormProps['colon']>,
     default: true,
   },
+  requiredMark: {
+    type: [Boolean, String] as PropType<FormProps['requiredMark']>,
+    default: true,
+  },
   labelAlign: {
     type: String as PropType<FormProps['labelAlign']>,
     default: 'right',
@@ -41,7 +45,6 @@ export const antFormProps = () => ({
     default: false,
   },
   prefixCls: String as PropType<FormProps['prefixCls']>,
-  requiredMark: [String, Boolean] as PropType<FormProps['requiredMark']>,
   validateMessages: Object as PropType<FormProps['validateMessages']>,
   validateTrigger: {
     type: [String, Array] as PropType<FormProps['validateTrigger']>,

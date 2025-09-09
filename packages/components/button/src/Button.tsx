@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 23:38:12
+ * @LastEditTime: 2025-09-09 16:04:39
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties, type VNode, computed } from 'vue'
@@ -71,7 +71,7 @@ export default defineComponent({
       >,
     },
     icon: {
-      type: String,
+      type: [String, Object, Function] as PropType<any>,
       default: '',
     },
     iconStyle: {
@@ -149,14 +149,11 @@ export default defineComponent({
     }
 
     return () => {
-      let icon: VNode | null = null
+      let icon: any = null
       if (slots.icon || props.icon) {
-        icon = (
-          <span class="anticon" style={props.iconStyle}>
-            {slots.icon ? slots.icon() : <ProIcon icon={props.icon} />}
-          </span>
-        )
+        icon = slots.icon ? slots.icon() : <ProIcon icon={props.icon} />
       }
+
       let defaultDom = (
         <Button
           {...attrs}
