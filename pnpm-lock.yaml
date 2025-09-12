@@ -508,8 +508,8 @@ importers:
         specifier: 'catalog:'
         version: 0.2.0
       pro-design-vue:
-        specifier: npm:pro-design-vue@latest
-        version: 0.0.1-beta.3(ant-design-vue@4.2.6(vue@3.5.21(typescript@5.8.3)))(lodash@4.17.21)(vue@3.5.21(typescript@5.8.3))
+        specifier: 1.0.0-rc.0
+        version: 1.0.0-rc.0(ant-design-vue@4.2.6(vue@3.5.21(typescript@5.8.3)))(lodash@4.17.21)(vue@3.5.21(typescript@5.8.3))
     devDependencies:
       '@pro-design-vue/build':
         specifier: workspace:*
@@ -6613,8 +6613,8 @@ packages:
     resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
     engines: {node: '>=6'}
 
-  pro-design-vue@0.0.1-beta.3:
-    resolution: {integrity: sha512-sFPAfm2EDqNl6cd5vJPkDWAtrCwdo5ZdcC9E1oiQqG7QdUHcEXhsS6GfCbxJz6capyhNKXP3Xn6fvuS2Y7k5Qw==}
+  pro-design-vue@1.0.0-rc.0:
+    resolution: {integrity: sha512-U75OuQICbXkAUiiM/Gw0IoqwsAE3W42edXF9mC/jwh00HlhTAQaaAmXeryIOJVZ7euargn1GQ9+sKE4/SC+JvA==}
     peerDependencies:
       ant-design-vue: ^4.2.0
       vue: ^3.5.0
@@ -14806,7 +14806,7 @@ snapshots:
 
   prismjs@1.30.0: {}
 
-  pro-design-vue@0.0.1-beta.3(ant-design-vue@4.2.6(vue@3.5.21(typescript@5.8.3)))(lodash@4.17.21)(vue@3.5.21(typescript@5.8.3)):
+  pro-design-vue@1.0.0-rc.0(ant-design-vue@4.2.6(vue@3.5.21(typescript@5.8.3)))(lodash@4.17.21)(vue@3.5.21(typescript@5.8.3)):
     dependencies:
       '@ant-design/colors': 7.2.1
       '@ant-design/icons-vue': 7.0.1(vue@3.5.21(typescript@5.8.3))

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-08 13:25:17
+ * @LastEditTime: 2025-09-12 09:57:13
  * @Description:
  */
 import path from 'path'
@@ -38,20 +38,25 @@ optimizeDeps.push(
   })),
 )
 
-// const alias: AliasOptions = [
-//   ...(process.env.DOC_ENV === 'production'
-//     ? []
-//     : [
-//         {
-//           find: /^pro-design-vue(\/(es|lib))?$/,
-//           replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
-//         },
-//         {
-//           find: /^pro-design-vue\/(.*)$/,
-//           replacement: `${path.resolve(projRoot, 'packages')}/$2`,
-//         },
-//       ]),
-// ]
+const alias: AliasOptions = [
+  {
+    find: '~/',
+    replacement: `${path.resolve(__dirname, '../vitepress')}/`,
+  },
+  ...(process.env.DOC_ENV === 'production'
+    ? []
+    : [
+        {
+          find: /^pro-design-vue(\/(es|lib))?$/,
+          replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
+        },
+        {
+          find: /^pro-design-vue\/(es|lib)\/(.*)$/,
+          replacement: `${path.resolve(projRoot, 'packages')}/$2`,
+        },
+      ]),
+]
+console.log('🚀 ~ alias:', alias)
 
 export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -64,20 +69,7 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
       },
     },
     resolve: {
-      alias: [
-        {
-          find: /^pro-design-vue(\/(es|lib))?$/,
-          replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
-        },
-        {
-          find: /^pro-design-vue\/(.*)$/,
-          replacement: `${path.resolve(projRoot, 'packages')}/$2`,
-        },
-        {
-          find: /^ant-design-vue\/(es|lib)\/(.*)$/,
-          replacement: `${path.resolve(docRoot, './node_modules/ant-design-vue')}/$2`,
-        },
-      ],
+      alias,
     },
     plugins: [
       vueJsx(),
@@ -87,6 +79,10 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
     ],
     optimizeDeps: {
       include: optimizeDeps,
+    },
+    ssr: {
+      // 解决打包找不到包问题
+      noExternal: ['ant-design-vue', '@ant-design/icons-vue'],
     },
   }
 }

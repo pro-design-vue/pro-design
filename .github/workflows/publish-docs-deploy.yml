@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
 
+      - name: Install latest Pro Design Vue
+        run: cd docs && pnpm i pro-design-vue@latest
+
       - name: Build website
         run: pnpm docs:build
         env:

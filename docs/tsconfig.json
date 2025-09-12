@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -12,7 +13,8 @@
     "skipLibCheck": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "pro-design-vue": ["../packages/pro-design-vue"]
+      "pro-design-vue": ["../packages/pro-design-vue"],
+      "pro-design-vue/*": ["../packages/pro-design-vue/*"]
     },
     "jsx": "preserve"
   },

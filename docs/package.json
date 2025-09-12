@@ -12,8 +12,8 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "ant-design-vue": "catalog:",
-    "pro-design-vue": "npm:pro-design-vue@latest",
-    "nprogress": "catalog:"
+    "nprogress": "catalog:",
+    "pro-design-vue": "1.0.0-rc.0"
   },
   "devDependencies": {
     "@pro-design-vue/build": "workspace:*",

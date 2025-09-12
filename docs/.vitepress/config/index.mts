@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 14:48:43
  * @LastEditors: shen
- * @LastEditTime: 2025-09-06 11:23:22
+ * @LastEditTime: 2025-09-12 09:45:49
  * @Description:
  */
 import { UserConfig } from 'vitepress'
@@ -10,6 +10,8 @@ import { nav } from './nav'
 import { sidebar } from './sidebar'
 import { mdPlugin } from './plugins'
 import { getViteConfig } from './vite'
+import { vueCompiler } from './vue-compiler'
+
 // https://vitepress.dev/reference/site-config
 const setupConfig = (configEnv) => {
   const config: UserConfig<any> = {
@@ -98,6 +100,14 @@ const setupConfig = (configEnv) => {
         dangerLabel: '危险',
         infoLabel: '信息',
         detailsLabel: '详细信息',
+      },
+    },
+    vue: {
+      // compiler: vueCompiler,
+      template: {
+        compilerOptions: {
+          hoistStatic: false,
+        },
       },
     },
   }
