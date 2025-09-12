@@ -2,14 +2,16 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-04 20:56:50
+ * @LastEditTime: 2025-09-12 13:48:44
  * @Description:
  */
 import { createRequire } from 'module'
 import { DefaultTheme } from 'vitepress'
+import { pdPackage } from '@pro-design-vue/build-utils'
 
 const require = createRequire(import.meta.url)
-const pkg = require('pro-design-vue/package.json')
+const pkg =
+  process.env.DOC_ENV === 'production' ? require('pro-design-vue/package.json') : require(pdPackage)
 
 function getNav(): DefaultTheme.NavItem[] {
   return [
