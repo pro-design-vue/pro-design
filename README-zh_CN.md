@@ -35,11 +35,11 @@
 ### 使用 npm 或 yarn 或 pnpm 安装
 
 ```bash
-$ npm install ant-design-vue --save
+$ npm install pro-design-vue --save
 ```
 
 ```bash
-$ yarn add ant-design-vue
+$ yarn add pro-design-vue
 ```
 
 ```bash
