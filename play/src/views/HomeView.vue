@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-17 10:11:59
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 15:02:24
+ * @LastEditTime: 2025-09-09 16:55:19
  * @Description:
 -->
 <script setup lang="ts">
@@ -13,10 +13,12 @@ import {
   ProModal,
   ProTable,
   ProFieldType,
+  ProModalForm,
   type ProTableColumnsType,
   type ProTableRowSelection,
   type ProTableKey,
   type ProTableRequest,
+  type ProFormItemType,
 } from '@pro-design-vue/components'
 import { computed, ref } from 'vue'
 import { Space } from 'ant-design-vue'
@@ -174,12 +176,33 @@ const tabList = ref([
     tab: '未激活',
   },
 ])
+
+const formItems: ProFormItemType[] = [
+  {
+    name: 'name',
+    title: '名称',
+    rules: [{ required: true, message: '请输入名称', trigger: 'change' }],
+  },
+]
 </script>
 
 <template>
   <ProPage title="我是页面标题">
     <template #extra>
       <Space>
+        <ProModalForm
+          grid
+          :width="600"
+          title="创建"
+          :items="formItems"
+          :col-props="{ span: 24 }"
+          :modal-props="{ destroyOnClose: true }"
+          layout="horizontal"
+        >
+          <template #trigger>
+            <ProButton type="primary">创建用户</ProButton>
+          </template>
+        </ProModalForm>
         <ProButton type="primary" @click="openDrawer = true">打开抽屉</ProButton>
         <ProButton type="primary" @click="openModal = true">打开对话框</ProButton>
       </Space>
@@ -233,7 +256,10 @@ const tabList = ref([
           <a class="pro-link">导出数据</a>
         </template>
         <template #toolbarActions>
-          <ProButton type="primary">创建应用{{ activeKey }}</ProButton>
+          <ProButton type="primary" :icon="FullscreenOutlined">
+            <!-- <template #icon><FullscreenOutlined /></template> -->
+            创建应用{{ activeKey }}
+          </ProButton>
           <ProButton>
             <template #icon>
               <EllipsisOutlined />

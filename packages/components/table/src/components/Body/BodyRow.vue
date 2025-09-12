@@ -2,8 +2,8 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2024-06-04 22:33:24
- * @Description: 
+ * @LastEditTime: 2025-09-10 15:16:56
+ * @Description:
 -->
 <script lang="ts">
 import {
@@ -39,7 +39,7 @@ import type { RowClassName, RowType, Key } from '../interface'
 
 let uniIdCount = 0
 export default defineComponent({
-  name: 'STableBodyRow',
+  name: 'ProTableBodyRow',
   components: {
     ExpandIcon,
     BodyCell,
