@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-09-01 09:30:50
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:56:20
+ * @LastEditTime: 2025-09-12 11:19:37
  * @Description:
  */
 import { isNil } from '@pro-design-vue/utils'
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
+import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 
 dayjs.extend(customParseFormat)
 
