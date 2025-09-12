@@ -16,7 +16,6 @@ import {
   pdPackage,
   getPackageDependencies,
   projRoot,
-  docRoot,
 } from '@pro-design-vue/build-utils'
 import { MarkdownTransform } from '../plugins/markdown-transform'
 
