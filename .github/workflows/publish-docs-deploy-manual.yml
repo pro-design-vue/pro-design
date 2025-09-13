@@ -53,9 +53,6 @@ jobs:
           git-config-email: 9509394@qq.com
           commit-message: website deploy
 
-      - name: Get git head
-        run: echo "GIT_HEAD=${GITHUB_SHA}" >> $GITHUB_ENV
-
       - name: Deploy to vercel
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
