@@ -260,3 +260,36 @@ pre[class*='language-'] {
   margin: 0;
   background-color: var(--vp-code-block-bg);
 }
+
+pre[class*='language-']::selection,
+pre[class*='language-'] ::selection,
+code[class*='language-']::selection,
+code[class*='language-'] ::selection {
+  background: var(--vp-code-line-highlight-color);
+}
+
+.token.boolean,
+.token.constant,
+.token.deleted,
+.token.number,
+.token.property,
+.token.symbol,
+.token.tag {
+  color: var(--vp-c-brand-1);
+}
+
+.token.keyword {
+  color: #d73a49;
+}
+
+.token.attr-value {
+  color: #859900;
+}
+
+.dark .token.keyword {
+  color: #f97583;
+}
+
+.dark .token.attr-value {
+  color: #859900;
+}
