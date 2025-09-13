@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:09:58
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 23:24:19
+ * @LastEditTime: 2025-09-13 11:00:09
  * @Description:
  */
 import path from 'path'
@@ -16,6 +16,7 @@ interface ContainerOpts {
   validate?(params: string): boolean
   render?: MarkdownRenderer['renderer']['rules']['container']
 }
+
 function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
   return {
     validate(params) {
@@ -33,10 +34,10 @@ function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
         if (sourceFileToken.type === 'inline') {
           source = fs.readFileSync(path.resolve(docRoot, 'examples', `${sourceFile}.vue`), 'utf-8')
         }
+        // console.log('🚀 ~ render ~ source11:', source)
         if (!source) throw new Error(`Incorrect source file: ${sourceFile}`)
-        return `<Demo source="${encodeURIComponent(
-          md.render(`\`\`\`vue\n${source}\`\`\``),
-        )}" path="${sourceFile}" raw-source="${encodeURIComponent(
+        // console.log('🚀 ~ render ~ source11:', encodeURIComponent(md.render(source)))
+        return `<Demo source="${encodeURIComponent(source)}" path="${sourceFile}" raw-source="${encodeURIComponent(
           source,
         )}" description="${encodeURIComponent(md.render(description))}">
   <template #source><pd-${sourceFile.replaceAll('/', '-')}/></template>`

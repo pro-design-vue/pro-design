@@ -2,13 +2,11 @@
  * @Author: shen
  * @Date: 2025-09-05 09:12:32
  * @LastEditors: shen
- * @LastEditTime: 2025-09-13 11:22:28
+ * @LastEditTime: 2025-09-07 23:27:23
  * @Description:
 -->
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import Prism from 'prismjs'
-import 'prismjs/components/prism-markup' // 引入 Vue 语法高亮
+import { computed } from 'vue'
 
 const props = defineProps({
   visible: {
@@ -23,15 +21,11 @@ const props = defineProps({
 const decoded = computed(() => {
   return decodeURIComponent(props.source)
 })
-
-onMounted(() => {
-  Prism.highlightAll()
-})
 </script>
 
 <template>
   <div v-show="visible" class="example-source-wrapper">
-    <pre><code class="language-markup">{{ decoded }}</code></pre>
+    <div class="example-source" v-html="decoded" />
   </div>
 </template>
 

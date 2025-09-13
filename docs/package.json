@@ -13,6 +13,7 @@
   "dependencies": {
     "ant-design-vue": "catalog:",
     "nprogress": "catalog:",
+    "prismjs": "^1.30.0",
     "pro-design-vue": "1.0.0-rc.0"
   },
   "devDependencies": {
@@ -26,6 +27,7 @@
     "fast-glob": "catalog:",
     "markdown-it-container": "^3.0.0",
     "prismjs": "^1.28.0",
+    "vite-plugin-prismjs": "^0.0.11",
     "vite-plugin-inspect": "catalog:",
     "vite-plugin-mkcert": "catalog:",
     "vitepress": "catalog:"

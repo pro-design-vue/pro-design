@@ -44,6 +44,9 @@
  * -------------------------------------------------------------------------- */
 
 :root {
+  --vp-c-indigo-1: hsl(212deg 100% 45%);
+  --vp-c-indigo-2: hsl(212deg 83% 56%);
+  --vp-c-indigo-3: hsl(212deg 87% 64%);
   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
@@ -250,4 +253,10 @@
   100% {
     transform: rotate(1turn);
   }
+}
+
+pre[class*='language-'] {
+  padding: 20px 0;
+  margin: 0;
+  background-color: var(--vp-code-block-bg);
 }

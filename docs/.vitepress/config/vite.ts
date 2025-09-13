@@ -2,12 +2,13 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-12 13:41:05
+ * @LastEditTime: 2025-09-13 11:09:58
  * @Description:
  */
 import path from 'path'
 import Inspect from 'vite-plugin-inspect'
 import mkcert from 'vite-plugin-mkcert'
+import prismjs from 'vite-plugin-prismjs'
 import glob from 'fast-glob'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { loadEnv } from 'vitepress'
@@ -71,9 +72,12 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
       alias,
     },
     plugins: [
-      vueJsx(),
+      vueJsx() as Plugin,
       MarkdownTransform() as Plugin,
       Inspect(),
+      prismjs({
+        languages: 'all',
+      }),
       env.HTTPS ? (mkcert() as Plugin) : undefined,
     ],
     optimizeDeps: {
