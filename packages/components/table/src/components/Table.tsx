@@ -2,9 +2,10 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:48:57
+ * @LastEditTime: 2025-09-14 20:19:29
  * @Description:
  */
+
 import { defineComponent, ref, computed, watch, unref } from 'vue'
 import { Card } from 'ant-design-vue'
 import { theme } from './config'
@@ -17,6 +18,7 @@ import { useFetchData } from '../hooks/useFetchData'
 import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
+import { flatColumnsHandle } from '../utils/flatColumnsHandle'
 import { omit } from '@pro-design-vue/utils'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
@@ -24,6 +26,7 @@ import ToolBar from './ToolBar/ToolBar.vue'
 import Alert from './Alert.vue'
 import FormRender from './Form/Form'
 
+import type { ProFormItemType } from '@pro-design-vue/components/form'
 import type {
   GetRowKey,
   Key,
@@ -187,6 +190,30 @@ export default defineComponent({
       return loopFilter(tableColumn.value)
     })
 
+    const formItems = computed(() => {
+      if (!props.search) {
+        return []
+      }
+      if (props.search?.items?.length) {
+        return props.search?.items
+      }
+      return flatColumnsHandle(props.columns)
+        .filter((item) => {
+          if (item.hideInSearch) {
+            return false
+          }
+          return true
+        })
+        .map((item) => {
+          return {
+            ...item,
+            width: undefined,
+            tooltip: item.headerTooltip,
+            name: item.dataIndex,
+          } as ProFormItemType
+        })
+    })
+
     /** SelectedRowKeys受控处理selectRows */
     const preserveRecordsRef = ref(new Map<any, any>())
     // ============================ RowKey ============================
@@ -257,7 +284,7 @@ export default defineComponent({
      * 是否需要 card 来包裹
      */
     const notNeedCardDom = computed(() => {
-      if (props.search === false && props.toolBar === false) {
+      if ((props.search === false || !formItems.value?.length) && props.toolBar === false) {
         return true
       }
       return false
@@ -417,10 +444,10 @@ export default defineComponent({
           ]}
           onKeydown={onKeydown}
         >
-          {props.search !== false && (
+          {props.search !== false && !!formItems.value?.length && (
             <FormRender
               prefixCls={mergedPrefixCls.value}
-              columns={props.columns}
+              items={formItems.value}
               cardBordered={props.cardBordered}
               search={props.search}
               loading={formSubmitLoading.value}

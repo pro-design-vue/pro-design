@@ -39,14 +39,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   finished: []
-  /**
-   * @deprecated 请使用{@link finished}事件
-   */
-  onFinished: []
-  /**
-   * @deprecated 请使用{@link started}事件
-   */
-  onStarted: []
   started: []
 }>()
 
@@ -86,11 +78,9 @@ function run() {
     duration: props.duration,
     onFinished: () => {
       emit('finished')
-      emit('onFinished')
     },
     onStarted: () => {
       emit('started')
-      emit('onStarted')
     },
     ...(props.useEasing ? { transition: TransitionPresets[props.transition] } : {}),
   })
@@ -117,7 +107,7 @@ function formatNumber(num: number | string) {
   return prefix + x1 + x2 + suffix
 }
 
-defineExpose({ reset })
+defineExpose({ start, reset })
 </script>
 <template>
   <span :style="{ color }">

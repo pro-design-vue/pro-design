@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:45:47
+ * @LastEditTime: 2025-09-14 18:37:58
  * @Description:
  */
 import type { PropType } from 'vue'
-import type { Bordered, ColumnGroupType, ColumnsType, SearchConfig } from '../interface'
+import type { Bordered, ColumnsType, SearchConfig } from '../interface'
 import type { ProFormItemType, ProQueryFilterProps } from '@pro-design-vue/components/form'
 
 import { computed, defineComponent, ref } from 'vue'
@@ -15,26 +15,11 @@ import { Card } from 'ant-design-vue'
 import { isBordered } from '../../utils/util'
 import { omit, omitUndefined } from '@pro-design-vue/utils'
 
-const flatColumnsHandle = (columns: ColumnsType) => {
-  const flatColumns: ColumnsType = []
-  const loopColumns = (columns: ColumnsType) => {
-    columns.forEach((column: ColumnGroupType) => {
-      if (column?.children?.length) {
-        loopColumns(column?.children)
-      } else {
-        flatColumns.push(column)
-      }
-    })
-  }
-  loopColumns(columns)
-  return flatColumns
-}
-
 export default defineComponent({
   props: {
     prefixCls: String,
-    columns: {
-      type: Array as PropType<ColumnsType>,
+    items: {
+      type: Array as PropType<ProFormItemType[]>,
       default: () => [],
     },
     search: {
@@ -72,26 +57,6 @@ export default defineComponent({
     const activeTabKey = ref(
       props.search?.cardProps !== false ? props.search?.cardProps?.activeTabKey : '',
     )
-    const formItems = computed(() => {
-      if (props.search?.items?.length) {
-        return props.search?.items
-      }
-      return flatColumnsHandle(props.columns)
-        .filter((item) => {
-          if (item.hideInSearch) {
-            return false
-          }
-          return true
-        })
-        .map((item) => {
-          return {
-            ...item,
-            width: undefined,
-            tooltip: item.headerTooltip,
-            name: item.dataIndex,
-          } as ProFormItemType
-        })
-    })
 
     const cardProps = computed(() => {
       if (!props.search?.cardProps) {
@@ -133,7 +98,7 @@ export default defineComponent({
         <ProQueryFilter
           class={`${props.prefixCls}-form`}
           {...omit(props.search || {}, ['cardProps', 'tabName'])}
-          items={formItems.value}
+          items={props.items}
           loading={props.loading}
           style={{ marginBlockEnd: props.search?.cardProps !== false ? 0 : '40px' }}
           onReset={props.onReset}

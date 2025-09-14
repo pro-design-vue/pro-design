@@ -162,6 +162,12 @@ interface ProLayoutProps {
    * @default 48
    */
   sideCollapseWidth?: number
+
+  /**
+   * 侧边栏是否固定
+   * @default false
+   */
+  sidebarFixed?: boolean
   /**
    * tab是否可见
    * @default true

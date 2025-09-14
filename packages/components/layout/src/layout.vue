@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-11 09:22:42
  * @LastEditors: shen
- * @LastEditTime: 2025-09-05 13:45:32
+ * @LastEditTime: 2025-09-14 09:38:43
  * @Description:
 -->
 <script setup lang="ts">
@@ -62,6 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
   sidebarTheme: 'light',
   sidebarWidth: 200,
   sideCollapseWidth: 60,
+  sidebarFixed: true,
   tabbarEnable: true,
   tabbarHeight: 40,
   zIndex: 200,
@@ -515,6 +516,7 @@ useProLayoutProvide({
       :margin-top="sidebarMarginTop"
       :mixed-width="sidebarMixedWidth"
       :show="showSidebar"
+      :fixed="sidebarFixed"
       :theme="sidebarTheme"
       :width="getSidebarWidth"
       :z-index="sidebarZIndex"

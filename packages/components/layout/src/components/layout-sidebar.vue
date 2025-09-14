@@ -86,6 +86,10 @@ interface Props {
    * @default 0
    */
   zIndex?: number
+  /**
+   * 固定
+   */
+  fixed?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -98,6 +102,7 @@ const props = withDefaults(defineProps<Props>(), {
   mixedWidth: 70,
   paddingTop: 0,
   show: true,
+  fixed: true,
   showCollapseButton: true,
   showFixedButton: true,
   zIndex: 0,
@@ -252,13 +257,13 @@ function handleMouseleave() {
 </script>
 
 <template>
-  <div v-if="domVisible" :style="hiddenSideStyle" :class="[prefixCls, theme]"></div>
+  <div v-if="domVisible && fixed" :style="hiddenSideStyle" :class="[prefixCls, theme]"></div>
   <aside
     :class="[
       prefixCls,
-      `${prefixCls}--fixed`,
       theme,
       {
+        [`${prefixCls}--fixed`]: fixed,
         [`${prefixCls}--mixed`]: isSidebarMixed,
         [`${prefixCls}--no-mixed`]: !isSidebarMixed,
       },
