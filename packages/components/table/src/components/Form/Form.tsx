@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-09-14 18:37:58
+ * @LastEditTime: 2025-09-14 22:12:43
  * @Description:
  */
 import type { PropType } from 'vue'
-import type { Bordered, ColumnsType, SearchConfig } from '../interface'
+import type { Bordered, SearchConfig } from '../interface'
 import type { ProFormItemType, ProQueryFilterProps } from '@pro-design-vue/components/form'
 
 import { computed, defineComponent, ref } from 'vue'
