@@ -26,7 +26,7 @@ clipboard/basic
 | text       | 复制的文本内容 、 | `string` | -                  |
 | copy-tip   | 复制提示          | `string` | `'点击复制'`       |
 | copied-tip | 复制完成提示      | `string` | `'已复制到剪切板'` |
-|  |
+|            |
 
 ### Slots
 
