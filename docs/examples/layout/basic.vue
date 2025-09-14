@@ -1,17 +1,21 @@
-<!--
- * @Author: shen
- * @Date: 2025-09-05 11:11:25
- * @LastEditors: shen
- * @LastEditTime: 2025-09-05 13:44:05
- * @Description:
--->
-<script setup lang="ts">
-import { ref } from 'vue'
-import { ProLayout } from 'pro-design-vue'
-</script>
-
 <template>
-  <ProLayout>aaa</ProLayout>
+  <ProLayout
+    header-mode="static"
+    :sidebar-fixed="false"
+    :sidebar-fixed-button="false"
+    footer-enable
+    :footer-fixed="false"
+    style="height: 500px"
+  >
+    <template #logo> Logo区域 </template>
+    <template #header> Header区域 </template>
+    <template #menu>Menu区域</template>
+    <template #tabbar>Tabbar区域</template>
+    <template #content>Content区域</template>
+    <template #footer>Footer区域</template>
+  </ProLayout>
 </template>
 
-<style scoped lang="less"></style>
+<script setup lang="ts">
+import { ProLayout } from 'pro-design-vue'
+</script>

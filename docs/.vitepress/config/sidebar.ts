@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 12:30:23
+ * @LastEditTime: 2025-09-14 17:20:35
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -63,12 +63,12 @@ function getComponentSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'ProButton - 按钮', link: '/button' },
         { text: 'ProClipboard - 复制', link: '/clipboard' },
         { text: 'ProCounter - 数字动画', link: '/counter' },
-        { text: 'ProCropper - 图片裁剪', link: '/cropper' },
+        // { text: 'ProCropper - 图片裁剪', link: '/cropper' },
         { text: 'ProDrawer - 抽屉', link: '/drawer' },
-        { text: 'ProIcon - 图标', link: '/icon' },
-        { text: 'ProLoading - 加载中', link: '/loading' },
+        // { text: 'ProIcon - 图标', link: '/icon' },
         { text: 'ProModal - 对话框', link: '/modal' },
-        { text: 'ProSpinner - 加载动画', link: '/spinner' },
+        { text: 'ProLoading - 加载中', link: '/loading' },
+        // { text: 'ProSpinner - 加载动画', link: '/spinner' },
       ],
     },
     {

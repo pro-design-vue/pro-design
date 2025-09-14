@@ -7,9 +7,15 @@ outline: deep
 
 ProLayout 可以提供一个标准又不失灵活的中后台标准布局，同时提供一键切换布局形态、自动生成菜单、面包屑、Tabbar等功能。与 ProPage 配合使用可以页面标题、描述、功能操作等功能，并且提供低成本方案接入页脚工具栏。
 
-## 何时使用
+## 使用演示
 
-页面中需要承载内容时，可以使用 ProLayout 来减少布局成本。使用方式参考[Pro Design Admin](https://github.com/pro-design-vue/pro-design-admin.git)。
+页面中需要承载内容时，可以使用 ProLayout 来减少布局成本。使用方式参考[Pro Design Admin](https://github.com/pro-design-vue/pro-design-admin.git)，[源代码](https://github.com/pro-design-vue/pro-design-admin/tree/dev/src/layouts/basic/basic.vue)。
+
+:::demo
+
+layout/basic
+
+:::
 
 ## API
 

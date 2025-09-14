@@ -157,6 +157,15 @@
   white-space: pre-wrap;
 }
 
+.vp-doc .example li + li {
+  margin-top: 0;
+}
+
+.vp-doc .example ul,
+.vp-doc .example ol {
+  margin: 0;
+}
+
 .VPDoc.has-aside .content-container {
   max-width: 1200px !important;
 }

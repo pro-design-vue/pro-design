@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 14:48:43
  * @LastEditors: shen
- * @LastEditTime: 2025-09-12 09:45:49
+ * @LastEditTime: 2025-09-14 12:41:34
  * @Description:
  */
 import { UserConfig } from 'vitepress'
@@ -87,10 +87,10 @@ const setupConfig = (configEnv) => {
       darkModeSwitchTitle: '切换到深色模式',
       skipToContentLabel: '跳转到内容',
     },
-    locales: {
-      en: { label: 'English', lang: 'en-US', dir: 'ltr' },
-      root: { label: '简体中文', lang: 'zh-CN', dir: 'ltr' },
-    },
+    // locales: {
+    //   en: { label: 'English', lang: 'en-US', dir: 'ltr' },
+    //   root: { label: '简体中文', lang: 'zh-CN', dir: 'ltr' },
+    // },
     vite: getViteConfig(configEnv),
     markdown: {
       config: (md) => mdPlugin(md),
