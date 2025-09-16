@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:43:29
+ * @LastEditTime: 2025-09-16 10:31:02
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -10,7 +10,7 @@ import type { PropType, ExtractPropTypes, FunctionalComponent, VNode } from 'vue
 import type { FinallyColumnType, Key, RowType } from '../interface'
 
 import { withDirectives, createVNode, mergeProps, cloneVNode } from 'vue'
-import { Badge } from 'ant-design-vue'
+import { Badge, Tag } from 'ant-design-vue'
 import { useInjectSlots } from '../context/TableSlotsContext'
 import { useInjectTable } from '../context/TableContext'
 import { useInjectBody } from '../context/BodyContext'
@@ -239,6 +239,15 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
             status: option.status,
             text: option.text,
           })
+        } else if (option.color) {
+          cellValue = createVNode(
+            Tag,
+            {
+              color: option.color,
+              bordered: false,
+            },
+            option.text,
+          )
         } else {
           cellValue = option.text || emptyText
         }
