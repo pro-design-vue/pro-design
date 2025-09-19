@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 10:44:51
+ * @LastEditTime: 2025-09-19 15:05:47
  * @Description:
 -->
 <script lang="ts">
@@ -553,13 +553,14 @@ export default defineComponent({
     </div>
   </RenderSlot>
   <div
-    v-resize:height
+    v-resize
     key="body"
     ref="bodyRef"
     :class="bodyClass"
     :style="bodyStyle"
     @dragstart="handleDragStart"
     @keydown="handleKeydown"
+    @resize="handleBodyResize"
   >
     <div
       :style="{

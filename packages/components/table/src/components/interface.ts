@@ -1053,6 +1053,7 @@ export type ColumnStateType = {
 export type SearchConfig = ProQueryFilterProps & {
   cardProps?: CardProps | false
   tabName?: string
+  style?: CSSProperties
 }
 
 export type BorderedType = 'search' | 'table'

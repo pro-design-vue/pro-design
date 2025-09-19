@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-14 20:19:29
+ * @LastEditTime: 2025-09-19 15:10:05
  * @Description:
  */
 
@@ -450,6 +450,7 @@ export default defineComponent({
               items={formItems.value}
               cardBordered={props.cardBordered}
               search={props.search}
+              tableShowCard={props.cardProps !== false}
               loading={formSubmitLoading.value}
               beforeSearchSubmit={props.beforeSearchSubmit}
               manual={props.manual}

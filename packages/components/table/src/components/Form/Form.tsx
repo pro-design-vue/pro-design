@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-09-14 22:12:43
+ * @LastEditTime: 2025-09-19 15:13:44
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -32,6 +32,7 @@ export default defineComponent({
     },
     loading: Boolean,
     manual: Boolean,
+    tableShowCard: Boolean,
     beforeSearchSubmit: {
       type: Function as PropType<(params: Partial<any>) => any>,
       default: (searchParams: Partial<any>) => searchParams,
@@ -100,7 +101,10 @@ export default defineComponent({
           {...omit(props.search || {}, ['cardProps', 'tabName'])}
           items={props.items}
           loading={props.loading}
-          style={{ marginBlockEnd: props.search?.cardProps !== false ? 0 : '40px' }}
+          style={{
+            marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '30px',
+            ...props.search?.style,
+          }}
           onReset={props.onReset}
           onFinish={(values) => {
             submit(values, false)
@@ -116,7 +120,7 @@ export default defineComponent({
           }}
         />
       )
-      if (props.search?.cardProps !== false) {
+      if (props.search?.cardProps !== false && props.tableShowCard) {
         return (
           <Card
             class={`${props.prefixCls}-search`}
