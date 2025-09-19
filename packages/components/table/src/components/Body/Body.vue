@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 15:05:47
+ * @LastEditTime: 2025-09-19 15:51:03
  * @Description:
 -->
 <script lang="ts">
@@ -665,7 +665,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div v-resize :style="measureDomStyle" @resize="handleBodyResize"></div>
+      <!-- <div v-resize :style="measureDomStyle" @resize="handleBodyResize"></div> -->
       <div
         v-resize:width
         :class="`${prefixCls}-body-scroll-measure`"
