@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 15:51:03
+ * @LastEditTime: 2025-09-19 16:14:25
  * @Description:
 -->
 <script lang="ts">
@@ -16,6 +16,7 @@ import { useVScrollSyncInject } from '../../hooks/useVScrollSync'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { RenderVNode, RenderSlot } from '../../utils/renderVNode'
 import { resize } from '@pro-design-vue/directives'
+import { useResizeObserver } from '@vueuse/core'
 import useTooltip from '../../hooks/useTooltip'
 import onClickOutside from '../../utils/onClickOutside'
 import BodyRows from './BodyRows.vue'
@@ -69,6 +70,7 @@ export default defineComponent({
 
     const dragRowPlaceholderRef = ref<HTMLDivElement>()
     const bodyRef = ref<HTMLDivElement>()
+    const measureDomRef = ref<HTMLDivElement>()
     const bodyInnerRef = ref<HTMLDivElement>()
     const scrollLayerRef = ref<HTMLDivElement>()
     const viewportRef = ref<HTMLDivElement>()
@@ -421,6 +423,13 @@ export default defineComponent({
       return summaryStyle.value as CSSProperties
     })
     const emptyStyle = computed<CSSProperties>(() => ({ width: `${props.bodyWidth}px` }))
+
+    useResizeObserver(measureDomRef as never, (entries) => {
+      console.log('🚀 ~ useResizeObserver ~ entries:', entries[0]?.contentRect)
+      const contentRect = entries[0]?.contentRect
+      emit('update:bodyWidth', contentRect?.width)
+      emit('update:bodyHeight', contentRect?.height)
+    })
     return {
       bodyContainerStyle,
       measureDomStyle: computed<any>(() => ({
@@ -471,6 +480,7 @@ export default defineComponent({
         emit('update:bodyScrollWidth', e.detail.width)
       },
       bodyRef,
+      measureDomRef,
       bodyInnerRef,
       viewportRef,
       summaryViewportRef,
@@ -553,14 +563,12 @@ export default defineComponent({
     </div>
   </RenderSlot>
   <div
-    v-resize
     key="body"
     ref="bodyRef"
     :class="bodyClass"
     :style="bodyStyle"
     @dragstart="handleDragStart"
     @keydown="handleKeydown"
-    @resize="handleBodyResize"
   >
     <div
       :style="{
@@ -665,7 +673,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <!-- <div v-resize :style="measureDomStyle" @resize="handleBodyResize"></div> -->
+      <div ref="measureDomRef" :style="measureDomStyle"></div>
       <div
         v-resize:width
         :class="`${prefixCls}-body-scroll-measure`"
