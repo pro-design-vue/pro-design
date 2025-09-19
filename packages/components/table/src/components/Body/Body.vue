@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 16:14:25
+ * @LastEditTime: 2025-09-19 16:30:31
  * @Description:
 -->
 <script lang="ts">
@@ -425,10 +425,9 @@ export default defineComponent({
     const emptyStyle = computed<CSSProperties>(() => ({ width: `${props.bodyWidth}px` }))
 
     useResizeObserver(measureDomRef as never, (entries) => {
-      console.log('🚀 ~ useResizeObserver ~ entries:', entries[0]?.contentRect)
       const contentRect = entries[0]?.contentRect
-      emit('update:bodyWidth', contentRect?.width)
-      emit('update:bodyHeight', contentRect?.height)
+      emit('update:bodyWidth', contentRect?.width || 0)
+      emit('update:bodyHeight', contentRect?.height || 0)
     })
     return {
       bodyContainerStyle,
