@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 15:15:21
+ * @LastEditTime: 2025-09-19 10:44:08
  * @Description:
 -->
 <script lang="ts">
@@ -542,6 +542,9 @@ export default defineComponent({
     const showHorizontalScrollbar = ref(false)
     const debounceFn = debounce(() => {
       showHorizontalScrollbar.value = bodyMaxWidth.value > bodyWidth.value
+      if (bodyWidth.value > bodyScrollWidth.value) {
+        bodyScrollWidth.value = bodyWidth.value
+      }
     }, 100)
 
     watch([bodyMaxWidth, bodyWidth], () => {
