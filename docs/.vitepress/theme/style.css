@@ -166,6 +166,11 @@
   margin: 0;
 }
 
+.vp-doc .example a {
+  font-weight: 400;
+  text-decoration: none;
+}
+
 .VPDoc.has-aside .content-container {
   max-width: 1200px !important;
 }

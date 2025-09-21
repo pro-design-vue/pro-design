@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-14 17:20:35
+ * @LastEditTime: 2025-09-21 20:14:36
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -76,6 +76,8 @@ function getComponentSidebar(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'ProTable - 高级表格', link: '/table' },
         { text: 'ProForm - 高级表单', link: '/form' },
+        { text: 'ProModalForm - 浮层表单', link: '/modal-form' },
+        { text: 'ProQueryFilter - 筛选表单', link: '/query-filter' },
       ],
     },
   ]
