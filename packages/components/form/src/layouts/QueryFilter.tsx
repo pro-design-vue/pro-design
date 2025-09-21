@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 17:20:35
+ * @LastEditTime: 2025-09-21 23:26:49
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -279,7 +279,8 @@ export default defineComponent({
             const hidden: boolean | undefined =
               item.hidden ||
               // 如果收起了
-              (collapsed.value &&
+              (props.submitter !== false &&
+                collapsed.value &&
                 (firstRowFull ||
                   // 如果 超过显示长度 且 总长度超过了 24
                   totalSize.value > showLength.value) &&
@@ -343,7 +344,7 @@ export default defineComponent({
             justify: 'start',
             class: `${prefixCls}-row`,
           }}
-          submitOnLoading={false}
+          showLoading={false}
           submitter={submitterConfig.value}
           items={processedList.value}
           layout={spanSize.value.layout}

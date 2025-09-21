@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:27:50
+ * @LastEditTime: 2025-09-21 18:08:35
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -16,7 +16,7 @@ import { useProvideForm } from '../context/FormContext'
 import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { useInitialValues } from '../hooks/useInitialValues'
 import { useLinkage } from '../hooks/useLinkage'
-import { useAction } from '../hooks/useAction'
+import { transformKeySubmitValue, useAction } from '../hooks/useAction'
 import covertFormName from '../utils/namePath'
 import FormSlotsContextProvider from '../context/FormSlotsContext'
 import FormRowWrapper from '../components/FormRowWrapper'
@@ -155,25 +155,23 @@ export default defineComponent({
       },
     )
     const onValuesChange = debounce(() => {
-      props.onValuesChange?.(cloneDeep(formData.value))
+      props.onValuesChange?.(transformKeySubmitValue(cloneDeep(formData.value), props.omitNil))
     }, 200)
 
     const onFinish = async () => {
       if (!props.onFinish) return
-      if (props.showLoading) {
+      if (props.submitOnLoading) {
         if (loading.value) return
-        // loading.value = true
         setloading(true)
       }
 
       try {
-        const finalValues = cloneDeep(formData.value)
+        const finalValues = transformKeySubmitValue(cloneDeep(formData.value), props.omitNil)
         await props.onFinish(finalValues)
       } catch (error) {
         console.log('🚀 ~ onFinish ~ error:', error)
       } finally {
-        if (props.showLoading) {
-          // loading.value = false
+        if (props.submitOnLoading) {
           setloading(false)
         }
       }
@@ -252,8 +250,10 @@ export default defineComponent({
     onMounted(() => {
       mountedRef.value = true
       requestFormCacheId += 1
-      const finalValues = formRef.value?.getFieldsValue?.(true)
-      props.onInit?.(finalValues, action)
+      const finalValues = formRef.value?.getFieldsValue?.(true) ?? {}
+      Promise.resolve().then(() => {
+        props.onInit?.(transformKeySubmitValue(finalValues, props.omitNil), action)
+      })
     })
 
     useProvideForm({
@@ -288,7 +288,7 @@ export default defineComponent({
           model={formData.value}
           style={attrs.style}
         >
-          <Spin spinning={requestLoading.value || (props.submitOnLoading && loading.value)}>
+          <Spin spinning={props.showLoading && (requestLoading.value || loading.value)}>
             <FormRowWrapper>
               <FormItems list={formItems.value} />
               {props.gridSubmitter && props.submitter !== false && (

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-07-24 11:18:32
+ * @LastEditTime: 2025-09-21 17:56:32
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -233,13 +233,13 @@ export type ProFormActionType<T = Entity> = {
   /** @name 获取对应字段名的值 */
   getFieldValue: (name: NamePath) => any
   /** @name 获取一组字段名对应的值，会按照对应结构返回。默认返回现存字段值，当调用getFieldsValue(true)时返回所有值 */
-  getFieldsValue: (nameList?: true | NamePath[]) => Partial<T>
+  getFieldsValue: (nameList?: true | NamePath[]) => Partial<T> | undefined
   /** @name 获取被SForm格式化后的单个数据 */
-  getFieldFormatValue: (name: NamePath) => T
+  getFieldFormatValue: (name: NamePath) => T | undefined
   /** @name 获取被SForm格式化后的单个数据,包含他的name */
-  getFieldFormatValueObject: (name: NamePath) => T
+  getFieldFormatValueObject: (name: NamePath) => T | undefined
   /** @name 验字段后返回格式化之后的所有数据 */
-  validateFieldsReturnFormatValue: (nameList?: NamePath[]) => Promise<any>
+  validateFieldsReturnFormatValue: (nameList?: NamePath[]) => Promise<any> | undefined
   /** @name 设置表单的值,如果你不希望传入对象被修改，请克隆后传入 */
   setFieldValue: (name: NamePath, value: any) => void
   /** @name 设置表单的值 */
@@ -251,7 +251,7 @@ export type ProFormActionType<T = Entity> = {
   /** @name 移除表单项的校验结果。传入待移除的表单项的name属性或者name组成的数组，如不传则移除整个表单的校验结果 */
   clearValidate: (name?: NamePath) => void
   /** @name 触发表单验证 */
-  validateFields: (nameList?: NamePath[]) => Promise<T>
+  validateFields: (nameList?: NamePath[]) => Promise<T> | undefined
   /** @name 重置所有字段到initialValues */
   reset: () => void
   /** @name 提交表单，与点击submit按钮效果相同 */

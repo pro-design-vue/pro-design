@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:28:43
+ * @LastEditTime: 2025-09-21 18:41:20
  * @Description:
  */
-import { ref, computed, watch, defineComponent } from 'vue'
+import { ref, computed, watch, defineComponent, onMounted, unref } from 'vue'
 import { ProModal, type ProModalProps } from '@pro-design-vue/components/modal'
 import { Modal } from 'ant-design-vue'
 import { drawerOrModalFormProps } from '../props'
@@ -22,7 +22,7 @@ import {
 import BaseForm from '../base/BaseForm'
 
 import type { PropType } from 'vue'
-import type { ProFormActionType } from '../type'
+import type { NamePath, ProFormActionType } from '../type'
 
 export default defineComponent({
   name: 'ProModalForm',
@@ -35,14 +35,13 @@ export default defineComponent({
     },
   },
   emits: ['update:open'],
-  setup(props, { slots, emit, expose }) {
+  setup(props, { slots, emit }) {
     const _open = ref(false)
     const loading = ref(false)
     const valuesChanged = ref(false)
     const intl = useIntl()
-    const formRef = ref<InstanceType<typeof BaseForm> & ProFormActionType>()
+    const formRef = ref<ProFormActionType>()
     const footerRef = ref<HTMLDivElement | null>(null)
-    const formExpose = useFormExpose(formRef)
     const open = computed({
       get: () => {
         return props.open ?? _open.value
@@ -64,6 +63,7 @@ export default defineComponent({
       return {
         ...omitUndefined(
           omit(props, [
+            'onInit',
             'onOpenChange',
             'closeOnFinish',
             'modalProps',
@@ -190,11 +190,6 @@ export default defineComponent({
       return result
     }
 
-    expose({
-      formRef,
-      ...formExpose,
-    })
-
     return () => (
       <>
         <ProModal
@@ -220,7 +215,6 @@ export default defineComponent({
           }}
         >
           <BaseForm
-            ref={formRef}
             {...formProps.value}
             submitter={submitterConfig.value}
             v-slots={formSlots.value}
@@ -239,6 +233,10 @@ export default defineComponent({
                 valuesChanged.value = false
               }
               props.onReset?.()
+            }}
+            onInit={(values, action) => {
+              formRef.value = action
+              props.onInit?.(values, action)
             }}
           />
         </ProModal>
