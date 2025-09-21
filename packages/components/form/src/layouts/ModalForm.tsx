@@ -2,14 +2,13 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 18:41:20
+ * @LastEditTime: 2025-09-21 23:53:22
  * @Description:
  */
-import { ref, computed, watch, defineComponent, onMounted, unref } from 'vue'
+import { ref, computed, watch, defineComponent } from 'vue'
 import { ProModal, type ProModalProps } from '@pro-design-vue/components/modal'
 import { Modal } from 'ant-design-vue'
 import { drawerOrModalFormProps } from '../props'
-import { useFormExpose } from '../hooks/useFormExpose'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import {
   cloneElement,
@@ -22,7 +21,7 @@ import {
 import BaseForm from '../base/BaseForm'
 
 import type { PropType } from 'vue'
-import type { NamePath, ProFormActionType } from '../type'
+import type { ProFormActionType } from '../type'
 
 export default defineComponent({
   name: 'ProModalForm',

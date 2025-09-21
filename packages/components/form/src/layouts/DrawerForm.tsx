@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 18:43:22
+ * @LastEditTime: 2025-09-21 23:53:09
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -13,7 +13,6 @@ import { ref, computed, watch, defineComponent } from 'vue'
 import { Modal } from 'ant-design-vue'
 import { ProDrawer } from '@pro-design-vue/components/drawer'
 import { drawerOrModalFormProps } from '../props'
-import { useFormExpose } from '../hooks/useFormExpose'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import {
   cloneElement,
