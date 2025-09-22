@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2023-08-10 11:16:43
+ * @LastEditTime: 2025-09-22 13:41:48
  * @Description:
  */
 import { defineComponent, computed } from 'vue'
@@ -20,13 +20,17 @@ export default defineComponent({
       type: Object as PropType<ColProps>,
       default: undefined,
     },
+    grid: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   setup(props, { slots }) {
     const { colProps, grid } = useInjectForm()
     const mergeColProps = computed(() => props.colProps ?? colProps?.value)
-
+    const mergeGrid = computed(() => props.grid ?? grid?.value)
     return () => {
-      if (grid?.value) {
+      if (mergeGrid.value) {
         return <Col {...mergeColProps.value}>{slots.default?.()}</Col>
       }
       return slots.default?.()

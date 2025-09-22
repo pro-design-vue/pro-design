@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 13:32:49
+ * @LastEditTime: 2025-09-22 13:42:38
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -61,6 +61,10 @@ export default defineComponent({
       type: Object as PropType<ProFormItemType>,
       default: () => ({}),
     },
+    grid: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   setup(props) {
     const {
@@ -87,6 +91,7 @@ export default defineComponent({
       transform: props.item.transform,
     })
     const fieldRef = ref()
+    const mergeGrid = computed(() => props.grid ?? grid?.value)
     const fieldType = computed(() => props.item.fieldType ?? 'text')
     const mergeReadonly = computed(() =>
       runFunction(props.item.readonly ?? readonly?.value, formData.value, rowData?.value),
@@ -179,7 +184,7 @@ export default defineComponent({
 
       if (props.item.width && !fieldWidthSizeMap[props.item.width]) {
         newStyle.width = isNumber(props.item.width) ? props.item.width + 'px' : props.item.width
-      } else if (grid?.value) {
+      } else if (mergeGrid?.value) {
         newStyle.maxWidth = '100%'
         newStyle.width = '100%'
       }
@@ -276,7 +281,7 @@ export default defineComponent({
       const render = getSlot(props.item.render, formSlotsContext)
       if (render) {
         return (
-          <FormColWrapper colProps={props.item.colProps}>
+          <FormColWrapper colProps={props.item.colProps} grid={mergeGrid.value}>
             <RenderVNode
               vnode={render}
               props={{
@@ -332,7 +337,7 @@ export default defineComponent({
         )
       }
       return (
-        <FormColWrapper colProps={props.item.colProps}>
+        <FormColWrapper colProps={props.item.colProps} grid={mergeGrid.value}>
           <Form.Item {...restItemProps.value} v-slots={slotsGetter.value}>
             {defaultDom}
           </Form.Item>

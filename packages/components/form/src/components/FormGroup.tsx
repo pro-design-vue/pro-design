@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:47:47
+ * @LastEditTime: 2025-09-22 13:41:42
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -79,7 +79,6 @@ export default defineComponent({
     return () => {
       const renderFormItem = getSlot(props.item.renderFormItem, formSlotsContext)
       if (!items.value.length && !renderFormItem) return null
-
       let defaultDom = (
         <FormItems
           spaceProps={props.spaceProps}

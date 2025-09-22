@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 22:28:53
+ * @LastEditTime: 2025-09-22 10:00:54
  * @Description:
  */
 import type { Ref, VNode } from 'vue'
@@ -70,7 +70,7 @@ export default defineComponent({
     ...stepsFormProps(),
   },
   emits: [],
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
     const intl = useIntl()
     const prefixCls = usePrefixCls('steps-form')
     const formArrayRef = ref<Array<Ref<FormInstance | undefined>>>([])
@@ -268,6 +268,10 @@ export default defineComponent({
       next: nextPage,
       regForm,
       onFormFinish,
+    })
+
+    expose({
+      formArrayRef,
     })
     return () => <div class={prefixCls}>{stepsFormDom.value}</div>
   },

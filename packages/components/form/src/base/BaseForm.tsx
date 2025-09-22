@@ -2,13 +2,19 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 18:08:35
+ * @LastEditTime: 2025-09-22 16:12:08
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
-import type { Entity, ProFormItemType, ProFormPropsType, SubmitterProps } from '../type'
+import type {
+  Entity,
+  ProFormItemType,
+  ProFormPropsType,
+  SubmitterProps,
+  TransformerMapType,
+} from '../type'
 
-import { ref, computed, watch, onMounted, defineComponent, Teleport } from 'vue'
+import { ref, computed, watch, onMounted, defineComponent, Teleport, shallowRef } from 'vue'
 import { Col, Form, FormItem, Spin } from 'ant-design-vue'
 import { cloneDeep, debounce, isEqual, isObject, omit, omitUndefined } from '@pro-design-vue/utils'
 import { baseFormProps } from '../props'
@@ -16,12 +22,13 @@ import { useProvideForm } from '../context/FormContext'
 import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { useInitialValues } from '../hooks/useInitialValues'
 import { useLinkage } from '../hooks/useLinkage'
-import { transformKeySubmitValue, useAction } from '../hooks/useAction'
+import { convertKeyInitialValue, transformKeySubmitValue, useAction } from '../hooks/useAction'
 import covertFormName from '../utils/namePath'
 import FormSlotsContextProvider from '../context/FormSlotsContext'
 import FormRowWrapper from '../components/FormRowWrapper'
 import FormItems from '../components/FormItems'
 import FormSubmitter from '../components/FormSubmitter'
+import transformer from '../utils/transformer'
 
 let requestFormCacheId = 0
 
@@ -32,8 +39,8 @@ export default defineComponent({
     ...baseFormProps(),
   },
   setup(props, { slots, expose, attrs }) {
-    // const loading = ref(false)
     const mountedRef = ref(false)
+    const transformerMap = shallowRef<TransformerMapType>(new Map())
     const formRef = ref<FormInstance>()
     const prefixCls = usePrefixCls('form')
     const formData = ref<Entity>({})
@@ -116,23 +123,13 @@ export default defineComponent({
     watch(
       () => props.items,
       () => {
+        transformerMap.value = transformer(props.items ?? [])
         formItems.value = formatItems(props.items ?? [])
       },
       {
         immediate: true,
       },
     )
-
-    // watch(loading, () => {
-    //   props.onLoadingChange?.(loading.value)
-    // })
-
-    // watch(
-    //   () => props.loading,
-    //   (newVal) => {
-    //     loading.value = newVal
-    //   },
-    // )
 
     const { initialValues, hasInitial, requestLoading } = useInitialValues(
       props as ProFormPropsType,
@@ -142,7 +139,7 @@ export default defineComponent({
       initialValues,
       (newValues, oldValues) => {
         if (!isEqual(newValues, oldValues)) {
-          formData.value = cloneDeep(newValues)
+          formData.value = cloneDeep(convertKeyInitialValue(newValues, transformerMap.value))
           if (!props.request || props.requestAbort) {
             Promise.resolve().then(() => {
               hasInitial.value = false
@@ -155,7 +152,9 @@ export default defineComponent({
       },
     )
     const onValuesChange = debounce(() => {
-      props.onValuesChange?.(transformKeySubmitValue(cloneDeep(formData.value), props.omitNil))
+      props.onValuesChange?.(
+        transformKeySubmitValue(cloneDeep(formData.value), transformerMap.value, props.omitNil),
+      )
     }, 200)
 
     const onFinish = async () => {
@@ -166,7 +165,11 @@ export default defineComponent({
       }
 
       try {
-        const finalValues = transformKeySubmitValue(cloneDeep(formData.value), props.omitNil)
+        const finalValues = transformKeySubmitValue(
+          cloneDeep(formData.value),
+          transformerMap.value,
+          props.omitNil,
+        )
         await props.onFinish(finalValues)
       } catch (error) {
         console.log('🚀 ~ onFinish ~ error:', error)
@@ -196,6 +199,7 @@ export default defineComponent({
       formData,
       initialValues,
       hasInitial,
+      transformerMap,
       onFinish,
       onReset: props.onReset,
       onFinishFailed: props.onFinishFailed,
@@ -252,7 +256,10 @@ export default defineComponent({
       requestFormCacheId += 1
       const finalValues = formRef.value?.getFieldsValue?.(true) ?? {}
       Promise.resolve().then(() => {
-        props.onInit?.(transformKeySubmitValue(finalValues, props.omitNil), action)
+        props.onInit?.(
+          transformKeySubmitValue(finalValues, transformerMap.value, props.omitNil),
+          action,
+        )
       })
     })
 

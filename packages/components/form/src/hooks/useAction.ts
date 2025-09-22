@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 17:55:39
+ * @LastEditTime: 2025-09-22 16:11:16
  * @Description:
  */
 
 import type { Ref, ShallowRef } from 'vue'
-import type { ProFormActionType, NamePath, Entity } from '../type'
+import type { ProFormActionType, NamePath, Entity, TransformerMapType } from '../type'
 import type { ProFormProps } from '../props'
 import type { FormInstance } from 'ant-design-vue'
 import { cloneDeep, get, isObject, merge, set, isNil, isValidElement } from '@pro-design-vue/utils'
@@ -38,6 +38,7 @@ function isPlainObj(itemValue: any) {
 
 export const transformKeySubmitValue = <T extends object = any>(
   values: T,
+  transformerMap: TransformerMapType,
   paramsOmitNil?: boolean,
 ) => {
   if (Object.keys(values).length < 1) {
@@ -100,8 +101,7 @@ export const transformKeySubmitValue = <T extends object = any>(
       }
       const key = parentsKey ? [parentsKey, entityKey].flat(1) : [entityKey].flat(1)
       const itemValue = (tempValues as any)[entityKey]
-
-      const transformFunction = get(values, key as (number | string)[])
+      const transformFunction = transformerMap.get(entityKey)?.transform
 
       const transform = () => {
         let tempKey,
@@ -170,12 +170,36 @@ export const transformKeySubmitValue = <T extends object = any>(
   return finalValues as T
 }
 
+export const convertKeyInitialValue = <T extends object = any>(
+  values: T,
+  transformerMap: TransformerMapType,
+) => {
+  if (Object.keys(values).length < 1) {
+    return values
+  }
+
+  const finalValues: any = {} as T
+  Object.keys(values).forEach((entityKey) => {
+    const itemValue = (values as any)[entityKey]
+    const convertValueFunction = transformerMap.get(entityKey)?.convertValue
+    if (typeof convertValueFunction === 'function') {
+      const convertResult = convertValueFunction?.(itemValue, entityKey)
+      finalValues[entityKey] = convertResult
+    } else {
+      finalValues[entityKey] = itemValue
+    }
+  })
+
+  return finalValues
+}
+
 export function useAction({
   props,
   formRef,
   formData,
   initialValues,
   hasInitial,
+  transformerMap,
   onFinish,
   onReset,
   onFinishFailed,
@@ -185,6 +209,7 @@ export function useAction({
   formData: Ref<Entity>
   initialValues: ShallowRef<Entity>
   hasInitial: Ref<boolean>
+  transformerMap: ShallowRef<TransformerMapType>
   onFinish: ProFormProps['onFinish']
   onReset: ProFormProps['onReset']
   onFinishFailed: ProFormProps['onFinishFailed']
@@ -213,7 +238,7 @@ export function useAction({
     if (!namePath) throw new Error('name is require')
     const value = get(formData.value, namePath)
     const obj = set({}, namePath, value)
-    return get(transformKeySubmitValue(obj, props.omitNil!), namePath)
+    return get(transformKeySubmitValue(obj, transformerMap.value, props.omitNil!), namePath)
   }
 
   const getFieldFormatValueObject = (name: NamePath) => {
@@ -221,14 +246,14 @@ export function useAction({
     if (!namePath) throw new Error('name is require')
     const value = get(formData.value, namePath)
     const obj = set({}, namePath, value)
-    return transformKeySubmitValue(obj, props.omitNil!)
+    return transformKeySubmitValue(obj, transformerMap.value, props.omitNil!)
   }
 
   const validateFieldsReturnFormatValue = async (nameList?: NamePath[]) => {
     if (!Array.isArray(nameList) && nameList) throw new Error('nameList must be array')
 
     const values = await formRef.value?.validateFields(nameList)
-    const transformedKey = transformKeySubmitValue(values!, props.omitNil!)
+    const transformedKey = transformKeySubmitValue(values!, transformerMap.value, props.omitNil!)
     return transformedKey ?? {}
   }
 
@@ -256,10 +281,10 @@ export function useAction({
   const reset = () => {
     hasInitial.value = true
     formRef.value?.clearValidate()
-    formData.value = cloneDeep(initialValues.value)
+    formData.value = cloneDeep(convertKeyInitialValue(initialValues.value, transformerMap.value))
     Promise.resolve().then(() => {
       hasInitial.value = false
-      onReset?.(transformKeySubmitValue(formData.value, props.omitNil))
+      onReset?.(transformKeySubmitValue(formData.value, transformerMap.value, props.omitNil))
     })
   }
 

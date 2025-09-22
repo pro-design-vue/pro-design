@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-10 15:44:38
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 15:14:56
+ * @LastEditTime: 2025-09-22 16:14:20
  * @Description:
  */
 import type { ComputedRef, Ref } from 'vue'
@@ -16,7 +16,6 @@ export function useFieldValue<T>({
   namePath,
   initialValue,
   convertValue,
-  transform,
 }: {
   isList?: boolean
   namePath: ComputedRef<NamePath>
@@ -29,24 +28,18 @@ export function useFieldValue<T>({
 } {
   const fieldValue = shallowRef<T | undefined>()
 
-  const { formData, initialValues, mountedRef } = useInjectForm()
+  const { formData, initialValues } = useInjectForm()
 
   const modelValue = computed(() => get(formData.value, namePath.value) as T)
 
   const onValueChange = (value: T) => {
-    set(
-      formData.value,
-      namePath.value,
-      transform ? transform(value, namePath.value, formData.value) : value,
-    )
+    set(formData.value, namePath.value, value)
   }
 
   watch(
     modelValue,
     (newValue) => {
-      fieldValue.value = cloneDeep(
-        convertValue ? (convertValue(newValue, namePath.value) as T) : newValue,
-      )
+      fieldValue.value = cloneDeep(newValue)
     },
     {
       immediate: true,
@@ -56,18 +49,14 @@ export function useFieldValue<T>({
 
   const initFieldInitialValue = () => {
     if (
-      !mountedRef.value &&
+      // !mountedRef.value &&
       typeof modelValue.value === 'undefined' &&
       typeof initialValue !== 'undefined'
     ) {
-      const value = transform
-        ? transform(initialValue, namePath.value, formData.value)
-        : initialValue
+      const value = convertValue ? (convertValue(initialValue, namePath.value) as T) : initialValue
       set(formData.value, namePath.value, cloneDeep(value))
-      set(initialValues?.value ?? {}, namePath.value, cloneDeep(value))
-      fieldValue.value = convertValue
-        ? (convertValue(initialValue, namePath.value) as T)
-        : initialValue
+      set(initialValues?.value ?? {}, namePath.value, cloneDeep(initialValue))
+      fieldValue.value = value
     }
   }
   initFieldInitialValue()

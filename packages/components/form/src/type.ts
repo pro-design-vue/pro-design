@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 17:56:32
+ * @LastEditTime: 2025-09-22 11:13:55
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -56,6 +56,15 @@ export type SearchConvertKeyFn = (
   value: any,
   namePath: NamePath,
 ) => string | boolean | Record<string, any>
+
+export type TransformerMapType = Map<
+  NamePath,
+  {
+    transform?: SearchTransformKeyFn
+    convertValue?: SearchConvertKeyFn
+  }
+>
+
 export type ProFormPropsType<T = Entity, U = Record<string, any>, FieldType = 'text'> = Omit<
   FormProps,
   'onFinish'
@@ -296,14 +305,14 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    */
   grid?: boolean
   /**
-   * 支持 ReactNode 和 方法
+   * 支持 VNode 和 方法
    *
    * @name 标题
    */
   title?: ProVNode | ((formData: T) => ProVNode)
 
   /**
-   * 支持 ReactNode 和 方法
+   * 支持 VNode 和 方法
    *
    * @name 标题扩展，
    */

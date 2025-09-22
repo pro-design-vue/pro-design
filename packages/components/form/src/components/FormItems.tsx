@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:52:17
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 13:45:48
+ * @LastEditTime: 2025-09-22 13:41:34
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -137,7 +137,7 @@ export default defineComponent({
               />
             )
           }
-          return <FormItem key={item.key} item={item} />
+          return <FormItem key={item.key} item={item} grid={mergeGrid.value} />
         })
     })
 
