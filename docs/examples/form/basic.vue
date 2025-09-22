@@ -1,10 +1,3 @@
-<!--
- * @Author: shen
- * @Date: 2025-09-14 22:13:28
- * @LastEditors: shen
- * @LastEditTime: 2025-09-21 16:06:47
- * @Description:
--->
 <script setup lang="ts">
 import { sleep } from '@pro-design-vue/utils'
 import { ProFieldType, ProForm, type ProFormItemType } from 'pro-design-vue'
@@ -13,7 +6,11 @@ const formItems: ProFormItemType[] = [
   {
     name: 'INPUT',
     title: '文本',
-    // width: 'sm',
+    initialValue: '2',
+    colSize: 16,
+    convertValue: (value) => {
+      return value + '1'
+    },
   },
   {
     name: 'DIGIT',
@@ -21,15 +18,35 @@ const formItems: ProFormItemType[] = [
     fieldType: ProFieldType.DIGIT,
   },
   {
-    name: 'DIGIT',
-    title: '数字',
-    fieldType: ProFieldType.DIGIT,
+    fieldType: ProFieldType.GROUP,
+    grid: false,
+    rowProps: {
+      gutter: 20,
+    },
+    // colProps: {
+    //   span: 24,
+    // },
+    children: [
+      {
+        title: '数字',
+        name: 'est',
+        fieldType: ProFieldType.DIGIT,
+        transform: (value) => {
+          return value + '1'
+        },
+      },
+      {
+        name: 'DIGIT',
+        title: '数字',
+        fieldType: ProFieldType.DIGIT,
+      },
+    ],
   },
 ]
 
 const handleFinish = async (val) => {
   await sleep(2000)
-  console.log('🚀 ~ handleReset ~ val:', val)
+  console.log(val)
   return true
 }
 </script>
