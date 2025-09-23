@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-12-17 11:35:56
  * @LastEditors: shen
- * @LastEditTime: 2025-07-31 09:39:52
+ * @LastEditTime: 2025-09-23 10:48:05
  * @Description:
 -->
 <script lang="ts">
@@ -104,7 +104,7 @@ export default defineComponent({
       [`${prefixCls}-header-cell-title-inner`]: true,
     }"
     :title="altTitle"
-    :style="`text-align: ${column.align}`"
+    :style="`justify-content: ${column.align}`"
   >
     <span
       :class="{
