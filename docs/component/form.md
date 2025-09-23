@@ -13,12 +13,12 @@ ProForm 是核心组件之一，高性能表单控件，自带数据域管理。
 
 ProForm 是基于 antdv Form 的JSON Schema封装，但是在其之上还增加一些预设行为和多种布局。这些布局之间可以无缝切换，并且拥有公共的 API。
 
-| 布局           | 使用场景             |
-| ------------------- | ---------------- |
-| [ProForm](#props) | 标准 Form，增加了 `onFinish` 中自动 `loading` 和根据 `request` 自动获取默认值的功能。通过设置 `layoutType` 可以实现所有布局。 |
-| [ProModalForm\|ProDrawerForm](./modal-form) | 在 ProForm 的基础上增加了 `trigger` ，无需维护 `open` 状态。 |
-| [ProQueryFilter](./query-filter) | 一般用于作为筛选表单，需要配合其他数据展示组件使用。 |
-| [ProStepsForm](./steps-form) | 分步表单，需要配置 `steps` 生成步骤使用。 |
+| 布局                                        | 使用场景                                                                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [ProForm](#props)                           | 标准 Form，增加了 `onFinish` 中自动 `loading` 和根据 `request` 自动获取默认值的功能。通过设置 `layoutType` 可以实现所有布局。 |
+| [ProModalForm\|ProDrawerForm](./modal-form) | 在 ProForm 的基础上增加了 `trigger` ，无需维护 `open` 状态。                                                                  |
+| [ProQueryFilter](./query-filter)            | 一般用于作为筛选表单，需要配合其他数据展示组件使用。                                                                          |
+| [ProStepsForm](./steps-form)                | 分步表单，需要配置 `steps` 生成步骤使用。                                                                                     |
 
 ## 使用演示
 
