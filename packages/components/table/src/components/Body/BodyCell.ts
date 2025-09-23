@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-16 10:31:02
+ * @LastEditTime: 2025-09-23 10:14:27
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -246,7 +246,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
               color: option.color,
               bordered: false,
             },
-            option.text,
+            () => option.text,
           )
         } else {
           cellValue = option.text || emptyText
