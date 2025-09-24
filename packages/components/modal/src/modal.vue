@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 13:53:15
+ * @LastEditTime: 2025-09-24 16:34:14
  * @Description:
 -->
 <script setup lang="ts">
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
   keyboard: true,
   maskClosable: true,
   open: false,
-  showFullscreen: true,
+  showFullscreen: false,
   draggable: false,
   top: 100,
 })

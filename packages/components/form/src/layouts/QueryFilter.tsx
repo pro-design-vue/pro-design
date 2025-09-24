@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 23:26:49
+ * @LastEditTime: 2025-09-24 10:53:54
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -143,6 +143,7 @@ export default defineComponent({
       }
       if (props.defaultColsNumber !== undefined) {
         const oneRowControlsNumber = 24 / spanSize.value.span - 1
+        console.log('🚀 ~ showLength ~ oneRowControlsNumber:', oneRowControlsNumber)
         return props.defaultColsNumber > oneRowControlsNumber
           ? oneRowControlsNumber
           : props.defaultColsNumber
@@ -190,7 +191,7 @@ export default defineComponent({
     })
 
     const [collapsed, setCollapsed] = useMergedState<boolean | undefined>(
-      () => props.defaultCollapsed,
+      () => props.defaultCollapsed && !!props.submitter,
       {
         value: computed(() => props.collapsed),
         onChange: (val) => {
@@ -279,8 +280,8 @@ export default defineComponent({
             const hidden: boolean | undefined =
               item.hidden ||
               // 如果收起了
-              (props.submitter !== false &&
-                collapsed.value &&
+
+              (collapsed.value &&
                 (firstRowFull ||
                   // 如果 超过显示长度 且 总长度超过了 24
                   totalSize.value > showLength.value) &&
@@ -311,7 +312,10 @@ export default defineComponent({
             return {
               ...item,
               hidden,
-              formItemProps: formItemFixStyle.value,
+              formItemProps: {
+                ...(item.title ? formItemFixStyle.value : {}),
+                ...item.formItemProps,
+              },
               colProps: {
                 span: colSpan,
               },
@@ -350,10 +354,12 @@ export default defineComponent({
           layout={spanSize.value.layout}
           v-slots={{
             ...slots,
-            submitter: ({ defaultDoms }) => {
+            submitter: ({ props, action, defaultDoms }) => {
               return (
                 <>
-                  {defaultDoms}
+                  {slots.submitter
+                    ? slots.submitter?.({ props, action, defaultDoms })
+                    : defaultDoms}
                   {needCollapse.value !== false && (
                     <a
                       class={`${prefixCls}-collapse-button`}

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 13:42:38
+ * @LastEditTime: 2025-09-24 09:26:47
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -155,7 +155,7 @@ export default defineComponent({
             : undefined,
         placeholder: props.item.placeholder ?? baseProps?.placeholder,
         options: props.item.options ?? baseProps?.options ?? baseProps?.treeData,
-        allowClear: props.item.allowClear ?? baseProps?.allowClear ?? false,
+        allowClear: props.item.allowClear ?? baseProps?.allowClear ?? true,
       }
 
       return omitUndefined({

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 17:20:13
+ * @LastEditTime: 2025-09-24 16:34:05
  * @Description:
 -->
 <script setup lang="ts">
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   mask: true,
   maskClosable: true,
   open: false,
-  showFullscreen: true,
+  showFullscreen: false,
 })
 
 const emit = defineEmits<{ close: [e: Event]; fullScreen: [value: boolean] }>()
