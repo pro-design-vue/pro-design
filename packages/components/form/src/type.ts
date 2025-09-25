@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 11:13:55
+ * @LastEditTime: 2025-09-25 13:33:47
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -309,7 +309,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    *
    * @name 标题
    */
-  title?: ProVNode | ((formData: T) => ProVNode)
+  title?: ProVNode | ((params: { formData: T }) => ProVNode)
 
   /**
    * 支持 VNode 和 方法
@@ -317,8 +317,8 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    * @name 标题扩展，
    */
   extra?: {
-    label?: ProVNode | ((formData: T) => ProVNode)
-    item?: ProVNode | ((formData: T) => ProVNode)
+    label?: ProVNode | ((params: { formData: T }) => ProVNode)
+    item?: ProVNode | ((params: { formData: T }) => ProVNode)
   }
 
   /**
@@ -402,7 +402,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
         formData: T
         action: ProFormActionType
       }) => VNode | string)
-  render?: ProVNode | ((formData: T) => ProVNode)
+  render?: ProVNode | ((params: { formData: T }) => ProVNode)
   onChange?: (...args: any[]) => void
   onInit?: (ref: any) => void
   /** 嵌套子项 */

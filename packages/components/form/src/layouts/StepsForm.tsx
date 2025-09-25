@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 10:00:54
+ * @LastEditTime: 2025-09-25 16:29:03
  * @Description:
  */
 import type { Ref, VNode } from 'vue'
@@ -73,7 +73,7 @@ export default defineComponent({
   setup(props, { slots, expose }) {
     const intl = useIntl()
     const prefixCls = usePrefixCls('steps-form')
-    const formArrayRef = ref<Array<Ref<FormInstance | undefined>>>([])
+    const formArrayRef = ref<Array<FormInstance | undefined>>([])
     const formDataRef = new Map<string, Record<string, any>>()
     const [loading, setLoading] = useState<boolean>(false)
     const formProps = computed(() =>
@@ -102,7 +102,7 @@ export default defineComponent({
     })
 
     const regForm = (formRef: Ref<FormInstance | undefined>, index: number) => {
-      formArrayRef.value[index] = formRef
+      formArrayRef.value[index] = formRef.value
     }
 
     const lastStep = computed(() => step.value === props.steps.length - 1)
@@ -119,7 +119,7 @@ export default defineComponent({
         const success = await props.onFinish(values)
         if (success) {
           setStep(0)
-          formArrayRef.value.forEach((form) => form.value?.reset())
+          formArrayRef.value.forEach((form) => form?.reset())
         }
       } catch (error) {
         console.log(error)
@@ -131,7 +131,7 @@ export default defineComponent({
     const onSubmit = () => {
       const from = formArrayRef.value[step.value]
       if (from) {
-        from.value?.submit()
+        from?.submit()
       }
     }
 
