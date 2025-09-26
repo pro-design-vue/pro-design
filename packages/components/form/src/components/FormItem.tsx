@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-09-24 09:26:47
+ * @LastEditTime: 2025-09-26 13:59:00
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -221,7 +221,9 @@ export default defineComponent({
             <div class={`${prefixCls}-item-title`} style={formItemProps.value.titleStyles}>
               <FormTitle title={props.item.title} tooltip={props.item.tooltip} />
             </div>
-            <RenderVNode vnode={extraRender} props={{ formData: formData.value }} />
+            <div class={`${prefixCls}-item-title-extra`}>
+              <RenderVNode vnode={extraRender} props={{ formData: formData.value }} />
+            </div>
           </>
         )
       }
@@ -278,20 +280,6 @@ export default defineComponent({
     )
 
     return () => {
-      const render = getSlot(props.item.render, formSlotsContext)
-      if (render) {
-        return (
-          <FormColWrapper colProps={props.item.colProps} grid={mergeGrid.value}>
-            <RenderVNode
-              vnode={render}
-              props={{
-                formData: formData.value,
-              }}
-            />
-          </FormColWrapper>
-        )
-      }
-
       const renderFormItem = getSlot(props.item.renderFormItem, formSlotsContext)
       const extraRender = getSlot(props.item.extra?.item, formSlotsContext)
       const FieldComponent = fieldComponentMap[fieldType.value] ?? fieldComponentMap['text']
@@ -325,22 +313,40 @@ export default defineComponent({
         defaultDom = (
           <div style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
             {defaultDom}
-            <RenderVNode
-              vnode={extraRender}
-              props={{
-                formData: formData.value,
-                listName: listName?.value,
-                name: props.item.name,
-              }}
-            />
+            <div style="margin-inline-start: 5px; flex-shrink: 0;">
+              <RenderVNode
+                vnode={extraRender}
+                props={{
+                  formData: formData.value,
+                  listName: listName?.value,
+                  name: props.item.name,
+                }}
+              />
+            </div>
           </div>
         )
       }
+
+      const formItemDom = (
+        <Form.Item {...restItemProps.value} v-slots={slotsGetter.value}>
+          {defaultDom}
+        </Form.Item>
+      )
+
+      const render = getSlot(props.item.render, formSlotsContext)
       return (
         <FormColWrapper colProps={props.item.colProps} grid={mergeGrid.value}>
-          <Form.Item {...restItemProps.value} v-slots={slotsGetter.value}>
-            {defaultDom}
-          </Form.Item>
+          {render ? (
+            <RenderVNode
+              vnode={render}
+              props={{
+                formData: formData.value,
+                defaultDom: formItemDom,
+              }}
+            />
+          ) : (
+            formItemDom
+          )}
         </FormColWrapper>
       )
     }

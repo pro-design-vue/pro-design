@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 16:12:08
+ * @LastEditTime: 2025-09-26 10:11:32
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -49,7 +49,7 @@ export default defineComponent({
       return props.formKey ?? requestFormCacheId.toString()
     })
 
-    const [loading, setloading] = useMergedState<boolean | undefined>(false, {
+    const [loading, setLoading] = useMergedState<boolean | undefined>(false, {
       value: computed(() => props.loading),
       onChange: (val) => {
         props.onLoadingChange?.(val!)
@@ -161,7 +161,7 @@ export default defineComponent({
       if (!props.onFinish) return
       if (props.submitOnLoading) {
         if (loading.value) return
-        setloading(true)
+        setLoading(true)
       }
 
       try {
@@ -175,7 +175,7 @@ export default defineComponent({
         console.log('🚀 ~ onFinish ~ error:', error)
       } finally {
         if (props.submitOnLoading) {
-          setloading(false)
+          setLoading(false)
         }
       }
     }
@@ -246,7 +246,11 @@ export default defineComponent({
         />
       )
       if (submitterProps.value.teleport) {
-        return <Teleport to={submitterProps.value.teleport}>{dom}</Teleport>
+        return (
+          <Teleport defer to={submitterProps.value.teleport}>
+            {dom}
+          </Teleport>
+        )
       }
       return dom
     })

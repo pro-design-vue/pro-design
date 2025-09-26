@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-09-25 13:33:47
+ * @LastEditTime: 2025-09-26 13:58:20
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -106,18 +106,18 @@ export type SearchConfig = {
   submitText?: ProVNode
 }
 
-export type SubmitterProps<T = Record<string, any>> = {
+export type SubmitterProps<T = Entity> = {
   /** @name 提交方法 */
-  onSubmit?: (value?: T) => void
+  onSubmit?: (formData: T, action?: ProFormActionType) => Promise<boolean | void> | boolean | void
   /** @name 重置方法 */
-  onReset?: (value?: T) => void
+  onReset?: (formData: T, action?: ProFormActionType) => Promise<boolean | void> | boolean | void
   /** @name 搜索的配置，一般用来配置文本 */
   searchConfig?: SearchConfig
   /** @name 提交按钮的 props */
   submitButtonProps?: false | (ButtonProps & { preventDefault?: boolean })
   /** @name 重置按钮的 props */
   resetButtonProps?: false | (ButtonProps & { preventDefault?: boolean })
-  /** @name 操作按钮n渲染位置 */
+  /** @name 操作按钮渲染位置 */
   teleport?: string | HTMLElement
   /** @name 反转提交及重置按钮 */
   reverse?: boolean
@@ -402,7 +402,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
         formData: T
         action: ProFormActionType
       }) => VNode | string)
-  render?: ProVNode | ((params: { formData: T }) => ProVNode)
+  render?: ProVNode | ((params: { formData: T; defaultDom: VNode }) => ProVNode)
   onChange?: (...args: any[]) => void
   onInit?: (ref: any) => void
   /** 嵌套子项 */

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:25:01
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:52:40
+ * @LastEditTime: 2025-09-26 09:33:40
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
@@ -55,14 +55,32 @@ export default defineComponent({
     const { action } = useInjectForm()
     const formSlotsContext = useInjectSlots()
 
-    const submit = () => {
-      action.submit()
-      props.onSubmit?.()
+    const submit = async () => {
+      if (!props.onSubmit) {
+        action.submit()
+        return
+      }
+      const values = action.getFieldsValue()
+      const response = props.onSubmit?.(values!, action)
+      const result = await response
+      if (result) {
+        action.submit()
+      }
+      return result
     }
 
-    const reset = () => {
-      action.reset?.()
-      props.onReset?.()
+    const reset = async () => {
+      if (!props.onReset) {
+        action.reset()
+        return
+      }
+      const values = action.getFieldsValue()
+      const response = props.onReset?.(values!, action)
+      const result = await response
+      if (result) {
+        action.reset()
+      }
+      return result
     }
     const resetButton = computed(() => {
       const { searchConfig = {}, resetButtonProps = {} } = props

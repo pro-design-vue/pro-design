@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 15:10:05
+ * @LastEditTime: 2025-09-26 15:25:33
  * @Description:
  */
 
@@ -237,10 +237,13 @@ export default defineComponent({
 
     /** 单选多选的相关逻辑 */
     const [selectedRowKeys, setSelectedRowKeys] = useMergedState<(string | number)[] | undefined>(
-      props.rowSelection ? props.rowSelection?.defaultSelectedRowKeys || [] : undefined,
+      props.selectedRowKeys ||
+        (props.rowSelection ? props.rowSelection?.defaultSelectedRowKeys || [] : undefined),
       {
-        value: computed(() =>
-          props.rowSelection ? props.rowSelection.selectedRowKeys : undefined,
+        value: computed(
+          () =>
+            props.selectedRowKeys ||
+            (props.rowSelection ? props.rowSelection.selectedRowKeys : undefined),
         ),
       },
     )
