@@ -17,8 +17,8 @@ const steps = [
       },
       onFinish: async (values) => {
         console.log(values)
-        formRef.value.formArrayRef[1].value?.setFieldsValue({
-          name: '11111',
+        formRef.value.formArrayRef[1]?.setFieldsValue({
+          name: '111111111',
         })
         await sleep(2000)
         return true
@@ -160,6 +160,7 @@ const handleFinish = async (values) => {
       required: '此项为必填项',
     }"
     :items="formItems"
+    @finish="handleFinish"
   >
   </ProStepsForm>
 </template>

@@ -24,11 +24,112 @@ ProForm 是基于 antdv Form 的JSON Schema封装，但是在其之上还增加�
 
 分步表单、Modal 表单、Drawer 表单、查询表单等多种 layout 可以覆盖大部分的使用场景，让我们脱离复杂而且繁琐的表单布局工作，用更少的代码完成更多的功能。
 
+### 基本使用
+
 :::demo
 
 form/basic
 
 :::
+
+### 标签与表单项布局
+
+除了 `ProQueryFilter` 这样固定布局的表单样式，其他表单布局支持配置与 antdv 一致的二种布局方式，不支持`inline`布局方式。
+
+:::demo
+
+form/layout
+
+:::
+
+### 栅格化布局
+
+同时支持在 `ProForm`, `ProModalForm`, `ProDrawerForm`, `ProStepsForm` 中使用，`ProQueryFilter` 默认使用栅格化布局，无法更改。
+
+:::demo
+
+form/grid
+
+:::
+
+### 表单联动
+
+表单联动是及其常用的功能，由于场景非常多，实现时比较复杂，组件内部支持了各种联动方式，可以满足大多数业务场景。大多数情况下，你不再需要使用`onChange`事件手动处理表单联动。
+
+1. 使用表单项`linkage`配置，支持`clear`、`disabled`、`hidden`三种配置，还支持函数方式使用，例如：`{hidden: ['name'], clear: ['name'], disabled: ['name']}`。
+2. 使用函数，表单项很多配置都支持函数类型，如：`title`、`options`、`formItemProps`、`readonly`、`disabled`、`rules`、`fieldProps`、`render`、`renderFormItem`。
+3. 使用表单项`dependencies`配置，此配置只针对使用request请求的Field有效，会根据dependencies配置的`namePath`值变化重新请求，非常适合下拉多级联动功能。
+
+::: details 表单项部分配置类型
+
+```ts
+{
+  linkage?: {
+    disabled?: Key[] | ((value: any, formData: any) => Key[])
+    hidden?: Key[] | ((value: any, formData: any) => Key[])
+    clear?: NamePath[] | ((value: any, formData: any) => NamePath[])
+  };
+  title?: ProVNode | ((formData: T) => ProVNode);
+  options?:
+    | (string | number | RequestOptionsType)[]
+    | ((formData: T, rowData?: Entity) => (string | number | RequestOptionsType)[]);
+  formItemProps?:
+    | Record<string, any>
+    | ((formData: T, config: ProFormItemType<T, FieldType>) => Record<string, any>);
+  readonly?: ((formData: T, rowData?: Entity) => boolean) | boolean
+  disabled?: ((formData: T, rowData?: Entity) => boolean) | boolean
+  rules?:
+    | ((formData: T, action: ProFormActionType) => FormItemProps['rules'])
+    | FormItemProps['rules']
+  fieldProps?: ((formData: T) => Record<string, any>) | Record<string, any>
+  renderFormItem?:
+    | string
+    | ((config: {
+        value: any
+        onChange: <T = any>(value: T, ...args: any[]) => void
+        defaultDom: VNode
+        formData: T
+        action: ProFormActionType
+      }) => VNode | string)
+  render?: ProVNode | ((formData: T) => ProVNode)
+  /** @name 依赖字段的name，暂时只在拥有 request 的项目中生效，会自动注入到 params 中 */
+  dependencies?: NamePath[]
+}
+```
+
+:::
+
+:::demo
+
+form/linkage
+
+:::
+
+### 表单方法调用
+
+你可以通过 `formRef` 获取到表单实例的引用，通过引用可以调用表单方法实现表单重置，设置表单，获取表单值等功能。仅在 `ProForm标准模式下`和`ProQueryFilter` 中支持。
+
+在`ProModalForm|ProDrawerForm` 浮层表单中，由于默认浮层内部的Form是不渲染的，只有打开后才渲染，关闭后销毁，所以无法直接获取到表单实例，可以通过`init` 自定义事件的第二个参数 `action` 调用表单方法。
+
+在`ProStepsForm` 分步表单中，无法直接获取内部表单实例，通过`formRef.value.formArrayRef[current]`方式获取当前步骤表单实例。
+
+表单项配置`onChange`事件最后一个参数都是`action`，可以在`onChange`事件内直接使用表单方法，不需要使用`formRef`，这个所有布局都支持。
+
+:::demo
+
+form/method
+
+:::
+
+<!-- ### 自定义提交按钮
+
+你可以通过 `formRef` 获取到表单实例的引用，通过引用可以调用表单方法实现表单重置，设置表单，获取表单值等功能。仅在 `ProForm标准模式下`和`ProQueryFilter` 中支持。
+
+:::demo
+
+form/submitter
+
+::: -->
 
 ## API
 
