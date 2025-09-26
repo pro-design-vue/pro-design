@@ -79,10 +79,11 @@ const handleFinish = async (val) => {
     :params="{ id: '100' }"
     @finish="handleFinish"
   >
-    <template #submitter="{ defaultDoms }" v-if="formLayout === LAYOUT_TYPE_HORIZONTAL">
-      <Space style="margin-left: 140px">
+    <template #submitter="{ defaultDoms }">
+      <Space style="margin-left: 140px" v-if="formLayout === LAYOUT_TYPE_HORIZONTAL">
         <component :is="defaultDoms"></component>
       </Space>
+      <component v-else :is="defaultDoms"></component>
     </template>
   </ProForm>
 </template>

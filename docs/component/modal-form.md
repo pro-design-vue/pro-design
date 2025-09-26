@@ -13,7 +13,6 @@ ProDrawerForm 组合了 ProDrawer 和 ProForm 可以减少繁琐的状态管理�
 
 ## 使用演示
 
-
 ProModalForm 和 ProDrawerForm 都提供了 `trigger插槽` 来减少 state 的使用，如果你需要使用 state 来控制可以使用 `open` 来控制打开与关闭。
 
 ### Modal 表单
@@ -64,26 +63,26 @@ ProModalForm或ProDrawerForm 提供了与 [ProForm](./form.md) 相同的 API，�
 
 ### Props
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| open(v-model) | 是否打开	 | `boolean` | - |
-| title| 弹框的标题	 | `string` | - |
-| width| 弹框的宽度	 | `string` \| `number` | 800 |
-| submit-timeout | 提交数据时，禁用取消按钮的超时时间（毫秒） | `number` | - |
-| confirm-on-values-change | 数据变化后，关闭弹窗时是否需要确认 | `boolean` | `true` |
-| modal-props | Modal 的 props，使用方式与 [ProModal](./modal#api) 相同。 | `ModalProps` | - |
-| drawer-props | Drawer 的 props，使用方式与 [ProDrawer](./drawer#api) 相同。 | `DrawerProps` | - |
+| 参数                     | 说明                                                         | 类型                 | 默认值 |
+| ------------------------ | ------------------------------------------------------------ | -------------------- | ------ |
+| open(v-model)            | 是否打开                                                     | `boolean`            | -      |
+| title                    | 弹框的标题                                                   | `string`             | -      |
+| width                    | 弹框的宽度                                                   | `string` \| `number` | 800    |
+| submit-timeout           | 提交数据时，禁用取消按钮的超时时间（毫秒）                   | `number`             | -      |
+| confirm-on-values-change | 数据变化后，关闭弹窗时是否需要确认                           | `boolean`            | `true` |
+| modal-props              | Modal 的 props，使用方式与 [ProModal](./modal#api) 相同。    | `ModalProps`         | -      |
+| drawer-props             | Drawer 的 props，使用方式与 [ProDrawer](./drawer#api) 相同。 | `DrawerProps`        | -      |
 
 ### Events
 
-| 事件名     | 说明          | 类型                  |
-| ---------- | ------------- | --------------------- |
-| open-change | 浮层打开关闭后的回调事件 | `(open: boolean) => void` |
+| 事件名      | 说明                                            | 类型                      |
+| ----------- | ----------------------------------------------- | ------------------------- |
+| finish      | 提交数据时触发，如果返回一个 true。会关掉浮层。 | `async (values)=>boolean` |
+| open-change | 浮层打开关闭后的回调事件                        | `(open: boolean) => void` |
 
 ### Slots
 
-
-| 插槽名      | 说明           | 类型                                                                 |
-| ----------- | -------------- | -------------------------------------------------------------------- |
-| trigger     | 用于触发 Modal \| Drawer  打开的 dom，一般是 button      | - |
-| title     | 浮层的标题 | - |
+| 插槽名  | 说明                                               | 类型 |
+| ------- | -------------------------------------------------- | ---- |
+| trigger | 用于触发 Modal \| Drawer 打开的 dom，一般是 button | -    |
+| title   | 浮层的标题                                         | -    |

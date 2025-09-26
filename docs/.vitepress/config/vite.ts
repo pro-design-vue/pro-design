@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-13 11:09:58
+ * @LastEditTime: 2025-09-26 11:14:15
  * @Description:
  */
 import path from 'path'
@@ -51,8 +51,8 @@ const alias: AliasOptions = [
           replacement: path.resolve(projRoot, 'packages/pro-design-vue/index.ts'),
         },
         {
-          find: /^pro-design-vue\/(es|lib)\/(.*)$/,
-          replacement: `${path.resolve(projRoot, 'packages')}/$2`,
+          find: /^pro-design-vue\/theme-chalk\/src\/index.less$/,
+          replacement: `${path.resolve(projRoot, 'packages/theme-chalk')}/src/index.less`,
         },
       ]),
 ]

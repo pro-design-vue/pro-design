@@ -1,17 +1,11 @@
-<!--
- * @Author: shen
- * @Date: 2025-09-25 16:05:45
- * @LastEditors: shen
- * @LastEditTime: 2025-09-25 16:12:00
- * @Description:
--->
 <script setup lang="tsx">
 import { sleep } from '@pro-design-vue/utils'
 import { message } from 'ant-design-vue'
 import { ProFormInstance } from 'pro-design-vue'
 import { ProFieldType, ProForm, ProButton, type ProFormItemType } from 'pro-design-vue'
-import { useTemplateRef } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 
+const loading = ref(false)
 const formRef = useTemplateRef<ProFormInstance>('form')
 
 const formItems: ProFormItemType[] = [
@@ -36,12 +30,6 @@ const formItems: ProFormItemType[] = [
   },
 ]
 
-const handleFinish = async (val) => {
-  await sleep(2000)
-  console.log(val)
-  message.success('提交成功')
-}
-
 const handleSet = () => {
   formRef.value?.setFieldsValue({
     name: 'Pro Design',
@@ -52,10 +40,30 @@ const handleSet = () => {
 const handleGet = () => {
   message.info(`姓名为 "${formRef?.value?.getFieldValue('name')}"`)
 }
+
+const handleSubmit = async (values, action) => {
+  console.log(action)
+  loading.value = true
+  await sleep(2000)
+  console.log(values)
+  message.success('提交成功')
+  loading.value = false
+  return false
+}
 </script>
 
 <template>
-  <ProForm ref="form" :items="formItems" layout="vertical" @finish="handleFinish">
+  <div id="teleport" style="margin-bottom: 20px"></div>
+  <ProForm
+    ref="form"
+    :items="formItems"
+    layout="vertical"
+    :loading
+    :submitter="{
+      teleport: '#teleport',
+      onSubmit: handleSubmit,
+    }"
+  >
     <template #submitter="{ defaultDoms }">
       <component :is="defaultDoms"></component>
       <ProButton @click="handleSet">一键填写</ProButton>

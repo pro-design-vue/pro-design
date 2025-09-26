@@ -121,15 +121,266 @@ form/method
 
 :::
 
-<!-- ### 自定义提交按钮
+### 自定义提交
 
-你可以通过 `formRef` 获取到表单实例的引用，通过引用可以调用表单方法实现表单重置，设置表单，获取表单值等功能。仅在 `ProForm标准模式下`和`ProQueryFilter` 中支持。
+ProForm 默认内置验证提交，只需要在`finish`回调事件中执行业务逻辑即可，比如执行网络请求，当然完全可以自定义提交逻辑。
+
+自定义提交按钮需要使用 `submitter.render` 或 `submitter插槽` 来进行自定义，使用 `submitter.render` 自定义按钮时可以使用`jsx|tsx`的方式或使用`h`函数，submitter.render和submitter插槽的参数完全一致。
+
+ProForm 支持修改提交按钮到位置，使用 `submitter.teleport` 配置可以实现提交按钮放到你想要的任意位置，`teleport` 使用的vue3内置的组件[Teleport](https://cn.vuejs.org/guide/built-ins/teleport.html)。
+
+1. 使用 `submitter.onSubmit` 事件自定义提交，如果返回一个 `false`，会阻止默认提交，当然如果你确定不使用默认提交时，请一定要返回`false`，否会默认提交也会执行。
+
+2. 使用`submitter插槽`自定义提交按钮配合`validateFields`表单实例方法，实现完全自定义。
+
+::: details submitter 配置类型
+
+```ts
+type SubmitterProps<T = Record<string, any>> = {
+  /** @name 提交方法 */
+  onSubmit?: (formData: T, action?: ProFormActionType) => Promise<boolean | void> | boolean | void
+  /** @name 重置方法 */
+  onReset?: (formData: T, action?: ProFormActionType) => Promise<boolean | void> | boolean | void
+  /** @name 搜索的配置，一般用来配置文本 */
+  searchConfig?: {
+    /** @name 重置按钮的文本 */
+    resetText?: ProVNode
+    /** @name 提交按钮的文本 */
+    submitText?: ProVNode
+  }
+  /** @name 提交按钮的 props */
+  submitButtonProps?: false | (ButtonProps & { preventDefault?: boolean })
+  /** @name 重置按钮的 props */
+  resetButtonProps?: false | (ButtonProps & { preventDefault?: boolean })
+  /** @name 操作按钮渲染位置 */
+  teleport?: string | HTMLElement
+  /** @name 反转提交及重置按钮 */
+  reverse?: boolean
+  /** @name grid布局下 */
+  colProps?: ColProps
+  /** @name 自定义操作的渲染 */
+  render?:
+    | ((paramer: {
+        props: SubmitterProps & {
+          submit: () => void
+          reset: () => void
+        }
+        action: ProFormActionType
+        defaultDoms: VNode | VNode[]
+      }) => VNode | false)
+    | false
+}
+```
+
+:::
 
 :::demo
 
 form/submitter
 
-::: -->
+:::
+
+### 自定义渲染
+
+ProForm 内置了很多[Field](#fieldtype-列表)，基本能满足大多数业务场景，当然任何组件不支持自定义，那是不完美的，ProForm 不仅仅支持自定义 `Field`，还支持自定义`title、extra、render`等，并且所有都支持使用`函数|插槽` 两种方式实现，且参数一致。
+
+自定义Field支持局部和全局配置，局部使用`renderFormItem`配置，全局使用`registerField`注册。如果自定义组件如果希望 `Form.Item` 进行校验展示，你需要 `const {id, onFieldChange, onFieldBlur} = useInjectFormItemContext()` 注入，并调用相应的方法。
+
+支持Antv FormItem的`'extra'、'help'`自定义插槽，使用方式：`formItemProps: {extra: '::custom-item-extra', help: '::custom-item-help'}`。
+
+支持Antv Form Field的自定义插槽，如：`Input|Select|Checkbox`，根据定义的`fieldType`使用，使用方式：`fieldProps: {addonAfter: '::addonAfter', suffix: '::suffix'}`。
+
+1. 使用函数时，需要返回 `jsx|tsx` 或 `h函数` 的VNode，`((params: { formData: T }) => VNode)`。
+2. 使用插槽时，没有固定的`slot name`，内部约定使用`::slot-name`开头的字符串代表使用自定义插槽，如：`title: '::custom-title'`，需要在 ProForm 下使用插槽，`<template #custom-title={formData}>我是自定义标题</template>`。
+
+::: tip
+在 script setup 下使用`jsx|tsx`时，需要设置语言`<script setup lang="tsx">`。
+
+全局注册：
+
+```ts
+import { registerField } from 'pro-design-vue'
+import CustomField from '@/components/custom-field'
+registerField('custom-field', CustomField)
+```
+
+使用时`fieldType:'custom-field'`即可，当然全局注册组件也需要满足一些基本条件，参考下方详情。
+:::
+
+:::demo
+
+form/render
+
+:::
+
+::: details custom-item.vue
+
+```vue
+<script setup lang="ts">
+import {
+  ProTable,
+  type ProTableColumnsType,
+  type ProTableRowSelection,
+  type ProFormItemType,
+} from 'pro-design-vue'
+import { type PropType } from 'vue'
+import { Form } from 'ant-design-vue'
+
+defineProps({
+  value: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+  onChange: {
+    type: Function as PropType<ProFormItemType['onChange']>,
+  },
+})
+const emit = defineEmits(['change', 'update:value'])
+
+const formItemContext = Form.useInjectFormItemContext()
+
+const columns: ProTableColumnsType = [
+  {
+    title: 'id',
+    dataIndex: 'id',
+    width: 100,
+  },
+  {
+    title: '名称',
+    dataIndex: 'name',
+    width: 200,
+  },
+]
+
+const dataSource = [
+  { id: '1', name: 'pro design' },
+  { id: '2', name: 'pro design admin' },
+  { id: '3', name: 'pro design vue' },
+]
+
+const rowSelection: ProTableRowSelection = {
+  type: 'checkbox',
+  onChange(selectedRowKeys) {
+    emit('change', selectedRowKeys)
+    emit('update:value', selectedRowKeys)
+    formItemContext.onFieldChange()
+  },
+}
+</script>
+
+<template>
+  <ProTable
+    :selected-row-keys="value"
+    :row-selection="rowSelection"
+    :columns="columns"
+    :tool-bar="false"
+    :card-props="false"
+    :pagination="false"
+    :data-source="dataSource"
+  >
+  </ProTable>
+</template>
+
+<style scoped lang="less"></style>
+```
+
+:::
+
+::: details 全局注册的自定义Field，此处是参考代码
+
+```vue
+<script setup lang="ts">
+import { ref, useAttrs, computed, PropType } from 'vue'
+import { Form, Input } from 'ant-design-vue'
+import { ProFieldReadonly, ProFormItemType, ProModal } from 'pro-design-vue'
+import { SCron } from '@micro-front/components'
+import type { SCronInstance } from '@micro-front/components'
+
+defineOptions({
+  name: 'CronField',
+})
+
+const props = defineProps({
+  value: {
+    type: String,
+    default: '',
+  },
+  placeholder: {
+    type: String,
+    default: '请输入',
+  },
+  readonly: {
+    type: Boolean,
+    default: undefined,
+  },
+  readonlyProps: {
+    type: Object as PropType<ProFormItemType['readonlyProps']>,
+    default: undefined,
+  },
+  onChange: {
+    type: Function as PropType<ProFormItemType['onChange']>,
+  },
+})
+const emit = defineEmits(['change', 'update:value'])
+const attrs = useAttrs()
+const cronRef = ref<SCronInstance>()
+const open = ref(false)
+const cronValue = ref('')
+const formItemContext = Form.useInjectFormItemContext()
+
+const internalValue = computed({
+  get: () => {
+    return props.value
+  },
+  set: (val) => {
+    emit('change', val)
+    emit('update:value', val)
+  },
+})
+
+const onInputChange = (e: any) => {
+  emit('change', e.target.value)
+  emit('update:value', e.target.value)
+  formItemContext.onFieldChange()
+}
+
+const onShowCron = () => {
+  open.value = true
+  cronValue.value = internalValue.value
+}
+
+const onConfirm = () => {
+  const cronValue = cronRef.value?.getCurrentCrobValue()
+  emit('change', cronValue)
+  emit('update:value', cronValue)
+  formItemContext.onFieldChange()
+  return true
+}
+</script>
+
+<template>
+  <template v-if="readonly">
+    <ProFieldReadonly :text="internalValue" v-bind="readonlyProps" />
+  </template>
+  <template v-else>
+    <Input
+      v-model:value="internalValue"
+      v-bind="attrs"
+      :placeholder="placeholder"
+      @change="onInputChange"
+    >
+      <template #addonAfter>
+        <a style="font-size: 12px" @click="onShowCron">配置</a>
+      </template>
+    </Input>
+    <ProModal title="配置Cron表达式" v-model:open="open" destroy-on-close @confirm="onConfirm">
+      <SCron ref="cronRef" v-model:value="cronValue" style="height: 506px" />
+    </ProModal>
+  </template>
+</template>
+```
+
+:::
 
 ## API
 

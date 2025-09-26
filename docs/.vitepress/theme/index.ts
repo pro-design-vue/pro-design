@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 14:48:43
  * @LastEditors: shen
- * @LastEditTime: 2025-09-13 11:45:53
+ * @LastEditTime: 2025-09-26 11:12:26
  * @Description:
  */
 import type { Theme } from 'vitepress'
@@ -11,8 +11,6 @@ import { globals } from '../components'
 import DefaultTheme from 'vitepress/theme'
 import App from './App.vue'
 import 'prismjs/themes/prism-solarizedlight.min.css'
-// import 'prismjs/themes/prism-okaidia.min.css'
-
 import 'pro-design-vue/theme-chalk/src/index.less'
 import './style.css'
 
