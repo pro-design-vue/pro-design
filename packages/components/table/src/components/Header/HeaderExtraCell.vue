@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-07-28 09:05:37
+ * @LastEditTime: 2025-09-30 16:52:24
  * @Description:
 -->
 <script lang="ts">
@@ -62,6 +62,7 @@ export default defineComponent({
       return h(Fragment, [
         typeof props.column.title == 'function'
           ? props.column.title({
+              column: props.column.originColumn!,
               sortColumns: sortColumns.value,
               sortColumn: sortColumns.value[0]?.column,
               sortOrder: sortColumns.value[0]?.order,
