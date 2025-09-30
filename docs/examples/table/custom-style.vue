@@ -115,7 +115,7 @@ const customHeaderCell = (column) => {
         <ProTableSummaryCell :index="0" style="background-color: #d3adf7">
           总年龄
         </ProTableSummaryCell>
-        <ProTableSummaryCell :index="1" style="background-color: #ffadd2; color: #1677ff">
+        <ProTableSummaryCell :index="1" style=" color: #1677ff;background-color: #ffadd2">
           <template #default="{ total }">
             {{ total }}
           </template>
