@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-09-10 15:16:56
+ * @LastEditTime: 2025-09-29 09:00:32
  * @Description:
 -->
 <script lang="ts">
@@ -119,7 +119,8 @@ export default defineComponent({
 
     const { tooltipOpen, leftPopupContainer, centerPopupContainer, rightPopupContainer } =
       useInjectBody()
-    const { handleCellBlur, handleCellHover, hoverRowKey, hoverColumnKey } = useInjectHover()
+    const { handleCellBlur, handleCellHover, hoverRowKey, hoverColumnKey, rowHover } =
+      useInjectHover()
 
     const popupContainer = computed(() =>
       props.type === 'left'
@@ -138,6 +139,7 @@ export default defineComponent({
       [isRowHover, bodyRow],
       () => {
         bodyRow.value &&
+          rowHover.value &&
           (isRowHover.value
             ? addClass(bodyRow.value, `${props.prefixCls}-row-hover`)
             : removeClass(bodyRow.value, `${props.prefixCls}-row-hover`))
@@ -218,7 +220,7 @@ export default defineComponent({
         {
           [`${prefixCls}-row`]: true,
           [`${prefixCls}-row-level-${indent}`]: true,
-          [`${prefixCls}-row-hover`]: isRowHover.value,
+          [`${prefixCls}-row-hover`]: isRowHover.value && rowHover.value,
           [`${prefixCls}-row-dragging`]: isDragging.value,
           [`${prefixCls}-row-dragging-insert-target`]:
             tableContext.insertToRowKey.value === props.rowKey,

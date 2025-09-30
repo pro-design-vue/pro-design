@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 11:26:08
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:32:12
+ * @LastEditTime: 2025-09-30 16:39:14
  * @Description:
  */
 import type { ContainerContextProps } from '../hooks/useContainer'
@@ -39,7 +39,7 @@ export function genProColumnToColumn(
 
   return columns
     ?.map((columnProps, columnsIndex) => {
-      const { key, dataIndex, disable, valueEnum } = columnProps as ColumnGroupType
+      const { key, dataIndex, disable, valueEnum, width } = columnProps as ColumnGroupType
       const columnKey = genColumnKey(
         // key || (dataIndex ? `${dataIndex.toString()}-${columnsIndex}` : ''),
         key || dataIndex?.toString(),
@@ -51,12 +51,14 @@ export function genProColumnToColumn(
         ({
           fixed: columnProps.fixed,
         } as any)
+      console.log('🚀 ~ ?.map ~ config:', config)
       const tempColumns = {
         index: columnsIndex,
         key: columnKey,
         ...columnProps,
         valueEnum,
         fixed: config.fixed,
+        width: config.width ?? width,
         disable: config.disable ?? disable,
         // width: columnProps.width || (columnProps.fixed ? 200 : undefined),
         children: (columnProps as ColumnGroupType).children

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:38:40
+ * @LastEditTime: 2025-09-30 11:15:57
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -62,7 +62,6 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
         }
       }
     })
-
     return columnKeyMap
   })
 
@@ -136,7 +135,7 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
   watch(
     [
       () => props.columnsState?.persistenceKey,
-      columnsMap,
+      () => columnsMap.value,
       () => props.columnsState?.persistenceType,
     ],
     () => {

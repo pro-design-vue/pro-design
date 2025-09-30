@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-26 15:25:33
+ * @LastEditTime: 2025-09-30 16:45:43
  * @Description:
  */
 
@@ -19,7 +19,7 @@ import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
-import { omit } from '@pro-design-vue/utils'
+import { omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
 import ToolBar from './ToolBar/ToolBar.vue'
@@ -28,6 +28,7 @@ import FormRender from './Form/Form'
 
 import type { ProFormItemType } from '@pro-design-vue/components/form'
 import type {
+  ColumnsType,
   GetRowKey,
   Key,
   OptionSearchProps,
@@ -53,6 +54,7 @@ export default defineComponent({
 
     const { hoverRowKey } = useProvideHover({
       rowHoverDelay: computed(() => props.rowHoverDelay),
+      rowHover: computed(() => props.rowHover),
     })
 
     const mergedPrefixCls = computed(() => props.prefixCls ?? prefixCls)
@@ -104,10 +106,7 @@ export default defineComponent({
       if (props.pagination === false) {
         return false
       }
-      if (!props.request) {
-        return Object.assign({}, pagination.value, props.pagination)
-      }
-      return Object.assign({}, props.pagination, pagination.value)
+      return pagination.value
     })
 
     const formSubmitLoading = computed(() => {
@@ -190,8 +189,34 @@ export default defineComponent({
       return loopFilter(tableColumn.value)
     })
 
+    const onColumnsChange = (rawColumns, action: 'resize' | 'drag') => {
+      const newMap = { ...counter.columnsMap.value }
+      const newColumns = rawColumns.map((item) => genColumnKey(item.key, item.index))
+      if (action === 'resize') {
+        const loopSetWidth = (rawColumns) => {
+          rawColumns.forEach((item) => {
+            const key = genColumnKey(item.key, item.index)
+            const newSetting = { ...newMap[key] }
+            if (item.children?.length) {
+              loopSetWidth(item.children)
+            } else {
+              newSetting.width = item.width
+              newMap[key] = newSetting
+            }
+          })
+        }
+        loopSetWidth(rawColumns)
+      } else {
+        newColumns.forEach((key, order) => {
+          newMap[key] = { ...(newMap[key] || {}), order }
+        })
+      }
+      counter.setColumnsMap(newMap)
+      counter.setSortKeyColumns(newColumns)
+      props['onUpdate:columns']?.(rawColumns as ColumnsType, action)
+    }
     const formItems = computed(() => {
-      if (!props.search) {
+      if (props.search === false) {
         return []
       }
       if (props.search?.items?.length) {
@@ -205,12 +230,15 @@ export default defineComponent({
           return true
         })
         .map((item) => {
-          return {
-            ...item,
-            width: undefined,
-            tooltip: item.headerTooltip,
-            name: item.dataIndex,
-          } as ProFormItemType
+          return omitKeysAndUndefined(
+            {
+              ...item,
+              width: undefined,
+              tooltip: item.headerTooltip,
+              name: item.dataIndex,
+            },
+            ['dataIndex', 'width', 'tooltip', 'disable'],
+          ) as ProFormItemType
         })
     })
 
@@ -403,7 +431,12 @@ export default defineComponent({
             )}
           <InteralTable
             ref={table}
-            {...omit(props, ['onChange', 'onUpdate:pagination', 'onUpdate:selectedRowKeys'])}
+            {...omit(props, [
+              'onChange',
+              'onUpdate:pagination',
+              'onUpdate:selectedRowKeys',
+              'onUpdate:columns',
+            ])}
             prefixCls={mergedPrefixCls.value}
             columns={mergeColumns || []}
             size={counter.tableSize.value}
@@ -415,6 +448,7 @@ export default defineComponent({
             expandedRowRender={expandedRowRender}
             hasContextmenuPopup={!!slots.contextmenuPopup}
             onChange={onTableChange}
+            onUpdate:columns={onColumnsChange}
             v-slots={{
               ...slots,
               footer: props.footer || slots.footer,

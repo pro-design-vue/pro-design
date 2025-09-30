@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 10:44:08
+ * @LastEditTime: 2025-09-30 16:18:38
  * @Description:
 -->
 <script lang="ts">
@@ -25,7 +25,7 @@ import { Spin, Pagination } from 'ant-design-vue'
 import { animateRows as globalAnimateRows } from './config'
 import { baseTableProps } from './interface'
 import { DOWN, LEFT, UP } from './Drag/constant'
-import { addNestItemData, deleteNestItemData, isPromise } from '../utils/util'
+import { addNestItemData, deleteNestItemData } from '../utils/util'
 import { useEditProvider } from '../hooks/useEdit'
 import { useProvidePopup } from './context/PopupContext'
 import { useHScrollSyncProvide } from '../hooks/useHScrollSync'
@@ -34,7 +34,7 @@ import { useProvideTable } from './context/TableContext'
 import { useProvideRangeStore } from '../hooks/useRangeStore'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { resize } from '@pro-design-vue/directives'
-import { omit, debounce } from '@pro-design-vue/utils'
+import { omit, debounce, isPromise } from '@pro-design-vue/utils'
 import useKVMap from '../hooks/useKVMap'
 import useLicense from '../hooks/useLicense'
 import devWarning from '../utils/devWarning'
@@ -653,9 +653,14 @@ export default defineComponent({
       onResizeColumn: (w: number, col: ColumnType, action: ResizeActionType) => {
         const width = col.width
         const result = props.onResizeColumn?.(w, col, action)
-        if (result !== false && !(width === w && col.width === w)) {
-          col.width = width !== col.width ? col.width : w
-          triggerRef(rawColumns)
+        if (result !== false) {
+          if (!(width === w && col.width === w)) {
+            col.width = width !== col.width ? col.width : w
+            triggerRef(rawColumns)
+          }
+          if (action === 'end') {
+            emit('update:columns', rawColumns.value, 'resize')
+          }
         }
       },
       onRowDragEnd: (opt: DragRowEventInfo) => {
@@ -734,7 +739,6 @@ export default defineComponent({
             emit('update:dataSource', rawData.value)
           }
         }
-
         if (isPromise(dragEnd)) {
           dragEnd
             .then(() => {
@@ -835,7 +839,7 @@ export default defineComponent({
             rawColumns.value.splice(index, 1)
           }
           triggerRef(rawColumns)
-          emit('update:columns', rawColumns.value)
+          emit('update:columns', rawColumns.value, 'drag')
         }
 
         if (isPromise(dragEnd)) {

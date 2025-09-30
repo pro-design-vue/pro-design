@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-09-09 14:15:32
+ * @LastEditTime: 2025-09-29 16:45:36
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -54,8 +54,9 @@ export type UseFetchDataAction<T = any> = {
  */
 const mergePropsAndPagination = ({ pagination }: ProTableProps, intl: IntlType) => {
   if (pagination) {
-    const { current, pageSize, total, showTotal, showSizeChanger } = pagination
+    const { current, pageSize, total, showTotal, showSizeChanger, ...rest } = pagination
     return {
+      ...rest,
       current: current || 1,
       total: total || 0,
       pageSize: pageSize || 10,

@@ -2,21 +2,25 @@
  * @Author: shen
  * @Date: 2023-11-01 10:00:14
  * @LastEditors: shen
- * @LastEditTime: 2023-11-10 15:36:35
+ * @LastEditTime: 2025-09-28 11:16:25
  * @Description:
  */
-import { ref, provide, inject } from 'vue'
+import { ref, provide, inject, computed } from 'vue'
 
 import type { Key } from '../components/interface'
 import type { ComputedRef, InjectionKey, Ref } from 'vue'
 export interface HoverContextProps {
+  rowHover: ComputedRef<boolean | undefined>
   hoverRowKey: Ref<Key>
   hoverColumnKey: Ref<Key>
   handleCellHover: (rowKey: Key, columnKey: Key, draggingRowKey: Key) => void
   handleCellBlur: () => void
 }
 const HoverContextKey: InjectionKey<HoverContextProps> = Symbol('HoverContextKey')
-export const useProvideHover = (props: { rowHoverDelay: ComputedRef<number> }) => {
+export const useProvideHover = (props: {
+  rowHoverDelay: ComputedRef<number>
+  rowHover: ComputedRef<boolean | undefined>
+}) => {
   const hoverColumnKey = ref<any>()
   const hoverRowKey = ref<any>()
   let hoverColumnTimeout: any, hoverRowTimeout: any
@@ -37,6 +41,7 @@ export const useProvideHover = (props: { rowHoverDelay: ComputedRef<number> }) =
     }, props.rowHoverDelay.value + 50)
   }
   const hoverContext = {
+    rowHover: props.rowHover,
     hoverColumnKey,
     hoverRowKey,
     handleCellHover,
@@ -49,6 +54,7 @@ export const useProvideHover = (props: { rowHoverDelay: ComputedRef<number> }) =
 }
 export const useInjectHover = () => {
   return inject(HoverContextKey, {
+    rowHover: computed(() => undefined),
     hoverRowKey: ref(),
     hoverColumnKey: ref(),
     handleCellHover: () => {},

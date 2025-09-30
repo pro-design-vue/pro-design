@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-05 14:16:25
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 14:12:40
+ * @LastEditTime: 2025-09-29 14:02:06
  * @Description:
  */
 import type { Ref, CSSProperties } from 'vue'
@@ -118,7 +118,9 @@ const useCellProps = ({
     if (copyCustomCellProps.rowSpan > 1) {
       mergeCellStyles.height = `${getRowHeight(rowIndex, copyCustomCellProps.rowSpan) - 1}px`
     }
-    cellProps.props = Object.assign({}, copyCustomCellProps, { style: mergeCellStyles })
+    cellProps.props = Object.assign({}, copyCustomCellProps, {
+      style: { ...copyCustomCellProps.style, ...mergeCellStyles },
+    })
     return cellProps
   }
 

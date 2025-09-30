@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-10-13 19:02:51
  * @LastEditors: shen
- * @LastEditTime: 2025-08-31 16:22:32
+ * @LastEditTime: 2025-09-30 10:53:26
  * @Description:
  */
 const toString = Object.prototype.toString
@@ -62,8 +62,8 @@ export function isNumber(val: unknown): val is number {
   return is(val, 'Number')
 }
 
-export function isPromise<T = any>(val: unknown): val is Promise<T> {
-  return is(val, 'Promise') && isObject(val) && isFunction(val.then) && isFunction(val.catch)
+export function isPromise<T = any>(val: any): val is Promise<T> {
+  return is(val, 'Promise') && isFunction(val.then) && isFunction(val.catch)
 }
 
 export function isString(val: unknown): val is string {

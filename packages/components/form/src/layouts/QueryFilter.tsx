@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-24 10:53:54
+ * @LastEditTime: 2025-09-29 16:02:47
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -143,7 +143,6 @@ export default defineComponent({
       }
       if (props.defaultColsNumber !== undefined) {
         const oneRowControlsNumber = 24 / spanSize.value.span - 1
-        console.log('🚀 ~ showLength ~ oneRowControlsNumber:', oneRowControlsNumber)
         return props.defaultColsNumber > oneRowControlsNumber
           ? oneRowControlsNumber
           : props.defaultColsNumber
@@ -189,9 +188,8 @@ export default defineComponent({
       }
       return undefined
     })
-
     const [collapsed, setCollapsed] = useMergedState<boolean | undefined>(
-      () => props.defaultCollapsed && !!props.submitter,
+      () => props.defaultCollapsed && props.submitter !== false,
       {
         value: computed(() => props.collapsed),
         onChange: (val) => {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-12-17 11:35:56
  * @LastEditors: shen
- * @LastEditTime: 2025-09-23 10:48:05
+ * @LastEditTime: 2025-09-29 13:25:11
  * @Description:
 -->
 <script lang="ts">
@@ -51,6 +51,7 @@ export default defineComponent({
             return [
               typeof props.column.title == 'function'
                 ? props.column.title({
+                    column: props.column.originColumn!,
                     sortColumns: sortColumns.value,
                     sortColumn: sortColumns.value[0]?.column,
                     sortOrder: sortColumns.value[0]?.order,
@@ -134,8 +135,12 @@ export default defineComponent({
       </Popover>
     </template>
     <template v-if="column.headerTooltip">
-      <Tooltip :title="column.headerTooltip">
+      <Tooltip>
         <InfoCircleOutlined style="margin-inline-start: 3px; font-size: 12px" />
+        <template #title>
+          <component :is="title" v-if="column.headerTooltip === true"></component>
+          <template v-else>{{ column.headerTooltip }}</template>
+        </template>
       </Tooltip>
     </template>
   </span>

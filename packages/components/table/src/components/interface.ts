@@ -266,6 +266,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   size: {
     type: String as PropType<DensitySize>,
+    default: 'middle',
   },
   bordered: {
     type: Boolean,
@@ -360,6 +361,10 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   rowHoverDelay: {
     type: Number,
     default: 59,
+  },
+  rowHover: {
+    type: Boolean,
+    default: undefined,
   },
   rowKey: {
     type: [Function, String] as PropType<string | GetRowKey<T>>,
@@ -486,6 +491,9 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   'onUpdate:dataSource': {
     type: Function as PropType<(dataSource: T[]) => void>,
   },
+  'onUpdate:columns': {
+    type: Function as PropType<(columns: ColumnsType<T>, action: 'resize' | 'drag') => void>,
+  },
   columnEmptyText: {
     type: [String, Boolean] as PropType<string | false>,
     default: '-',
@@ -596,6 +604,7 @@ export interface ColumnTitleProps<RecordType> {
   sortOrder?: SortOrder
   /** @deprecated Please use `sorterColumns` instead. */
   sortColumn?: ColumnType<RecordType>
+  column: ColumnType<RecordType>
   sortColumns?: {
     column: ColumnType<RecordType>
     order: SortOrder
@@ -790,7 +799,7 @@ export interface ColumnType<RecordType = DefaultRecordType>
   flex?: number
   autoHeight?: boolean
   tooltip?: true | CellTooltip
-  headerTooltip?: string
+  headerTooltip?: string | true
   hidden?: boolean
   sorter?:
     | boolean
@@ -856,7 +865,7 @@ export interface ColumnType<RecordType = DefaultRecordType>
   }
   valueEnum?: ((row: RecordType) => Record<string, ValueEnumType>) | Record<string, ValueEnumType>
   valueStatus?: ((value: any, row: RecordType) => ValueStatus) | ValueStatus
-  renderText?: (text: any, record: RecordType, rowIndex: number) => string
+  renderText?: (text: any, record: RecordType, rowIndex: number) => string | number
   /** @name 列设置的 disabled */
   disable?:
     | boolean
@@ -874,6 +883,8 @@ export interface ColumnType<RecordType = DefaultRecordType>
 
   /** @name 不在过滤工具中显示 */
   hideInFilter?: boolean
+
+  children?: ColumnType<RecordType>[]
 }
 export interface ColumnGroupType<RecordType = DefaultRecordType> extends ColumnType<RecordType> {
   children?: ColumnsType<RecordType>
@@ -971,7 +982,7 @@ export interface ColumnDragGhostArg<ColumnT> {
   targetColumn: ColumnT
 }
 
-export type DensitySize = 'small' | 'default' | 'middle' | undefined
+export type DensitySize = 'small' | 'middle' | 'large' | undefined
 export type Request<T = DefaultRecordType, U = Record<string, any>> = (
   params: U & {
     pageSize?: number
@@ -1026,6 +1037,7 @@ export type ColumnsState = {
   show?: boolean
   fixed?: true | 'right' | 'left' | undefined
   order?: number
+  width?: number
   disable?:
     | boolean
     | {

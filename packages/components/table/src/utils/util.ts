@@ -308,8 +308,8 @@ export function deleteNestItemData<T>(
   return currentData
 }
 
-export function isPromise<T = any>(val: unknown): val is Promise<T> {
-  return is(val, 'Promise') && isObject(val) && isFunction(val.then) && isFunction(val.catch)
+export function isPromise<T = any>(val: any): val is Promise<T> {
+  return is(val, 'Promise') && isFunction(val.then) && isFunction(val.catch)
 }
 
 export function ensureValidVNode(vnodes: any): any {

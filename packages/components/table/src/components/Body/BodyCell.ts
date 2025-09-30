@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-23 10:14:27
+ * @LastEditTime: 2025-09-29 09:06:52
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -305,7 +305,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   cellVNode = autoHeight ? withDirectives(cellVNode, [[cellResize, cellResizeValue]]) : cellVNode
   let renderCellVNode: any = null
   let showTooltip = tooltipStatus
-
   if (tooltipStatus) {
     const tooltipProps = { ...(column!.tooltip === true ? {} : column!.tooltip) } as any
     if (tooltipProps.title) {
@@ -332,7 +331,8 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
         shouldOpen: (isEllipsis) => {
           return tooltipProps?.shouldOpen
             ? tooltipProps?.shouldOpen?.(isEllipsis, cellRenderArgs)
-            : isEllipsis
+            : true
+          // : isEllipsis
         },
         onCellLeave: () => {
           emit('cellLeave')

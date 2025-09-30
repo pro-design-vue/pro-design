@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 16:30:31
+ * @LastEditTime: 2025-09-28 14:23:27
  * @Description:
 -->
 <script lang="ts">
@@ -279,8 +279,7 @@ export default defineComponent({
     })
 
     const bodyViewportStyle = computed<CSSProperties>(() => ({
-      width: `calc(100% + ${tableContext.showVerticalScrollbar.value ? tableContext.scrollBarSize.value || 15 : 0}px)`,
-      // width: `calc(100% + 0px)`,
+      width: `calc(100% + ${tableContext.showVerticalScrollbar.value ? tableContext.scrollBarSize.value : 0}px)`,
       overflowX: 'hidden',
       overflowY: 'auto',
       height: '100%',

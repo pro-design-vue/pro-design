@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-05 09:53:58
  * @LastEditors: shen
- * @LastEditTime: 2025-07-28 09:29:18
+ * @LastEditTime: 2025-09-28 09:28:14
  * @Description:
  */
 import type { ProTableProps } from '../components/interface'
@@ -12,6 +12,7 @@ import { reactive, computed, onBeforeUnmount } from 'vue'
 import devWarning from '../utils/devWarning'
 
 export const DEFAULT_PAGE_SIZE = 10
+export const PAGE_SIZE_OPTIONS = ['5', '10', '20', '50']
 export function getPaginationParam(
   pagination: TablePaginationConfig | boolean | undefined,
   mergedPagination: TablePaginationConfig,
@@ -68,7 +69,11 @@ export default function usePagination(
   mergedData: ComputedRef<any[]>,
   onChange?: (current: number, pageSize: number) => void,
 ): PaginationRes {
-  const innerPagination = reactive({ current: 1, pageSize: DEFAULT_PAGE_SIZE })
+  const innerPagination = reactive({
+    current: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    pageSizeOptions: PAGE_SIZE_OPTIONS,
+  })
   const size = computed(() => props.size)
 
   const mergedPagination = computed(() => {

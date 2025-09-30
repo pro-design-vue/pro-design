@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-29 13:59:21
+ * @LastEditTime: 2025-09-30 10:41:46
  * @Description:
 -->
 <script lang="ts">
@@ -231,29 +231,30 @@ export default defineComponent({
             event: rowDragEvent.value!,
           })
         }
+      } else {
+        return [
+          createVNode(
+            'span',
+            { class: `${prefixCls.value}-drag-ghost-image-icon`, innerHTML: dragIcon },
+            null,
+          ),
+          createVNode(
+            'span',
+            {
+              class: `${prefixCls.value}-drag-ghost-image-label`,
+              style: { maxWidth: `${parentOffsetWidth}px` },
+            },
+            [slots.label?.()],
+          ),
+        ]
       }
-      return [
-        createVNode(
-          'span',
-          { class: `${prefixCls.value}-drag-ghost-image-icon`, innerHTML: dragIcon },
-          null,
-        ),
-        createVNode(
-          'span',
-          {
-            class: `${prefixCls.value}-drag-ghost-image-label`,
-            style: { maxWidth: `${parentOffsetWidth}px` },
-          },
-          [slots.label?.()],
-        ),
-      ]
     }
 
     const renderDragGhost = () => {
       if (!dragGhostImage) {
         dragGhostImage = createVNode(renderDragGhostImage)
+        render(dragGhostImage, dragGhostDom)
       }
-      render(dragGhostImage, dragGhostDom)
     }
 
     watch(
