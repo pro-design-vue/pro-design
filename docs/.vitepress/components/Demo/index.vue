@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-20 09:32:09
  * @LastEditors: shen
- * @LastEditTime: 2025-09-07 23:28:21
+ * @LastEditTime: 2025-09-28 14:58:54
  * @Description:
 -->
 <script lang="ts">
@@ -121,7 +121,6 @@ const copyCode = async () => {
   .example-showcase {
     padding: 1.5rem;
     margin: 0.5px;
-    overflow: auto;
     background-color: var(--bg-color);
     border-radius: var(--el-border-radius-base);
   }

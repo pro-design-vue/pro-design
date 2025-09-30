@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
@@ -19,16 +18,13 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   1: { value: '1', text: '启用', color: 'success' },
 }
 
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
-
 const columns: ProTableColumnType[] = [
   {
-    title: '姓名',
+    title: '姓名很长很长很长很长很长很长很长很长',
     dataIndex: 'name',
+    headerTooltip: true,
+    width: 150,
+    tooltip: { title: ({ value }) => value, color: '#f50', placement: 'topLeft' },
   },
   {
     title: '年龄',
@@ -42,6 +38,10 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     dataIndex: 'detail.email',
+    headerTooltip: '常用邮箱',
+    ellipsis: { showTitle: false },
+    // we can set object not have title prop, then use `tooltipTitle` slot
+    tooltip: { title: ({ value }) => `邮箱：${value}`, placement: 'topLeft' },
   },
   {
     title: '毕业日期',
@@ -70,36 +70,17 @@ for (let i = 0; i < 20; i++) {
 }
 
 const dataSource = ref(data)
-
-const pagination = {
-  pageSize: 5,
-}
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    virtual
+    :search="false"
+    :tool-bar="false"
+    :scroll="{ y: 300 }"
+    :pagination="false"
+    :dataSource
+    :columns
+  >
+  </ProTable>
 </template>

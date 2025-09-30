@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
@@ -19,16 +18,12 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   1: { value: '1', text: '启用', color: 'success' },
 }
 
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
-
 const columns: ProTableColumnType[] = [
   {
-    title: '姓名',
+    title: '姓名很长很长很长很长很长很长很长很长',
     dataIndex: 'name',
+    headerTooltip: true,
+    width: 150,
   },
   {
     title: '年龄',
@@ -42,6 +37,15 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     dataIndex: 'detail.email',
+    headerTooltip: '常用邮箱',
+    ellipsis: true,
+    tooltip: { title: ({ value }) => `邮箱：${value}`, placement: 'topLeft' },
+  },
+  {
+    title: '地址',
+    dataIndex: 'address',
+    ellipsis: { line: 2, showTitle: false },
+    tooltip: true,
   },
   {
     title: '毕业日期',
@@ -62,44 +66,30 @@ for (let i = 0; i < 20; i++) {
     age: [20, 31, 18, 45][i % 4],
     status: (i % 3) + '',
     sex: ['1', '2', '0'][i % 3],
+    address: [
+      '吉林省长春市高新区某某大街某某街道1008号',
+      '黑龙江省哈尔滨香坊区某某大街某某街道1008号',
+      '辽宁省沈阳市某某大街某某街道1008号',
+    ][i % 3],
     detail: {
-      email: ['w.cezkdudy@qq.com', 'r.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
+      email: ['wwwwww.cezkdudy@qq.com', 'rrrrrrr.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
     },
     graduateDate: ['2024-01-01', '2012-02-01', '2025-03-01', '2002-04-01'][i % 4],
   })
 }
 
 const dataSource = ref(data)
-
-const pagination = {
-  pageSize: 5,
-}
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    virtual
+    :search="false"
+    :tool-bar="false"
+    :scroll="{ y: 300 }"
+    :pagination="false"
+    :dataSource
+    :columns
+  >
+  </ProTable>
 </template>

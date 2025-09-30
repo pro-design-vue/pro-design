@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
@@ -19,16 +18,14 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   1: { value: '1', text: '启用', color: 'success' },
 }
 
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
-
 const columns: ProTableColumnType[] = [
   {
-    title: '姓名',
+    title: ({ column }) => {
+      return <a>姓名</a>
+    },
     dataIndex: 'name',
+    fixed: 'left',
+    width: 150,
   },
   {
     title: '年龄',
@@ -38,10 +35,26 @@ const columns: ProTableColumnType[] = [
     title: '性别',
     dataIndex: 'sex',
     valueEnum: SexValueEnum,
+    customRender: ({ record }) => {
+      // return <a style={{ color: record.age > 30 ? 'red' : 'green' }}>{record.age}</a>
+      return {
+        props: {
+          style: {
+            color: record.age > 30 ? 'red' : 'green',
+          },
+          class: 'custom-row',
+        },
+        children: <span>{record.age}</span>,
+      }
+    },
   },
   {
     title: '邮箱',
     dataIndex: 'detail.email',
+    ellipsis: true,
+    renderText(text) {
+      return `邮箱：${text}`
+    },
   },
   {
     title: '毕业日期',
@@ -70,36 +83,26 @@ for (let i = 0; i < 20; i++) {
 }
 
 const dataSource = ref(data)
-
-const pagination = {
-  pageSize: 5,
-}
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    virtual
+    :search="false"
+    :tool-bar="false"
+    :scroll="{ y: 400 }"
+    :pagination="false"
+    :dataSource
+    :columns
+  >
+    <template #headerCell="{ title, column }">
+      <template v-if="column.key === 'age'">
+        {{ title }}<span style="color: red">（周岁）</span>
+      </template>
+    </template>
+
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'age'"> {{ record.age }}周岁 </template>
+    </template>
+  </ProTable>
 </template>

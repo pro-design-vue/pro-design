@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
+  ProTableSummaryRow,
+  ProTableSummaryCell,
   type ProTableValueEnumType,
   type ProTableProps,
   type ProTableColumnType,
@@ -18,12 +19,6 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '禁用', color: 'error' },
   1: { value: '1', text: '启用', color: 'success' },
 }
-
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
 
 const columns: ProTableColumnType[] = [
   {
@@ -42,6 +37,7 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     dataIndex: 'detail.email',
+    ellipsis: true,
   },
   {
     title: '毕业日期',
@@ -70,36 +66,35 @@ for (let i = 0; i < 20; i++) {
 }
 
 const dataSource = ref(data)
-
-const pagination = {
-  pageSize: 5,
-}
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    virtual
+    :search="false"
+    :tool-bar="false"
+    :scroll="{ y: 300 }"
+    :pagination="false"
+    :dataSource
+    :columns
+    bordered
+    summary-fixed
+  >
+    <template #summary>
+      <ProTableSummaryRow>
+        <ProTableSummaryCell :index="0"> 总年龄 </ProTableSummaryCell>
+        <ProTableSummaryCell :index="1">
+          <template #default="{ total }">
+            {{ total }}
+          </template>
+        </ProTableSummaryCell>
+      </ProTableSummaryRow>
+      <ProTableSummaryRow>
+        <ProTableSummaryCell :index="0"> 平均年龄 </ProTableSummaryCell>
+        <ProTableSummaryCell :index="1">
+          <template #default="{ total }"> {{ total / 20 }} </template>
+        </ProTableSummaryCell>
+      </ProTableSummaryRow>
+    </template>
+  </ProTable>
 </template>

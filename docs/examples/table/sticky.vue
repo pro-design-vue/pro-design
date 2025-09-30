@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
@@ -18,12 +17,6 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '禁用', color: 'error' },
   1: { value: '1', text: '启用', color: 'success' },
 }
-
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
 
 const columns: ProTableColumnType[] = [
   {
@@ -77,29 +70,16 @@ const pagination = {
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    :tool-bar="false"
+    :search="false"
+    :dataSource
+    :columns
+    :pagination
+    :scroll="{ x: 1200 }"
+    :sticky="{
+      offsetHeader: 64,
+    }"
+    paginationSticky
+  />
 </template>

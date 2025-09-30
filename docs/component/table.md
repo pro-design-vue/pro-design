@@ -7,13 +7,241 @@ outline: deep
 
 ProTable 是核心组件之一，该组件致力于解决大数据渲染等复杂高频问题。使用该组件可以流畅滚动 10 万行、10 万列的数据，你不必担心页面卡顿造成用户投诉，进而影响业务进展。
 
+![pro design table](/table.png)
+
 ## 使用演示
 
 最简单的用法。你只需要配置 `columns` `dataSource` 即可展示表格。组件默认开启了分页，如果没有分页且数据量较大，请开启`virtual`虚拟滚动，支持10万+数据渲染。
 
 :::demo
 
+table/demo
+
+:::
+
+
+### 基本使用
+
+简单表格，使用分页切换数据。使用边框线、斑马纹等清晰呈现各数据单元格边界线，辅助信息区隔。
+
+:::demo
+
 table/basic
+
+:::
+
+### 固定表头和列
+
+对于列数很多的数据，可以固定前后的列，横向滚动查看其它数据。对于数据量非常大且没有分页的数据，可以固定表头，竖向滚动查看其它数据。如果数据行和列都非常多，建议开启`virtual`虚拟滚动。
+
+可通过给列属性设置 `fixed: 'left'` 或 `fixed: 'right'` 以达成固定列效果。
+
+你需要设置表格属性 `scroll="{ x: 1500 }"` 或者给每一列都设置宽度，当 scroll.x 或 列宽总和超过表格宽度时出现横向滚动条。
+
+你需要设置表格属性 `scroll="{ y: 300 }"` 或通过 `height` 或 `maxHeight` 设置表格高度，单位同 CSS 属性。建议使用 `maxHeight` 自适应高度。
+
+`height` 是固定表格高度，不受内容多少的影响，`height` 和 `scroll.y` 一般只需要设置一个，当然你可以同时设置，组合出你想要的效果。
+
+:::demo
+
+table/fixed
+
+:::
+
+### 表头吸顶/分页吸底
+
+* 表头吸顶，设置 `sticky=true` 即可。如果需要调整吸顶位置及更多配置，使用 `sticky: { offsetHeader: 80 }`。
+* 分页器/滚动条吸底，设置 `paginationSticky=true` 即可。如果需要调整吸底位置及更多配置，使用 `paginationSticky: { offsetBottom: 60 }`。
+
+::: tip 注意
+吸顶和吸底是使用的 position: sticky 实现，如果发现吸顶没有生效，请排查 table 父元素是否有元素设置了 overflow，具体原因请查看[规范](https://developer.mozilla.org/zh-CN/docs/Web/CSS/position)。
+:::
+
+:::demo
+
+table/sticky
+
+:::
+
+### 合并表头/单元格
+
+根据数据结构，可以将表格中的行列进行合并。
+
+* 使用列属性 `colSpan` 设置表头合并。如果是多级表头，请参考下方「表头分组」示例。
+* 使用列属性 `customRender` 设置表格内容合并元格，单元格属性 `colSpan`|`rowSpan`, 当设值为 0 时，设置的表格不会渲染。
+
+:::demo
+
+table/group
+
+:::
+
+
+### 表头分组
+
+表头数据标签可采用分组呈现，表述信息层级包含关系。
+
+* 表头分组的配置只需要在列配置中添加 `children` 子列配置即可。
+* 表头分组中的固定列，必须指定第一层 `fixed` 属性，不支持子列固定。
+* 表头分组中的列宽设置，只需指定最后一层表头宽度。
+
+:::demo
+
+table/grouping-columns
+
+:::
+
+### 滚动到指定位置
+
+通过 `scrollTo` 方法滚动到指定位置，默认不开启动画。
+
+对于动态行高，虚拟滚动会动态修正行的位置，如果需要滚动到指定行，很有可能并没有滚动到预期位置。
+
+:::demo
+
+table/scroll
+
+:::
+
+### Tooltip 自定义提示
+
+使用 `tooltip.title` 自定义更加友好的提示。
+
+使用 `headerTooltip` 配置表头提示。`headerTooltip = true`使用title配置提示。
+
+你可以全量开启 tooltip，不用担心性能问题。本示例，姓名、邮箱 两列开启了 tooltip。
+
+:::demo
+
+table/tooltip
+
+:::
+
+### 单元格超出省略
+
+支持单元格文本超出省略，支持文本多行超出省略。表头标题超出自动省略，如果表头标题不想省略，参考自动高度。
+
+使用 `ellipsis` 设置列文本超出省略显示；只要 ellipsis 为真，无论是何种数据类型都会出现超出省略。
+
+使用 `ellipsis: { line: 2 }` 设置列文本多行超出省略显示。
+
+
+:::demo
+
+table/ellipsis
+
+:::
+
+### 自动高度
+
+配置表格属性 `auto-header-height` 开启表头自动高度。拖动第一列查看效果吧。
+
+列设置`autoHeight: true` 开启列自动行高。拖动邮箱列查看效果吧。
+
+::: tip 注意
+当自动表头高度时，表头部分会降级到全量渲染，如果你有很多很多很多列，全量渲染对表格性能有一定的影响。
+
+不建议对每一列都设置自动行高，虽然你可以这么做， 对于大多数场景，一般只有少数几列会有自动行高的需求。
+:::
+
+
+:::demo
+
+table/auto-height
+
+:::
+
+### 表尾总结栏
+
+通过 `summary` 插槽设置总结栏。因为支持设置多行总结栏，所以不能简单的通过属性进行设置。
+
+使用 `pro-table-summary-row` 设置一行，`pro-table-summary-cell` 设置列。
+
+你可以通过在 `pro-table-summary-cell` 上设置 `index` 和 `colSpan`，来表示展示位置和合并列数。
+
+注意 `index` 指的是所在列的位置，当有展开列或选择列时，会影响 `index` 的数据。
+
+你可以通过插槽 `default` 获取组件内部自动计算的和，当然你也可以设置任意内容。
+
+:::demo
+
+table/summary
+
+:::
+
+### 自定义样式
+
+自定义 `Header、Body、Summary、Row、Cell` 的样式。 由于有固定列、固定行等功能，没有办法简单的改变样式。
+
+:::demo
+
+table/custom-style
+
+:::
+
+### 自定义表头/单元格
+
+表头标题默认使用 `title` 渲染，自定义标题则有以下 2 种方式：
+* 使用 `title` 作为渲染函数，函数参数为：`({ column, sortColumns, filters }) => VNode`。
+* 使用 `headerCell` 插槽，插槽参数为：`#headerCell="{ title, column }"`，根据`column.key`判断自定义渲染那一列。
+
+单元格默认使用 row[dataIndex] 渲染数据内容，自定义单元格有以下 3 种方式：
+* 【推荐】使用 `customRender` 作为渲染函数，函数参数为：`({ value, text, record, index, column }) => { props: {key, class,    style, colSpan, rowSpan }, children: VNode } | VNode`。
+* 使用 `bodyCell` 插槽，插槽参数为：`#bodyCell="{ record, column, text, value, index, oldValue, recordIndexs }"`，根据`column.key`判断自定义渲染那一列。
+* 使用 `renderText` 渲染函数，函数参数为：`({text, record, rowIndex}) => string | number`，只支持返回`字符串`，适合`拼接｜计算`等操作。
+
+:::demo
+
+table/custom-render
+
+:::
+
+### 虚拟滚动
+
+虚拟滚动提升渲染速度，树形数据、展开内容、嵌套子表格、行列合并、自动行高、横向、纵向、吸顶、固定头、固定列等等一切都支持虚拟滚动。
+* 虚拟滚动一般用于超大数据渲染的场景，以提供更优的前端性能表现，设置 `virtual=true` 即可开启虚拟滚动模式，设置 `xVirtual=false` 可以关闭横向虚拟滚动。
+* 虚拟滚动根据表格高度计算渲染数据，所以必须设置 `scroll.y` 和 `height` 其中之一。
+:::demo
+
+table/virtual
+
+:::
+
+### 分页配置
+
+组件默认开启了分页，你不但可以通过表格属性 `pagination` 配置显示或隐藏，还可以配置显示位置。你还可以配置 [Antv Pagination](https://www.antdv.com/components/pagination-cn#api) 组件的其它部分属性。
+
+当 `dataSource.length` 长度超过 `pageSize`，单页已无法完整地显示数据，此时会自动开启本地数据分页，组件内部会对 `dataSource` 进行分页。如果希望禁用组件内部分页，可以设置 `pagination=false`关闭分页。
+
+::: tip
+如果关闭了分页，且表格没有设置`height` | `scroll.y`和开启 `virtual`虚拟滚动，表格数据将全量渲染，数据量大将会造成性能问题。
+:::
+:::demo
+
+table/pagination
+
+:::
+
+### 拖拽排序
+
+支持拖拽表格行调整顺序，支持拖拽表头调整列顺序。支持拖拽表头调整列宽。
+
+* 设置列属性 `resizable = true`, 可以将列变成可拖拽改变宽度的列，通过设置 `minWidth`、`maxWidth` 控制列宽的最小宽度和最大宽度，当然这都是可选的配置。 当有些列没有设置 width 时，该列将会是自动伸缩，其它可拖拽的列大小改变时，会重新计算自动伸缩列的宽度。
+* 设置列属性 `rowDrag = true`, 该列将添加拖拽图标。rowDrag 同样可以是一个返回 boolean 类型的函数，用来自定义不同的行是否允许 拖拽。
+* 设置表格属性 `columnDrag = true`,启用全列拖拽(选择、展开除外)。设置列属性 `drag = true`，单独控制某一列是否可以拖拽。
+* 组件内部默认使用当前单元格的内容显示提示，你可以使用 `rowDragGhost` 插槽自定义内容。
+* 使用 `rowDragEnd` 事件返回 `promise`，可以做行拖拽排序二次确认是否移动到目标位置。
+* 使用 `columnDragEnd` 事件返回 `promise`，可以做列拖拽排序二次确认是否移动到目标位置。
+
+::: tip
+拖拽是一个很酷的功能，但你要知道当用户刷新或重新获取数据后，状态会被重置，除非你开启了缓存，使用表格属性 `columns-state` 设置缓存及初始状态 `{persistenceType: 'localStorage',persistenceKey: 'dragable-local'}`。
+
+注意：表头分组仅支持叶子节点拖拽修改列宽，表头分组仅支持一级节点拖拽排序。
+:::
+
+:::demo
+
+table/dragable
 
 :::
 
@@ -59,6 +287,7 @@ table/basic
 | title                  | 表格标题                                                                                           | `string`                                                                                                             | -                                                                         |
 | indentSize             | 展示树形数据时，每层缩进的宽度，以 px 为单位                                                       | number                                                                                                               | 15                                                                        |
 | rowExpandable          | 设置是否允许行展开                                                                                 | (record) => boolean                                                                                                  | -                                                                         |
+| rowHover         | 设置是否显示悬浮效果                                                                                 | boolean                                                                                                  | -                                                                         |
 | customRow              | 设置行属性                                                                                         | Function(record, index)                                                                                              | -                                                                         |
 | customCell             | 设置单元格属性, column 如配置了 `customCell`, 优先使用 column.customCell                           | Function(obj: {record: any; rowIndex: number; column: ColumnType})                                                   | -                                                                         |
 | summaryFixed           | 固定总结栏                                                                                         | boolean \| 'top'（2.4.6） \| 'bottom'                                                                                | -                                                                         |

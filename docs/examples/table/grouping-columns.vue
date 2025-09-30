@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RadioGroup, RadioButton, Space, Checkbox } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
@@ -19,26 +18,33 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
   1: { value: '1', text: '启用', color: 'success' },
 }
 
-const stripe = ref(true)
-const bordered = ref(true)
-const rowHover = ref(false)
-const size = ref<ProTableProps['size']>('middle')
-const showHeader = ref(true)
-
 const columns: ProTableColumnType[] = [
   {
     title: '姓名',
     dataIndex: 'name',
+    fixed: 'left',
   },
   {
-    title: '年龄',
-    dataIndex: 'age',
+    title: '基本信息',
+    align: 'center',
+    fixed: 'left',
+    children: [
+      {
+        title: '年龄',
+        dataIndex: 'age',
+      },
+      {
+        title: '性别',
+        dataIndex: 'sex',
+        valueEnum: SexValueEnum,
+      },
+      {
+        title: '手机号',
+        dataIndex: 'phone',
+      },
+    ],
   },
-  {
-    title: '性别',
-    dataIndex: 'sex',
-    valueEnum: SexValueEnum,
-  },
+
   {
     title: '邮箱',
     dataIndex: 'detail.email',
@@ -50,6 +56,7 @@ const columns: ProTableColumnType[] = [
   {
     title: '状态',
     dataIndex: 'status',
+    fixed: 'right',
     valueEnum: StatusValueEnum,
   },
 ]
@@ -62,6 +69,7 @@ for (let i = 0; i < 20; i++) {
     age: [20, 31, 18, 45][i % 4],
     status: (i % 3) + '',
     sex: ['1', '2', '0'][i % 3],
+    phone: '133****3232',
     detail: {
       email: ['w.cezkdudy@qq.com', 'r.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
     },
@@ -77,29 +85,13 @@ const pagination = {
 </script>
 
 <template>
-  <Space direction="vertical" style="display: flex">
-    <RadioGroup v-model:value="size" button-style="solid">
-      <RadioButton value="small">小尺寸</RadioButton>
-      <RadioButton value="middle">中尺寸</RadioButton>
-      <RadioButton value="large">大尺寸</RadioButton>
-    </RadioGroup>
-    <Space>
-      <Checkbox v-model:checked="stripe">显示斑马纹</Checkbox>
-      <Checkbox v-model:checked="bordered">显示表格边框</Checkbox>
-      <Checkbox v-model:checked="rowHover">显示悬浮效果</Checkbox>
-      <Checkbox v-model:checked="showHeader">显示表头</Checkbox>
-    </Space>
-    <ProTable
-      :tool-bar="false"
-      :search="false"
-      :size
-      :stripe
-      :bordered
-      :showHeader
-      :dataSource
-      :columns
-      :pagination
-      :rowHover
-    />
-  </Space>
+  <ProTable
+    bordered
+    :tool-bar="false"
+    :search="false"
+    :dataSource
+    :columns
+    :pagination
+    :scroll="{ x: 1200 }"
+  />
 </template>
