@@ -241,7 +241,7 @@ table/pagination
 
 table/dragable
 
-::: 
+:::
 
 ## API
 
