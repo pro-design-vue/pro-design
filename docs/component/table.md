@@ -11,8 +11,6 @@ ProTable 是核心组件之一，该组件致力于解决大数据渲染等复�
 
 ## 使用演示
 
-最简单的用法。你只需要配置 `columns` `dataSource` 即可展示表格。组件默认开启了分页，如果没有分页且数据量较大，请开启`virtual`虚拟滚动，支持10万+数据渲染。
-
 :::demo
 
 table/demo
@@ -200,7 +198,8 @@ table/custom-render
 
 - 虚拟滚动一般用于超大数据渲染的场景，以提供更优的前端性能表现，设置 `virtual=true` 即可开启虚拟滚动模式，设置 `xVirtual=false` 可以关闭横向虚拟滚动。
 - 虚拟滚动根据表格高度计算渲染数据，所以必须设置 `scroll.y` 和 `height` 其中之一。
-  :::demo
+
+:::demo
 
 table/virtual
 
@@ -242,7 +241,7 @@ table/pagination
 
 table/dragable
 
-:::
+::: 
 
 ## API
 
