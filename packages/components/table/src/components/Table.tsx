@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-30 16:45:43
+ * @LastEditTime: 2025-10-07 11:48:03
  * @Description:
  */
 
@@ -237,7 +237,7 @@ export default defineComponent({
               tooltip: item.headerTooltip,
               name: item.dataIndex,
             },
-            ['dataIndex', 'width', 'tooltip', 'disable'],
+            ['dataIndex', 'width'],
           ) as ProFormItemType
         })
     })
@@ -490,7 +490,7 @@ export default defineComponent({
               tableShowCard={props.cardProps !== false}
               loading={formSubmitLoading.value}
               beforeSearchSubmit={props.beforeSearchSubmit}
-              manual={props.manual}
+              manual={props.manual || props.manualRequest}
               onReset={props.onReset}
               onSubmit={props.onSubmit}
               onFormSearchSubmit={onFormSearchSubmit}

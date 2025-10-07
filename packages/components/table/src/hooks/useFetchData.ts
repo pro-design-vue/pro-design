@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 16:45:36
+ * @LastEditTime: 2025-10-04 16:03:27
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -107,7 +107,7 @@ const formatSorters = (
   }
   return result.map((item) => ({
     field: item.field,
-    order: item.order?.toUpperCase(),
+    order: item.order,
   })) as SorterResult<any>[]
 }
 
@@ -131,7 +131,7 @@ export const useFetchData = (
    */
   const abortRef = ref<AbortController | null>(null)
   /** 是否首次加载的指示器 */
-  const manualRequestRef = ref<boolean>(!!props.manual)
+  const manualRequestRef = ref<boolean>(!!(props.manual || props.manualRequest))
   /** 轮询的setTime ID 存储 */
   const pollingSetTimeRef = ref<any>()
   const pollingLoading = ref<boolean>(false)
@@ -274,7 +274,6 @@ export const useFetchData = (
       if (abort.signal.aborted) return
       // 放到请求前面会导致数据是上一次的
       const needPolling = runFunction(props.polling, msg)
-
       if (needPolling && !umountRef.value) {
         pollingSetTimeRef.value = setTimeout(
           () => {
@@ -309,18 +308,15 @@ export const useFetchData = (
     },
   )
 
-  watch(
-    () => props.manual,
-    () => {
-      abortFetch()
-      fetchListDebounce(false)
-      if (!props.manual) {
-        // 如果 manual 标志未设置，则将 manualRequestRef 设置为 false。
-        // 用于跟踪当前的请求是否是手动发起的。
-        manualRequestRef.value = false
-      }
-    },
-  )
+  watch([() => props.manual, () => props.manualRequest], () => {
+    abortFetch()
+    fetchListDebounce(false)
+    if (!props.manual || !props.manualRequest) {
+      // 如果 manual 标志未设置，则将 manualRequestRef 设置为 false。
+      // 用于跟踪当前的请求是否是手动发起的。
+      manualRequestRef.value = false
+    }
+  })
 
   watch(
     () => pagination.value.current,

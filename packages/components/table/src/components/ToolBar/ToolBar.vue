@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:47:13
+ * @LastEditTime: 2025-10-05 11:39:41
  * @Description:
 -->
 <script lang="ts">
@@ -163,21 +163,18 @@ export default defineComponent({
             </Tooltip>
           </div>
           <Space :class="`${prefixCls}-toolbar-options`" v-if="options !== false">
-            <ProSearch
-              v-if="mergeOptions.search !== false && !(!!title || !!$slots.title)"
-              v-bind="searchConfig"
-              @search="onSearch"
-            />
-            <slot name="searchExtra" :set-params="actionsRef!.setParams" />
+            <template v-if="mergeOptions.search !== false && !(!!title || !!$slots.title)">
+              <ProSearch v-bind="searchConfig" @search="onSearch" />
+              <slot name="searchExtra" :set-params="actionsRef!.setParams" />
+            </template>
           </Space>
         </div>
         <div :class="`${prefixCls}-toolbar-right`">
           <Space :class="`${prefixCls}-toolbar-actions`">
-            <ProSearch
-              v-if="mergeOptions.search !== false && (!!title || !!$slots.title)"
-              v-bind="searchConfig"
-              @search="onSearch"
-            />
+            <template v-if="mergeOptions.search !== false && (!!title || !!$slots.title)">
+              <ProSearch v-bind="searchConfig" @search="onSearch" />
+              <slot name="searchExtra" :set-params="actionsRef!.setParams" />
+            </template>
             <slot name="actions" :set-params="actionsRef!.setParams"></slot>
             <template v-if="options !== false">
               <Tooltip

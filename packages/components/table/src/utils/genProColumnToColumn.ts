@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 11:26:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-30 16:39:14
+ * @LastEditTime: 2025-10-01 14:06:16
  * @Description:
  */
 import type { ContainerContextProps } from '../hooks/useContainer'
@@ -51,7 +51,6 @@ export function genProColumnToColumn(
         ({
           fixed: columnProps.fixed,
         } as any)
-      console.log('🚀 ~ ?.map ~ config:', config)
       const tempColumns = {
         index: columnsIndex,
         key: columnKey,

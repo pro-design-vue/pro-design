@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-09-26 13:58:20
+ * @LastEditTime: 2025-10-07 11:38:42
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -295,7 +295,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
   key?: Key
   originKey?: Key
   /** @name 展示一个 icon，hover 是展示一些提示信息 */
-  tooltip?: string
+  tooltip?: string | true
 
   hidden?: boolean
   /**

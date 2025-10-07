@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 13:00:22
  * @LastEditors: shen
- * @LastEditTime: 2025-07-31 10:05:29
+ * @LastEditTime: 2025-10-07 11:54:30
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -26,7 +26,7 @@ export default defineComponent({
       default: undefined,
     },
     tooltip: {
-      type: String,
+      type: [String, Boolean],
       default: '',
     },
   },
@@ -42,8 +42,17 @@ export default defineComponent({
           </span>
         )}
         {props.tooltip && (
-          <Tooltip title={props.tooltip}>
-            <QuestionCircleOutlined class={`${prefixCls}-item-tooltip`} />
+          <Tooltip
+            v-slots={{
+              title: () =>
+                props.tooltip === true ? (
+                  <RenderVNode vnode={title.value} props={{ formData: formData.value }} />
+                ) : (
+                  props.tooltip
+                ),
+            }}
+          >
+            <QuestionCircleOutlined class={`${prefixCls}-item-tooltip`} style="margin-right: 3px" />
           </Tooltip>
         )}
       </>

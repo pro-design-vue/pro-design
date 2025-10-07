@@ -506,6 +506,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   params: Object as PropType<Record<string, any>>,
   defaultData: Array as PropType<T[]>,
   manual: Boolean,
+  manualRequest: Boolean,
   polling: [Number, Function] as PropType<number | ((dataSource: any[]) => number)>,
   debounceTime: Number,
   onLoad: {
@@ -880,9 +881,6 @@ export interface ColumnType<RecordType = DefaultRecordType>
 
   /** @name 不在配置工具中显示 */
   hideInSetting?: boolean
-
-  /** @name 不在过滤工具中显示 */
-  hideInFilter?: boolean
 
   children?: ColumnType<RecordType>[]
 }
