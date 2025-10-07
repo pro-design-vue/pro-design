@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:52:13
+ * @LastEditTime: 2025-10-07 13:17:07
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -51,7 +51,7 @@ export default defineComponent({
       default: undefined,
     },
     tooltip: {
-      type: String,
+      type: [String, Boolean],
       default: undefined,
     },
     colProps: {

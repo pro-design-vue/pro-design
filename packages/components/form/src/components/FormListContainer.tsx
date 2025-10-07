@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:51:17
+ * @LastEditTime: 2025-10-07 13:17:41
  * @Description:
  */
 import type { ButtonProps } from 'ant-design-vue'
@@ -43,7 +43,7 @@ export default defineComponent({
       default: undefined,
     },
     tooltip: {
-      type: String,
+      type: [String, Boolean],
       default: undefined,
     },
     readonly: {
