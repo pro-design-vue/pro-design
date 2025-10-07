@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import {
   ProTable,
+  ProFieldType,
   type ProTableValueEnumType,
   type ProTableProps,
   type ProTableColumnType,
+  type ProTableRequest,
 } from 'pro-design-vue'
-
+import { sleep } from '@pro-design-vue/utils'
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '未知' },
   1: { value: '1', text: '男' },
@@ -20,15 +21,18 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
 
 const columns: ProTableColumnType[] = [
   {
-    title: '姓名很长很长很长很长很长很长很长很长',
+    dataIndex: 'id',
+    width: 50,
+  },
+  {
+    title: '姓名',
     dataIndex: 'name',
-    headerTooltip: true,
-    width: 150,
-    tooltip: { title: ({ value }) => value, color: '#f50', placement: 'topLeft' },
   },
   {
     title: '年龄',
+    hideInSearch: true,
     dataIndex: 'age',
+    sorter: true,
   },
   {
     title: '性别',
@@ -38,28 +42,26 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     dataIndex: 'detail.email',
-    headerTooltip: '常用邮箱',
-    ellipsis: { showTitle: false },
-    // we can set object not have title prop, then use `tooltipTitle` slot
-    tooltip: { title: ({ value }) => `邮箱：${value}`, placement: 'topLeft' },
   },
   {
     title: '毕业日期',
+    fieldType: ProFieldType.DATE_RANGE,
     dataIndex: 'graduateDate',
-    showCellPopover: {
-      title: '字段说明',
-      content: '毕业日期：真实可查的有效日期',
-    },
   },
   {
     title: '状态',
     dataIndex: 'status',
+    fieldType: ProFieldType.SELECT,
     valueEnum: StatusValueEnum,
+    filters: [
+      { value: '0', text: '禁用' },
+      { value: '1', text: '启用' },
+    ],
   },
 ]
 
 const data: ProTableProps['dataSource'] = []
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 200; i++) {
   data.push({
     id: i + 1,
     name: ['王五', '张三', '李四'][i % 3],
@@ -73,18 +75,52 @@ for (let i = 0; i < 20; i++) {
   })
 }
 
-const dataSource = ref(data)
+const fetchData: ProTableRequest = async (params, sorters, filter) => {
+  console.log('params:', params)
+  console.log('filter:', filter)
+  console.log('sorters:', sorters)
+
+  // 此处模拟服务返回的数据
+  const filterData = data.filter((item) => {
+    if (filter?.status?.length) {
+      return filter?.status?.includes(item.status)
+    }
+    return true
+  })
+
+  if (sorters?.length) {
+    const sorter = sorters[0]
+    filterData.sort((a, b) => {
+      if (sorter.order === 'asc') {
+        return a.age - b.age
+      }
+      return b.age - a.age
+    })
+  }
+
+  await sleep(1000)
+  // 此处模拟分页
+  const startIndex = (params.current! - 1) * params.pageSize!
+  const endIndex = startIndex + params.pageSize!
+  return {
+    success: true,
+    data: [...filterData].slice(startIndex, endIndex),
+    total: filterData.length,
+  }
+}
 </script>
 
 <template>
   <ProTable
-    virtual
-    :search="false"
-    :tool-bar="false"
-    :scroll="{ y: 300 }"
-    :pagination="false"
-    :dataSource
     :columns
+    :request="fetchData"
+    :sticky="{
+      offsetHeader: 64,
+    }"
+    :tool-bar="false"
+    :search="false"
+    :pagination="{ pageSize: 5 }"
+    :max-height="400"
   >
   </ProTable>
 </template>

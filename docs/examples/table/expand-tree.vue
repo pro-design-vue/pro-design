@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import { ref } from 'vue'
 import {
   ProTable,
@@ -20,42 +20,22 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
 
 const columns: ProTableColumnType[] = [
   {
-    title: ({ column }) => {
-      return <a>姓名</a>
-    },
+    title: '姓名',
     dataIndex: 'name',
-    fixed: 'left',
-    width: 150,
+    width: 200,
   },
   {
     title: '年龄',
     dataIndex: 'age',
-    valueStatus: 'processing',
   },
   {
     title: '性别',
     dataIndex: 'sex',
     valueEnum: SexValueEnum,
-    customRender: ({ record }) => {
-      // return <a style={{ color: record.age > 30 ? 'red' : 'green' }}>{record.age}</a>
-      return {
-        props: {
-          style: {
-            color: record.age > 30 ? 'red' : 'green',
-          },
-          class: 'custom-row',
-        },
-        children: <span>{record.age}</span>,
-      }
-    },
   },
   {
     title: '邮箱',
     dataIndex: 'detail.email',
-    ellipsis: true,
-    renderText(text) {
-      return `邮箱：${text}`
-    },
   },
   {
     title: '毕业日期',
@@ -77,9 +57,45 @@ for (let i = 0; i < 20; i++) {
     status: (i % 3) + '',
     sex: ['1', '2', '0'][i % 3],
     detail: {
-      email: ['w.cezkdudy@qq.com', 'r.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
+      email: ['wwwwww.cezkdudy@qq.com', 'rrrrrrr.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
     },
     graduateDate: ['2024-01-01', '2012-02-01', '2025-03-01', '2002-04-01'][i % 4],
+    children: [
+      {
+        id: i + 1 + '1',
+        name: '子节点',
+        age: 100,
+        status: '1',
+        sex: '1',
+        graduateDate: '2099-01-01',
+        children: [
+          {
+            id: i + 1 + '1-1',
+            name: '子节点',
+            age: 100,
+            status: '1',
+            sex: '1',
+            graduateDate: '2099-01-01',
+          },
+          {
+            id: i + 1 + '2-1',
+            name: '子节点',
+            age: 100,
+            status: '2',
+            sex: '1',
+            graduateDate: '2099-01-01',
+          },
+        ],
+      },
+      {
+        id: i + 1 + '2',
+        name: '子节点',
+        age: 100,
+        status: '2',
+        sex: '1',
+        graduateDate: '2099-01-01',
+      },
+    ],
   })
 }
 
@@ -91,19 +107,10 @@ const dataSource = ref(data)
     virtual
     :search="false"
     :tool-bar="false"
-    :scroll="{ y: 400 }"
+    :scroll="{ y: 300 }"
     :pagination="false"
     :dataSource
     :columns
   >
-    <template #headerCell="{ title, column }">
-      <template v-if="column.key === 'age'">
-        {{ title }}<span style="color: red">（周岁）</span>
-      </template>
-    </template>
-
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'age'"> {{ record.age }}周岁 </template>
-    </template>
   </ProTable>
 </template>

@@ -1,10 +1,12 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import { ref } from 'vue'
+import { Space } from 'ant-design-vue'
 import {
   ProTable,
   type ProTableValueEnumType,
   type ProTableProps,
   type ProTableColumnType,
+  type ProTableKey,
 } from 'pro-design-vue'
 
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
@@ -20,42 +22,22 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
 
 const columns: ProTableColumnType[] = [
   {
-    title: ({ column }) => {
-      return <a>姓名</a>
-    },
+    title: '姓名',
     dataIndex: 'name',
-    fixed: 'left',
     width: 150,
   },
   {
     title: '年龄',
     dataIndex: 'age',
-    valueStatus: 'processing',
   },
   {
     title: '性别',
     dataIndex: 'sex',
     valueEnum: SexValueEnum,
-    customRender: ({ record }) => {
-      // return <a style={{ color: record.age > 30 ? 'red' : 'green' }}>{record.age}</a>
-      return {
-        props: {
-          style: {
-            color: record.age > 30 ? 'red' : 'green',
-          },
-          class: 'custom-row',
-        },
-        children: <span>{record.age}</span>,
-      }
-    },
   },
   {
     title: '邮箱',
     dataIndex: 'detail.email',
-    ellipsis: true,
-    renderText(text) {
-      return `邮箱：${text}`
-    },
   },
   {
     title: '毕业日期',
@@ -77,13 +59,24 @@ for (let i = 0; i < 20; i++) {
     status: (i % 3) + '',
     sex: ['1', '2', '0'][i % 3],
     detail: {
-      email: ['w.cezkdudy@qq.com', 'r.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
+      email: ['wwwwww.cezkdudy@qq.com', 'rrrrrrr.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
     },
     graduateDate: ['2024-01-01', '2012-02-01', '2025-03-01', '2002-04-01'][i % 4],
   })
 }
 
 const dataSource = ref(data)
+
+const rowSelection: ProTableProps['rowSelection'] = {
+  // type: 'radio',
+  onChange: (selectedRowKeys: ProTableKey[], selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+  },
+  getCheckboxProps: (record) => ({
+    disabled: record.name === '王五', // Column configuration not to be checked
+    name: record.name,
+  }),
+}
 </script>
 
 <template>
@@ -91,19 +84,24 @@ const dataSource = ref(data)
     virtual
     :search="false"
     :tool-bar="false"
-    :scroll="{ y: 400 }"
+    :scroll="{ y: 300 }"
     :pagination="false"
     :dataSource
     :columns
+    :rowSelection
+    highlightSelectRow
   >
-    <template #headerCell="{ title, column }">
-      <template v-if="column.key === 'age'">
-        {{ title }}<span style="color: red">（周岁）</span>
-      </template>
+    <template #alertInfo="{ selectedRowKeys, onCleanSelected }">
+      <span>
+        已选 {{ selectedRowKeys.length }} 项
+        <a style="margin-inline-start: 8px" @click="onCleanSelected"> 取消选择 </a>
+      </span>
     </template>
-
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'age'"> {{ record.age }}周岁 </template>
+    <template #alertActions>
+      <Space>
+        <a>批量删除</a>
+        <a>导出数据</a>
+      </Space>
     </template>
   </ProTable>
 </template>

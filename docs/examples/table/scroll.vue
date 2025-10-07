@@ -90,7 +90,7 @@ const handleClick = (pos: ScrollPosition, smooth = false) => {
 
 <template>
   <Space direction="vertical" style="display: flex">
-    <Space>
+    <Space wrap>
       <ProButton @click="handleClick({ left: 0 }, true)">left: 0</ProButton>
       <ProButton @click="handleClick({ top: 99 }, true)">top: 0</ProButton>
       <ProButton @click="handleClick({ left: 500 }, true)">left: 500</ProButton>

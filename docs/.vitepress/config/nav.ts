@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-14 13:25:19
+ * @LastEditTime: 2025-10-07 13:09:46
  * @Description:
  */
 import { createRequire } from 'module'
@@ -17,7 +17,7 @@ function getNav(): DefaultTheme.NavItem[] {
   return [
     { text: '首页', link: '/' },
     { text: '指南', link: '/guide/introduction/what-is', activeMatch: '/guide/' },
-    { text: '组件', link: '/component/overview', activeMatch: '/component/' },
+    { text: '组件', link: '/component/design', activeMatch: '/component/' },
     {
       text: '相关链接',
       items: [
@@ -113,15 +113,14 @@ function getNav(): DefaultTheme.NavItem[] {
     },
     {
       text: pkg.version,
-      activeMatch: '/changelog/',
       items: [
         {
           text: 'Pro Design Vue',
-          link: '/changelog/pro-design-vue',
+          link: 'https://github.com/pro-design-vue/pro-design/releases',
         },
         {
           text: 'Pro Design Admin',
-          link: '/changelog/pro-design-admin',
+          link: 'https://github.com/pro-design-vue/pro-design-admin/releases',
         },
       ],
     },

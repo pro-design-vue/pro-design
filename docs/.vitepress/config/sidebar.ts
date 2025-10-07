@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 08:55:46
+ * @LastEditTime: 2025-10-05 12:24:32
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -47,8 +47,8 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
 function getComponentSidebar(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: '组件概览',
-      link: '/overview',
+      text: '组件设计',
+      link: '/design',
     },
     {
       text: '布局',
