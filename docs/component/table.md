@@ -506,7 +506,7 @@ table/expand-tree
 | fixed                   | 把选择框列固定在左边                                            | boolean                                               | -          |
 | allowCancelRadio        | 是否允许取消单选                                                | boolean                                               | -          |
 | getCheckboxProps        | 选择框的默认属性配置                                            | Function(record)                                      | -          |
-| hideSelectAll           | 隐藏全选勾选框与自定义选择项                                    | boolean                                               | false      |     |
+| hideSelectAll           | 隐藏全选勾选框与自定义选择项                                    | boolean                                               | false      |
 | preserveSelectedRowKeys | 当数据被删除时仍然保留选项的 `key`                              | boolean                                               | -          |
 | hideDefaultSelections   | 去掉『全选』『反选』两个默认选项                                | boolean                                               | false      |
 | selectedRowKeys         | 指定选中项的 key 数组，需要和 onChange 进行配合                 | string\[]                                             | \[]        |
