@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 10:42:50
+ * @LastEditTime: 2025-10-09 10:02:11
  * @Description:
 -->
 <script setup lang="ts">
@@ -23,6 +23,7 @@ const {
     ...zhCNIntl,
     locale: 'default',
   },
+  pro,
   proPrefixCls = 'pro',
   ...rest
 } = defineProps<Props>()
@@ -35,7 +36,7 @@ ConfigProvider.config({
 <template>
   <ConfigProvider v-bind="rest">
     <App>
-      <ConfigProviderContainer :contentOffsetTop :intl :proPrefixCls :locale="rest.locale">
+      <ConfigProviderContainer :contentOffsetTop :intl :proPrefixCls :pro :locale="rest.locale">
         <slot />
       </ConfigProviderContainer>
     </App>

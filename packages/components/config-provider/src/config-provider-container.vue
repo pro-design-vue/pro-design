@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 10:43:00
+ * @LastEditTime: 2025-10-09 10:02:46
  * @Description:
 -->
 <script setup lang="ts">
@@ -20,6 +20,7 @@ const props = defineProps<Props>()
 
 const contentOffsetTop = ref(props.contentOffsetTop)
 useProConfigProvide({
+  pro: computed(() => props.pro),
   proPrefixCls: computed(() => props.proPrefixCls),
   intl: computed(() => props.intl),
   locale: computed(() => props.locale),

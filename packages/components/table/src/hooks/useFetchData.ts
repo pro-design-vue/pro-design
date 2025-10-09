@@ -2,14 +2,13 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-10-04 16:03:27
+ * @LastEditTime: 2025-10-09 10:34:48
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
 import type { ComputedRef, Ref } from 'vue'
 import type { RequestData, ProTableProps, SorterResult } from '../components/interface'
 import type { IntlType } from '@pro-design-vue/components/config-provider'
-
 import {
   ref,
   computed,
@@ -23,8 +22,10 @@ import {
 } from 'vue'
 import { useDebounceFn, usePrevious } from '@vueuse/core'
 import { useMergedState } from '@pro-design-vue/hooks'
-import { runFunction } from '@pro-design-vue/utils'
+import { merge, runFunction } from '@pro-design-vue/utils'
 import { useIntl } from '@pro-design-vue/components/config-provider'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
 export type PageInfo = {
   pageSize: number
   total: number
@@ -52,7 +53,7 @@ export type UseFetchDataAction<T = any> = {
  *
  * @param param0
  */
-const mergePropsAndPagination = ({ pagination }: ProTableProps, intl: IntlType) => {
+const mergePropsAndPagination = (intl: IntlType, pagination?: ProTableProps['pagination']) => {
   if (pagination) {
     const { current, pageSize, total, showTotal, showSizeChanger, ...rest } = pagination
     return {
@@ -137,6 +138,7 @@ export const useFetchData = (
   const pollingLoading = ref<boolean>(false)
   const keyword = ref<string>('')
   const intl = useIntl()
+  const { pro } = useProConfigInject()
   const innerParams = ref<Record<string, any>>({})
   const sorters = ref<SorterResult<any>[]>()
   const filter = ref<Record<string, any>>()
@@ -169,8 +171,20 @@ export const useFetchData = (
     },
   )
 
+  const contextTable = computed(() => pro?.value?.table ?? {})
+  const contextTablePagination = computed(() => {
+    if (props.pagination === false) {
+      return false
+    }
+    if (props.pagination && contextTable.value?.pagination) {
+      return merge(contextTable.value.pagination, props.pagination)
+    } else {
+      return props.pagination ?? contextTable.value.pagination
+    }
+  })
+
   const [pagination, setPagination] = useMergedState<PageInfo>(
-    () => mergePropsAndPagination(props, intl),
+    () => mergePropsAndPagination(intl, contextTablePagination.value),
     {
       onChange(value) {
         if (props.pagination !== false) {
