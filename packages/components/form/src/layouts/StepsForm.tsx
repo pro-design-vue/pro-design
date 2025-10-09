@@ -2,13 +2,13 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-25 16:29:03
+ * @LastEditTime: 2025-10-09 15:09:30
  * @Description:
  */
 import type { Ref, VNode } from 'vue'
 import type { FormInstance } from '../base/StepForm'
 
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, Teleport } from 'vue'
 import { stepsFormProps } from '../props'
 import { useMergedState, usePrefixCls, useState } from '@pro-design-vue/hooks'
 import { Col, Row, Steps, Space, type StepProps } from 'ant-design-vue'
@@ -213,6 +213,7 @@ export default defineComponent({
       } else {
         buttons.push(pre.value, next.value)
       }
+
       return buttons
     })
 
@@ -248,7 +249,15 @@ export default defineComponent({
             <StepForm items={item} name={name} index={index} {...mergeFormProps} v-slots={slots} />
           )
         })}
-        <Space>{submitterDom.value}</Space>
+        {props.submitter !== false ? (
+          props.submitter?.teleport ? (
+            <Teleport defer to={props.submitter?.teleport}>
+              <Space>{submitterDom.value}</Space>
+            </Teleport>
+          ) : (
+            <Space>{submitterDom.value}</Space>
+          )
+        ) : null}
       </div>
     ))
 
