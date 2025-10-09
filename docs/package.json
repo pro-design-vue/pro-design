@@ -21,6 +21,7 @@
     "@pro-design-vue/build-constants": "workspace:*",
     "@pro-design-vue/build-utils": "workspace:*",
     "@types/nprogress": "catalog:",
+    "@types/prismjs": "^1.26.5",
     "@vitejs/plugin-vue-jsx": "catalog:",
     "consola": "catalog:",
     "esbuild": "catalog:",

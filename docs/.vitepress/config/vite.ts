@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-09-26 11:14:15
+ * @LastEditTime: 2025-10-08 20:52:54
  * @Description:
  */
 import path from 'path'
@@ -56,7 +56,6 @@ const alias: AliasOptions = [
         },
       ]),
 ]
-console.log('🚀 ~ alias:', alias)
 
 export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
   const env = loadEnv(mode, process.cwd(), '')
