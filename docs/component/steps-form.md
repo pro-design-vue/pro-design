@@ -25,6 +25,15 @@ steps-form/vertical
 
 :::
 
+
+### 弹窗分布
+
+:::demo
+
+steps-form/modal
+
+:::
+
 ## API
 
 ProStepsForm 提供了与 [ProForm](./form.md) 相同的 API，以下的是 ProStepsForm 独有的 API，同时 `ProForm` 也支持以下 API。
