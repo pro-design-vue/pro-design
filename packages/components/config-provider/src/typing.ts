@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-09 10:30:10
+ * @LastEditTime: 2025-10-10 09:17:29
  * @Description:
  */
 import type { ConfigProviderProps } from 'ant-design-vue'
@@ -13,6 +13,9 @@ interface ProConfigProviderProps extends ConfigProviderProps {
   intl?: IntlType
   proPrefixCls?: string
   contentOffsetTop?: number
+  table?: {
+    pagination?: ProTablePaginationConfig
+  }
   pro?: {
     table?: {
       pagination?: ProTablePaginationConfig

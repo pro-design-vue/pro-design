@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-09-26 10:11:32
+ * @LastEditTime: 2025-10-10 10:28:34
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -285,6 +285,10 @@ export default defineComponent({
       rowProps: computed(() => props.rowProps ?? { gutter: 16 }),
       colProps: computed(() => props.colProps ?? { xs: 24 }),
       formatItems,
+      onPressEnter: () => {
+        if (!props.isKeyPressSubmit) return
+        action.submit()
+      },
     })
 
     expose({

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 16:02:47
+ * @LastEditTime: 2025-10-10 10:26:10
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -202,6 +202,7 @@ export default defineComponent({
       return {
         ...omitUndefined(
           omit(props, [
+            'isKeyPressSubmit',
             'defaultCollapsed',
             'collapsed',
             'grid',
@@ -346,6 +347,7 @@ export default defineComponent({
             justify: 'start',
             class: `${prefixCls}-row`,
           }}
+          isKeyPressSubmit={props.isKeyPressSubmit ?? true}
           showLoading={false}
           submitter={submitterConfig.value}
           items={processedList.value}

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-21 11:18:18
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 20:56:05
+ * @LastEditTime: 2025-10-10 09:06:40
  * @Description:
  */
 import type { IntlType } from './intl'
@@ -25,7 +25,7 @@ export function useIntl(): IntlType {
   }
 
   if (locale?.value?.locale) {
-    return intlMap[findIntlKeyByAntdLocaleKey(locale.value.locale) as 'zh-CN'] || zhCNIntl
+    return intlMap[findIntlKeyByAntdLocaleKey(locale.value.locale)] || zhCNIntl
   }
 
   return zhCNIntl

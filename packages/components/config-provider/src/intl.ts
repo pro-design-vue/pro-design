@@ -1,4 +1,5 @@
 ﻿import { get } from '@pro-design-vue/utils'
+import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
 import arEG from './locale/ar_EG'
 import caES from './locale/ca_ES'
 import csCZ from './locale/cs_CZ'
@@ -48,11 +49,11 @@ export const createIntl = (locale: string, localeMap: Record<string, any>): Intl
     const msg = get(localeMap, id.replace(/\[(\d+)\]/g, '.$1').split('.')) || ''
     if (msg) return msg
     const localKey = locale.replace('_', '-')
-    if (localKey === 'zh-CN') {
+    if (localKey === DEFAULT_LOCALE) {
       return defaultMessage
     }
 
-    const intl = intlMap['zh-CN']
+    const intl = intlMap[DEFAULT_LOCALE]
     return intl ? intl.getMessage(id, defaultMessage) : defaultMessage
   },
   locale,
@@ -134,7 +135,7 @@ const intlMapKeys = Object.keys(intlMap)
  * @param localeKey
  */
 export const findIntlKeyByAntdLocaleKey = <T extends string>(localeKey?: T) => {
-  const localeName = (localeKey || 'zh-CN').toLocaleLowerCase()
+  const localeName = (localeKey || DEFAULT_LOCALE).toLocaleLowerCase()
   return intlMapKeys.find((intlKey) => {
     const LowerCaseKey = intlKey.toLocaleLowerCase()
     return LowerCaseKey.includes(localeName)

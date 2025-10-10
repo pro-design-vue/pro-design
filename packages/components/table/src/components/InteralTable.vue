@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-30 16:18:38
+ * @LastEditTime: 2025-10-10 09:13:26
  * @Description:
 -->
 <script lang="ts">
@@ -79,6 +79,7 @@ import type { RangeCell } from '../hooks/RangeInterface'
 import type { SortState } from '../hooks/useSorter'
 import type { FilterState } from '../hooks/useFilter'
 import type { ContextSlots } from './context/TableSlotsContext'
+import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
 
 export type FilterValue = (Key | boolean)[]
 export interface ChangeEventInfo<RecordType> {
@@ -172,7 +173,7 @@ export default defineComponent({
     const locale = computed<TableLocale>(() => {
       const antLocale = localeData?.antLocale || {}
       return {
-        ...(antLocale.locale === 'zh-cn'
+        ...(antLocale.locale === DEFAULT_LOCALE.toLocaleLowerCase()
           ? {
               triggerDesc: '\u70B9\u51FB\u964D\u5E8F',
               triggerAsc: '\u70B9\u51FB\u5347\u5E8F',

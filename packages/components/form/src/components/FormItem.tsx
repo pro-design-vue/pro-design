@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-09-26 13:59:00
+ * @LastEditTime: 2025-10-10 10:23:45
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -78,6 +78,7 @@ export default defineComponent({
       disabledKeys,
       hiddenKeys,
       allDisabledKeys,
+      onPressEnter,
       updateHiddenKeys,
       updateDisabledKeys,
     } = useInjectForm()
@@ -290,6 +291,7 @@ export default defineComponent({
           {...fieldProps.value}
           style={fieldStyle.value}
           class={fieldClassName.value}
+          onPressEnter={onPressEnter}
         />
       )
       if (renderFormItem) {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-09 13:52:09
  * @LastEditors: shen
- * @LastEditTime: 2025-06-11 10:55:04
+ * @LastEditTime: 2025-10-10 09:04:45
  * @Description:
  */
 /** layout content 组件的高度 */
@@ -22,3 +22,8 @@ export const SCROLL_FIXED_CLASS = `_scroll__fixed_`
  * @zh_CN 默认命名空间
  */
 export const DEFAULT_NAMESPACE = 'pro'
+
+/**
+ * @zh_CN 默认多语言
+ */
+export const DEFAULT_LOCALE = 'zh-CN'

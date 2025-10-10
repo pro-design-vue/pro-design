@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-09-09 16:58:33
+ * @LastEditTime: 2025-10-10 10:26:27
  * @Description:
  */
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
@@ -12,6 +12,7 @@ import type {
   Entity,
   SpanConfig,
   ProFormActionType,
+  KeyboardEventHandler,
 } from './type'
 
 import type { StepsProps, StepProps, FormProps } from 'ant-design-vue'
@@ -96,6 +97,9 @@ export const commonFieldProps = () => ({
   onChange: {
     type: Function as PropType<ProFormItemType['onChange']>,
   },
+  onPressEnter: {
+    type: Function as PropType<KeyboardEventHandler>,
+  },
 })
 
 export const baseFormProps = () => ({
@@ -120,7 +124,10 @@ export const baseFormProps = () => ({
   omitNil: { type: Boolean, default: true },
   readonly: Boolean,
   grid: Boolean,
-  isKeyPressSubmit: Boolean,
+  isKeyPressSubmit: {
+    type: Boolean,
+    default: undefined,
+  },
   formKey: String,
   theme: {
     type: String as PropType<ProFormPropsType['theme']>,

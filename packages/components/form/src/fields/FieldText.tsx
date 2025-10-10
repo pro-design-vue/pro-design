@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 23:43:42
+ * @LastEditTime: 2025-10-10 10:22:43
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
@@ -80,6 +80,7 @@ export default defineComponent({
           v-model:value={internalValue.value}
           {...attrs}
           placeholder={props.placeholder || intl.getMessage('form.inputPlaceholder', '请输入')}
+          onPressEnter={props.onPressEnter}
           v-slots={slotsGetter.value}
         />
       )

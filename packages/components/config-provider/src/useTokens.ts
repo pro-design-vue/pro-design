@@ -2,16 +2,12 @@
  * @Author: shen
  * @Date: 2025-06-06 09:26:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-09 09:03:00
+ * @LastEditTime: 2025-10-10 09:22:20
  * @Description:
  */
 import { reactive, watch } from 'vue'
 
 import { DEFAULT_NAMESPACE } from '@pro-design-vue/constants'
-
-/**
- * 用于适配各个框架的设计系统
- */
 
 export function useDesignTokens(theme) {
   const rootStyles = getComputedStyle(document.documentElement)

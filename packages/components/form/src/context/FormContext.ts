@@ -2,13 +2,20 @@
  * @Author: shen
  * @Date: 2022-06-08 20:07:35
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 11:14:39
+ * @LastEditTime: 2025-10-10 10:24:26
  * @Description:
  */
 
 import type { InjectionKey, ComputedRef, ShallowRef, Ref } from 'vue'
 import type { RowProps, ColProps } from 'ant-design-vue'
-import type { ProFormItemType, Entity, ProFormActionType, ReadonlyProps, Theme } from '../type'
+import type {
+  ProFormItemType,
+  Entity,
+  ProFormActionType,
+  ReadonlyProps,
+  Theme,
+  KeyboardEventHandler,
+} from '../type'
 import type { Linkage } from '../hooks/useLinkage'
 
 import { inject, provide } from 'vue'
@@ -30,6 +37,7 @@ export interface FormContextProps extends Linkage {
   colProps?: ComputedRef<ColProps>
   gutter?: ComputedRef<number>
   disabled?: ComputedRef<boolean>
+  onPressEnter?: KeyboardEventHandler
   formatItems?: (items: ProFormItemType[]) => ProFormItemType[]
 }
 export const FormContextKey: InjectionKey<FormContextProps> = Symbol('FormContext')
