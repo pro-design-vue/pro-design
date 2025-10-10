@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-07 11:48:03
+ * @LastEditTime: 2025-10-10 11:01:25
  * @Description:
  */
 
@@ -491,6 +491,7 @@ export default defineComponent({
               loading={formSubmitLoading.value}
               beforeSearchSubmit={props.beforeSearchSubmit}
               manual={props.manual || props.manualRequest}
+              v-slots={slots}
               onReset={props.onReset}
               onSubmit={props.onSubmit}
               onFormSearchSubmit={onFormSearchSubmit}

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-09-19 15:13:44
+ * @LastEditTime: 2025-10-10 11:05:53
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -54,7 +54,7 @@ export default defineComponent({
       default: undefined,
     },
   },
-  setup: (props) => {
+  setup: (props, { slots }) => {
     const activeTabKey = ref(
       props.search?.cardProps !== false ? props.search?.cardProps?.activeTabKey : '',
     )
@@ -115,6 +115,7 @@ export default defineComponent({
             }
             props.search?.onValuesChange?.(values)
           }}
+          v-slots={slots}
           onInit={(values) => {
             submit(values, true)
           }}
