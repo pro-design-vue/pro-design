@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-05 10:47:34
  * @LastEditors: shen
- * @LastEditTime: 2025-10-08 20:52:54
+ * @LastEditTime: 2025-10-10 16:11:25
  * @Description:
  */
 import path from 'path'
@@ -84,7 +84,7 @@ export const getViteConfig = ({ mode }: { mode: string }): ViteConfig => {
     },
     ssr: {
       // 解决打包找不到包问题
-      noExternal: ['ant-design-vue', '@ant-design/icons-vue'],
+      noExternal: ['ant-design-vue', '@ant-design/icons-vue', 'pro-design-vue'],
     },
   }
 }

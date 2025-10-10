@@ -14,7 +14,7 @@
     "ant-design-vue": "catalog:",
     "nprogress": "catalog:",
     "prismjs": "^1.30.0",
-    "pro-design-vue": "1.0.0-rc.0"
+    "pro-design-vue": "1.1.4"
   },
   "devDependencies": {
     "@pro-design-vue/build": "workspace:*",
