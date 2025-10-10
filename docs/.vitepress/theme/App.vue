@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-06 11:17:01
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 14:43:49
+ * @LastEditTime: 2025-10-10 16:25:17
  * @Description:
 -->
 <script setup lang="ts">
@@ -26,7 +26,9 @@ const tokenTheme = computed(() => {
 </script>
 
 <template>
-  <ProConfigProvider :theme="tokenTheme">
-    <Layout />
-  </ProConfigProvider>
+  <ClientOnly>
+    <ProConfigProvider :theme="tokenTheme">
+      <Layout />
+    </ProConfigProvider>
+  </ClientOnly>
 </template>
