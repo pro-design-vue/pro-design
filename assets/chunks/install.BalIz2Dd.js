@@ -1,1 +1,0 @@
-function l(){}const c=(o,t)=>{if(o.install=s=>{for(const n of[o,...Object.values(t??{})])s.component(n.name,n)},t)for(const[s,n]of Object.entries(t))o[s]=n;return o},e=o=>(o.install=l,o);export{e as a,c as w};
