@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 19:31:12
+ * @LastEditTime: 2025-10-12 22:03:07
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -30,6 +30,7 @@ const ContainerContextKey: InjectionKey<ContainerContextProps> = Symbol('Contain
 export const useContainer = (props: ProTableProps): ContainerContextProps => {
   const rootDomRef = ref<HTMLDivElement>()
   const { componentSize } = useProConfigInject()
+  console.log('🚀 ~ useContainer ~ componentSize:', componentSize?.value)
   const sortKeyColumns = ref<string[]>([])
 
   const [tableSize, setTableSize] = useMergedState<DensitySize>(

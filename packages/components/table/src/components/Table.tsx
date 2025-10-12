@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 19:32:29
+ * @LastEditTime: 2025-10-12 22:04:30
  * @Description:
  */
 
@@ -487,47 +487,47 @@ export default defineComponent({
       }
 
       return (
-        // <ConfigProvider
-        //   getPopupContainer={() => {
-        //     return (counter.rootDomRef.value || document.body) as any as HTMLElement
-        //   }}
-        // >
-        <div
-          ref={counter.rootDomRef}
-          {...attrs}
-          class={[
-            `${mergedPrefixCls.value}-wrapper ${props.bordered ? mergedPrefixCls.value + '-wrapper-bordered' : ''} ${
-              'dark' === theme.value ? mergedPrefixCls.value + '-wrapper-dark' : ''
-            } ${pollingLoading.value ? mergedPrefixCls.value + '-wrapper-polling' : ''}`,
-            attrs.class,
-          ]}
-          onKeydown={onKeydown}
+        <ConfigProvider
+          getPopupContainer={() => {
+            return (counter.rootDomRef.value || document.body) as any as HTMLElement
+          }}
         >
-          {props.search !== false && !!formItems.value?.length && (
-            <FormRender
-              prefixCls={mergedPrefixCls.value}
-              items={formItems.value}
-              cardBordered={props.cardBordered}
-              search={props.search}
-              tableShowCard={props.cardProps !== false}
-              loading={formSubmitLoading.value}
-              beforeSearchSubmit={props.beforeSearchSubmit}
-              manual={props.manual || props.manualRequest}
-              v-slots={slots}
-              onReset={props.onReset}
-              onSubmit={props.onSubmit}
-              onFormSearchSubmit={onFormSearchSubmit}
-              onSearchTabChange={(newValues) => {
-                actions.setFormSearch({
-                  ...actions.formSearch.value,
-                  ...newValues,
-                })
-              }}
-            />
-          )}
-          {tableDom}
-        </div>
-        // </ConfigProvider>
+          <div
+            ref={counter.rootDomRef}
+            {...attrs}
+            class={[
+              `${mergedPrefixCls.value}-wrapper ${props.bordered ? mergedPrefixCls.value + '-wrapper-bordered' : ''} ${
+                'dark' === theme.value ? mergedPrefixCls.value + '-wrapper-dark' : ''
+              } ${pollingLoading.value ? mergedPrefixCls.value + '-wrapper-polling' : ''}`,
+              attrs.class,
+            ]}
+            onKeydown={onKeydown}
+          >
+            {props.search !== false && !!formItems.value?.length && (
+              <FormRender
+                prefixCls={mergedPrefixCls.value}
+                items={formItems.value}
+                cardBordered={props.cardBordered}
+                search={props.search}
+                tableShowCard={props.cardProps !== false}
+                loading={formSubmitLoading.value}
+                beforeSearchSubmit={props.beforeSearchSubmit}
+                manual={props.manual || props.manualRequest}
+                v-slots={slots}
+                onReset={props.onReset}
+                onSubmit={props.onSubmit}
+                onFormSearchSubmit={onFormSearchSubmit}
+                onSearchTabChange={(newValues) => {
+                  actions.setFormSearch({
+                    ...actions.formSearch.value,
+                    ...newValues,
+                  })
+                }}
+              />
+            )}
+            {tableDom}
+          </div>
+        </ConfigProvider>
       )
     }
   },

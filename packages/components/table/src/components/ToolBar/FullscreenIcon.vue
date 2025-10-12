@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 18:34:04
+ * @LastEditTime: 2025-10-12 22:05:21
  * @Description:
 -->
 <script lang="ts">
 import { defineComponent, h, onMounted, ref } from 'vue'
-import { Tooltip, Menu } from 'ant-design-vue'
+import { Tooltip } from 'ant-design-vue'
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import { useIntl } from '../../../../config-provider'
 import { isBrowser } from '@pro-design-vue/utils'
