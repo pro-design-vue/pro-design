@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# 国际化
+# 主题
 
-`pro-design-vue` 修改了 ant-design-vue 的默认英文文案，默认文案是中文简体，如果需要使用其他语言，可以参考下面的方案。
+`Pro Design Vue` 使用less 和 CSS 变量定制主题方案，Ant Design Vue 保持原有的主题配置。
 
 ::: tip 
 如果你的项目不需要国际化且默认就是中文简体文案，那么你不需要任何国际化配置，直接使用即可。

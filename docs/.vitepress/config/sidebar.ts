@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-10-05 12:24:32
+ * @LastEditTime: 2025-10-12 20:34:09
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -80,6 +80,10 @@ function getComponentSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'ProQueryFilter - 筛选表单', link: '/query-filter' },
         { text: 'ProStepsForm - 分步表单', link: '/steps-form' },
       ],
+    },
+    {
+      text: '其他',
+      items: [{ text: 'ProConfigProvider - 全局化配置', link: '/config-provider' }],
     },
   ]
 }
