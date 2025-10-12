@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-24 16:34:14
+ * @LastEditTime: 2025-10-12 12:58:02
  * @Description:
 -->
 <script setup lang="ts">
@@ -15,6 +15,8 @@ import { ProButton } from '@pro-design-vue/components/button'
 import { omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useIsMobile, usePrefixCls } from '@pro-design-vue/hooks'
 import { useDraggable, useElementBounding, useResizeObserver } from '@vueuse/core'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
 export interface Props extends Omit<ModalProps, 'visible'> {
   /**
    * @zh_CN 标题描述信息
@@ -51,8 +53,8 @@ const props = withDefaults(defineProps<Props>(), {
   keyboard: true,
   maskClosable: true,
   open: false,
-  showFullscreen: false,
-  draggable: false,
+  showFullscreen: undefined,
+  draggable: undefined,
   top: 100,
 })
 const emit = defineEmits<{ cancel: [e: Event]; fullScreen: [value: boolean] }>()
@@ -62,6 +64,7 @@ const prefixCls = usePrefixCls('modal')
 const isDrag = ref(false)
 const fullscreen = ref(props.defaultFullscreen)
 const { isMobile } = useIsMobile()
+const { modal } = useProConfigInject()
 const bodyWidth = ref(0)
 const modalHeaderEl = useTemplateRef<HTMLElement>('modalHeaderRef')
 const { width } = useElementBounding(modalHeaderEl)
@@ -70,8 +73,12 @@ useResizeObserver(document.body, (entries) => {
   const { width } = entry?.contentRect || ({} as DOMRectReadOnly)
   bodyWidth.value = width
 })
+
+const mergeShowFullscreen = computed(() => props.showFullscreen ?? modal?.value?.showFullscreen)
+const mergeDraggable = computed(() => props.draggable ?? modal?.value?.draggable)
+
 const hasFullscreen = computed(() => isMobile.value || fullscreen.value)
-const hasDraggable = computed(() => props.draggable && !hasFullscreen.value)
+const hasDraggable = computed(() => mergeDraggable.value && !hasFullscreen.value)
 
 const { style } = useDraggable(modalHeaderEl, {
   disabled: computed(() => !hasDraggable.value),
@@ -149,7 +156,7 @@ const handleFullScreen = () => {
         </slot>
         <div :class="`${prefixCls}-extra`">
           <ProButton
-            v-if="showFullscreen && !isMobile"
+            v-if="mergeShowFullscreen && !isMobile"
             :class="`${prefixCls}-fullscreen`"
             size="small"
             shape="circle"

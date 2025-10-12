@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-09-24 16:34:05
+ * @LastEditTime: 2025-10-12 12:59:57
  * @Description:
 -->
 <script setup lang="ts">
@@ -14,6 +14,8 @@ import { CloseOutlined, FullscreenOutlined, FullscreenExitOutlined } from '@ant-
 import { ProButton } from '@pro-design-vue/components/button'
 import { omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useIsMobile, usePrefixCls } from '@pro-design-vue/hooks'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
 export interface Props extends DrawerProps {
   description?: string
   showFullscreen?: boolean
@@ -31,15 +33,18 @@ const props = withDefaults(defineProps<Props>(), {
   mask: true,
   maskClosable: true,
   open: false,
-  showFullscreen: false,
+  showFullscreen: undefined,
 })
 
 const emit = defineEmits<{ close: [e: Event]; fullScreen: [value: boolean] }>()
 
 const prefixCls = usePrefixCls('drawer')
 const { isMobile } = useIsMobile()
+const { drawer } = useProConfigInject()
 const fullscreen = ref(props.defaultFullscreen)
 const hasFullscreen = computed(() => isMobile.value || fullscreen.value)
+const mergeShowFullscreen = computed(() => props.showFullscreen ?? drawer?.value?.showFullscreen)
+
 const drawerProps = computed(() =>
   omitKeysAndUndefined(props, ['rootClassName', 'closable', 'onClose', 'title', 'width', 'height']),
 )
@@ -94,7 +99,7 @@ const handleFullScreen = () => {
     <template #extra>
       <slot name="extra" />
       <ProButton
-        v-if="showFullscreen && !isMobile"
+        v-if="mergeShowFullscreen && !isMobile"
         :class="`${prefixCls}-fullscreen`"
         size="small"
         shape="circle"

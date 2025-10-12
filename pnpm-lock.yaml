@@ -18,6 +18,9 @@ catalogs:
     '@commitlint/config-conventional':
       specifier: ^19.8.1
       version: 19.8.1
+    '@ctrl/tinycolor':
+      specifier: ^4.1.0
+      version: 4.2.0
     '@microsoft/api-extractor':
       specifier: ^7.52.11
       version: 7.52.11
@@ -234,6 +237,9 @@ catalogs:
     stylelint-prettier:
       specifier: ^5.0.3
       version: 5.0.3
+    theme-colors:
+      specifier: ^0.1.0
+      version: 0.1.0
     tsx:
       specifier: ^4.19.3
       version: 4.20.5
@@ -281,6 +287,9 @@ importers:
       '@ant-design/icons-vue':
         specifier: 'catalog:'
         version: 7.0.1(vue@3.5.21(typescript@5.8.3))
+      '@ctrl/tinycolor':
+        specifier: 'catalog:'
+        version: 4.2.0
       '@pro-design-vue/components':
         specifier: workspace:*
         version: link:packages/components
@@ -323,6 +332,9 @@ importers:
       resize-observer-polyfill:
         specifier: 'catalog:'
         version: 1.5.1
+      theme-colors:
+        specifier: 'catalog:'
+        version: 0.1.0
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.6
@@ -1364,6 +1376,10 @@ packages:
   '@ctrl/tinycolor@3.6.1':
     resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
     engines: {node: '>=10'}
+
+  '@ctrl/tinycolor@4.2.0':
+    resolution: {integrity: sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A==}
+    engines: {node: '>=14'}
 
   '@docsearch/css@4.0.0-beta.8':
     resolution: {integrity: sha512-/ZlyvZCjIJM4aaOYoJpVNHPJckX7J5KIbt6IWjnZXvo0QAUI1aH976vKEJUC9olgUbE3LWafB8yuX4qoqahIQg==}
@@ -7438,6 +7454,9 @@ packages:
     resolution: {integrity: sha512-te/NtwBwfiNRLf9Ijqx3T0nlqZiQ2XrrtBvu+cLL8ZRrGkO0NHTug8MYFKyoSrv/sHTaSKfilUkizV6XhxMJ3g==}
     engines: {node: '>=8'}
 
+  theme-colors@0.1.0:
+    resolution: {integrity: sha512-6gTEHQqWlQNiOEGHCSSQmU//E5SnXHJ4H7oHQOD8x77CvNYNQAmt73dqR71mzw5ULV87zaHLxK5pIBnsToFuZw==}
+
   throttle-debounce@5.0.2:
     resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
     engines: {node: '>=12.22'}
@@ -8841,6 +8860,8 @@ snapshots:
       postcss-selector-parser: 7.1.0
 
   '@ctrl/tinycolor@3.6.1': {}
+
+  '@ctrl/tinycolor@4.2.0': {}
 
   '@docsearch/css@4.0.0-beta.8': {}
 
@@ -15761,6 +15782,8 @@ snapshots:
   term-size@2.2.1: {}
 
   text-extensions@2.4.0: {}
+
+  theme-colors@0.1.0: {}
 
   throttle-debounce@5.0.2: {}
 

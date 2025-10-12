@@ -43,6 +43,7 @@
   "dependencies": {
     "@ant-design/colors": "catalog:",
     "@ant-design/icons-vue": "catalog:",
+    "@ctrl/tinycolor": "catalog:",
     "@pro-design-vue/components": "workspace:*",
     "@pro-design-vue/constants": "workspace:*",
     "@pro-design-vue/directives": "workspace:*",
@@ -55,7 +56,8 @@
     "dayjs": "catalog:",
     "lodash-es": "catalog:",
     "lodash-unified": "catalog:",
-    "resize-observer-polyfill": "catalog:"
+    "resize-observer-polyfill": "catalog:",
+    "theme-colors": "catalog:"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",

@@ -29,7 +29,7 @@ export default defineComponent({
         },
         items: [
           {
-            key: 'default',
+            key: 'large',
             label: intl.getMessage('tableToolBar.densityLarger', '宽松'),
           },
           {

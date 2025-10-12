@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 11:01:25
+ * @LastEditTime: 2025-10-12 19:32:29
  * @Description:
  */
 
 import { defineComponent, ref, computed, watch, unref } from 'vue'
-import { Card } from 'ant-design-vue'
+import { Card, ConfigProvider } from 'ant-design-vue'
 import { theme } from './config'
 import { useProvideHover } from '../hooks/useHover'
 import { useProvideLevel } from '../hooks/useLevel'
@@ -20,6 +20,7 @@ import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
 import { omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
 import ToolBar from './ToolBar/ToolBar.vue'
@@ -48,13 +49,14 @@ export default defineComponent({
   slots: {} as CustomSlotsType<ContextSlots>,
   emits: ['keydown'],
   setup(props, { expose, slots, attrs, emit }) {
-    const table = ref()
-    const wrapperRef = ref<HTMLDivElement>()
+    const tableRef = ref()
+    const { table } = useProConfigInject()
+
     const prefixCls = usePrefixCls('table')
 
     const { hoverRowKey } = useProvideHover({
       rowHoverDelay: computed(() => props.rowHoverDelay),
-      rowHover: computed(() => props.rowHover),
+      rowHover: computed(() => props.rowHover ?? table?.value?.rowHover),
     })
 
     const mergedPrefixCls = computed(() => props.prefixCls ?? prefixCls)
@@ -66,9 +68,11 @@ export default defineComponent({
     watch(
       hoverRowKey,
       (newValue, oldValue) => {
-        if (wrapperRef.value) {
-          wrapperRef.value.style.removeProperty(`--${mergedPrefixCls.value}-row-bg-${oldValue}`)
-          wrapperRef.value.style.setProperty(
+        if (counter.rootDomRef.value) {
+          counter.rootDomRef.value.style.removeProperty(
+            `--${mergedPrefixCls.value}-row-bg-${oldValue}`,
+          )
+          counter.rootDomRef.value.style.setProperty(
             `--${mergedPrefixCls.value}-row-bg-${newValue}`,
             `hsl(var(--pro-accent))`,
           )
@@ -351,37 +355,37 @@ export default defineComponent({
 
     expose({
       scrollTo: (pos: string | Position, behavior: 'auto' | 'smooth') => {
-        table.value?.scrollTo(pos, behavior)
+        tableRef.value?.scrollTo(pos, behavior)
       },
       scrollLeft: computed(() => {
-        return unref(table.value?.scrollLeft)
+        return unref(tableRef.value?.scrollLeft)
       }),
       scrollTop: computed(() => {
-        return unref(table.value?.scrollTop)
+        return unref(tableRef.value?.scrollTop)
       }),
       bodyRef: computed(() => {
-        return unref(table.value?.bodyRef)
+        return unref(tableRef.value?.bodyRef)
       }),
       copySelectedRange: () => {
-        return table.value?.copySelectedRange()
+        return tableRef.value?.copySelectedRange()
       },
       getSelectedRange: () => {
-        return table.value?.getSelectedRange()
+        return tableRef.value?.getSelectedRange()
       },
       clearAllSelectedRange: () => {
-        return table.value?.clearAllSelectedRange()
+        return tableRef.value?.clearAllSelectedRange()
       },
       clearDataSource: () => {
         dataSource.value = []
       },
       appendCellToSelectedRange: (params: AppendCellRange) => {
-        return table.value?.appendCellToSelectedRange(params)
+        return tableRef.value?.appendCellToSelectedRange(params)
       },
       openEditor: (cellInfos: any[]) => {
-        return table.value?.openEditor(cellInfos)
+        return tableRef.value?.openEditor(cellInfos)
       },
       closeEditor: (cellInfos: any[]) => {
-        return table.value?.closeEditor(cellInfos)
+        return tableRef.value?.closeEditor(cellInfos)
       },
       reload,
       reset,
@@ -399,7 +403,20 @@ export default defineComponent({
               tooltip={props.tooltip}
               prefixCls={mergedPrefixCls.value}
               options={props.options}
-              actionsRef={actions}
+              actionsRef={{
+                ...actions,
+                fullScreen: () => {
+                  if (!counter.rootDomRef.value || !document.fullscreenEnabled) {
+                    return
+                  }
+                  console.log('q234234', document.fullscreenElement)
+                  if (document.fullscreenElement) {
+                    document.exitFullscreen()
+                  } else {
+                    counter.rootDomRef.value?.requestFullscreen()
+                  }
+                },
+              }}
               tableColumn={tableColumn.value}
               selectedRowKeys={selectedRowKeys.value!}
               selectedRows={selectedRows.value}
@@ -430,7 +447,7 @@ export default defineComponent({
               />
             )}
           <InteralTable
-            ref={table}
+            ref={tableRef}
             {...omit(props, [
               'onChange',
               'onUpdate:pagination',
@@ -470,8 +487,13 @@ export default defineComponent({
       }
 
       return (
+        // <ConfigProvider
+        //   getPopupContainer={() => {
+        //     return (counter.rootDomRef.value || document.body) as any as HTMLElement
+        //   }}
+        // >
         <div
-          ref={wrapperRef}
+          ref={counter.rootDomRef}
           {...attrs}
           class={[
             `${mergedPrefixCls.value}-wrapper ${props.bordered ? mergedPrefixCls.value + '-wrapper-bordered' : ''} ${
@@ -505,6 +527,7 @@ export default defineComponent({
           )}
           {tableDom}
         </div>
+        // </ConfigProvider>
       )
     }
   },

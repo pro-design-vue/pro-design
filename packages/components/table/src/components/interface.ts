@@ -266,11 +266,11 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   size: {
     type: String as PropType<DensitySize>,
-    default: 'middle',
+    default: undefined,
   },
   bordered: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
   wrapText: {
     type: Boolean,
@@ -432,7 +432,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   summaryFixed: {
     type: [Boolean, String] as PropType<SummaryFixed>,
-    default: false,
+    default: undefined,
   },
   hasContextmenuPopup: Boolean,
   formatRangeCellText: {
@@ -496,7 +496,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   columnEmptyText: {
     type: [String, Boolean] as PropType<string | false>,
-    default: '-',
+    default: undefined,
   },
   toolBar: { type: Boolean, default: undefined },
   options: { type: [Object, Boolean] as PropType<OptionConfig | false>, default: undefined },
@@ -541,7 +541,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   /** @name 是否要高亮选择行	 */
   highlightSelectRow: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
 
   paginationSticky: {
@@ -998,7 +998,6 @@ export type RequestData<T = DefaultRecordType> = {
 } & Record<string, any>
 
 export type OptionsFunctionType = (e: any, action?: UseFetchDataAction<any>) => void
-
 export type OptionsType = OptionsFunctionType | boolean
 
 export type SettingOptionType = {
@@ -1016,6 +1015,7 @@ export type OptionSearchProps = Omit<InputProps, 'onSearch'> & {
 export type OptionConfig = {
   density?: boolean
   filter?: boolean
+  fullScreen?: OptionsType
   reload?: OptionsType
   setting?: boolean | SettingOptionType
   search?: (OptionSearchProps & { name?: string }) | boolean

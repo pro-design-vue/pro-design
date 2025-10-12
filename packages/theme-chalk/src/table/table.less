@@ -8,6 +8,12 @@
   &-dark {
     color-scheme: dark;
   }
+
+  &:not(:root):fullscreen {
+    min-height: 100vh;
+    overflow: auto;
+    background: hsl(var(--pro-background));
+  }
 }
 .@{table-prefix-cls} {
   .reset-component();

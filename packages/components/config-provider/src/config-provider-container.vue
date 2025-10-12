@@ -2,13 +2,14 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-09 10:02:46
+ * @LastEditTime: 2025-10-12 12:50:41
  * @Description:
 -->
 <script setup lang="ts">
 import type { ProConfigProviderProps } from './typing'
 import { computed, ref } from 'vue'
 import { useProConfigProvide } from './context'
+import { useCssVariables } from './useCssVariables'
 
 interface Props extends ProConfigProviderProps {}
 
@@ -19,8 +20,15 @@ defineOptions({
 const props = defineProps<Props>()
 
 const contentOffsetTop = ref(props.contentOffsetTop)
+
+useCssVariables(computed(() => props.dark))
+
 useProConfigProvide({
-  pro: computed(() => props.pro),
+  table: computed(() => props.table),
+  form: computed(() => props.form),
+  modal: computed(() => props.modal),
+  drawer: computed(() => props.drawer),
+  componentSize: computed(() => props.componentSize),
   proPrefixCls: computed(() => props.proPrefixCls),
   intl: computed(() => props.intl),
   locale: computed(() => props.locale),

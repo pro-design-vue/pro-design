@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-10-05 11:39:41
+ * @LastEditTime: 2025-10-12 19:10:27
  * @Description:
 -->
 <script lang="ts">
@@ -23,6 +23,7 @@ import { omit, omitUndefined } from '@pro-design-vue/utils'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import Search from './Search.vue'
 import DensityIcon from './DensityIcon.vue'
+import FullscreenIcon from './FullscreenIcon.vue'
 import ColumnSetting from '../ColumnSetting/ColumnSetting.vue'
 
 export default defineComponent({
@@ -36,6 +37,7 @@ export default defineComponent({
     ColumnSetting,
     ReloadOutlined,
     InfoCircleOutlined,
+    FullscreenIcon,
   },
   props: {
     prefixCls: String,
@@ -43,7 +45,8 @@ export default defineComponent({
     subTitle: String,
     tooltip: String,
     options: { type: [Object, Boolean] as PropType<OptionConfig | false>, default: undefined },
-    actionsRef: Object as PropType<UseFetchDataAction<any>>,
+
+    actionsRef: Object as PropType<UseFetchDataAction<any> & { fullScreen: () => void }>,
     selectedRowKeys: {
       type: Array as PropType<Key[]>,
       default: () => [],
@@ -70,6 +73,7 @@ export default defineComponent({
       setting: true,
       filter: false,
       search: false,
+      fullScreen: () => props.actionsRef?.fullScreen(),
     }
 
     const mergeOptions = computed<OptionConfig>(() => {
@@ -121,8 +125,18 @@ export default defineComponent({
     }
 
     const onReload = (e) => {
-      if (mergeOptions.value.reload !== false && typeof mergeOptions.value.reload !== 'boolean') {
+      if (mergeOptions.value.reload === true) {
+        defaultOptions.reload()
+      } else if (typeof mergeOptions.value.reload === 'function') {
         mergeOptions.value.reload?.(e, props.actionsRef)
+      }
+    }
+
+    const onFullScreen = (e) => {
+      if (mergeOptions.value.fullScreen === true) {
+        defaultOptions.fullScreen()
+      } else if (typeof mergeOptions.value.fullScreen === 'function') {
+        mergeOptions.value.fullScreen?.(e, props.actionsRef)
       }
     }
 
@@ -143,6 +157,7 @@ export default defineComponent({
       ColumnHeightOutlined,
       onSearch,
       onReload,
+      onFullScreen,
     }
   },
 })
@@ -191,6 +206,9 @@ export default defineComponent({
                 :prefix-cls="prefixCls"
                 :columns="tableColumn"
               />
+              <span v-if="mergeOptions.fullScreen !== false" @click="onFullScreen">
+                <FullscreenIcon :prefixCls="prefixCls" />
+              </span>
             </template>
           </Space>
         </div>

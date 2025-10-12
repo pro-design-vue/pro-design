@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 09:06:52
+ * @LastEditTime: 2025-10-12 13:47:19
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -22,6 +22,7 @@ import { isIOSUserAgent } from '../../utils/browser'
 import { useEditInject } from '../../hooks/useEdit'
 import { get, isObject, isPromise, runFunction } from '@pro-design-vue/utils'
 import { cellResize } from '@pro-design-vue/directives'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import RowHandler from '../Drag/RowHandler.vue'
 import BodyCellTooltip from './BodyCellTooltip'
 import EditInput from './EditInput.vue'
@@ -61,6 +62,7 @@ const ValueStatusEnum = {
   warning: '#eb8903',
 }
 const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
+  const { table } = useProConfigInject()
   const tableSlotsContext = useInjectSlots()
   const tableContext = useInjectTable()
   const { onBodyCellContextmenu } = useInjectBody()
@@ -225,7 +227,9 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   let bodyCell: VNode[] = (recordIndexs && tableSlotsContext.bodyCell?.(cellRenderArgs)) || []
 
   const emptyText =
-    tableContext.props.columnEmptyText !== false ? tableContext.props.columnEmptyText : ''
+    tableContext.props.columnEmptyText !== false
+      ? (tableContext.props.columnEmptyText ?? table?.value?.columnEmptyText ?? '-')
+      : ''
 
   if (!ensureValidVNode(bodyCell)) {
     let cellValue

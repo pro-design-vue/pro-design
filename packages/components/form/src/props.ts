@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 10:26:27
+ * @LastEditTime: 2025-10-12 14:02:14
  * @Description:
  */
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
@@ -240,10 +240,16 @@ export const queryFilterProps = () => ({
   defaultFormItemsNumber: Number,
   labelWidth: {
     type: [String, Number] as PropType<number | 'auto'>,
-    default: '80',
+    default: undefined,
   },
-  searchText: String,
-  resetText: String,
+  searchText: {
+    type: String,
+    default: undefined,
+  },
+  resetText: {
+    type: String,
+    default: undefined,
+  },
   searchGutter: {
     type: Number,
     default: 24,
@@ -254,7 +260,10 @@ export const queryFilterProps = () => ({
   // span: definePropType<SpanConfig>([Number, String]),
   showHiddenNum: Boolean,
   ignoreRules: Boolean,
-  resetOnSubmit: Boolean,
+  resetOnSubmit: {
+    type: Boolean,
+    default: undefined,
+  },
   onCollapse: {
     type: Function as PropType<(val: boolean) => void>,
     default: undefined,

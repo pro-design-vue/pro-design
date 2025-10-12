@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 10:26:10
+ * @LastEditTime: 2025-10-12 14:02:46
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -13,7 +13,7 @@ import { ProFieldType } from '../fieldType'
 import { DownOutlined } from '@ant-design/icons-vue'
 import { useResizeObserver } from '@vueuse/core'
 import { useFormExpose } from '../hooks/useFormExpose'
-import { useIntl } from '@pro-design-vue/components/config-provider'
+import { useIntl, useProConfigInject } from '@pro-design-vue/components/config-provider'
 import BaseForm from '../base/BaseForm'
 
 import type { ProFormActionType, ProFormItemType, SpanConfig } from '../type'
@@ -113,6 +113,7 @@ export default defineComponent({
   },
   emits: ['collapse', 'resize'],
   setup(props, { slots, emit, expose, attrs }) {
+    const { form } = useProConfigInject()
     // totalSpan 统计控件占的位置，计算 offset 保证查询按钮在最后一列
     const totalSpan = ref(0)
     // totalSize 统计控件占的份数
@@ -171,14 +172,15 @@ export default defineComponent({
 
     /** 计算最大宽度防止溢出换行 */
     const formItemFixStyle = computed<FormItemProps | undefined>(() => {
-      if (props.labelWidth && spanSize.value.layout !== 'vertical' && props.labelWidth !== 'auto') {
+      const labelWidth = props.labelWidth ?? form?.value?.labelWidth ?? '80'
+      if (labelWidth && spanSize.value.layout !== 'vertical' && labelWidth !== 'auto') {
         return {
           labelCol: {
-            flex: `0 0 ${props.labelWidth}px`,
+            flex: `0 0 ${labelWidth}px`,
           },
           wrapperCol: {
             style: {
-              maxWidth: `calc(100% - ${props.labelWidth}px)`,
+              maxWidth: `calc(100% - ${labelWidth}px)`,
             },
           },
           style: {
@@ -243,8 +245,10 @@ export default defineComponent({
           },
           reverse: true,
           searchConfig: {
-            submitText: props.searchText || intl.getMessage('form.search', '搜索'),
-            resetText: props.resetText || intl.getMessage('form.reset', '重置'),
+            submitText:
+              props.searchText ?? form?.value?.searchText ?? intl.getMessage('form.search', '搜索'),
+            resetText:
+              props.resetText ?? form?.value?.resetText ?? intl.getMessage('form.reset', '重置'),
           },
           colProps: {
             span: spanSize.value.span,
@@ -383,7 +387,8 @@ export default defineComponent({
             },
           }}
           onReset={(values) => {
-            if (props.resetOnSubmit) {
+            const resetOnSubmit = props.resetOnSubmit ?? form?.value?.resetOnSubmit
+            if (resetOnSubmit) {
               formRef.value?.submit()
             }
             props.onReset?.(values)

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 09:00:32
+ * @LastEditTime: 2025-10-12 13:49:34
  * @Description:
 -->
 <script lang="ts">
@@ -26,6 +26,7 @@ import { useCellSelection } from '../../hooks/useCellSelection'
 import { useCellKeyboard } from '../../hooks/useCellKeyboard'
 import { useInjectHover } from '../../hooks/useHover'
 import { addClass, removeClass } from '../../utils/class'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import ResizeObserver from 'resize-observer-polyfill'
 import eagerComputed from '../../utils/eagerComputed'
 import classNames from '../../utils/classNames'
@@ -66,7 +67,7 @@ export default defineComponent({
     const rowUniId = 'row_uni_id_' + uniIdCount++
     const tableContext = useInjectTable()
     const rowInstance = getCurrentInstance()
-
+    const { table } = useProConfigInject()
     const { editCellKeys, closeEditor, openEditor } = useEditInject()
 
     let isUnmount = false
@@ -207,11 +208,13 @@ export default defineComponent({
     const height = eagerComputed(() => mergedRowHeights.value[props.rowKey!])
     const cellHeight = eagerComputed(() => tableContext.rowHeights.value[props.rowKey!])
 
-    const isSelected = computed(
-      () =>
-        tableContext.props.highlightSelectRow &&
-        tableContext.selection.derivedSelectedKeySet.value.has(props.rowKey!),
-    )
+    const isSelected = computed(() => {
+      const highlightSelectRow =
+        tableContext.props.highlightSelectRow ?? table?.value?.highlightSelectRow
+      return (
+        highlightSelectRow && tableContext.selection.derivedSelectedKeySet.value.has(props.rowKey!)
+      )
+    })
 
     const rowClass = computed(() => {
       const { prefixCls, record, rowIndex, indent } = props
@@ -320,9 +323,9 @@ export default defineComponent({
       handleCellBlur,
       handleCellHover,
       handleClick: (event: any) => {
-        tableContext.props.expandRowByClick &&
-          mergedExpandable.value &&
-          onInternalTriggerExpand(props.record, event)
+        const expandRowByClick =
+          tableContext.props.expandRowByClick ?? table?.value?.expandRowByClick
+        expandRowByClick && mergedExpandable.value && onInternalTriggerExpand(props.record, event)
       },
       rowSelectionType,
       nestExpandable,

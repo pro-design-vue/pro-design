@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 09:13:26
+ * @LastEditTime: 2025-10-12 13:45:48
  * @Description:
 -->
 <script lang="ts">
@@ -22,7 +22,6 @@ import {
   toRef,
 } from 'vue'
 import { Spin, Pagination } from 'ant-design-vue'
-import { animateRows as globalAnimateRows } from './config'
 import { baseTableProps } from './interface'
 import { DOWN, LEFT, UP } from './Drag/constant'
 import { addNestItemData, deleteNestItemData } from '../utils/util'
@@ -35,6 +34,8 @@ import { useProvideRangeStore } from '../hooks/useRangeStore'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { resize } from '@pro-design-vue/directives'
 import { omit, debounce, isPromise } from '@pro-design-vue/utils'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
 import useKVMap from '../hooks/useKVMap'
 import useLicense from '../hooks/useLicense'
 import devWarning from '../utils/devWarning'
@@ -128,10 +129,10 @@ export default defineComponent({
   ],
   slots: {} as CustomSlotsType<ContextSlots>,
   setup(props, { expose, emit, slots }) {
-    const rowKey = computed(() => props.rowKey ?? 'id')
+    const { table } = useProConfigInject()
+    const rowKey = computed(() => props.rowKey ?? table?.value?.rowKey ?? 'id')
     const popupContainer = shallowRef<any>(null)
     const customUiCls = usePrefixCls('custom-ui')
-
     const { editCellKeys, openEditor, closeEditor } = useEditProvider()
 
     useProvidePopup()
@@ -148,7 +149,7 @@ export default defineComponent({
     const mergedSummaryFixed = computed(() =>
       props.summaryFixed === true || props.summaryFixed === ('' as any)
         ? 'bottom'
-        : props.summaryFixed,
+        : (props.summaryFixed ?? table?.value?.summaryFixed ?? false),
     )
     const realHeaderHeight = ref(0)
 
@@ -250,7 +251,9 @@ export default defineComponent({
       { immediate: true, deep: !!props.deepWatchColumns },
     )
 
-    const childrenColumnName = computed(() => props.childrenColumnName || 'children')
+    const childrenColumnName = computed(
+      () => props.childrenColumnName ?? table?.value?.childrenColumnName ?? 'children',
+    )
 
     const { getRecordByKey, getIndexsByKey, getKeyByIndexs, allDataRowKeys, allDataRootRowKeys } =
       useKVMap(rawData, childrenColumnName, getRowKey)
@@ -467,7 +470,7 @@ export default defineComponent({
 
     const useAnimate = ref(false)
     const animateRows = computed(() => {
-      return !!(props.animateRows ?? globalAnimateRows.value)
+      return !!(props.animateRows ?? table?.value?.animateRows)
     })
 
     let timer: any
@@ -526,7 +529,7 @@ export default defineComponent({
         [`${props.prefixCls}`]: true,
         [`${props.prefixCls}-support-sticky`]: supportSticky,
         [`${props.prefixCls}-stripe`]: props.stripe,
-        [`${props.prefixCls}-bordered`]: props.bordered,
+        [`${props.prefixCls}-bordered`]: props.bordered ?? table?.value?.bordered,
         [`${props.prefixCls}-${props.size}`]: true,
         [`${props.prefixCls}-ping-left`]: pingedLeft.value,
         [`${props.prefixCls}-ping-right`]: pingedRight.value,

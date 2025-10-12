@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-09-30 11:15:57
+ * @LastEditTime: 2025-10-12 19:31:12
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -11,6 +11,7 @@ import type { Ref, InjectionKey, ComputedRef } from 'vue'
 import { computed, provide, inject, watch, ref } from 'vue'
 import { genColumnKey } from '../utils/util'
 import { useMergedState } from '@pro-design-vue/hooks'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 
 export type ContainerContextProps = {
   props: ProTableProps
@@ -22,16 +23,22 @@ export type ContainerContextProps = {
   setColumnsMap: (val: Record<string, ColumnsState>) => void
   clearPersistenceStorage: () => void
   defaultColumnKeyMap: ComputedRef<{}>
+  rootDomRef: Ref<HTMLDivElement | undefined>
 }
 
 const ContainerContextKey: InjectionKey<ContainerContextProps> = Symbol('ContainerContextKey')
 export const useContainer = (props: ProTableProps): ContainerContextProps => {
+  const rootDomRef = ref<HTMLDivElement>()
+  const { componentSize } = useProConfigInject()
   const sortKeyColumns = ref<string[]>([])
 
-  const [tableSize, setTableSize] = useMergedState<DensitySize>(() => props.size || 'middle', {
-    value: computed(() => props.size),
-    onChange: props.onSizeChange,
-  })
+  const [tableSize, setTableSize] = useMergedState<DensitySize>(
+    () => props.size ?? componentSize?.value ?? 'middle',
+    {
+      value: computed(() => props.size),
+      onChange: props.onSizeChange,
+    },
+  )
 
   /** 默认全选中 */
   const defaultColumnKeyMap = computed(() => {
@@ -157,6 +164,7 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
 
   const context = {
     props,
+    rootDomRef,
     tableSize,
     setTableSize,
     sortKeyColumns,

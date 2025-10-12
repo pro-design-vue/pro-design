@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-10-09 10:34:48
+ * @LastEditTime: 2025-10-12 18:53:42
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -39,7 +39,6 @@ export type UseFetchDataAction<T = any> = {
   loading: ComputedRef<boolean | SpinProps | undefined>
   setParams: (key: string, value: any) => void
   reload: (resetPageIndex?: boolean) => Promise<void>
-  fullScreen?: () => void
   reset: () => void
   pollingLoading: Ref<boolean>
   pagination: Ref<PageInfo>
@@ -138,7 +137,7 @@ export const useFetchData = (
   const pollingLoading = ref<boolean>(false)
   const keyword = ref<string>('')
   const intl = useIntl()
-  const { pro } = useProConfigInject()
+  const { table } = useProConfigInject()
   const innerParams = ref<Record<string, any>>({})
   const sorters = ref<SorterResult<any>[]>()
   const filter = ref<Record<string, any>>()
@@ -171,15 +170,15 @@ export const useFetchData = (
     },
   )
 
-  const contextTable = computed(() => pro?.value?.table ?? {})
+  const contextPagination = computed(() => table?.value?.pagination)
   const contextTablePagination = computed(() => {
     if (props.pagination === false) {
       return false
     }
-    if (props.pagination && contextTable.value?.pagination) {
-      return merge(contextTable.value.pagination, props.pagination)
+    if (props.pagination && contextPagination.value) {
+      return merge(contextPagination.value, props.pagination)
     } else {
-      return props.pagination ?? contextTable.value.pagination
+      return props.pagination ?? contextPagination.value
     }
   })
 
