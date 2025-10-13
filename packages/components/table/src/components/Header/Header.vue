@@ -14,6 +14,7 @@ import { VIEWPORT_REF } from '../../utils/constant'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { useInjectTable } from '../context/TableContext'
 import { resize } from '@pro-design-vue/directives'
+import { useInjectContainer } from '../../hooks/useContainer'
 import XScroll from '../Scrollbar/XScroll'
 import HeaderRowsWrap from './HeaderRowsWrap.vue'
 
@@ -32,7 +33,7 @@ export default defineComponent({
     const headerRef = ref<HTMLDivElement>()
     const viewportRef = ref<HTMLDivElement>()
     const tableContext = useInjectTable()
-
+    const counter = useInjectContainer()
     provide(VIEWPORT_REF, viewportRef)
     const maxHeaderHeight = computed(() => tableContext.maxHeaderHeight.value)
     const { addHScrollDom, removeHScrollDom } = useHScrollSyncInject()
@@ -58,7 +59,9 @@ export default defineComponent({
     const headerStyle = computed<CSSProperties>(() => {
       const style: CSSProperties = { height: `${maxHeaderHeight.value}px` }
       if (props.sticky) {
-        style.top = `${(typeof props.sticky == 'object' ? props.sticky.offsetHeader : 0) || 0}px`
+        style.top = counter.hasFullScreen.value
+          ? '0px'
+          : `${(typeof props.sticky == 'object' ? props.sticky.offsetHeader : 0) || 0}px`
       }
       return style
     })

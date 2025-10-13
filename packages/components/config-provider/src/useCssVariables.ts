@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-06 09:26:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 11:25:23
+ * @LastEditTime: 2025-10-13 10:52:04
  * @Description:
  */
 import { theme } from 'ant-design-vue'
@@ -18,16 +18,16 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
 
   watch(
     [token, isDark],
-    ([newToken, dark]) => {
+    ([newToken, dark], [oldToken]) => {
       const colorVariables = generatorColorVariables(
         [
           { color: newToken.colorPrimary, name: 'primary', key: 'colorPrimary' },
           { alias: 'warning', color: newToken.colorWarning, name: 'yellow', key: 'colorWarning' },
           { alias: 'success', color: newToken.colorSuccess, name: 'green', key: 'colorSuccess' },
-          { alias: 'destructive', color: newToken.colorError, name: 'red', key: 'colorError' },
+          { alias: 'error', color: newToken.colorError, name: 'red', key: 'colorError' },
         ].filter((item) => {
           const defaultColor = dark ? defaultDarkToken[item.key] : defaultToken[item.key]
-          return newToken[item.key] !== defaultColor
+          return newToken[item.key] !== defaultColor && oldToken?.[item.key] !== defaultColor
         }),
         DEFAULT_NAMESPACE,
       )
@@ -36,7 +36,7 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
       const colorMappings = {
         [`--${DEFAULT_NAMESPACE}-green-500`]: `--${DEFAULT_NAMESPACE}-success`,
         [`--${DEFAULT_NAMESPACE}-primary-500`]: `--${DEFAULT_NAMESPACE}-primary`,
-        [`--${DEFAULT_NAMESPACE}-red-500`]: `--${DEFAULT_NAMESPACE}-destructive`,
+        [`--${DEFAULT_NAMESPACE}-red-500`]: `--${DEFAULT_NAMESPACE}-error`,
         [`--${DEFAULT_NAMESPACE}-yellow-500`]: `--${DEFAULT_NAMESPACE}-warning`,
       }
 

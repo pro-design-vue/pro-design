@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 22:03:07
+ * @LastEditTime: 2025-10-13 11:04:55
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -16,6 +16,7 @@ import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 export type ContainerContextProps = {
   props: ProTableProps
   tableSize: Ref<DensitySize>
+  hasFullScreen: Ref<boolean>
   setTableSize: (val: DensitySize) => void
   sortKeyColumns: Ref<string[]>
   setSortKeyColumns: (keys: string[]) => void
@@ -29,8 +30,8 @@ export type ContainerContextProps = {
 const ContainerContextKey: InjectionKey<ContainerContextProps> = Symbol('ContainerContextKey')
 export const useContainer = (props: ProTableProps): ContainerContextProps => {
   const rootDomRef = ref<HTMLDivElement>()
+  const hasFullScreen = ref(false)
   const { componentSize } = useProConfigInject()
-  console.log('🚀 ~ useContainer ~ componentSize:', componentSize?.value)
   const sortKeyColumns = ref<string[]>([])
 
   const [tableSize, setTableSize] = useMergedState<DensitySize>(
@@ -165,6 +166,7 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
 
   const context = {
     props,
+    hasFullScreen,
     rootDomRef,
     tableSize,
     setTableSize,

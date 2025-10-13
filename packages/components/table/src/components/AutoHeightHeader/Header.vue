@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:42:47
+ * @LastEditTime: 2025-10-13 11:12:47
  * @Description:
 -->
 <script lang="ts">
@@ -12,6 +12,7 @@ import { VIEWPORT_REF, AUTO_HEADER_HEIGHT } from '../../utils/constant'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { useProvideHeader } from '../context/HeaderContext'
 import { resize } from '@pro-design-vue/directives'
+import { useInjectContainer } from '../../hooks/useContainer'
 import eagerComputed from '../../utils/eagerComputed'
 import XScroll from '../Scrollbar/XScroll'
 import ColGroup from './ColGroup'
@@ -37,6 +38,7 @@ export default defineComponent({
     const tableContext = useInjectTable()
     const maxHeaderHeight = ref(0)
     const dragColumnPlaceholderRef = ref<HTMLSpanElement>()
+    const counter = useInjectContainer()
 
     provide(VIEWPORT_REF, viewportRef)
     provide(AUTO_HEADER_HEIGHT, true)
@@ -72,7 +74,9 @@ export default defineComponent({
     const headerStyle = computed<CSSProperties>(() => {
       const style: CSSProperties = { height: `${maxHeaderHeight.value}px` }
       if (props.sticky) {
-        style.top = `${(typeof props.sticky == 'object' ? props.sticky.offsetHeader : 0) || 0}px`
+        style.top = counter.hasFullScreen.value
+          ? '0px'
+          : `${(typeof props.sticky == 'object' ? props.sticky.offsetHeader : 0) || 0}px`
       }
       return style
     })

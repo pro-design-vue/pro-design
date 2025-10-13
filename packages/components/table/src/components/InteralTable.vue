@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 13:45:48
+ * @LastEditTime: 2025-10-13 11:10:50
  * @Description:
 -->
 <script lang="ts">
@@ -35,7 +35,8 @@ import { usePrefixCls } from '@pro-design-vue/hooks'
 import { resize } from '@pro-design-vue/directives'
 import { omit, debounce, isPromise } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
-
+import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
+import { useInjectContainer } from '../hooks/useContainer'
 import useKVMap from '../hooks/useKVMap'
 import useLicense from '../hooks/useLicense'
 import devWarning from '../utils/devWarning'
@@ -80,7 +81,6 @@ import type { RangeCell } from '../hooks/RangeInterface'
 import type { SortState } from '../hooks/useSorter'
 import type { FilterState } from '../hooks/useFilter'
 import type { ContextSlots } from './context/TableSlotsContext'
-import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
 
 export type FilterValue = (Key | boolean)[]
 export interface ChangeEventInfo<RecordType> {
@@ -130,6 +130,7 @@ export default defineComponent({
   slots: {} as CustomSlotsType<ContextSlots>,
   setup(props, { expose, emit, slots }) {
     const { table } = useProConfigInject()
+    const counter = useInjectContainer()
     const rowKey = computed(() => props.rowKey ?? table?.value?.rowKey ?? 'id')
     const popupContainer = shallowRef<any>(null)
     const customUiCls = usePrefixCls('custom-ui')
@@ -610,7 +611,9 @@ export default defineComponent({
       return {
         position: 'sticky',
         'z-index': 9,
-        bottom: `${props.paginationSticky?.offsetBottom ?? 0}px`,
+        bottom: counter.hasFullScreen.value
+          ? '0px'
+          : `${props.paginationSticky?.offsetBottom ?? 0}px`,
       }
     })
 

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 22:04:30
+ * @LastEditTime: 2025-10-13 11:05:40
  * @Description:
  */
 
@@ -406,15 +406,18 @@ export default defineComponent({
               actionsRef={{
                 ...actions,
                 fullScreen: () => {
+                  console.log(document.fullscreenElement)
                   if (!counter.rootDomRef.value || !document.fullscreenEnabled) {
                     return
                   }
-                  console.log('q234234', document.fullscreenElement)
                   if (document.fullscreenElement) {
                     document.exitFullscreen()
+                    counter.hasFullScreen.value = false
                   } else {
                     counter.rootDomRef.value?.requestFullscreen()
+                    counter.hasFullScreen.value = true
                   }
+                  console.log(counter.hasFullScreen.value)
                 },
               }}
               tableColumn={tableColumn.value}

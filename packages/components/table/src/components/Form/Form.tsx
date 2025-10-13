@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 11:05:53
+ * @LastEditTime: 2025-10-13 10:56:16
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -93,7 +93,7 @@ export default defineComponent({
       })
       cardProps.value?.onTabChange?.(key)
     }
-
+    console.log('🚀 ~ return ~ cardProps.value:', cardProps.value)
     return () => {
       const searchDom = (
         <ProQueryFilter
