@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 14:15:29
+ * @LastEditTime: 2025-10-13 09:22:23
  * @Description:
 -->
 <script setup lang="ts">
@@ -10,7 +10,7 @@ import type { ProConfigProviderProps } from './typing'
 import { ConfigProvider, App, theme as antTheme } from 'ant-design-vue'
 import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
 import { zhCNIntl } from './intl'
-import { computed, nextTick, watchEffect } from 'vue'
+import { computed, nextTick, watch } from 'vue'
 import { isArray, omit } from '@pro-design-vue/utils'
 import dayjs from 'dayjs'
 import ConfigProviderContainer from './config-provider-container.vue'
@@ -74,11 +74,17 @@ const mergerTheme = computed(() => {
   }
 })
 
-watchEffect(async () => {
-  await nextTick()
-  const root = document.documentElement
-  root.classList.toggle('dark', dark)
-})
+watch(
+  () => dark,
+  async () => {
+    await nextTick()
+    const root = document.documentElement
+    root.classList.toggle('dark', dark)
+  },
+  {
+    immediate: true,
+  },
+)
 
 ConfigProvider.config({
   prefixCls: rest.prefixCls,
