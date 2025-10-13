@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-06 09:26:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-13 10:52:04
+ * @LastEditTime: 2025-10-13 15:21:09
  * @Description:
  */
 import { theme } from 'ant-design-vue'
@@ -27,7 +27,11 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
           { alias: 'error', color: newToken.colorError, name: 'red', key: 'colorError' },
         ].filter((item) => {
           const defaultColor = dark ? defaultDarkToken[item.key] : defaultToken[item.key]
-          return newToken[item.key] !== defaultColor && oldToken?.[item.key] !== defaultColor
+          const oldColor = oldToken?.[item.key] || defaultColor
+          return (
+            newToken[item.key] !== defaultColor ||
+            (newToken[item.key] === defaultColor && oldColor !== defaultColor)
+          )
         }),
         DEFAULT_NAMESPACE,
       )

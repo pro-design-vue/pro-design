@@ -186,12 +186,12 @@ ProForm 内置了很多[Field](#fieldtype-列表)，基本能满足大多数业�
 
 自定义Field支持局部和全局配置，局部使用`renderFormItem`配置，全局使用`registerField`注册。如果自定义组件如果希望 `Form.Item` 进行校验展示，你需要 `const {id, onFieldChange, onFieldBlur} = useInjectFormItemContext()` 注入，并调用相应的方法。
 
-支持Antv FormItem的`'extra'、'help'`自定义插槽，使用方式：`formItemProps: {extra: '::custom-item-extra', help: '::custom-item-help'}`。
+支持Antv FormItem的`'extra'、'help'`自定义插槽，使用方式：`formItemProps: {extra: 'custom-item-extra', help: 'custom-item-help'}`。
 
-支持Antv Form Field的自定义插槽，如：`Input|Select|Checkbox`，根据定义的`fieldType`使用，使用方式：`fieldProps: {addonAfter: '::addonAfter', suffix: '::suffix'}`。
+支持Antv Form Field的自定义插槽，如：`Input|Select|Checkbox`，根据定义的`fieldType`使用，使用方式：`fieldProps: {addonAfter: 'addonAfter', suffix: 'suffix'}`。
 
 1. 使用函数时，需要返回 `jsx|tsx` 或 `h函数` 的VNode，`((params: { formData: T }) => VNode)`。
-2. 使用插槽时，没有固定的`slot name`，内部约定使用`::slot-name`开头的字符串代表使用自定义插槽，如：`title: '::custom-title'`，需要在 ProForm 下使用插槽，`<template #custom-title={formData}>我是自定义标题</template>`。
+2. 使用插槽时，没有固定的`slot name`，在支持插槽的配置下使用字符串时会优先查找有没有插槽，如：`title: 'custom-title'`，需要在 ProForm 下使用插槽，`<template #custom-title={formData}>我是自定义标题</template>`。
 
 ::: tip
 在 script setup 下使用`jsx|tsx`时，需要设置语言`<script setup lang="tsx">`。

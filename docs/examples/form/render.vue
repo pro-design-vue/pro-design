@@ -8,17 +8,17 @@ import CustomItem from './custom-item.vue'
 const formItems: ProFormItemType[] = [
   {
     name: 'name',
-    title: '::custom-title1',
+    title: 'custom-title1',
     tooltip: '最长为 24 位',
     placeholder: '请输入姓名',
     formItemProps: {
       titleStyles: {
         width: 'auto',
       },
-      extra: '::form-item-extra',
+      extra: 'form-item-extra',
     },
     fieldProps: {
-      suffix: '::custom-suffix',
+      suffix: 'custom-suffix',
     },
     extra: {
       label: ({ formData }) => h('span', `我是title的extra${formData.age || ''}`),
@@ -27,7 +27,7 @@ const formItems: ProFormItemType[] = [
   },
   {
     name: 'age',
-    title: '::custom-title2',
+    title: 'custom-title2',
     width: 'md',
     fieldType: ProFieldType.DIGIT,
     fieldProps: {
@@ -47,12 +47,12 @@ const formItems: ProFormItemType[] = [
       { value: 'Korea', label: '韩国', icon: '🇰🇷' },
     ],
     fieldProps: {
-      option: '::custom-option',
+      option: 'custom-option',
     },
   },
   {
     fieldType: ProFieldType.GROUP,
-    renderFormItem: '::custom-group',
+    renderFormItem: 'custom-group',
     children: [
       {
         name: 'name',
@@ -81,7 +81,7 @@ const formItems: ProFormItemType[] = [
     name: 'custom-slot',
     title: '自定义表单项-slot',
     width: 'md',
-    renderFormItem: '::custom-item-slot',
+    renderFormItem: 'custom-item-slot',
     rules: [{ required: true, message: '请选择', trigger: 'change' }],
   },
   {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 14:02:46
+ * @LastEditTime: 2025-10-13 17:22:46
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -190,6 +190,7 @@ export default defineComponent({
       }
       return undefined
     })
+
     const [collapsed, setCollapsed] = useMergedState<boolean | undefined>(
       () => props.defaultCollapsed && props.submitter !== false,
       {
