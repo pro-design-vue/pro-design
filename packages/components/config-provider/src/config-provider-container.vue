@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 12:50:41
+ * @LastEditTime: 2025-10-14 14:42:34
  * @Description:
 -->
 <script setup lang="ts">
@@ -28,6 +28,7 @@ useProConfigProvide({
   form: computed(() => props.form),
   modal: computed(() => props.modal),
   drawer: computed(() => props.drawer),
+  prefixCls: computed(() => props.prefixCls),
   componentSize: computed(() => props.componentSize),
   proPrefixCls: computed(() => props.proPrefixCls),
   intl: computed(() => props.intl),

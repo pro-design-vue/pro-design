@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-13 09:22:23
+ * @LastEditTime: 2025-10-14 14:42:11
  * @Description:
 -->
 <script setup lang="ts">
@@ -39,6 +39,7 @@ const {
   modal,
   form,
   app,
+  prefixCls = 'ant',
   componentSize,
   ...rest
 } = defineProps<Props>()
@@ -85,9 +86,8 @@ watch(
     immediate: true,
   },
 )
-
 ConfigProvider.config({
-  prefixCls: rest.prefixCls,
+  prefixCls,
 })
 </script>
 
@@ -95,6 +95,7 @@ ConfigProvider.config({
   <ConfigProvider
     v-bind="rest"
     :locale
+    :prefixCls
     :theme="mergerTheme"
     :componentSize
     :form="
@@ -112,6 +113,7 @@ ConfigProvider.config({
         :locale
         :drawer
         :modal
+        :prefixCls
         :componentSize
       >
         <slot />

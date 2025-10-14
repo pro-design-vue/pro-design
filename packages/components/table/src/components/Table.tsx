@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-13 11:05:40
+ * @LastEditTime: 2025-10-14 14:43:46
  * @Description:
  */
 
@@ -50,7 +50,7 @@ export default defineComponent({
   emits: ['keydown'],
   setup(props, { expose, slots, attrs, emit }) {
     const tableRef = ref()
-    const { table } = useProConfigInject()
+    const { table, prefixCls: antPrefixCls } = useProConfigInject()
 
     const prefixCls = usePrefixCls('table')
 
@@ -406,7 +406,6 @@ export default defineComponent({
               actionsRef={{
                 ...actions,
                 fullScreen: () => {
-                  console.log(document.fullscreenElement)
                   if (!counter.rootDomRef.value || !document.fullscreenEnabled) {
                     return
                   }
@@ -417,7 +416,6 @@ export default defineComponent({
                     counter.rootDomRef.value?.requestFullscreen()
                     counter.hasFullScreen.value = true
                   }
-                  console.log(counter.hasFullScreen.value)
                 },
               }}
               tableColumn={tableColumn.value}
@@ -491,6 +489,7 @@ export default defineComponent({
 
       return (
         <ConfigProvider
+          prefixCls={antPrefixCls?.value}
           getPopupContainer={() => {
             return (counter.rootDomRef.value || document.body) as any as HTMLElement
           }}
