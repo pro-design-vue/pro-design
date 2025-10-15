@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-14 14:43:46
+ * @LastEditTime: 2025-10-15 15:00:45
  * @Description:
  */
 
@@ -60,8 +60,15 @@ export default defineComponent({
     })
 
     const mergedPrefixCls = computed(() => props.prefixCls ?? prefixCls)
-
-    // useStyle(primaryColor, mergedPrefixCls, theme)
+    const mergeOptions = computed(() => {
+      if (props.options === false) {
+        return false
+      }
+      if (props.options === undefined) {
+        return table?.value?.options
+      }
+      return { ...table?.value?.options, ...props.options }
+    })
 
     useProvideLevel()
 
@@ -125,11 +132,12 @@ export default defineComponent({
 
     const onFormSearchSubmit = (values: any) => {
       // 判断search.onSearch返回值决定是否更新formSearch
-      if (props.options && props.options.search) {
-        const { name = 'keyword' } = props.options.search === true ? {} : props.options.search
+      if (mergeOptions.value && mergeOptions.value.search) {
+        const { name = 'keyword' } =
+          mergeOptions.value.search === true ? {} : mergeOptions.value.search
 
         /** 如果传入的 onSearch 返回值为 false，则不要把options.search.name对应的值set到formSearch */
-        const success = (props.options.search as OptionSearchProps)?.onSearch?.(
+        const success = (mergeOptions.value.search as OptionSearchProps)?.onSearch?.(
           actions.keyword.value!,
         )
 
@@ -307,7 +315,7 @@ export default defineComponent({
 
     const hideToolbar = computed(
       () =>
-        props.options === false &&
+        mergeOptions.value === false &&
         !props.title &&
         !slots.title &&
         !slots.toolbar &&
@@ -402,7 +410,7 @@ export default defineComponent({
               subTitle={props.subTitle}
               tooltip={props.tooltip}
               prefixCls={mergedPrefixCls.value}
-              options={props.options}
+              options={mergeOptions.value}
               actionsRef={{
                 ...actions,
                 fullScreen: () => {
@@ -478,7 +486,7 @@ export default defineComponent({
       if (!(props.cardProps === false || notNeedCardDom.value)) {
         tableDom = (
           <Card
-            bordered={isBordered('table', props.cardBordered)}
+            bordered={isBordered('table', props.cardBordered ?? table?.value?.cardBordered)}
             bodyStyle={cardBodyStyle.value}
             {...props.cardProps}
           >
@@ -509,7 +517,7 @@ export default defineComponent({
               <FormRender
                 prefixCls={mergedPrefixCls.value}
                 items={formItems.value}
-                cardBordered={props.cardBordered}
+                cardBordered={props.cardBordered ?? table?.value?.cardBordered}
                 search={props.search}
                 tableShowCard={props.cardProps !== false}
                 loading={formSubmitLoading.value}

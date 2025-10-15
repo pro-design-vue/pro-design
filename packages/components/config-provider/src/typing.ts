@@ -2,14 +2,18 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 21:48:47
+ * @LastEditTime: 2025-10-15 14:56:11
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
 import type { ConfigProviderProps, NotificationPlacement } from 'ant-design-vue'
 import type { IntlType } from './intl'
-import type { ProTablePaginationConfig } from '@pro-design-vue/components/table'
 import type { ValidateMessages } from 'ant-design-vue/es/form/interface'
+import type {
+  Bordered,
+  OptionConfig,
+  TablePaginationConfig,
+} from '@pro-design-vue/components/table/src/components/interface'
 
 interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
   intl?: IntlType
@@ -21,6 +25,7 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
   table?: {
     animateRows?: boolean
     bordered?: boolean
+    cardBordered?: Bordered
     childrenColumnName?: string
     expandRowByClick?: boolean
     rowKey?: string
@@ -28,7 +33,8 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     summaryFixed?: boolean
     columnEmptyText?: string
     highlightSelectRow?: boolean
-    pagination?: ProTablePaginationConfig
+    options?: OptionConfig | false
+    pagination?: TablePaginationConfig
   }
   form?: {
     validateMessages?: ValidateMessages

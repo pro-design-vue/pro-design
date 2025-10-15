@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-29 15:15:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 15:57:23
+ * @LastEditTime: 2025-10-15 14:35:58
  * @Description:
  */
 import type { SFCWithInstall } from '@pro-design-vue/utils'
@@ -23,6 +23,7 @@ import type {
   TablePaginationConfig,
   TableRowSelection,
   Key,
+  OptionConfig,
   DensitySize,
 } from './src/components/interface'
 import { SELECTION_ALL, SELECTION_INVERT, SELECTION_NONE } from './src/hooks/useRowSelection'
@@ -53,6 +54,7 @@ export type {
   ColumnStateType as ProColumnStateType,
   Key as ProTableKey,
   DensitySize as ProTableDensitySize,
+  OptionConfig as ProTableOptionConfig,
 }
 export {
   Column as ProTableColumn,
