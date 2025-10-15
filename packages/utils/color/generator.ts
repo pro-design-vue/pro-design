@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-10 22:33:31
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 11:04:00
+ * @LastEditTime: 2025-10-15 15:42:18
  * @Description:
  */
 import { getColors } from 'theme-colors'
@@ -16,7 +16,21 @@ interface ColorItem {
   key: string
 }
 
-function generatorColorVariables(colorItems: ColorItem[], namespace?: string) {
+const darkColorKeyMap = {
+  50: '950',
+  100: '900',
+  200: '800',
+  300: '700',
+  400: '600',
+  500: '500',
+  600: '400',
+  700: '300',
+  800: '200',
+  900: '100',
+  950: '50',
+}
+
+function generatorColorVariables(colorItems: ColorItem[], dark: boolean, namespace?: string) {
   const colorVariables: Record<string, string> = {}
 
   colorItems.forEach(({ alias, color, name }) => {
@@ -26,9 +40,8 @@ function generatorColorVariables(colorItems: ColorItem[], namespace?: string) {
       let mainColor = colorsMap['500']
 
       const colorKeys = Object.keys(colorsMap)
-
       colorKeys.forEach((key) => {
-        const colorValue = colorsMap[key]
+        const colorValue = !dark ? colorsMap[key] : colorsMap[darkColorKeyMap[key]]
 
         if (colorValue) {
           const hslColor = convertToHslCssVar(colorValue)
