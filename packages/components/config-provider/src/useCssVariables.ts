@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-06 09:26:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-15 15:44:09
+ * @LastEditTime: 2025-10-16 18:57:00
  * @Description:
  */
 import { theme } from 'ant-design-vue'
@@ -51,7 +51,10 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
         }
       })
 
-      updateCSSVariables(colorVariables)
+      updateCSSVariables(
+        colorVariables,
+        dark ? ".dark, .dark[data-theme='custom'], .dark[data-theme='default']" : ':root',
+      )
 
       if (defaultToken.borderRadius !== newToken.borderRadius) {
         document.documentElement.style.setProperty(
