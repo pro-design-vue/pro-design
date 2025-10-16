@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-10 22:33:31
  * @LastEditors: shen
- * @LastEditTime: 2025-10-15 15:42:18
+ * @LastEditTime: 2025-10-16 19:23:07
  * @Description:
  */
 import { getColors } from 'theme-colors'
@@ -46,7 +46,7 @@ function generatorColorVariables(colorItems: ColorItem[], dark: boolean, namespa
         if (colorValue) {
           const hslColor = convertToHslCssVar(colorValue)
           colorVariables[`--${namespace}-${name}-${key}`] = hslColor
-          if (alias) {
+          if (alias && alias !== name) {
             colorVariables[`--${namespace}-${alias}-${key}`] = hslColor
           }
 

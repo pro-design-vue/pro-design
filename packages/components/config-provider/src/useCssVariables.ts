@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-06 09:26:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-16 18:57:00
+ * @LastEditTime: 2025-10-16 19:25:14
  * @Description:
  */
 import { theme } from 'ant-design-vue'
@@ -19,21 +19,27 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
   watch(
     [token, isDark],
     ([newToken, dark], [oldToken]) => {
+      const changedColorVariables = [
+        { alias: 'primary', color: newToken.colorPrimary, name: 'primary', key: 'colorPrimary' },
+        { alias: 'warning', color: newToken.colorWarning, name: 'yellow', key: 'colorWarning' },
+        { alias: 'success', color: newToken.colorSuccess, name: 'green', key: 'colorSuccess' },
+        { alias: 'error', color: newToken.colorError, name: 'red', key: 'colorError' },
+      ].filter((item) => {
+        const defaultColor = dark ? defaultDarkToken[item.key] : defaultToken[item.key]
+        const oldColor = oldToken?.[item.key] || defaultColor
+        return (
+          newToken[item.key] !== defaultColor ||
+          (newToken[item.key] === defaultColor && oldColor !== defaultColor)
+        )
+      })
       const colorVariables = generatorColorVariables(
-        [
-          { color: newToken.colorPrimary, name: 'primary', key: 'colorPrimary' },
-          { alias: 'warning', color: newToken.colorWarning, name: 'yellow', key: 'colorWarning' },
-          { alias: 'success', color: newToken.colorSuccess, name: 'green', key: 'colorSuccess' },
-          { alias: 'error', color: newToken.colorError, name: 'red', key: 'colorError' },
-        ].filter((item) => {
-          const defaultColor = dark ? defaultDarkToken[item.key] : defaultToken[item.key]
-          const oldColor = oldToken?.[item.key] || defaultColor
-          return (
-            newToken[item.key] !== defaultColor ||
-            (newToken[item.key] === defaultColor && oldColor !== defaultColor)
-          )
-        }),
-        dark,
+        changedColorVariables,
+        false,
+        DEFAULT_NAMESPACE,
+      )
+      const darkColorVariables = generatorColorVariables(
+        changedColorVariables,
+        true,
         DEFAULT_NAMESPACE,
       )
       // 要设置的 CSS 变量映射
@@ -51,9 +57,12 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
         }
       })
 
+      updateCSSVariables(colorVariables)
+
       updateCSSVariables(
-        colorVariables,
-        dark ? ".dark, .dark[data-theme='custom'], .dark[data-theme='default']" : ':root',
+        darkColorVariables,
+        ".dark, .dark[data-theme='custom'], .dark[data-theme='default']",
+        '__pro-dark-styles__',
       )
 
       if (defaultToken.borderRadius !== newToken.borderRadius) {
