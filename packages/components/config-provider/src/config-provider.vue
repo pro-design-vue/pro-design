@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-15 14:58:00
+ * @LastEditTime: 2025-10-18 11:08:18
  * @Description:
 -->
 <script setup lang="ts">
@@ -63,14 +63,19 @@ const mergerTheme = computed(() => {
       algorithm.push(theme?.algorithm)
     }
   }
-
+  const mergeToken = {
+    ...defaultToken,
+    ...theme?.token,
+    ...token,
+  }
   return {
     ...theme,
     algorithm,
     token: {
-      ...defaultToken,
-      ...theme?.token,
-      ...token,
+      ...mergeToken,
+      colorLink: mergeToken.colorPrimary,
+      colorLinkActive: 'hsl(var(--pro-primary-600))',
+      colorLinkHover: 'hsl(var(--pro-primary-400))',
     },
   }
 })
