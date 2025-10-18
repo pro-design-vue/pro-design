@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 12:59:57
+ * @LastEditTime: 2025-10-18 19:17:38
  * @Description:
 -->
 <script setup lang="ts">
@@ -88,7 +88,7 @@ const handleFullScreen = () => {
     :height
     @close="handleClose"
   >
-    <template #title>
+    <template #title v-if="title || $slots.title">
       <slot name="title">
         <div :class="`${prefixCls}-title`">{{ title }}</div>
       </slot>
@@ -96,7 +96,7 @@ const handleFullScreen = () => {
         <div :class="`${prefixCls}-description`">{{ description }}</div>
       </slot>
     </template>
-    <template #extra>
+    <template #extra v-if="title || $slots.title">
       <slot name="extra" />
       <ProButton
         v-if="mergeShowFullscreen && !isMobile"

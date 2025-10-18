@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 12:58:02
+ * @LastEditTime: 2025-10-18 19:12:36
  * @Description:
 -->
 <script setup lang="ts">
@@ -146,7 +146,7 @@ const handleFullScreen = () => {
     :style="modalStyle"
     @cancel="handleClose"
   >
-    <template #title>
+    <template #title v-if="title || $slots.title">
       <div ref="modalHeaderRef" :class="`${prefixCls}-header`">
         <slot name="title">
           <div :class="`${prefixCls}-title`">{{ title }}</div>
