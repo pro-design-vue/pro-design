@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-13 11:10:50
+ * @LastEditTime: 2025-10-20 15:48:30
  * @Description:
 -->
 <script lang="ts">
@@ -297,7 +297,7 @@ export default defineComponent({
     )
     const expandedRowRender = computed(() => props.expandedRowRender)
     const expandType = eagerComputed(() =>
-      rawData.value.some((column) => column?.[childrenColumnName.value])
+      rawData.value.some((column) => column?.[childrenColumnName.value]?.length)
         ? 'nest'
         : expandedRowRender.value
           ? 'row'
@@ -590,7 +590,12 @@ export default defineComponent({
     }
 
     const paginationProps = computed(() => {
-      return omit(mergedPagination.value, ['position', 'onChange', 'onShowSizeChange'])
+      return omit(mergedPagination.value, [
+        'position',
+        'onChange',
+        'onShowSizeChange',
+        'fieldNames',
+      ])
     })
 
     const paginationClass = computed(() => {

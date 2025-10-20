@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 13:49:34
+ * @LastEditTime: 2025-10-20 15:34:32
  * @Description:
 -->
 <script lang="ts">
@@ -194,7 +194,7 @@ export default defineComponent({
       () =>
         !!(
           tableContext.childrenColumnName.value &&
-          props.record?.[tableContext.childrenColumnName.value]
+          props.record?.[tableContext.childrenColumnName.value]?.length
         ),
     )
     const mergedExpandable = computed(() => rowExpandable.value || nestExpandable.value)

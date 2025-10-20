@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 18:53:42
+ * @LastEditTime: 2025-10-20 15:46:59
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -228,9 +228,10 @@ export const useFetchData = (
 
     const { current, pageSize } = pagination.value
     const params: Record<string, any> = { ...innerParams.value, ...formSearch.value }
-    if (props?.pagination !== false) {
-      params.current = current
-      params.pageSize = pageSize
+    if (contextTablePagination.value !== false) {
+      const { fieldNames } = contextTablePagination.value ?? {}
+      params[fieldNames?.current ?? 'current'] = current
+      params[fieldNames?.pageSize ?? 'pageSize'] = pageSize
     }
     if (keyword.value) {
       params[keywordName.value ?? 'keyword'] = keyword.value

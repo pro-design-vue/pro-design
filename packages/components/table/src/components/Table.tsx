@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-15 15:00:45
+ * @LastEditTime: 2025-10-20 15:53:38
  * @Description:
  */
 
@@ -50,7 +50,7 @@ export default defineComponent({
   emits: ['keydown'],
   setup(props, { expose, slots, attrs, emit }) {
     const tableRef = ref()
-    const { table, prefixCls: antPrefixCls } = useProConfigInject()
+    const { table, prefixCls: antPrefixCls, dark } = useProConfigInject()
 
     const prefixCls = usePrefixCls('table')
 
@@ -486,7 +486,10 @@ export default defineComponent({
       if (!(props.cardProps === false || notNeedCardDom.value)) {
         tableDom = (
           <Card
-            bordered={isBordered('table', props.cardBordered ?? table?.value?.cardBordered)}
+            bordered={isBordered(
+              'table',
+              props.cardBordered ?? table?.value?.cardBordered ?? dark?.value,
+            )}
             bodyStyle={cardBodyStyle.value}
             {...props.cardProps}
           >
@@ -517,7 +520,7 @@ export default defineComponent({
               <FormRender
                 prefixCls={mergedPrefixCls.value}
                 items={formItems.value}
-                cardBordered={props.cardBordered ?? table?.value?.cardBordered}
+                cardBordered={props.cardBordered ?? table?.value?.cardBordered ?? dark?.value}
                 search={props.search}
                 tableShowCard={props.cardProps !== false}
                 loading={formSubmitLoading.value}

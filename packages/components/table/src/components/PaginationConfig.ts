@@ -1,3 +1,10 @@
+/*
+ * @Author: shen
+ * @Date: 2025-08-29 08:55:23
+ * @LastEditors: shen
+ * @LastEditTime: 2025-10-20 15:42:47
+ * @Description:
+ */
 import type { CSSProperties } from 'vue'
 export interface PaginationProps {
   total?: number
@@ -34,4 +41,8 @@ export declare type TablePaginationPosition =
   | 'bottomRight'
 export interface TablePaginationConfig extends PaginationProps {
   position?: TablePaginationPosition[]
+  fieldNames?: {
+    current?: string
+    pageSize?: string
+  }
 }
