@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-03 22:11:11
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 20:34:09
+ * @LastEditTime: 2025-10-21 15:08:21
  * @Description:
  */
 import { DefaultTheme } from 'vitepress'
@@ -29,12 +29,15 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
-      text: '开发',
+      text: '框架',
       collapsed: false,
       items: [
-        { text: '本地开发', link: '/development/local' },
-        { text: '路由和菜单', link: '/development/route' },
-        { text: '配置', link: '/development/setting' },
+        { text: '进入开发', link: '/development/local' },
+        { text: '开发规范', link: '/development/rules' },
+        { text: '路由与菜单', link: '/development/router-menu' },
+        { text: '权限控制', link: '/development/permission-control' },
+        { text: '请求与数据', link: '/development/request-data' },
+        { text: '个性化配置', link: '/development/custom-config' },
         { text: '图标', link: '/development/icon' },
         { text: '国际化', link: '/development/i18n' },
         { text: '微前端', link: '/development/micro-app' },

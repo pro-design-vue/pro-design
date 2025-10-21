@@ -1,0 +1,80 @@
+---
+outline: deep
+---
+
+# 开发规范
+
+为了维护项目的代码质量，项目中内置了格式化代码的工具 `Prettier` 和代码检测质量检查工具 `ESlint`。
+
+同时，也推荐您在开发过程中遵循提交规范，以保持项目仓库的分支、提交信息的清晰整洁。
+
+## 代码编写规范
+
+### [Prettier](https://prettier.io/)
+
+如果您希望项目中的代码都符合统一的格式，推荐您在 VS Code 中安装 `Prettier` 插件。它可以帮助您在每次保存时自动化格式化代码。
+
+在脚手架搭建好的项目中，已经内置了符合 Pro Design 开发规范的 `.prettierrc.json` 文件。您只需要安装 `Prettier` 插件，即可使用代码自动格式化的功能。
+
+### [Eslint](https://eslint.org/)
+
+`ESlint`可以用来检查代码质量和风格问题。
+
+在脚手架搭建好的项目中，也已经内置了 `eslint.config.ts` 文件。您可以通过下面命令来进行代码检查和自动修复。
+
+执行以下指令，会进行问题的检查及修复，在 pre-commit 的 git hook 中，项目也内置了检查指令，帮助您在提交代码前发现问题。
+
+```bash
+# 代码检查
+pnpm run lint
+
+# 自动修复问题
+pnpm run lint:fix
+
+```
+
+## 目录的命名规范
+
+1.目录名全部使用小写，单词需采用复数形式，`kebab-case`形式命名，如果需要有多个单词表达，使用中划线连接。如n`ew-page`、`components`。
+
+## 文件的命名规范
+
+文件的命名规范按照不同情况进行命名
+
+1.如果该文件是单文件组件/类，采用`PascalCase`形式命名，方便导入和使用。如`ProSelect.vue`
+
+2.如果该文件是目录下的主文件，采用 index 名称命名，方便导入。如 `index.ts`, `index.vue`
+
+3.如果该文件是接口定义文件，采用`camelCase`形式命名，方便区分文件关联性。如 `list.ts` 和 `listModel.ts`
+
+4.如果该文件是资源/样式文件，采用`kebab-case`形式命名。
+
+## 类及接口的命名规范
+
+1.采用`PascalCase`形式命名。
+
+## 分支规范
+
+* 开发主干分支 -- develop
+* 功能分支 -- feature
+* 修复分支 -- hotfix
+
+`develop`分支只接受通过 Merge Request 合入功能分支，不能直接在该分支开发。
+
+为保证提交的记录干净整洁，其他分支合入之前需要先 `rebase` develop 分支。
+
+**分支命名规则**：`feature/20250401_功能名称`。
+
+## commit 规范
+
+推荐使用 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) 规范作为您的 commit message 的格式。
+
+同时，当项目是协同开发时，推荐在项目中或者在持续集成的过程中，配置 commit-lint 做 commit message 的检查，以约束协同开发者的 commit 遵守规范。
+
+**tips:如果不熟悉 Conventional Commits 的规范，可以使用 `pnpm run commit` 生成 commit message。**
+
+```bash
+git add .
+
+pnpm run commit
+```

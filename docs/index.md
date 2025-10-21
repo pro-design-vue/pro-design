@@ -28,31 +28,32 @@ features:
     details: 基于 Vue3、Pinia、Vue Router、TypeScript、等最新技术栈。
     link: /guide/introduction/quick-start
     linkText: 快速开始
-  - icon: 🦄
-    title: 丰富的配置
-    details: 企业级中后台前端解决方案，提供丰富的组件和模板以及 N 种偏好设置组合方案。
-    # link: /guide/essentials/settings
-    linkText: 配置文档
+ 
   - icon: 🎨
     title: 主题定制
     details: 通过简单的配置，即可实现各种主题切换，满足个性化需求。
-    # link: /guide/in-depth/theme
+    link: /guide/advanced/theming
     linkText: 主题文档
   - icon: 🌐
     title: 国际化
     details: 内置国际化方案，支持多语言切换，满足国际化需求。
     link: /guide/advanced/i18n
     linkText: 国际化文档
+  - icon: 🦄
+    title: 丰富的配置
+    details: 企业级中后台前端解决方案，提供丰富的组件和模板以及 N 种偏好设置组合方案。
+    link: /guide/development/custom-config
+    linkText: 配置文档
   - icon: 🔐
     title: 权限管理
     details: 内置权限管理方案，支持多种权限控制方式，满足各种权限需求。
-    # link: /guide/in-depth/access
+    link: /guide/development/permission-control
     linkText: 权限文档
   - title: 微前端
     icon:
       src: /logos/micro-app.png
     details: 基于Micro App微前端框架，主子同构框架，一套框架既可以是主应用，也可以是子应用。
-    # link: /guide/in-depth/access
+    link: /guide/development/micro-app
     linkText: 微前端文档
   - title: Vite
     icon:

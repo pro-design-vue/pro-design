@@ -4,4 +4,433 @@ outline: deep
 
 # 主题
 
-`Pro Design Vue` 使用less 和 CSS 变量定制主题方案，Ant Design Vue 保持原有的主题配置。
+`Pro Design Vue` 在`Ant Design Vue`主题的基础上，动态生成了`CSS 变量`。主题使用方式和`Ant Design Vue`保持一致。
+
+## 在 ProConfigProvider 中配置主题
+
+通过在 ProConfigProvider 中传入 `token` | `theme.token`，可以配置主题，以下是将配置主题示例：
+
+```vue
+<template>
+  <ProConfigProvider
+    :token="{
+      colorPrimary: '#00b96b',
+    }"
+  >
+    <app />
+  </ProConfigProvider>
+</template>
+
+```
+
+## Css 变量
+
+我们对颜色使用一个简单的约定。background变量用于组件的背景颜色，foreground变量用于文本颜色。
+
+::: warning 注意
+css 变量内的颜色，必须使用 hsl 格式，如 0 0% 100%，不需要加 hsl()和 ，。
+:::
+
+你可以查看下面的CSS变量列表，以了解所有可用的变量。
+
+
+::: details 默认主题 css 变量
+```css
+:root {
+  /** 弹出层的基础层级 **/
+  --pro-popup-z-index: 2000;
+  --pro-font-family:
+    -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue', arial, 'Noto Sans',
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Default background color of <body />...etc */
+  --pro-background: 0 0% 100%;
+
+  /* 主体区域背景色 */
+  --pro-background-deep: 216 20.11% 95.47%;
+  --pro-foreground: 210 6% 21%;
+
+  /* Background color for <Card /> */
+  --pro-card: 0 0% 100%;
+  --pro-card-foreground: 222.2 84% 4.9%;
+
+  /* Background color for popovers such as <DropdownMenu />, <HoverCard />, <Popover /> */
+  --pro-popover: 0 0% 100%;
+  --pro-popover-foreground: 222.2 84% 4.9%;
+
+  /* Muted backgrounds such as <TabsList />, <Skeleton /> and <Switch /> */
+
+  /* --pro-muted: 210 40% 96.1%;
+  --pro-muted-foreground: 215.4 16.3% 46.9%; */
+
+  --pro-muted: 240 4.8% 95.9%;
+  --pro-muted-foreground: 240 3.8% 46.1%;
+
+  /* 主题颜色 */
+  --pro-primary: 212 100% 45%;
+  --pro-primary-foreground: 0 0% 98%;
+  --pro-primary-50: 210 86% 97%;
+  --pro-primary-100: 214 85% 95%;
+  --pro-primary-200: 212 83% 86%;
+  --pro-primary-300: 212 82% 78%;
+  --pro-primary-400: 212 83% 62%;
+  --pro-primary-500: 212 100% 45%;
+  --pro-primary-600: 212 100% 41%;
+  --pro-primary-700: 212 100% 27%;
+  --pro-primary-800: 212 100% 20%;
+  --pro-primary-900: 212 100% 14%;
+  --pro-primary-950: 213 100% 9%;
+
+  /* Used for error actions */
+
+  --pro-error: 359.33 100% 65.1%;
+  --pro-error-foreground: 0 0% 98%;
+  --pro-red-50: 348 100% 98%;
+  --pro-error-50: 348 100% 98%;
+  --pro-red-100: 348 100% 96%;
+  --pro-error-100: 348 100% 96%;
+  --pro-red-200: 348 100% 90%;
+  --pro-error-200: 348 100% 90%;
+  --pro-red-300: 348 100% 84%;
+  --pro-error-300: 348 100% 84%;
+  --pro-red-400: 348 100% 73%;
+  --pro-error-400: 348 100% 73%;
+  --pro-red-500: 348 100% 61%;
+  --pro-error-500: 348 100% 61%;
+  --pro-red-600: 348 78% 55%;
+  --pro-error-600: 348 78% 55%;
+  --pro-red-700: 348 64% 37%;
+  --pro-error-700: 348 64% 37%;
+  --pro-red-800: 348 64% 27%;
+  --pro-error-800: 348 64% 27%;
+  --pro-red-900: 348 64% 18%;
+  --pro-error-900: 348 64% 18%;
+  --pro-red-950: 348 65% 12%;
+  --pro-error-950: 348 65% 12%;
+
+  /* Used for success actions such as <message> */
+
+  --pro-info: 240, 5%, 96%;
+  --pro-info-foreground: 220, 4%, 58%;
+
+  /* Used for success actions such as <message> */
+
+  --pro-success: 144 57% 58%;
+  --pro-success-foreground: 0 0% 98%;
+  --pro-green-50: 140 60% 98%;
+  --pro-success-50: 140 60% 98%;
+  --pro-green-100: 145 55% 96%;
+  --pro-success-100: 145 55% 96%;
+  --pro-green-200: 143 58% 90%;
+  --pro-success-200: 143 58% 90%;
+  --pro-green-300: 143 58% 83%;
+  --pro-success-300: 143 58% 83%;
+  --pro-green-400: 144 57% 71%;
+  --pro-success-400: 144 57% 71%;
+  --pro-green-500: 144 57% 58%;
+  --pro-success-500: 144 57% 58%;
+  --pro-green-600: 144 45% 52%;
+  --pro-success-600: 144 45% 52%;
+  --pro-green-700: 145 41% 35%;
+  --pro-success-700: 145 41% 35%;
+  --pro-green-800: 144 41% 26%;
+  --pro-success-800: 144 41% 26%;
+  --pro-green-900: 144 42% 17%;
+  --pro-success-900: 144 42% 17%;
+  --pro-green-950: 144 42% 12%;
+  --pro-success-950: 144 42% 12%;
+
+  /* Used for warning actions such as <message> */
+
+  --pro-warning: 42 84% 61%;
+  --pro-warning-foreground: 0 0% 98%;
+  --pro-yellow-50: 45 80% 98%;
+  --pro-warning-50: 45 80% 98%;
+  --pro-yellow-100: 41 80% 96%;
+  --pro-warning-100: 41 80% 96%;
+  --pro-yellow-200: 43 84% 90%;
+  --pro-warning-200: 43 84% 90%;
+  --pro-yellow-300: 42 85% 85%;
+  --pro-warning-300: 42 85% 85%;
+  --pro-yellow-400: 42 84% 73%;
+  --pro-warning-400: 42 84% 73%;
+  --pro-yellow-500: 42 84% 61%;
+  --pro-warning-500: 42 84% 61%;
+  --pro-yellow-600: 42 65% 55%;
+  --pro-warning-600: 42 65% 55%;
+  --pro-yellow-700: 42 54% 36%;
+  --pro-warning-700: 42 54% 36%;
+  --pro-yellow-800: 42 54% 27%;
+  --pro-warning-800: 42 54% 27%;
+  --pro-yellow-900: 42 53% 18%;
+  --pro-warning-900: 42 53% 18%;
+  --pro-yellow-950: 42 55% 12%;
+  --pro-warning-950: 42 55% 12%;
+
+  /* Secondary colors for <Button /> */
+
+  --pro-secondary: 240 5% 96%;
+  --pro-secondary-foreground: 240 6% 10%;
+
+  /* Used for accents such as hover effects on <DropdownMenuItem>, <SelectItem>...etc */
+  --pro-accent: 240 5% 96%;
+  --pro-accent-dark: 216 14% 93%;
+  --pro-accent-darker: 216 11% 91%;
+  --pro-accent-lighter: 240 0% 98%;
+  --pro-accent-hover: 200deg 10% 90%;
+  --pro-accent-foreground: 240 6% 10%;
+
+  /* Darker color */
+  --pro-heavy: 192deg 9.43% 89.61%;
+  --pro-heavy-foreground: var(--pro-accent-foreground);
+
+  /* Default border color */
+  --pro-border: 240 5.9% 90%;
+
+  /* Border color for inputs such as <Input />, <Select />, <Textarea /> */
+  --pro-input: 240deg 5.88% 90%;
+  --pro-input-placeholder: 217 10.6% 65%;
+  --pro-input-background: 0 0% 100%;
+
+  /* Used for focus ring */
+  --pro-ring: 222.2 84% 4.9%;
+
+  /* Border radius for card, input and buttons */
+  --pro-radius: 6px;
+
+  /* ============= custom ============= */
+
+  /* 遮罩颜色 */
+  --pro-overlay: 0 0% 0% / 45%;
+  --pro-overlay-content: 0 0% 95% / 45%;
+
+  /* 基本文字大小 */
+  --pro-font-size-base: 16px;
+
+  /* =============component & UI============= */
+
+  /* menu */
+  --pro-sidebar: 0 0% 100%;
+  --pro-sidebar-deep: 0 0% 100%;
+  --pro-menu: var(--pro-sidebar);
+
+  /* header */
+  --pro-header: 0 0% 100%;
+
+  /* shadow-clor */
+  --pro-shadow: 0deg 0% 1.96% / 6%;
+
+  /* table */
+  --pro-table-header: 0deg 0% 98.04%;
+  --pro-table-header-sort-active-bg: 0deg 0% 94.9%;
+  --pro-table-header-filter-active-bg: 0deg 0% 0% / 4%;
+  --pro-table-header-cell-split-color: 0deg 0% 0% / 6%;
+  --pro-table-row-insert-bg: 4deg 100% 97.06%;
+  --pro-table-footer-bg: 0deg 0% 98.04%;
+
+  accent-color: var(--pro-primary);
+  color-scheme: light;
+}
+```
+:::
+
+
+::: details 默认主题暗黑模式 css 变量
+```css
+
+.dark,
+.dark[data-theme='custom'],
+.dark[data-theme='default'] {
+  /* Default background color of <body />...etc */
+  // --pro-background: 222.34deg 10.43% 12.27%;
+  --pro-background: 0deg 0% 7.84%;
+
+  /* 主体区域背景色 */
+  --pro-background-deep: 220deg 13.06% 9%;
+  --pro-foreground: 0 0% 95%;
+
+  /* Background color for <Card /> */
+  --pro-card: 222.34deg 10.43% 12.27%;
+
+  /* --pro-card: 222.2 84% 4.9%; */
+  --pro-card-foreground: 210 40% 98%;
+
+  /* Background color for popovers such as <DropdownMenu />, <HoverCard />, <Popover /> */
+
+  /* --pro-popover: 222.82deg 8.43% 12.27%; */
+
+  /* 弹出层的背景色与主题区域背景色太过接近  */
+  --pro-popover: 0 0% 14.2%;
+  --pro-popover-foreground: 210 40% 98%;
+
+  /* Muted backgrounds such as <TabsList />, <Skeleton /> and <Switch /> */
+
+  /* --pro-muted: 220deg 6.82% 17.25%; */
+
+  /* --pro-muted-foreground: 215 20.2% 65.1%; */
+
+  --pro-muted: 240 3.7% 15.9%;
+  --pro-muted-foreground: 240 5% 64.9%;
+
+  /* 主题颜色 */
+
+  --pro-primary: 215 82% 47%;
+  --pro-primary-foreground: 0 0% 98%;
+  --pro-primary-50: 215 83% 9%;
+  --pro-primary-100: 216 81% 14%;
+  --pro-primary-200: 215 82% 21%;
+  --pro-primary-300: 215 82% 28%;
+  --pro-primary-400: 215 82% 43%;
+  --pro-primary-500: 215 82% 47%;
+  --pro-primary-600: 215 74% 63%;
+  --pro-primary-700: 215 74% 79%;
+  --pro-primary-800: 216 73% 87%;
+  --pro-primary-900: 216 77% 95%;
+  --pro-primary-950: 216 71% 97%;
+
+  /* Used for error actions  */
+
+  --pro-error: 359 68% 56%;
+  --pro-error-foreground: 0 0% 98%;
+  --pro-red-50: 0 52% 11%;
+  --pro-red-100: 359 53% 17%;
+  --pro-red-200: 359 52% 25%;
+  --pro-red-300: 359 53% 34%;
+  --pro-red-400: 359 55% 51%;
+  --pro-red-500: 359 68% 56%;
+  --pro-red-600: 359 69% 70%;
+  --pro-red-700: 359 69% 83%;
+  --pro-red-800: 358 68% 89%;
+  --pro-red-900: 356 73% 96%;
+  --pro-red-950: 0 64% 98%;
+  --pro-error-50: 0 52% 11%;
+  --pro-error-100: 359 53% 17%;
+  --pro-error-200: 359 52% 25%;
+  --pro-error-300: 359 53% 34%;
+  --pro-error-400: 359 55% 51%;
+  --pro-error-500: 359 68% 56%;
+  --pro-error-600: 359 69% 70%;
+  --pro-error-700: 359 69% 83%;
+  --pro-error-800: 358 68% 89%;
+  --pro-error-900: 356 73% 96%;
+  --pro-error-950: 0 64% 98%;
+
+  /* Used for success actions such as <message> */
+
+  --pro-info: 180, 1.54%, 12.75%;
+  --pro-info-foreground: 220, 4%, 58%;
+
+  /* Used for success actions such as <message> */
+  --pro-success: 100 74% 38%;
+  --pro-green-50: 99 74% 8%;
+  --pro-green-100: 100 73% 12%;
+  --pro-green-200: 100 75% 17%;
+  --pro-green-300: 100 74% 23%;
+  --pro-green-400: 100 74% 35%;
+  --pro-green-500: 100 74% 38%;
+  --pro-green-600: 100 46% 57%;
+  --pro-green-700: 100 46% 75%;
+  --pro-green-800: 100 46% 85%;
+  --pro-green-900: 100 48% 94%;
+  --pro-green-950: 103 47% 97%;
+  --pro-success-50: 99 74% 8%;
+  --pro-success-100: 100 73% 12%;
+  --pro-success-200: 100 75% 17%;
+  --pro-success-300: 100 74% 23%;
+  --pro-success-400: 100 74% 35%;
+  --pro-success-500: 100 74% 38%;
+  --pro-success-600: 100 46% 57%;
+  --pro-success-700: 100 46% 75%;
+  --pro-success-800: 100 46% 85%;
+  --pro-success-900: 100 48% 94%;
+  --pro-success-950: 103 47% 97%;
+
+  /* Used for warning actions such as <message> */
+
+  --pro-warning: 40 83% 46%;
+  --pro-yellow-50: 40 83% 9%;
+  --pro-yellow-100: 40 83% 14%;
+  --pro-yellow-200: 40 83% 21%;
+  --pro-yellow-300: 40 83% 28%;
+  --pro-yellow-400: 40 83% 42%;
+  --pro-yellow-500: 40 83% 46%;
+  --pro-yellow-600: 40 72% 63%;
+  --pro-yellow-700: 40 71% 78%;
+  --pro-yellow-800: 40 71% 86%;
+  --pro-yellow-900: 41 70% 95%;
+  --pro-yellow-950: 42 71% 97%;
+  --pro-warning-50: 40 83% 9%;
+  --pro-warning-100: 40 83% 14%;
+  --pro-warning-200: 40 83% 21%;
+  --pro-warning-300: 40 83% 28%;
+  --pro-warning-400: 40 83% 42%;
+  --pro-warning-500: 40 83% 46%;
+  --pro-warning-600: 40 72% 63%;
+  --pro-warning-700: 40 71% 78%;
+  --pro-warning-800: 40 71% 86%;
+  --pro-warning-900: 41 70% 95%;
+  --pro-warning-950: 42 71% 97%;
+
+  /* 颜色次要 */
+  --pro-secondary: 240 5% 17%;
+  --pro-secondary-foreground: 0 0% 98%;
+
+  /* Used for accents such as hover effects on <DropdownMenuItem>, <SelectItem>...etc */
+  --pro-accent: 216 5% 19%;
+  --pro-accent-dark: 240 0% 22%;
+  --pro-accent-darker: 240 0% 26%;
+  --pro-accent-lighter: 216 5% 12%;
+  --pro-accent-hover: 216 5% 24%;
+  --pro-accent-foreground: 0 0% 98%;
+
+  /* Darker color */
+  --pro-heavy: 216 5% 24%;
+  --pro-heavy-foreground: var(--pro-accent-foreground);
+
+  /* Default border color */
+  --pro-border: 240 3.7% 22%;
+
+  /* Border color for inputs such as <Input />, <Select />, <Textarea /> */
+  --pro-input: 0deg 0% 100% / 10%;
+  --pro-input-placeholder: 218deg 11% 65%;
+  --pro-input-background: 0deg 0% 100% / 5%;
+
+  /* Used for focus ring */
+  --pro-ring: 222.2 84% 4.9%;
+
+  /* 基本圆角大小 */
+  --pro-radius: 6px;
+
+  /* ============= Custom ============= */
+
+  /* 遮罩颜色 */
+  --pro-overlay: 0deg 0% 0% / 40%;
+  --pro-overlay-content: 0deg 0% 0% / 40%;
+
+  /* 基本文字大小 */
+  --pro-font-size-base: 16px;
+
+  /* =============component & UI============= */
+
+  --pro-sidebar: 222.34deg 10.43% 12.27%;
+  --pro-sidebar-deep: 220deg 13.06% 9%;
+  --pro-menu: var(--pro-sidebar);
+
+  /* header */
+  --pro-header: 222.34deg 10.43% 12.27%;
+
+  /* shadow */
+  --pro-shadow: 0deg 0% 0% / 45%;
+
+  /* table */
+  --pro-table-header: 0deg 0% 11.37%;
+  --pro-table-header-sort-active-bg: 0deg 0% 18.82%;
+  --pro-table-header-filter-active-bg: 0deg 0% 26.27%;
+  --pro-table-row-insert-bg: 0deg 0% 26.27%;
+  --pro-table-footer-bg: 0deg 0% 11.37%;
+
+  color-scheme: dark;
+}
+
+```
+:::
