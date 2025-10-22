@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:52:17
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 13:41:34
+ * @LastEditTime: 2025-10-22 11:06:52
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -29,6 +29,9 @@ const FormItem = defineAsyncComponent(() => import('./FormItem'))
 const LIST_PROP_KEYS = [
   'min',
   'max',
+  'rowTitle',
+  'rowTitleStyle',
+  'alwaysShowRowTitle',
   'isValidateList',
   'emptyListMessage',
   'creatorRecord',

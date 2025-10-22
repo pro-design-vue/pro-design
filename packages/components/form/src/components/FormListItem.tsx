@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:51:54
+ * @LastEditTime: 2025-10-22 11:06:14
  * @Description:
  */
-import type { PropType, VNode } from 'vue'
+import type { CSSProperties, PropType, VNode } from 'vue'
 import type { Entity, NamePath, ProFormItemType } from '../type'
 import type { ListOperations } from './FormList'
 
@@ -41,6 +41,10 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    title: {
+      type: [String, Object, Function] as PropType<ProFormItemType['title']>,
+      default: undefined,
+    },
     items: {
       type: Array as PropType<ProFormItemType[]>,
       default: () => [],
@@ -63,6 +67,18 @@ export default defineComponent({
     },
     alwaysShowItemLabel: {
       type: Boolean,
+      default: undefined,
+    },
+    alwaysShowRowTitle: {
+      type: Boolean,
+      default: undefined,
+    },
+    rowTitle: {
+      type: String,
+      default: undefined,
+    },
+    rowTitleStyle: {
+      type: Object as PropType<CSSProperties>,
       default: undefined,
     },
     count: {
@@ -163,6 +179,8 @@ export default defineComponent({
       const fields = runFunction(props.items ?? [], formData.value) ?? []
       return formatItems?.(genListItems(fields)) ?? []
     })
+
+    const showRowTitle = computed(() => props.alwaysShowRowTitle && props.rowTitle)
 
     const deleteIcon = computed(() => {
       if (props.readonly || props.deleteIconProps === false || props.min === props.count)
@@ -274,9 +292,20 @@ export default defineComponent({
         )
       }
       return (
-        <div class={`${prefixCls}-list-item`} style="display: flex; align-items: flex-end;">
-          {itemDom}
-          {actionDom}
+        <div class={`${prefixCls}-list-item-wrapper`}>
+          {showRowTitle.value && (
+            <div class={`${prefixCls}-list-item-title`}>
+              <div style={props.rowTitleStyle}>
+                {props.rowTitle}
+                {props.index + 1}
+              </div>
+              {actionDom}
+            </div>
+          )}
+          <div class={`${prefixCls}-list-item`} style="display: flex; align-items: flex-end;">
+            {itemDom}
+            {!showRowTitle.value && actionDom}
+          </div>
         </div>
       )
     }

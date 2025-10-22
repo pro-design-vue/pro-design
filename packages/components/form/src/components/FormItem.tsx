@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 10:23:45
+ * @LastEditTime: 2025-10-22 10:30:44
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -78,6 +78,8 @@ export default defineComponent({
       disabledKeys,
       hiddenKeys,
       allDisabledKeys,
+      labelCol,
+      wrapperCol,
       onPressEnter,
       updateHiddenKeys,
       updateDisabledKeys,
@@ -111,6 +113,8 @@ export default defineComponent({
     const restItemProps = computed(() =>
       omitUndefined({
         ...pickKeys(formItemProps.value, ALL_ANTD_PROP_KEYS),
+        labelCol: formItemProps.value?.labelCol ?? labelCol?.value,
+        wrapperCol: formItemProps.value?.wrapperCol ?? wrapperCol?.value,
         name: mergeReadonly.value ? undefined : props.item.name,
         htmlFor: mergeReadonly.value
           ? undefined

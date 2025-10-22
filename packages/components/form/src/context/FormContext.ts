@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-08 20:07:35
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 10:24:26
+ * @LastEditTime: 2025-10-22 10:29:11
  * @Description:
  */
 
@@ -35,6 +35,8 @@ export interface FormContextProps extends Linkage {
   readonlyProps?: ComputedRef<ReadonlyProps | undefined>
   rowProps?: ComputedRef<RowProps>
   colProps?: ComputedRef<ColProps>
+  labelCol?: ComputedRef<ColProps>
+  wrapperCol?: ComputedRef<ColProps>
   gutter?: ComputedRef<number>
   disabled?: ComputedRef<boolean>
   onPressEnter?: KeyboardEventHandler

@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2025-10-07 13:17:26
+ * @LastEditTime: 2025-10-22 11:06:31
  * @Description:
  */
-import type { PropType, VNode } from 'vue'
+import type { CSSProperties, PropType, VNode } from 'vue'
 import type { Entity, ProFormItemType } from '../type'
 import type { ButtonProps } from 'ant-design-vue'
 
@@ -99,6 +99,18 @@ export default defineComponent({
     },
     alwaysShowItemLabel: {
       type: Boolean,
+      default: undefined,
+    },
+    alwaysShowRowTitle: {
+      type: Boolean,
+      default: true,
+    },
+    rowTitle: {
+      type: String,
+      default: undefined,
+    },
+    rowTitleStyle: {
+      type: Object as PropType<CSSProperties>,
       default: undefined,
     },
     creatorRecord: {
@@ -239,6 +251,8 @@ export default defineComponent({
                 name={props.name}
                 originName={props.originName}
                 title={props.title}
+                rowTitle={props.rowTitle}
+                rowTitleStyle={props.rowTitleStyle}
                 tooltip={props.tooltip}
                 rowProps={props.rowProps}
                 initialValue={props.initialValue}
@@ -249,6 +263,7 @@ export default defineComponent({
                 max={props.max}
                 readonly={mergeReadonly.value}
                 alwaysShowItemLabel={props.alwaysShowItemLabel}
+                alwaysShowRowTitle={props.alwaysShowRowTitle}
                 creatorRecord={props.creatorRecord}
                 creatorButtonProps={props.creatorButtonProps}
                 copyIconProps={props.copyIconProps}
