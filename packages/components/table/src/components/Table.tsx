@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:53:38
+ * @LastEditTime: 2025-10-22 15:23:08
  * @Description:
  */
 
@@ -271,8 +271,9 @@ export default defineComponent({
           const dataRowKey = getRowKey.value(data, -1)
           preserveRecordsRef.value.set(dataRowKey, data)
         })
+      } else {
+        onCleanSelected()
       }
-      onCleanSelected()
     })
 
     /** 单选多选的相关逻辑 */
@@ -386,6 +387,7 @@ export default defineComponent({
       clearDataSource: () => {
         dataSource.value = []
       },
+      cleanSelected: onCleanSelected,
       appendCellToSelectedRange: (params: AppendCellRange) => {
         return tableRef.value?.appendCellToSelectedRange(params)
       },
@@ -452,7 +454,7 @@ export default defineComponent({
                 selectedRowKeys={selectedRowKeys.value!}
                 selectedRows={selectedRows.value}
                 onCleanSelected={onCleanSelected}
-                v-slots={{ info: slots.alertInfo, actions: slots.alertActions }}
+                v-slots={{ info: slots.alertInfo, actions: slots.alertActions, alert: slots.alert }}
               />
             )}
           <InteralTable
@@ -502,7 +504,10 @@ export default defineComponent({
         <ConfigProvider
           prefixCls={antPrefixCls?.value}
           getPopupContainer={() => {
-            return (counter.rootDomRef.value || document.body) as any as HTMLElement
+            if (counter.hasFullScreen.value && counter.rootDomRef.value) {
+              return counter.rootDomRef.value as any as HTMLElement
+            }
+            return document.body
           }}
         >
           <div
