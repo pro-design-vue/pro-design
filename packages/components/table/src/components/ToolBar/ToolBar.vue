@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-10-23 13:45:41
+ * @LastEditTime: 2025-10-23 14:30:45
  * @Description:
 -->
 <script lang="ts">
@@ -165,7 +165,7 @@ export default defineComponent({
 
 <template>
   <div :class="`${prefixCls}-toolbar`">
-    <div :class="`${prefixCls}-toolbar-top`">
+    <div :class="`${prefixCls}-toolbar-top`" v-if="!!$slots.top">
       <slot name="top" />
     </div>
     <div :class="`${prefixCls}-toolbar-container`">
@@ -217,7 +217,7 @@ export default defineComponent({
         </div>
       </slot>
     </div>
-    <div :class="`${prefixCls}-toolbar-bottom`">
+    <div :class="`${prefixCls}-toolbar-bottom`" v-if="!!$slots.bottom">
       <slot name="bottom" />
     </div>
   </div>
