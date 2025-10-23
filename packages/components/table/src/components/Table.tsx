@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-23 14:09:43
+ * @LastEditTime: 2025-10-23 14:12:31
  * @Description:
  */
 
@@ -381,12 +381,7 @@ export default defineComponent({
     const [mergeShowAlert, setMergeShowAlert] = useMergedState<boolean>(
       !!selectedRowKeys.value?.length,
       {
-        value: computed(() => {
-          if (typeof props.showAlert !== 'undefined') {
-            return props.showAlert!
-          }
-          return !!selectedRowKeys.value?.length
-        }),
+        value: computed(() => props.showAlert!),
         onChange(val) {
           props['onUpdate:showAlert']?.(val)
         },
