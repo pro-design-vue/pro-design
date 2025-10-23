@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-22 15:23:08
+ * @LastEditTime: 2025-10-23 14:09:43
  * @Description:
  */
 
@@ -51,7 +51,6 @@ export default defineComponent({
   setup(props, { expose, slots, attrs, emit }) {
     const tableRef = ref()
     const { table, prefixCls: antPrefixCls, dark } = useProConfigInject()
-
     const prefixCls = usePrefixCls('table')
 
     const { hoverRowKey } = useProvideHover({
@@ -306,12 +305,29 @@ export default defineComponent({
       selectedRowKeys.value?.map((key) => preserveRecordsRef.value?.get(key)),
     )
 
-    const onCleanSelected = () => {
-      if (props.rowSelection && props.rowSelection.onChange) {
-        props.rowSelection.onChange([], [])
+    const onCleanSelected = (keys?: Key[]) => {
+      let newSelectedRowKeys: Key[] = []
+      if (keys?.length) {
+        newSelectedRowKeys = selectedRowKeys.value?.filter((key) => !keys.includes(key)) ?? []
       }
-      props['onUpdate:selectedRowKeys']?.([], [])
-      setSelectedRowKeys([])
+      if (props.rowSelection && props.rowSelection.onChange) {
+        props.rowSelection.onChange(newSelectedRowKeys, selectedRows.value ?? [])
+      }
+      props['onUpdate:selectedRowKeys']?.(newSelectedRowKeys, selectedRows.value ?? [])
+      setSelectedRowKeys(newSelectedRowKeys)
+    }
+
+    const setRowSelected = (keys: Key[], rows?: []) => {
+      if (keys?.length) {
+        if (rows?.length) {
+          rows.forEach((data) => {
+            const dataRowKey = getRowKey.value(data, -1)
+            preserveRecordsRef.value.set(dataRowKey, data)
+          })
+        }
+        const newKeys = Array.from(new Set([...(selectedRowKeys.value ?? []), ...keys]))
+        setSelectedRowKeys(newKeys)
+      }
     }
 
     const hideToolbar = computed(
@@ -362,6 +378,29 @@ export default defineComponent({
       return {}
     })
 
+    const [mergeShowAlert, setMergeShowAlert] = useMergedState<boolean>(
+      !!selectedRowKeys.value?.length,
+      {
+        value: computed(() => {
+          if (typeof props.showAlert !== 'undefined') {
+            return props.showAlert!
+          }
+          return !!selectedRowKeys.value?.length
+        }),
+        onChange(val) {
+          props['onUpdate:showAlert']?.(val)
+        },
+      },
+    )
+
+    watch(selectedRowKeys, (selectedKeys) => {
+      if (selectedKeys?.length) {
+        setMergeShowAlert(true)
+      } else {
+        setMergeShowAlert(false)
+      }
+    })
+
     expose({
       scrollTo: (pos: string | Position, behavior: 'auto' | 'smooth') => {
         tableRef.value?.scrollTo(pos, behavior)
@@ -388,6 +427,7 @@ export default defineComponent({
         dataSource.value = []
       },
       cleanSelected: onCleanSelected,
+      setSelected: setRowSelected,
       appendCellToSelectedRange: (params: AppendCellRange) => {
         return tableRef.value?.appendCellToSelectedRange(params)
       },
@@ -436,6 +476,8 @@ export default defineComponent({
                 title: slots.title,
                 searchExtra: slots.searchExtra,
                 actions: slots.toolbarActions,
+                bottom: slots.toolbarBottom,
+                top: slots.toolbarTop,
               }}
               onFormSearchSubmit={(newValues) => {
                 actions.setFormSearch({
@@ -448,7 +490,7 @@ export default defineComponent({
           {!!props.rowSelection &&
             props.rowSelection?.type !== 'radio' &&
             props.alwaysShowAlert !== false &&
-            !!selectedRowKeys.value!.length && (
+            mergeShowAlert.value && (
               <Alert
                 prefixCls={mergedPrefixCls.value}
                 selectedRowKeys={selectedRowKeys.value!}

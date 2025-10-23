@@ -438,6 +438,66 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   formatRangeCellText: {
     type: Function as PropType<(params: FormatRangeCellTextParams) => string>,
   },
+
+  columnEmptyText: {
+    type: [String, Boolean] as PropType<string | false>,
+    default: undefined,
+  },
+  toolBar: { type: Boolean, default: undefined },
+  options: { type: [Object, Boolean] as PropType<OptionConfig | false>, default: undefined },
+  alwaysShowAlert: { type: Boolean, default: undefined },
+  showAlert: { type: Boolean, default: undefined },
+  // requst 相关配置
+  request: Function as PropType<Request>,
+  params: Object as PropType<Record<string, any>>,
+  defaultData: Array as PropType<T[]>,
+  manual: Boolean,
+  manualRequest: Boolean,
+  polling: [Number, Function] as PropType<number | ((dataSource: any[]) => number)>,
+  debounceTime: Number,
+  onLoad: {
+    type: Function as PropType<(dataSource: T[], extra: any) => void>,
+    default: undefined,
+  },
+  onLoadingChange: {
+    type: Function as PropType<(loading: boolean | SpinProps | undefined) => void>,
+    default: undefined,
+  },
+  onRequestError: {
+    type: Function as PropType<(e: Error) => void>,
+    default: undefined,
+  },
+  onSizeChange: {
+    type: Function as PropType<(size: DensitySize) => void>,
+    default: undefined,
+  },
+  onSubmit: {
+    type: Function as PropType<ProQueryFilterProps['onFinish']>,
+    default: undefined,
+  },
+  onReset: {
+    type: Function as PropType<ProQueryFilterProps['onReset']>,
+    default: undefined,
+  },
+  /** @name 列状态的配置，可以用来操作列功能 */
+  columnsState: {
+    type: Object as PropType<ColumnStateType>,
+    default: undefined,
+  },
+  /** @name 是否要高亮选择行	 */
+  highlightSelectRow: {
+    type: Boolean,
+    default: undefined,
+  },
+
+  paginationSticky: {
+    type: [Boolean, Object] as PropType<boolean | BottomSticky>,
+    default: true,
+  },
+  horizontalScrollSticky: {
+    type: [Boolean, Object] as PropType<boolean | BottomSticky>,
+    default: true,
+  },
   'onUpdate:selectedRowKeys': {
     type: Function as PropType<(selectedRowKeys: Key[], selectedRows: T[]) => void>,
   },
@@ -494,63 +554,8 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   'onUpdate:columns': {
     type: Function as PropType<(columns: ColumnsType<T>, action: 'resize' | 'drag') => void>,
   },
-  columnEmptyText: {
-    type: [String, Boolean] as PropType<string | false>,
-    default: undefined,
-  },
-  toolBar: { type: Boolean, default: undefined },
-  options: { type: [Object, Boolean] as PropType<OptionConfig | false>, default: undefined },
-  alwaysShowAlert: { type: Boolean, default: undefined },
-  // requst 相关配置
-  request: Function as PropType<Request>,
-  params: Object as PropType<Record<string, any>>,
-  defaultData: Array as PropType<T[]>,
-  manual: Boolean,
-  manualRequest: Boolean,
-  polling: [Number, Function] as PropType<number | ((dataSource: any[]) => number)>,
-  debounceTime: Number,
-  onLoad: {
-    type: Function as PropType<(dataSource: T[], extra: any) => void>,
-    default: undefined,
-  },
-  onLoadingChange: {
-    type: Function as PropType<(loading: boolean | SpinProps | undefined) => void>,
-    default: undefined,
-  },
-  onRequestError: {
-    type: Function as PropType<(e: Error) => void>,
-    default: undefined,
-  },
-  onSizeChange: {
-    type: Function as PropType<(size: DensitySize) => void>,
-    default: undefined,
-  },
-  onSubmit: {
-    type: Function as PropType<ProQueryFilterProps['onFinish']>,
-    default: undefined,
-  },
-  onReset: {
-    type: Function as PropType<ProQueryFilterProps['onReset']>,
-    default: undefined,
-  },
-  /** @name 列状态的配置，可以用来操作列功能 */
-  columnsState: {
-    type: Object as PropType<ColumnStateType>,
-    default: undefined,
-  },
-  /** @name 是否要高亮选择行	 */
-  highlightSelectRow: {
-    type: Boolean,
-    default: undefined,
-  },
-
-  paginationSticky: {
-    type: [Boolean, Object] as PropType<boolean | BottomSticky>,
-    default: true,
-  },
-  horizontalScrollSticky: {
-    type: [Boolean, Object] as PropType<boolean | BottomSticky>,
-    default: true,
+  'onUpdate:showAlert': {
+    type: Function as PropType<(show: boolean) => void>,
   },
 })
 

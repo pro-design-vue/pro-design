@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-16 10:57:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-22 15:19:25
+ * @LastEditTime: 2025-10-23 11:28:33
  * @Description:
 -->
 <script lang="ts">
@@ -23,17 +23,14 @@ export default defineComponent({
       type: Array as PropType<any[]>,
       default: () => [],
     },
+    onCleanSelected: Function as PropType<(keys?: Key[]) => void>,
   },
   inheritAttrs: false,
   components: { Space },
   emits: ['cleanSelected'],
-  setup(_, { emit, slots }) {
-    const onCleanSelected = () => {
-      emit('cleanSelected')
-    }
+  setup(_, { slots }) {
     return {
       slots,
-      onCleanSelected,
     }
   },
 })
