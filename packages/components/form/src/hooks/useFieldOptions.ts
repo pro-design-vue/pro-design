@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-14 14:02:10
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 15:15:00
+ * @LastEditTime: 2025-10-24 15:45:29
  * @Description:
  */
 import type { Ref, ComputedRef } from 'vue'
@@ -82,20 +82,27 @@ export const fieldParsingValueEnumToArray = (
   return enumArray
 }
 
-export const formatOptions = (options: (string | number | RequestOptionsType)[]) => {
+export const formatOptions = (
+  options: (string | number | RequestOptionsType)[],
+  fieldNames: { label: string; value: string; children: string },
+) => {
   return options?.map((opt) => {
     if (!isObject(opt)) {
       return { label: opt, value: opt } as RequestOptionsType
     }
+    opt.label = opt[fieldNames.label]
+    opt.value = opt[fieldNames.value]
+    opt.children = opt[fieldNames.children]
+
     if (opt?.text) {
       opt.label = opt?.text
     }
     if (Array.isArray(opt.options) && opt.options.length) {
-      opt.options = formatOptions(opt.options)
+      opt.options = formatOptions(opt.options, fieldNames)
     }
 
     if (Array.isArray(opt.children) && opt.children.length) {
-      opt.children = formatOptions(opt.children)
+      opt.children = formatOptions(opt.children, fieldNames)
     }
     return opt
   }) as SelectOptionType
@@ -133,7 +140,7 @@ export function useFieldOptions({
   const runOptions = computed(() => runFunction(options, formData.value, rowData?.value))
   const mergeOptions = ref<SelectOptionType>([])
   const fieldNames = computed(() => {
-    return fieldNamesConfig ?? { label: 'label', value: 'value', children: 'children' }
+    return { label: 'label', value: 'value', children: 'children', ...fieldNamesConfig }
   })
   const [innerParams, setInnerParams] = useState<Record<string, any>>(
     () => paginationConfig?.value ?? {},
@@ -169,7 +176,7 @@ export function useFieldOptions({
     [() => valueEnum, () => runOptions.value],
     () => {
       if (Array.isArray(runOptions.value) && runOptions.value?.length > 0) {
-        mergeOptions.value = formatOptions(runOptions.value)
+        mergeOptions.value = formatOptions(runOptions.value, fieldNames.value)
       } else {
         const optionsEnum = runFunction(valueEnum, formData.value)
         mergeOptions.value = fieldParsingValueEnumToArray(optionsEnum)
@@ -185,48 +192,9 @@ export function useFieldOptions({
   const requestOptions = debounce(async () => {
     loading.value = true
     const result = await fetchData(mergeParams.value, index?.value)
-    //兼容处理返回数据结构
     if (Array.isArray(result)) {
-      mergeOptions.value = result.map((opt) => {
-        if (opt?.text) {
-          opt.label = opt?.text
-        }
-        return opt
-      })
-    } else if (isObject(result)) {
-      const { success, total: dataTotal, data } = result as any
-      if (success) {
-        if (paginationConfig?.value) {
-          total.value = dataTotal
-          if (innerParams?.value?.current === 1) {
-            mergeOptions.value = data.map((opt) => {
-              if (opt?.text) {
-                opt.label = opt?.text
-              }
-              return opt
-            })
-          } else {
-            mergeOptions.value = [
-              ...mergeOptions.value,
-              ...data.map((opt) => {
-                if (opt?.text) {
-                  opt.label = opt?.text
-                }
-                return opt
-              }),
-            ]
-          }
-        } else {
-          mergeOptions.value = data.map((opt) => {
-            if (opt?.text) {
-              opt.label = opt?.text
-            }
-            return opt
-          })
-        }
-      }
+      mergeOptions.value = formatOptions(result, fieldNames.value)
     }
-
     loading.value = false
   }, 200)
 

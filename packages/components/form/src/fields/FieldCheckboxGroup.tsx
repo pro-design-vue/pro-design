@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-07-24 17:22:14
+ * @LastEditTime: 2025-10-24 15:40:58
  * @Description:
  */
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, type PropType } from 'vue'
 import { CheckboxGroup } from 'ant-design-vue'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useFieldOptions } from '../hooks/useFieldOptions'
@@ -17,6 +17,7 @@ export default defineComponent({
   name: 'FieldCheckboxGroup',
   props: {
     ...commonFieldProps(),
+    fieldNames: Object as PropType<{ label?: string; value?: string }>,
   },
   setup(props, { attrs }) {
     const { disabled } = useInjectForm()
@@ -25,6 +26,7 @@ export default defineComponent({
       options: props.options,
       valueEnum: props.valueEnum,
       dependencies: props.dependencies,
+      fieldNames: props.fieldNames,
       params: props.params,
     })
 

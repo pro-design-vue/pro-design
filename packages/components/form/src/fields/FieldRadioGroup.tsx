@@ -2,10 +2,10 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 11:58:23
+ * @LastEditTime: 2025-10-24 15:47:59
  * @Description:
  */
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, type PropType } from 'vue'
 import { RadioGroup, Radio } from 'ant-design-vue'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import { useFieldOptions } from '../hooks/useFieldOptions'
@@ -24,6 +24,7 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    fieldNames: Object as PropType<{ label?: string; value?: string }>,
   },
   setup(props, { attrs }) {
     const { formData } = useInjectForm()
@@ -33,9 +34,9 @@ export default defineComponent({
       options: props.options,
       valueEnum: props.valueEnum,
       dependencies: props.dependencies,
+      fieldNames: props.fieldNames,
       params: props.params,
     })
-
     const readValue = computed(() => {
       if (!props.value) {
         return undefined
