@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-27 09:52:48
+ * @LastEditTime: 2025-10-24 16:17:22
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
@@ -69,7 +69,7 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const { token } = theme.useToken()
-    const { prefixCls } = useInjectForm()
+    const { prefixCls, formData } = useInjectForm()
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
     const value = computed(() => {
@@ -93,7 +93,7 @@ export default defineComponent({
     const icon = computed(() => {
       const render = getSlot(props.iconRender, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} />
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return <InboxOutlined />
     })
@@ -101,7 +101,7 @@ export default defineComponent({
     const title = computed(() => {
       const render = getSlot(props.title, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} />
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return props.title || intl.getMessage('upload.dragger.text', '单击或拖动文件到此区域进行上传')
     })
@@ -109,7 +109,7 @@ export default defineComponent({
     const description = computed(() => {
       const render = getSlot(props.description, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} />
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return props.description || intl.getMessage('upload.dragger.hint', '支持单次或批量上传')
     })

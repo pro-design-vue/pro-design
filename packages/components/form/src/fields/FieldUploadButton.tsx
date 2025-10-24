@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-27 09:51:02
+ * @LastEditTime: 2025-10-24 16:27:19
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -15,6 +15,7 @@ import { commonFieldProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { isFunction, RenderVNode } from '@pro-design-vue/utils'
 import getSlot from '../utils/getSlot'
+import { useInjectForm } from '../context/FormContext'
 const SLOT_NAMES = ['downloadIcon', 'itemRender', 'previewIcon', 'removeIcon']
 
 export default defineComponent({
@@ -71,6 +72,7 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const intl = useIntl()
+    const { formData } = useInjectForm()
     const formSlotsContext = useInjectSlots()
     const value = computed(() => {
       return props.fileList ?? props.value
@@ -85,7 +87,7 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = () => <RenderVNode vnode={slot} props={{ formData: formData.value }} />
         }
       })
       return temp
@@ -94,7 +96,7 @@ export default defineComponent({
     const icon = computed(() => {
       const render = getSlot(props.iconRender, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} />
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return <UploadOutlined />
     })
@@ -102,7 +104,7 @@ export default defineComponent({
     const title = computed(() => {
       const render = getSlot(props.title, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} />
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return props.title || intl.getMessage('upload.button', '单击上传')
     })

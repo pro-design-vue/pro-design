@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 23:36:51
+ * @LastEditTime: 2025-10-24 16:33:03
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -15,6 +15,7 @@ import { useIntl } from '@pro-design-vue/components/config-provider'
 import { omit, RenderVNode } from '@pro-design-vue/utils'
 import getSlot from '../utils/getSlot'
 import FieldReadonly from './FieldReadonly'
+import { useInjectForm } from '../context/FormContext'
 
 const SLOT_NAMES = ['addonAfter', 'addonBefore', 'prefix', 'upIcon', 'downIcon']
 
@@ -59,6 +60,7 @@ export default defineComponent({
   emits: ['update:value', 'change'],
   setup(props, { attrs }) {
     const intl = useIntl()
+    const { formData } = useInjectForm()
     const formSlotsContext = useInjectSlots()
     const formItemContext = Form.useInjectFormItemContext()
     const fieldProps = computed(() => omit(attrs, ['class', 'style']))
@@ -67,7 +69,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp

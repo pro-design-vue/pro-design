@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 10:22:43
+ * @LastEditTime: 2025-10-24 16:35:56
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
@@ -13,6 +13,7 @@ import { useIntl } from '@pro-design-vue/components/config-provider'
 import { RenderVNode } from '@pro-design-vue/utils'
 import getSlot from '../utils/getSlot'
 import FieldReadonly from './FieldReadonly'
+import { useInjectForm } from '../context/FormContext'
 
 const SLOT_NAMES = ['addonAfter', 'addonBefore', 'suffix', 'prefix']
 
@@ -43,7 +44,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
-
+    const { formData } = useInjectForm()
     const internalValue = computed({
       get: () => {
         return props.value
@@ -58,7 +59,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp

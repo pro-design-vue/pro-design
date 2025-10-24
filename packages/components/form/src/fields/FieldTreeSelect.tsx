@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-07-26 23:46:11
+ * @LastEditTime: 2025-10-24 16:36:17
  * @Description:
  */
 import { defineComponent, computed } from 'vue'
@@ -16,6 +16,7 @@ import getSlot from '../utils/getSlot'
 import FieldReadonly from './FieldReadonly'
 
 import type { Option } from '../type'
+import { useInjectForm } from '../context/FormContext'
 const SLOT_NAMES = [
   'maxTagPlaceholder',
   'notFoundContent',
@@ -67,6 +68,7 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const intl = useIntl()
+    const { formData } = useInjectForm()
     const formSlotsContext = useInjectSlots()
     const { mergeOptions, loading, fieldNames } = useFieldOptions({
       request: props.request,
@@ -106,7 +108,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = (props) => <RenderVNode vnode={slot} props={props} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp

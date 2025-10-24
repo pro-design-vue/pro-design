@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 13:34:28
+ * @LastEditTime: 2025-10-24 16:36:03
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
@@ -16,6 +16,7 @@ import getSlot from '../utils/getSlot'
 import parseValueToDay from '../utils/parseValueToMoment'
 import fieldDateFormatterMap from '../utils/fieldDateFormatterMap'
 import FieldReadonly from './FieldReadonly'
+import { useInjectForm } from '../context/FormContext'
 
 const SLOT_NAMES = ['clearIcon', 'renderExtraFooter', 'suffixIcon']
 
@@ -49,6 +50,7 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const intl = useIntl()
+    const { formData } = useInjectForm()
     const formSlotsContext = useInjectSlots()
     const format = computed(() => props.format ?? fieldDateFormatterMap['time'])
     const valueFormat = computed(() => props.valueFormat ?? fieldDateFormatterMap['time'])
@@ -64,7 +66,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp

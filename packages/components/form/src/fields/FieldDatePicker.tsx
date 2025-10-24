@@ -19,6 +19,7 @@ import parseValueToDay from '../utils/parseValueToMoment'
 import fieldDateFormatterMap from '../utils/fieldDateFormatterMap'
 
 import FieldReadonly from './FieldReadonly'
+import { useInjectForm } from '../context/FormContext'
 
 const SLOT_NAMES = [
   'dateRender',
@@ -90,7 +91,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
-
+    const { formData } = useInjectForm()
     const defaultFormat = computed(() => {
       const dataFormat = fieldDateFormatterMap[props.picker]
       if (props.showTime === true) {
@@ -116,7 +117,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp
