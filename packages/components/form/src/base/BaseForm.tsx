@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-10-22 10:30:10
+ * @LastEditTime: 2025-10-24 13:55:45
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -23,6 +23,7 @@ import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { useInitialValues } from '../hooks/useInitialValues'
 import { useLinkage } from '../hooks/useLinkage'
 import { convertKeyInitialValue, transformKeySubmitValue, useAction } from '../hooks/useAction'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import covertFormName from '../utils/namePath'
 import FormSlotsContextProvider from '../context/FormSlotsContext'
 import FormRowWrapper from '../components/FormRowWrapper'
@@ -39,6 +40,7 @@ export default defineComponent({
     ...baseFormProps(),
   },
   setup(props, { slots, expose, attrs }) {
+    const { form } = useProConfigInject()
     const mountedRef = ref(false)
     const transformerMap = shallowRef<TransformerMapType>(new Map())
     const formRef = ref<FormInstance>()
@@ -71,6 +73,7 @@ export default defineComponent({
             'omitNil',
             'grid',
             'theme',
+            'colon',
             'customUi',
             'gridSubmitter',
             'requestAbort',
@@ -84,6 +87,11 @@ export default defineComponent({
             'readonlyProps',
             'items',
             'request',
+            'validateMessages',
+            'requiredMark',
+            'labelAlign',
+            'labelCol',
+            'wrapperCol',
             'submitOnLoading',
             'onLoadingChange',
             'onFinish',
@@ -266,7 +274,6 @@ export default defineComponent({
         )
       })
     })
-
     useProvideForm({
       ...linkage,
       action,
@@ -304,6 +311,12 @@ export default defineComponent({
           class={formClass.value}
           model={formData.value}
           style={attrs.style}
+          colon={props.colon ?? form?.value?.colon ?? true}
+          requiredMark={props.requiredMark ?? form?.value?.requiredMark ?? true}
+          validateMessages={props.validateMessages ?? form?.value?.validateMessages}
+          labelAlign={props.labelAlign ?? form?.value?.labelAlign}
+          labelCol={props.labelCol ?? form?.value?.labelCol}
+          wrapperCol={props.wrapperCol ?? form?.value?.wrapperCol}
         >
           <Spin spinning={props.showLoading && (requestLoading.value || loading.value)}>
             <FormRowWrapper>

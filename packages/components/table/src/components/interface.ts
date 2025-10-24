@@ -368,6 +368,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   rowKey: {
     type: [Function, String] as PropType<string | GetRowKey<T>>,
+    default: undefined,
   },
   customRow: {
     type: Function as PropType<GetComponentProps<T>>,
@@ -774,26 +775,7 @@ export interface ColumnType<RecordType = DefaultRecordType>
       | 'colProps'
       | 'valueEnum'
     > {
-  // search?:
-  //   | boolean
-  //   | Omit<
-  //       ProFormItemType,
-  //       | 'key'
-  //       | 'originKey'
-  //       | 'tooltip'
-  //       | 'hidden'
-  //       | 'grid'
-  //       | 'title'
-  //       | 'spaceProps'
-  //       | 'children'
-  //       | 'width'
-  //       | 'ignoreWidth'
-  //       | 'name'
-  //       | 'originName'
-  //       | 'rowProps'
-  //       | 'colProps'
-  //       | 'valueEnum'
-  //     >
+  search?: ProFormItemType
   colSpan?: number
   dataIndex?: DataIndex
   key?: Key

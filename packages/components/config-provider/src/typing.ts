@@ -2,13 +2,13 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-15 14:56:11
+ * @LastEditTime: 2025-10-24 14:07:43
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
-import type { ConfigProviderProps, NotificationPlacement } from 'ant-design-vue'
+import type { ColProps, ConfigProviderProps, NotificationPlacement } from 'ant-design-vue'
 import type { IntlType } from './intl'
-import type { ValidateMessages } from 'ant-design-vue/es/form/interface'
+import type { ValidateMessages, FormLabelAlign } from 'ant-design-vue/es/form/interface'
 import type {
   Bordered,
   OptionConfig,
@@ -44,6 +44,9 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     labelWidth?: number | 'auto'
     searchText?: string
     resetText?: string
+    labelAlign?: FormLabelAlign
+    labelCol?: ColProps
+    wrapperCol?: ColProps
   }
   modal?: {
     draggable?: boolean

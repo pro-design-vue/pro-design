@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:14
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 14:02:14
+ * @LastEditTime: 2025-10-24 13:50:43
  * @Description:
  */
 import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
@@ -24,21 +24,23 @@ export const antFormProps = () => ({
   },
   labelCol: {
     type: Object as PropType<FormProps['labelCol']>,
+    default: undefined,
   },
   wrapperCol: {
     type: Object as PropType<FormProps['wrapperCol']>,
+    default: undefined,
   },
   colon: {
     type: Boolean as PropType<FormProps['colon']>,
-    default: true,
+    default: undefined,
   },
   requiredMark: {
     type: [Boolean, String] as PropType<FormProps['requiredMark']>,
-    default: true,
+    default: undefined,
   },
   labelAlign: {
     type: String as PropType<FormProps['labelAlign']>,
-    default: 'right',
+    default: undefined,
   },
   labelWrap: Boolean as PropType<FormProps['labelWrap']>,
   disabled: {

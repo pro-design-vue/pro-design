@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-18 11:08:18
+ * @LastEditTime: 2025-10-24 13:47:46
  * @Description:
 -->
 <script setup lang="ts">
@@ -97,16 +97,7 @@ ConfigProvider.config({
 </script>
 
 <template>
-  <ConfigProvider
-    v-bind="rest"
-    :locale
-    :prefixCls
-    :theme="mergerTheme"
-    :componentSize
-    :form="
-      omit(form ?? {}, ['resetOnSubmit', 'labelWidth', 'resetText', 'searchText', 'labelWidth'])
-    "
-  >
+  <ConfigProvider v-bind="rest" :locale :prefixCls :theme="mergerTheme" :componentSize>
     <App v-bind="app">
       <ConfigProviderContainer
         :contentOffsetTop

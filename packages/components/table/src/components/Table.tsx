@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-23 14:12:31
+ * @LastEditTime: 2025-10-24 14:08:22
  * @Description:
  */
 
@@ -19,7 +19,7 @@ import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
-import { omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
+import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
@@ -241,15 +241,22 @@ export default defineComponent({
           return true
         })
         .map((item) => {
-          return omitKeysAndUndefined(
+          const mergeItem = merge(
             {
               ...item,
+
               width: undefined,
               tooltip: item.headerTooltip,
               name: item.dataIndex,
             },
-            ['dataIndex', 'width'],
-          ) as ProFormItemType
+            item.search,
+          )
+          return omitKeysAndUndefined(mergeItem, [
+            'dataIndex',
+            'width',
+            'headerTooltip',
+            'search',
+          ]) as ProFormItemType
         })
     })
 
@@ -260,7 +267,7 @@ export default defineComponent({
       typeof props.rowKey == 'function'
         ? props.rowKey
         : (record: Record<string, any>) => {
-            return record?.[(props.rowKey || 'id') as string]
+            return record?.[(props.rowKey ?? (table?.value?.rowKey || 'id')) as string]
           },
     )
 
