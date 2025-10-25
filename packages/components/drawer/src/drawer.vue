@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-18 19:17:38
+ * @LastEditTime: 2025-10-25 16:35:00
  * @Description:
 -->
 <script setup lang="ts">
@@ -125,7 +125,7 @@ const handleFullScreen = () => {
       </ProButton>
     </template>
     <template #default>
-      <slot />
+      <div :class="`${prefixCls}-body`"><slot /></div>
     </template>
 
     <template #footer v-if="$slots.footer">
