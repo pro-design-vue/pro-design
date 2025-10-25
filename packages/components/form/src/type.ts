@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-10-07 11:38:42
+ * @LastEditTime: 2025-10-25 15:05:30
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -309,7 +309,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    *
    * @name 标题
    */
-  title?: ProVNode | ((params: { formData: T }) => ProVNode)
+  title?: ProVNode | ((params: { formData: T; readonly?: boolean }) => ProVNode)
 
   /**
    * 支持 VNode 和 方法

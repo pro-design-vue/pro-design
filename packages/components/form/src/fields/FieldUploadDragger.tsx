@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 16:17:22
+ * @LastEditTime: 2025-10-25 15:00:27
  * @Description:
  */
-import { computed, defineComponent } from 'vue'
-import { Upload, theme } from 'ant-design-vue'
+import { computed, defineComponent, ref, watch, type PropType } from 'vue'
+import { Form, Upload, type UploadChangeParam, type UploadProps } from 'ant-design-vue'
 import { InboxOutlined } from '@ant-design/icons-vue'
 import { useInjectForm } from '../context/FormContext'
 import { useInjectSlots } from '../context/FormSlotsContext'
@@ -66,19 +66,24 @@ export default defineComponent({
       type: Array,
       default: undefined,
     },
+    listIgnore: {
+      type: Boolean,
+      default: true,
+    },
+    showUploadList: {
+      type: [Boolean, Object] as PropType<UploadProps['showUploadList']>,
+      default: true,
+    },
+    customRequest: Function,
+    beforeUpload: Function,
   },
   setup(props, { attrs }) {
-    const { token } = theme.useToken()
     const { prefixCls, formData } = useInjectForm()
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
-    const value = computed(() => {
-      return props.fileList ?? props.value
-    })
+    const fileList = ref<any[]>([])
+    const formItemContext = Form.useInjectFormItemContext()
     const baseClassName = computed(() => `${prefixCls}-upload`)
-    const showUploadButton = computed(
-      () => props.max === undefined || !value.value || value.value?.length < props.max,
-    )
     const slotsGetter = computed(() => {
       const temp = {}
       SLOT_NAMES.forEach((name) => {
@@ -114,23 +119,78 @@ export default defineComponent({
       return props.description || intl.getMessage('upload.dragger.hint', '支持单次或批量上传')
     })
 
-    const onChange = (info) => {
-      props.onChange?.(info.fileList, info)
+    const beforeUpload: UploadProps['beforeUpload'] = async (file, fileList) => {
+      const result = await props.beforeUpload?.(file, fileList)
+      if (!result && props.listIgnore) {
+        return Upload.LIST_IGNORE
+      }
+      return result
+    }
+
+    const customRequest: UploadProps['customRequest'] = async (option) => {
+      const formData = new FormData()
+      formData.append(props.name, option.file)
+      const onUploadProgress = (e) => {
+        if (e.total > 0) {
+          e.percent = (e.loaded / e.total) * 100
+        }
+        option?.onProgress?.(e)
+      }
+      const { success, error, data } =
+        (await props.customRequest!(formData, onUploadProgress)) ?? {}
+      if (success) {
+        option.onSuccess?.(data)
+        formItemContext.onFieldChange()
+      } else {
+        option.onError?.(error, data)
+      }
+    }
+
+    const uploadProps = computed(() => {
+      const newProps = { ...attrs }
+      if (props.customRequest) {
+        newProps.customRequest = customRequest
+      }
+      if (props.beforeUpload) {
+        newProps.beforeUpload = beforeUpload
+      }
+      return newProps
+    })
+
+    watch(
+      () => props.value,
+      (newValue) => {
+        fileList.value = [...newValue?.map((item) => ({ ...item, name: item.name || item.url }))]
+        if (!fileList.value?.length) {
+          formItemContext.onFieldChange()
+        }
+      },
+    )
+
+    const onUploadChange = (info: UploadChangeParam) => {
+      props.onChange?.(
+        info.fileList.map((item) => ({
+          ...item,
+          name: item.name || item.response?.name || item.url || item.response?.url,
+          url: item.response?.url || item.url,
+        })),
+        info.file,
+      )
     }
 
     return () => (
       <Upload.Dragger
-        fileList={value.value}
-        {...attrs}
+        {...uploadProps.value}
+        class={{ [`${baseClassName.value}-readonly`]: props.readonly }}
+        v-model:fileList={fileList.value}
         name={props.name}
-        style={{
-          ...(attrs as any)?.style,
-          display: !showUploadButton.value ? 'none' : undefined,
-        }}
+        showUploadList={props.readonly || props.showUploadList}
+        disabled={props.readonly || props.disabled}
+        style={(attrs as any)?.style}
         v-slots={slotsGetter.value}
-        onChange={onChange}
+        onChange={onUploadChange}
       >
-        <p class={`${baseClassName.value}-drag-icon`} style={{ color: token.value.colorPrimary }}>
+        <p class={`${baseClassName.value}-drag-icon`} style={{ color: 'hsl(var(--pro-primary))' }}>
           {icon.value}
         </p>
         <p class={`${baseClassName.value}-text`}>{title.value}</p>

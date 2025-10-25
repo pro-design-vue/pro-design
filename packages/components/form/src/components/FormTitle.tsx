@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 13:00:22
  * @LastEditors: shen
- * @LastEditTime: 2025-10-07 11:54:30
+ * @LastEditTime: 2025-10-25 15:01:48
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -29,6 +29,10 @@ export default defineComponent({
       type: [String, Boolean],
       default: '',
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const formSlotsContext = useInjectSlots()
@@ -38,7 +42,10 @@ export default defineComponent({
       <>
         {title.value && (
           <span class={`${prefixCls}-item-title-text`}>
-            <RenderVNode vnode={title.value} props={{ formData: formData.value }} />
+            <RenderVNode
+              vnode={title.value}
+              props={{ formData: formData.value, readonly: props.readonly }}
+            />
           </span>
         )}
         {props.tooltip && (
@@ -46,7 +53,10 @@ export default defineComponent({
             v-slots={{
               title: () =>
                 props.tooltip === true ? (
-                  <RenderVNode vnode={title.value} props={{ formData: formData.value }} />
+                  <RenderVNode
+                    vnode={title.value}
+                    props={{ formData: formData.value, readonly: props.readonly }}
+                  />
                 ) : (
                   props.tooltip
                 ),

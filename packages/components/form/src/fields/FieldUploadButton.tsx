@@ -2,20 +2,21 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 16:27:19
+ * @LastEditTime: 2025-10-25 15:00:08
  * @Description:
  */
 import type { PropType } from 'vue'
 
-import { computed, defineComponent } from 'vue'
-import { Upload, Button } from 'ant-design-vue'
+import { computed, defineComponent, ref, watch } from 'vue'
+import { Form, Button, Upload, type UploadChangeParam, type UploadProps } from 'ant-design-vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import { useInjectSlots } from '../context/FormSlotsContext'
 import { commonFieldProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { isFunction, RenderVNode } from '@pro-design-vue/utils'
-import getSlot from '../utils/getSlot'
 import { useInjectForm } from '../context/FormContext'
+import getSlot from '../utils/getSlot'
+
 const SLOT_NAMES = ['downloadIcon', 'itemRender', 'previewIcon', 'removeIcon']
 
 export default defineComponent({
@@ -49,7 +50,7 @@ export default defineComponent({
       type: String,
       default: 'file',
     },
-    max: {
+    maxCount: {
       type: Number,
       default: undefined,
     },
@@ -67,20 +68,26 @@ export default defineComponent({
     },
     listType: {
       type: String as PropType<'text' | 'picture' | 'picture-card'>,
-      default: 'picture',
+      default: 'picture-card',
     },
+    listIgnore: {
+      type: Boolean,
+      default: true,
+    },
+    showUploadList: {
+      type: [Boolean, Object] as PropType<UploadProps['showUploadList']>,
+      default: true,
+    },
+    customRequest: Function,
+    beforeUpload: Function,
   },
   setup(props, { attrs }) {
     const intl = useIntl()
-    const { formData } = useInjectForm()
+    const { prefixCls, formData } = useInjectForm()
     const formSlotsContext = useInjectSlots()
-    const value = computed(() => {
-      return props.fileList ?? props.value
-    })
-
-    const showUploadButton = computed(
-      () => props.max === undefined || !value.value || value.value?.length < props.max,
-    )
+    const fileList = ref<any[]>([])
+    const formItemContext = Form.useInjectFormItemContext()
+    const baseClassName = computed(() => `${prefixCls}-upload`)
     const isPictureCard = computed(() => props.listType === 'picture-card')
     const slotsGetter = computed(() => {
       const temp = {}
@@ -109,31 +116,93 @@ export default defineComponent({
       return props.title || intl.getMessage('upload.button', '单击上传')
     })
 
-    const onChange = (info) => {
-      props.onChange?.(info.fileList, info)
+    const beforeUpload: UploadProps['beforeUpload'] = async (file, fileList) => {
+      const result = await props.beforeUpload?.(file, fileList)
+      if (!result && props.listIgnore) {
+        return Upload.LIST_IGNORE
+      }
+      return result
+    }
+
+    const customRequest: UploadProps['customRequest'] = async (option) => {
+      const formData = new FormData()
+      formData.append(props.name, option.file)
+      const onUploadProgress = (e) => {
+        if (e.total > 0) {
+          e.percent = (e.loaded / e.total) * 100
+        }
+        option?.onProgress?.(e)
+      }
+      const { success, error, data } =
+        (await props.customRequest!(formData, onUploadProgress)) ?? {}
+      if (success) {
+        option.onSuccess?.(data)
+        formItemContext.onFieldChange()
+      } else {
+        option.onError?.(error, data)
+      }
+    }
+
+    const uploadProps = computed(() => {
+      const newProps = { ...attrs }
+      if (props.customRequest) {
+        newProps.customRequest = customRequest
+      }
+      if (props.beforeUpload) {
+        newProps.beforeUpload = beforeUpload
+      }
+      return newProps
+    })
+
+    watch(
+      () => props.value,
+      (newValue) => {
+        fileList.value = [...newValue?.map((item) => ({ ...item, name: item.name || item.url }))]
+        if (!fileList.value?.length) {
+          formItemContext.onFieldChange()
+        }
+      },
+    )
+
+    const onUploadChange = (info: UploadChangeParam) => {
+      props.onChange?.(
+        info.fileList.map((item) => ({
+          ...item,
+          name: item.name || item.response?.name || item.url || item.response?.url,
+          url: item.response?.url || item.url,
+        })),
+        info.file,
+      )
     }
 
     return () => (
       <Upload
-        fileList={value.value}
-        {...attrs}
-        listType={props.listType}
+        {...uploadProps.value}
+        class={{ [`${baseClassName.value}-readonly`]: props.readonly }}
+        v-model:fileList={fileList.value}
         name={props.name}
+        maxCount={props.maxCount}
+        listType={props.listType}
+        showUploadList={props.readonly || props.showUploadList}
+        disabled={props.readonly || props.disabled}
+        style={(attrs as any)?.style}
         v-slots={slotsGetter.value}
-        onChange={onChange}
+        onChange={onUploadChange}
       >
-        {showUploadButton.value &&
-          (isPictureCard.value ? (
-            <span>
+        {isPictureCard.value ? (
+          props.maxCount !== undefined &&
+          fileList.value?.length < props.maxCount && (
+            <div>
               {icon.value}
-              {title.value}
-            </span>
-          ) : (
-            <Button disabled={props.disabled} {...props.buttonProps}>
-              {icon.value}
-              {title.value}
-            </Button>
-          ))}
+              <div style="margin-top: 8px"> {title.value}</div>
+            </div>
+          )
+        ) : (
+          <Button disabled={props.disabled} {...props.buttonProps}>
+            {icon.value}
+            {title.value}
+          </Button>
+        )}
       </Upload>
     )
   },

@@ -154,6 +154,16 @@
   }
 
   &-upload {
+    &-readonly {
+      .@{ant-prefix}-upload {
+        display: none;
+        &-list-item {
+          margin-top: 0px !important;
+          line-height: 30px !important;
+          height: 30px !important;
+        }
+      }
+    }
     &-drag-icon {
       margin-bottom: 16px;
 

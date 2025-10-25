@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-10-22 10:30:44
+ * @LastEditTime: 2025-10-25 15:04:23
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -224,7 +224,11 @@ export default defineComponent({
         temp['label'] = () => (
           <>
             <div class={`${prefixCls}-item-title`} style={formItemProps.value.titleStyles}>
-              <FormTitle title={props.item.title} tooltip={props.item.tooltip} />
+              <FormTitle
+                title={props.item.title}
+                tooltip={props.item.tooltip}
+                readonly={mergeReadonly.value}
+              />
             </div>
             <div class={`${prefixCls}-item-title-extra`}>
               <RenderVNode vnode={extraRender} props={{ formData: formData.value }} />
