@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-27 13:27:19
+ * @LastEditTime: 2025-10-27 13:37:00
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -253,14 +253,13 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
             () => option.text,
           )
         } else {
-          cellValue = option.text ?? emptyText
+          cellValue = option.text
         }
       } else {
-        cellValue = emptyText
+        cellValue = value === null || value === undefined || value === '' ? emptyText : value
       }
     } else {
-      // cellValue = value !== null || value !== undefined || value !== '' ? value : emptyText
-      cellValue = value ?? emptyText
+      cellValue = value === null || value === undefined || value === '' ? emptyText : value
     }
     bodyCell = [
       (typeof cellValue === 'object' && isValidElement(cellValue)) || typeof cellValue !== 'object'
