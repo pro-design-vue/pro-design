@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 15:00:08
+ * @LastEditTime: 2025-10-27 15:43:39
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -68,7 +68,7 @@ export default defineComponent({
     },
     listType: {
       type: String as PropType<'text' | 'picture' | 'picture-card'>,
-      default: 'picture-card',
+      default: 'text',
     },
     listIgnore: {
       type: Boolean,

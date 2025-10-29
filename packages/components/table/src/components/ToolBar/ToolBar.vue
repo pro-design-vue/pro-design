@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-10-23 14:30:45
+ * @LastEditTime: 2025-10-29 10:49:38
  * @Description:
 -->
 <script lang="ts">
@@ -78,7 +78,13 @@ export default defineComponent({
 
     const mergeOptions = computed<OptionConfig>(() => {
       if (props.options === false) {
-        return {}
+        return {
+          reload: false,
+          density: true,
+          setting: true,
+          search: false,
+          fullScreen: false,
+        }
       }
       return { ...defaultOptions, ...props.options }
     })
