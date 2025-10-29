@@ -505,6 +505,7 @@ export const fieldPropsMap: Partial<Record<`${ProFieldType}`, string[]>> = {
     'onReject',
     'onRemove',
     'title',
+    'description',
     'max',
     'buttonProps',
   ],

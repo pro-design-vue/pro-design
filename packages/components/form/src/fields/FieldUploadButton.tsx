@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-27 15:43:39
+ * @LastEditTime: 2025-10-29 20:25:28
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -17,7 +17,14 @@ import { isFunction, RenderVNode } from '@pro-design-vue/utils'
 import { useInjectForm } from '../context/FormContext'
 import getSlot from '../utils/getSlot'
 
-const SLOT_NAMES = ['downloadIcon', 'itemRender', 'previewIcon', 'removeIcon']
+const SLOT_NAMES = [
+  'downloadIcon',
+  'itemRender',
+  'previewIcon',
+  'removeIcon',
+  'description',
+  'title',
+]
 
 export default defineComponent({
   name: 'FieldUploadButton',
@@ -44,6 +51,9 @@ export default defineComponent({
       default: '',
     },
     title: {
+      type: String,
+    },
+    description: {
       type: String,
     },
     name: {
@@ -114,6 +124,14 @@ export default defineComponent({
         return <RenderVNode vnode={render} props={{ formData: formData.value }} />
       }
       return props.title || intl.getMessage('upload.button', '单击上传')
+    })
+
+    const description = computed(() => {
+      const render = getSlot(props.description, formSlotsContext)
+      if (isFunction(render)) {
+        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
+      }
+      return props.description
     })
 
     const beforeUpload: UploadProps['beforeUpload'] = async (file, fileList) => {
@@ -198,10 +216,15 @@ export default defineComponent({
             </div>
           )
         ) : (
-          <Button disabled={props.disabled} {...props.buttonProps}>
-            {icon.value}
-            {title.value}
-          </Button>
+          <>
+            <Button disabled={props.disabled} {...props.buttonProps}>
+              {icon.value}
+              {title.value}
+            </Button>
+            {description.value && (
+              <span style={{ marginInlineStart: '10px' }}>{description.value}</span>
+            )}
+          </>
         )}
       </Upload>
     )
