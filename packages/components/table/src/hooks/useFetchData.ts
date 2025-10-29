@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:46:59
+ * @LastEditTime: 2025-10-29 11:09:31
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -176,7 +176,7 @@ export const useFetchData = (
       return false
     }
     if (props.pagination && contextPagination.value) {
-      return merge(contextPagination.value, props.pagination)
+      return merge({}, contextPagination.value, props.pagination)
     } else {
       return props.pagination ?? contextPagination.value
     }
