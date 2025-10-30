@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 15:00:27
+ * @LastEditTime: 2025-10-30 13:34:04
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -164,6 +164,9 @@ export default defineComponent({
         if (!fileList.value?.length) {
           formItemContext.onFieldChange()
         }
+      },
+      {
+        immediate: true,
       },
     )
 

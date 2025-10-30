@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-07-27 12:03:22
+ * @LastEditTime: 2025-10-30 13:34:27
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -103,6 +103,9 @@ export default defineComponent({
         if (!isEqual(newValue, fileList.value)) {
           fileList.value = newValue.map((item) => ({ ...item, crossOrigin: props.crossOrigin }))
         }
+      },
+      {
+        immediate: true,
       },
     )
 
