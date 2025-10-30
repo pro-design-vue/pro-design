@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-30 13:34:04
+ * @LastEditTime: 2025-10-30 14:38:58
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -160,9 +160,13 @@ export default defineComponent({
     watch(
       () => props.value,
       (newValue) => {
-        fileList.value = [...newValue?.map((item) => ({ ...item, name: item.name || item.url }))]
-        if (!fileList.value?.length) {
-          formItemContext.onFieldChange()
+        if (newValue) {
+          fileList.value = [...newValue?.map((item) => ({ ...item, name: item.name || item.url }))]
+          if (!fileList.value?.length) {
+            formItemContext.onFieldChange()
+          }
+        } else {
+          fileList.value = []
         }
       },
       {
