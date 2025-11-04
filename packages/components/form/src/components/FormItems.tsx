@@ -2,13 +2,13 @@
  * @Author: shen
  * @Date: 2023-08-09 16:52:17
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 17:50:48
+ * @LastEditTime: 2025-11-04 18:57:13
  * @Description:
  */
 import type { PropType } from 'vue'
 import type { ProFormItemType } from '../type'
 
-import { computed, defineAsyncComponent, defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { Space } from 'ant-design-vue'
 import { useInjectForm } from '../context/FormContext'
 import { ProFieldType } from '../fieldType'
