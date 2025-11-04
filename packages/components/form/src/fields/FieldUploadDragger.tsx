@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 18:12:22
+ * @LastEditTime: 2025-11-04 19:34:39
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -89,7 +89,9 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} />
+          temp[name] = (props) => (
+            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+          )
         }
       })
       return temp
