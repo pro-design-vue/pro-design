@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-30 14:38:58
+ * @LastEditTime: 2025-11-04 18:12:22
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -168,9 +168,6 @@ export default defineComponent({
         } else {
           fileList.value = []
         }
-      },
-      {
-        immediate: true,
       },
     )
 

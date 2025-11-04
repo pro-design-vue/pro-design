@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-06-10 15:44:38
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 16:14:20
+ * @LastEditTime: 2025-11-04 18:06:05
  * @Description:
  */
 import type { ComputedRef, Ref } from 'vue'
@@ -54,8 +54,8 @@ export function useFieldValue<T>({
       typeof initialValue !== 'undefined'
     ) {
       const value = convertValue ? (convertValue(initialValue, namePath.value) as T) : initialValue
-      set(formData.value, namePath.value, cloneDeep(value))
       set(initialValues?.value ?? {}, namePath.value, cloneDeep(initialValue))
+      set(formData.value, namePath.value, cloneDeep(value))
       fieldValue.value = value
     }
   }

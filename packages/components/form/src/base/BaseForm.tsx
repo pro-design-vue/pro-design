@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-27 12:04:01
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 13:55:45
+ * @LastEditTime: 2025-11-04 18:07:32
  * @Description:
  */
 import type { ColProps, FormInstance } from 'ant-design-vue'
@@ -157,6 +157,7 @@ export default defineComponent({
       },
       {
         immediate: true,
+        deep: true,
       },
     )
     const onValuesChange = debounce(() => {
@@ -266,8 +267,8 @@ export default defineComponent({
     onMounted(() => {
       mountedRef.value = true
       requestFormCacheId += 1
-      const finalValues = formRef.value?.getFieldsValue?.(true) ?? {}
       Promise.resolve().then(() => {
+        const finalValues = formRef.value?.getFieldsValue?.(true) ?? {}
         props.onInit?.(
           transformKeySubmitValue(finalValues, transformerMap.value, props.omitNil),
           action,

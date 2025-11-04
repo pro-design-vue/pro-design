@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-27 13:37:00
+ * @LastEditTime: 2025-11-04 18:28:12
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -318,6 +318,16 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       showTooltip = !(!tooltipProps.title && tooltipProps.title !== 0)
     }
 
+    // if (!tooltipProps.placement) {
+    //   if (!column!.align || column!.align === 'left') {
+    //     tooltipProps.placement = 'topLeft'
+    //   } else if (column!.align === 'center') {
+    //     tooltipProps.placement = 'top'
+    //   } else {
+    //     tooltipProps.placement = 'topRight'
+    //   }
+    // }
+
     renderCellVNode = createVNode(
       BodyCellTooltip,
       {
@@ -334,8 +344,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
         shouldOpen: (isEllipsis) => {
           return tooltipProps?.shouldOpen
             ? tooltipProps?.shouldOpen?.(isEllipsis, cellRenderArgs)
-            : true
-          // : isEllipsis
+            : isEllipsis
         },
         onCellLeave: () => {
           emit('cellLeave')

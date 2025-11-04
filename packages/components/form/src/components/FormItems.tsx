@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:52:17
  * @LastEditors: shen
- * @LastEditTime: 2025-10-22 11:06:52
+ * @LastEditTime: 2025-11-04 17:50:48
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -16,15 +16,15 @@ import { useInjectSlots } from '../context/FormSlotsContext'
 import { omitUndefined, pickKeys, RenderVNode } from '@pro-design-vue/utils'
 
 import getSlot from '../utils/getSlot'
-// import FormGroup from './FormGroup'
-// import FormSet from './FormSet'
-// import FormList from './FormList'
-// import FormItem from './FormItem'
+import FormGroup from './FormGroup'
+import FormSet from './FormSet'
+import FormList from './FormList'
+import FormItem from './FormItem'
 
-const FormGroup = defineAsyncComponent(() => import('./FormGroup'))
-const FormSet = defineAsyncComponent(() => import('./FormSet'))
-const FormList = defineAsyncComponent(() => import('./FormList'))
-const FormItem = defineAsyncComponent(() => import('./FormItem'))
+// const FormGroup = defineAsyncComponent(() => import('./FormGroup'))
+// const FormSet = defineAsyncComponent(() => import('./FormSet'))
+// const FormList = defineAsyncComponent(() => import('./FormList'))
+// const FormItem = defineAsyncComponent(() => import('./FormItem'))
 
 const LIST_PROP_KEYS = [
   'min',
