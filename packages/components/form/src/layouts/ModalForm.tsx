@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 08:51:45
+ * @LastEditTime: 2025-11-05 09:12:43
  * @Description:
  */
 import { ref, computed, watch, defineComponent } from 'vue'
@@ -155,7 +155,7 @@ export default defineComponent({
           ),
           onOk() {
             open.value = false
-            modalProps.value?.onCancel?.(e)
+            props.modalProps?.onCancel?.(e)
           },
           onCancel() {},
         })
