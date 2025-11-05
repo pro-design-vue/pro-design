@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-16 15:21:45
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 15:53:05
+ * @LastEditTime: 2025-11-05 10:36:38
  * @Description:
 -->
 <script setup lang="ts">
@@ -31,6 +31,12 @@ const isComponent = computed(() => {
 <template>
   <component :is="icon as Component" v-if="isComponent" v-bind="$attrs" />
   <img v-else-if="isRemoteIcon" :src="icon as string" v-bind="$attrs" />
+  <i v-else-if="icon" :class="`pro-icon pro-icon-${icon}`" v-bind="$attrs"></i>
+  <Icon v-else-if="$slots.component" v-bind="$attrs">
+    <template #component="svgProps">
+      <slot name="component" v-bind="svgProps" />
+    </template>
+  </Icon>
   <Icon v-else-if="fallback" v-bind="$attrs">
     <template #component="svgProps">
       <svg viewBox="0 0 24 24" width="1em" height="1em" v-bind="svgProps">
