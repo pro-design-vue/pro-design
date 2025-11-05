@@ -2,14 +2,14 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 09:51:25
+ * @LastEditTime: 2025-11-05 09:56:56
  * @Description:
  */
 import type { PropType } from 'vue'
 import type { UploadProps } from 'ant-design-vue'
 
 import { computed, defineComponent, ref, watch } from 'vue'
-import { Upload, Modal } from 'ant-design-vue'
+import { Form, Upload, Modal } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { commonFieldProps } from '../props'
 import { useInjectForm } from '../context/FormContext'
@@ -52,7 +52,7 @@ export default defineComponent({
     const previewImage = ref('')
     const intl = useIntl()
     const { prefixCls, disabled } = useInjectForm()
-
+    const formItemContext = Form.useInjectFormItemContext()
     const mergeDisabled = computed(() => props.readonly || disabled?.value)
 
     const customRequest: UploadProps['customRequest'] = async (option) => {
@@ -115,6 +115,7 @@ export default defineComponent({
 
     watch(fileList, () => {
       props.onChange?.(fileList.value)
+      formItemContext.onFieldChange()
     })
 
     return () => (

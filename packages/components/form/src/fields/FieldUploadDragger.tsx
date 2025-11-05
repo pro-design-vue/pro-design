@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 09:50:20
+ * @LastEditTime: 2025-11-05 10:00:00
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -139,7 +139,7 @@ export default defineComponent({
         option?.onProgress?.(e)
       }
       const { success, error, data } =
-        (await props.customRequest!(formData, onUploadProgress)) ?? {}
+        (await props.customRequest!(formData, onUploadProgress, option)) ?? {}
       if (success) {
         option.onSuccess?.(data)
         formItemContext.onFieldChange()
@@ -182,6 +182,7 @@ export default defineComponent({
         })),
         info.file,
       )
+      formItemContext.onFieldChange()
     }
 
     return () => (
