@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 18:12:28
+ * @LastEditTime: 2025-11-05 09:51:25
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -107,6 +107,9 @@ export default defineComponent({
         } else {
           fileList.value = []
         }
+      },
+      {
+        immediate: true,
       },
     )
 

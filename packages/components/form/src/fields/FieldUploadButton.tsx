@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 19:35:16
+ * @LastEditTime: 2025-11-05 09:47:46
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -179,12 +179,12 @@ export default defineComponent({
       (newValue) => {
         if (newValue) {
           fileList.value = [...newValue?.map((item) => ({ ...item, name: item.name || item.url }))]
-          if (!fileList.value?.length) {
-            formItemContext.onFieldChange()
-          }
         } else {
           fileList.value = []
         }
+      },
+      {
+        immediate: true,
       },
     )
 
@@ -203,7 +203,7 @@ export default defineComponent({
       <Upload
         {...uploadProps.value}
         class={{ [`${baseClassName.value}-readonly`]: props.readonly }}
-        v-model:fileList={fileList.value}
+        fileList={fileList.value}
         name={props.name}
         maxCount={props.maxCount}
         listType={props.listType}
