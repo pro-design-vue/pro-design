@@ -2,12 +2,13 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 23:53:22
+ * @LastEditTime: 2025-11-05 08:51:45
  * @Description:
  */
 import { ref, computed, watch, defineComponent } from 'vue'
 import { ProModal, type ProModalProps } from '@pro-design-vue/components/modal'
 import { Modal } from 'ant-design-vue'
+import { usePrefixCls } from '@pro-design-vue/hooks'
 import { drawerOrModalFormProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import {
@@ -39,6 +40,7 @@ export default defineComponent({
     const loading = ref(false)
     const valuesChanged = ref(false)
     const intl = useIntl()
+    const prefixCls = usePrefixCls('modal-form')
     const formRef = ref<ProFormActionType>()
     const footerRef = ref<HTMLDivElement | null>(null)
     const open = computed({
@@ -68,10 +70,12 @@ export default defineComponent({
             'modalProps',
             'title',
             'width',
+            'onReset',
             'confirmOnValuesChange',
             'submitTimeout',
             'onFinish',
             'submitter',
+            'onValuesChange',
           ]),
         ),
         layout: props.layout ?? 'vertical',
@@ -86,7 +90,7 @@ export default defineComponent({
 
     const modalProps = computed<ProModalProps>(() =>
       omitUndefined({
-        ...omit(props.modalProps ?? {}, ['title', 'width', 'footer']),
+        ...omit(props.modalProps ?? {}, ['title', 'width', 'footer', 'onCancel', 'afterClose']),
         width: props.width,
         title: props.title,
         footer: props.submitter === false ? null : undefined,
@@ -113,6 +117,7 @@ export default defineComponent({
             resetText:
               modalProps.value?.cancelText ?? intl.getMessage('confirm.cancelText', '取消'),
           },
+          class: `${prefixCls}-submitter`,
           resetButtonProps: {
             preventDefault: true,
             disabled: props.submitTimeout ? loading.value : undefined,
@@ -156,7 +161,7 @@ export default defineComponent({
         })
       } else {
         open.value = false
-        modalProps.value?.onCancel?.(e)
+        props.modalProps?.onCancel?.(e)
       }
     }
 
@@ -193,11 +198,12 @@ export default defineComponent({
       <>
         <ProModal
           {...modalProps.value}
+          class={prefixCls}
           open={open.value}
           afterClose={() => {
             resetFields()
             valuesChanged.value = false
-            modalProps.value?.afterClose?.()
+            props.modalProps?.afterClose?.()
           }}
           onCancel={(e) => {
             if (props.submitTimeout && loading.value) return

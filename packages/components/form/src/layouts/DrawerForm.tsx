@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-09-21 23:53:09
+ * @LastEditTime: 2025-11-05 08:59:19
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -11,6 +11,7 @@ import type { ProDrawerProps } from '@pro-design-vue/components/drawer'
 
 import { ref, computed, watch, defineComponent } from 'vue'
 import { Modal } from 'ant-design-vue'
+import { usePrefixCls } from '@pro-design-vue/hooks'
 import { ProDrawer } from '@pro-design-vue/components/drawer'
 import { drawerOrModalFormProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
@@ -41,6 +42,7 @@ export default defineComponent({
     const loading = ref(false)
     const valuesChanged = ref(false)
     const intl = useIntl()
+    const prefixCls = usePrefixCls('drawer-form')
     const formRef = ref<ProFormActionType>()
     const footerRef = ref<HTMLDivElement | null>(null)
     const open = computed({
@@ -74,6 +76,8 @@ export default defineComponent({
             'submitTimeout',
             'onFinish',
             'submitter',
+            'onReset',
+            'onValuesChange',
           ]),
         ),
         layout: 'vertical',
@@ -94,7 +98,9 @@ export default defineComponent({
           'open',
           'footer',
           'okText',
+          'onClose',
           'cancelText',
+          'onAfterOpenChange',
         ]),
         width: props.width,
         title: props.title,
@@ -121,6 +127,7 @@ export default defineComponent({
             resetText:
               props.drawerProps?.cancelText ?? intl.getMessage('confirm.cancelText', '取消'),
           },
+          class: `${prefixCls}-submitter`,
           resetButtonProps: {
             preventDefault: true,
             disabled: props.submitTimeout ? loading.value : undefined,
@@ -158,13 +165,13 @@ export default defineComponent({
           ),
           onOk() {
             open.value = false
-            drawerProps.value?.onClose?.(e)
+            props.drawerProps?.onClose?.(e)
           },
           onCancel() {},
         })
       } else {
         open.value = false
-        drawerProps.value?.onClose?.(e)
+        props.drawerProps?.onClose?.(e)
       }
     }
 
@@ -203,10 +210,11 @@ export default defineComponent({
         <ProDrawer
           {...drawerProps.value}
           open={open.value}
+          rootClassName={prefixCls}
           onAfterOpenChange={(e) => {
             if (!e) resetFields()
             valuesChanged.value = false
-            drawerProps.value?.onAfterOpenChange?.(e)
+            props.drawerProps?.onAfterOpenChange?.(e)
           }}
           onClose={(e) => {
             if (props.submitTimeout && loading.value) return

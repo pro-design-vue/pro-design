@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-18 19:12:36
+ * @LastEditTime: 2025-11-05 08:49:56
  * @Description:
 -->
 <script setup lang="ts">
@@ -93,7 +93,7 @@ const modalProps = computed(() =>
 
 const modalClass = computed(() => ({
   [prefixCls]: true,
-  [attrs.class as string]: true,
+  [(attrs.class || '') as string]: true,
   [`${prefixCls}--fullscreen`]: hasFullscreen.value,
   [`${prefixCls}--draggable`]: hasDraggable.value,
 }))
