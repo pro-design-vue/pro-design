@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 14:10:39
+ * @LastEditTime: 2025-11-10 17:18:14
  * @Description:
 -->
 <script setup lang="ts">
@@ -41,6 +41,7 @@ const {
   app,
   prefixCls = 'ant',
   componentSize,
+  accessCodes,
   ...rest
 } = defineProps<Props>()
 // 默认国际化为zh-cn
@@ -120,6 +121,7 @@ ConfigProvider.config({
         :modal
         :prefixCls
         :componentSize
+        :accessCodes
       >
         <slot />
       </ConfigProviderContainer>

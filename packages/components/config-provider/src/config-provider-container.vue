@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:51:51
+ * @LastEditTime: 2025-11-10 17:18:55
  * @Description:
 -->
 <script setup lang="ts">
@@ -34,6 +34,7 @@ useProConfigProvide({
   intl: computed(() => props.intl),
   locale: computed(() => props.locale),
   dark: computed(() => props.dark),
+  accessCodes: computed(() => props.accessCodes),
   contentOffsetTop: computed(() => props.contentOffsetTop || contentOffsetTop.value),
   setContentOffsetTop: (offsetTop: number) => {
     contentOffsetTop.value = offsetTop

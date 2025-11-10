@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-09-09 17:03:25
+ * @LastEditTime: 2025-11-10 17:23:08
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
@@ -23,6 +23,8 @@ import {
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { confirm, ensureValidVNode, omit } from '@pro-design-vue/utils'
 import { ProIcon } from '@pro-design-vue/components/icon'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
 type ConfirmType = 'danger' | 'warning'
 export default defineComponent({
   name: 'ProButton',
@@ -38,6 +40,7 @@ export default defineComponent({
       type: [Boolean, Object] as PropType<boolean | { delay?: number }>,
       default: (): boolean | { delay?: number } => false,
     },
+    stop: { type: Boolean, default: undefined },
     disabled: { type: Boolean, default: undefined },
     ghost: { type: Boolean, default: undefined },
     block: { type: Boolean, default: undefined },
@@ -45,6 +48,7 @@ export default defineComponent({
     href: String,
     target: String,
     title: String,
+    accessCode: String,
     mode: {
       type: String as PropType<'default' | 'popconfirm' | 'confirm' | 'dropdown'>,
       default: 'default',
@@ -94,6 +98,7 @@ export default defineComponent({
   emits: ['confirm', 'click', 'cancel', 'menu-click'],
   setup(props, { attrs, slots }) {
     const prefixCls = usePrefixCls('button')
+    const { accessCodes } = useProConfigInject()
     const renderConfirmContent = (key: string) => {
       if (slots[key]) {
         const vnodes = slots[key]?.()
@@ -110,6 +115,7 @@ export default defineComponent({
         'permission',
         'iconStyle',
         'icon',
+        'stop',
         'confirmProps',
         'popconfirmProps',
         'menuProps',
@@ -125,6 +131,9 @@ export default defineComponent({
     )
 
     const onClick = (e: MouseEvent) => {
+      if (props.stop) {
+        e.stopPropagation()
+      }
       if (props.mode === 'default') {
         props.onClick?.(e)
         return
@@ -149,6 +158,11 @@ export default defineComponent({
     }
 
     return () => {
+      if (props.accessCode && accessCodes?.value?.size) {
+        if (!accessCodes?.value.has(props.accessCode)) {
+          return null
+        }
+      }
       let icon: any = null
       if (slots.icon || props.icon) {
         icon = slots.icon ? slots.icon() : <ProIcon icon={props.icon} />
