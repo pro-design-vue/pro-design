@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-10 17:17:48
+ * @LastEditTime: 2025-11-12 13:29:42
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
@@ -13,6 +13,7 @@ import type {
   Bordered,
   OptionConfig,
   TablePaginationConfig,
+  DensitySize,
 } from '@pro-design-vue/components/table/src/components/interface'
 
 interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
@@ -30,6 +31,7 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     childrenColumnName?: string
     expandRowByClick?: boolean
     rowKey?: string
+    size?: DensitySize
     rowHover?: boolean
     summaryFixed?: boolean
     columnEmptyText?: string
