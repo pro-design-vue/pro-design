@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 18:08:23
+ * @LastEditTime: 2025-11-14 10:20:37
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -42,6 +42,7 @@ export type UseFetchDataAction<T = any> = {
   reset: () => void
   pollingLoading: Ref<boolean>
   pagination: Ref<PageInfo>
+  searchParams: Ref<Record<string, any> | undefined>
   setFormSearch: (val: Record<string, any> | undefined) => void
   setPagination: (val: PageInfo) => void
   onTableChange: ProTableProps['onChange']
@@ -141,6 +142,7 @@ export const useFetchData = (
   const innerParams = ref<Record<string, any>>({})
   const sorters = ref<SorterResult<any>[]>()
   const filter = ref<Record<string, any>>()
+  const searchParams = ref<Record<string, any>>()
   const keywordName = computed(() => {
     if (props.options !== false && props.options!.search !== false) {
       return props.options!.search === true || !props.options!.search!.name
@@ -235,6 +237,11 @@ export const useFetchData = (
     }
     if (keyword.value) {
       params[keywordName.value ?? 'keyword'] = keyword.value
+    }
+    searchParams.value = {
+      params,
+      sorters: toRaw(sorters.value),
+      filter: toRaw(filter.value),
     }
     try {
       const {
@@ -501,6 +508,7 @@ export const useFetchData = (
       }
       setPagination(initialPageInfo)
     },
+    searchParams,
     setPagination,
     setFormSearch,
     onTableChange,

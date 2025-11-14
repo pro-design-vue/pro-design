@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 14:08:22
+ * @LastEditTime: 2025-11-14 10:23:06
  * @Description:
  */
 
@@ -481,6 +481,7 @@ export default defineComponent({
                 bottom: slots.toolbarBottom,
                 top: slots.toolbarTop,
               }}
+              onCleanSelected={onCleanSelected}
               onFormSearchSubmit={(newValues) => {
                 actions.setFormSearch({
                   ...actions.formSearch.value,
@@ -498,6 +499,7 @@ export default defineComponent({
                 selectedRowKeys={selectedRowKeys.value!}
                 selectedRows={selectedRows.value}
                 onCleanSelected={onCleanSelected}
+                actionsRef={actions}
                 v-slots={{ info: slots.alertInfo, actions: slots.alertActions, alert: slots.alert }}
               />
             )}

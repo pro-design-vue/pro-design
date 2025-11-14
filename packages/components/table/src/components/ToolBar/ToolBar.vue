@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-10-29 10:49:38
+ * @LastEditTime: 2025-11-14 10:31:13
  * @Description:
 -->
 <script lang="ts">
@@ -63,6 +63,7 @@ export default defineComponent({
       type: Function as PropType<(params: any) => void>,
       default: undefined,
     },
+    onCleanSelected: Function as PropType<(keys?: Key[]) => void>,
   },
   setup(props) {
     const intl = useIntl()
@@ -172,13 +173,34 @@ export default defineComponent({
 <template>
   <div :class="`${prefixCls}-toolbar`">
     <div :class="`${prefixCls}-toolbar-top`" v-if="!!$slots.top">
-      <slot name="top" />
+      <slot
+        name="top"
+        :selected-row-keys="selectedRowKeys"
+        :selected-rows="selectedRows"
+        :actions-ref="actionsRef"
+        :searchParams="actionsRef?.searchParams?.value"
+        :on-clean-selected="onCleanSelected"
+      />
     </div>
     <div :class="`${prefixCls}-toolbar-container`">
-      <slot name="toolbar">
+      <slot
+        name="toolbar"
+        :selected-row-keys="selectedRowKeys"
+        :selected-rows="selectedRows"
+        :actions-ref="actionsRef"
+        :searchParams="actionsRef?.searchParams?.value"
+        :on-clean-selected="onCleanSelected"
+      >
         <div :class="`${prefixCls}-toolbar-left`">
           <div :class="`${prefixCls}-toolbar-title`" v-if="!!title || !!$slots.title">
-            <slot name="title">
+            <slot
+              name="title"
+              :selected-row-keys="selectedRowKeys"
+              :selected-rows="selectedRows"
+              :actions-ref="actionsRef"
+              :searchParams="actionsRef?.searchParams?.value"
+              :on-clean-selected="onCleanSelected"
+            >
               {{ title }}
             </slot>
             <div :class="`${prefixCls}-toolbar-subtitle`">{{ subTitle }}</div>
@@ -189,7 +211,15 @@ export default defineComponent({
           <Space :class="`${prefixCls}-toolbar-options`" v-if="options !== false">
             <template v-if="mergeOptions.search !== false && !(!!title || !!$slots.title)">
               <ProSearch v-bind="searchConfig" @search="onSearch" />
-              <slot name="searchExtra" :set-params="actionsRef!.setParams" />
+              <slot
+                name="searchExtra"
+                :set-params="actionsRef!.setParams"
+                :selected-row-keys="selectedRowKeys"
+                :selected-rows="selectedRows"
+                :actions-ref="actionsRef"
+                :searchParams="actionsRef?.searchParams?.value"
+                :on-clean-selected="onCleanSelected"
+              />
             </template>
           </Space>
         </div>
@@ -197,9 +227,25 @@ export default defineComponent({
           <Space :class="`${prefixCls}-toolbar-actions`">
             <template v-if="mergeOptions.search !== false && (!!title || !!$slots.title)">
               <ProSearch v-bind="searchConfig" @search="onSearch" />
-              <slot name="searchExtra" :set-params="actionsRef!.setParams" />
+              <slot
+                name="searchExtra"
+                :set-params="actionsRef!.setParams"
+                :selected-row-keys="selectedRowKeys"
+                :selected-rows="selectedRows"
+                :actions-ref="actionsRef"
+                :searchParams="actionsRef?.searchParams?.value"
+                :on-clean-selected="onCleanSelected"
+              />
             </template>
-            <slot name="actions" :set-params="actionsRef!.setParams"></slot>
+            <slot
+              name="actions"
+              :set-params="actionsRef!.setParams"
+              :selected-row-keys="selectedRowKeys"
+              :selected-rows="selectedRows"
+              :actions-ref="actionsRef"
+              :searchParams="actionsRef?.searchParams?.value"
+              :on-clean-selected="onCleanSelected"
+            ></slot>
             <template v-if="options !== false">
               <Tooltip
                 v-if="mergeOptions.reload !== false"
@@ -224,7 +270,14 @@ export default defineComponent({
       </slot>
     </div>
     <div :class="`${prefixCls}-toolbar-bottom`" v-if="!!$slots.bottom">
-      <slot name="bottom" />
+      <slot
+        name="bottom"
+        :selected-row-keys="selectedRowKeys"
+        :selected-rows="selectedRows"
+        :actions-ref="actionsRef"
+        :searchParams="actionsRef?.searchParams?.value"
+        :on-clean-selected="onCleanSelected"
+      />
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-16 10:57:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-23 11:28:33
+ * @LastEditTime: 2025-11-14 10:23:29
  * @Description:
 -->
 <script lang="ts">
@@ -10,6 +10,7 @@ import type { PropType } from 'vue'
 import type { Key } from './interface'
 import { defineComponent } from 'vue'
 import { Space } from 'ant-design-vue'
+import type { UseFetchDataAction } from '../hooks/useFetchData'
 
 export default defineComponent({
   name: 'ProTableAlert',
@@ -23,6 +24,7 @@ export default defineComponent({
       type: Array as PropType<any[]>,
       default: () => [],
     },
+    actionsRef: Object as PropType<UseFetchDataAction<any>>,
     onCleanSelected: Function as PropType<(keys?: Key[]) => void>,
   },
   inheritAttrs: false,
@@ -40,6 +42,7 @@ export default defineComponent({
   <div :class="`${prefixCls}-alert`">
     <slot
       name="alert"
+      :actions-ref="actionsRef"
       :selected-row-keys="selectedRowKeys"
       :selected-rows="selectedRows"
       :on-clean-selected="onCleanSelected"
@@ -48,6 +51,7 @@ export default defineComponent({
         <div :class="`${prefixCls}-alert-info`">
           <slot
             name="info"
+            :actions-ref="actionsRef"
             :selected-row-keys="selectedRowKeys"
             :selected-rows="selectedRows"
             :on-clean-selected="onCleanSelected"
@@ -62,6 +66,7 @@ export default defineComponent({
           <Space>
             <slot
               name="actions"
+              :actions-ref="actionsRef"
               :selected-row-keys="selectedRowKeys"
               :selected-rows="selectedRows"
               :on-clean-selected="onCleanSelected"
