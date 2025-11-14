@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 18:28:12
+ * @LastEditTime: 2025-11-14 15:34:04
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -133,7 +133,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
 
   const cellContentStyle = {
     textAlign: `${column!.align}`,
-    color: valueStatus ? ValueStatusEnum[valueStatus] || 'valueStatus' : undefined,
+    color: valueStatus ? ValueStatusEnum[valueStatus] || valueStatus : undefined,
   }
 
   if (isObject(column!.ellipsis) && column!.ellipsis.line! > 1) {
