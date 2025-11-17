@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 10:49:14
+ * @LastEditTime: 2025-11-17 17:19:06
  * @Description:
 -->
 <script lang="ts">
@@ -182,6 +182,7 @@ export default defineComponent({
       return Object.assign(
         {
           [`${prefixCls}-cell`]: true,
+          [`${prefixCls}-first-cell`]: props.column.columnIndex === 0,
           [`${prefixCls}-header-cell`]: true,
           [column.class || '']: true,
           [column.className || '']: true,

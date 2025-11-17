@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 15:58:42
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:46:42
+ * @LastEditTime: 2025-11-17 16:59:58
  * @Description:
 -->
 <script lang="ts">
@@ -174,7 +174,7 @@ export default defineComponent({
       ></span>
     </template>
     <template v-else>
-      <div :class="`${prefixCls}-cell-shadow-right`" :style="shadowRightStyle"></div>
+      <div :class="`${prefixCls}-cell-shadow-right`"></div>
       <HeaderRows
         :prefix-cls="prefixCls"
         :wrap-text="wrapText"

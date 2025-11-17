@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:48:30
+ * @LastEditTime: 2025-11-17 14:43:39
  * @Description:
 -->
 <script lang="ts">
@@ -62,6 +62,7 @@ import PopupContainer from './PopupContainer.vue'
 import AutoHeightHeader from './AutoHeightHeader/Header.vue'
 import Header from './Header/Header.vue'
 import Body from './Body/Body.vue'
+import XScroll from './Scrollbar/XScroll'
 
 import type { SpinProps } from 'ant-design-vue/es/spin'
 import type {
@@ -111,6 +112,7 @@ export default defineComponent({
     AutoHeightHeader,
     ProHeader: Header,
     ProBody: Body,
+    HorizontalScroll: XScroll,
   },
   props: baseTableProps(),
   emits: [
@@ -189,9 +191,10 @@ export default defineComponent({
 
     const scrollTop = ref(0)
     const scrollLeft = ref(0)
-    const rootRef = ref<HTMLDivElement>()
     const bodyWidth = ref(0)
     const bodyHeight = ref(0)
+    const rootRef = ref<HTMLDivElement>()
+    const paginationRef = ref<HTMLDivElement>()
     const measureWidthRef = shallowRef<HTMLDivElement>()
 
     const mergedScrollX = eagerComputed(() => props.scrollX ?? props.scroll?.x)
@@ -951,6 +954,8 @@ export default defineComponent({
       scrollTo,
       scrollLeft,
       scrollTop,
+      rootRef,
+      paginationRef,
       bodyRef: computed(() => {
         return (bodyRef.value as any)?.bodyRef
       }),
@@ -1016,6 +1021,7 @@ export default defineComponent({
       measureWidthRef,
       flattenData,
       rootRef,
+      paginationRef,
       mergedSummaryFixed,
       handleResize: (e: CustomEvent) => {
         realHeaderHeight.value = e.detail.height
@@ -1062,7 +1068,7 @@ export default defineComponent({
         :style="{ position: 'absolute', width: '0', height: '0' }"
         @keydown="handleGuardTopKeydown"
       ></div>
-      <div key="content" ref="ref" :class="rootClass" :style="rootStyle">
+      <div key="content" ref="rootRef" :class="rootClass" :style="rootStyle">
         <template v-if="showHeader">
           <AutoHeightHeader
             v-if="autoHeaderHeight"
@@ -1087,6 +1093,7 @@ export default defineComponent({
           @keydown="onBodyKeydown"
         />
       </div>
+      <HorizontalScroll />
       <div
         ref="tabGuardBottomRef"
         role="presentation"
@@ -1101,6 +1108,7 @@ export default defineComponent({
       <div
         v-if="pos.bottom"
         v-resize:height
+        ref="paginationRef"
         :style="bottomPaginationStyle"
         :class="`${prefixCls}-pagination-wrap`"
         @resizeheight="handlePaginationResize"

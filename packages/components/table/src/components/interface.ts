@@ -417,6 +417,10 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
     type: Object as PropType<Scroll>,
     default: undefined,
   },
+  autoHeight: {
+    type: [Boolean, Function] as PropType<boolean | ((autoHeight: number) => number)>,
+    default: false,
+  },
   rangeSelection: {
     type: [String, Boolean] as PropType<boolean | 'single'>,
     default: false,
@@ -911,6 +915,7 @@ export interface TableExposeType {
   closeEditor: (cellInfos?: CellInfo[]) => void
   reload: (resetPageIndex?: boolean) => Promise<void>
   reset: () => void
+  calcTableHeight: () => Promise<void>
 }
 export interface DragRowsHandleInfo {
   y: number

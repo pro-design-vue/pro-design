@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-14 10:23:06
+ * @LastEditTime: 2025-11-17 17:27:45
  * @Description:
  */
 
-import { defineComponent, ref, computed, watch, unref } from 'vue'
+import { defineComponent, ref, computed, watch, unref, onMounted, nextTick } from 'vue'
 import { Card, ConfigProvider } from 'ant-design-vue'
 import { theme } from './config'
 import { useProvideHover } from '../hooks/useHover'
@@ -19,7 +19,7 @@ import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
-import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
+import { merge, omit, omitKeysAndUndefined, runFunction } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
@@ -403,6 +403,23 @@ export default defineComponent({
       }
     })
 
+    const tableHeight = ref<number | undefined | string>(props.height)
+    const calcTableHeight = async () => {
+      if (props.autoHeight) {
+        await nextTick()
+        const height =
+          window.innerHeight -
+          (tableRef.value?.rootRef?.getBoundingClientRect()?.top || 0) -
+          (tableRef.value?.paginationRef?.getBoundingClientRect()?.height || 0)
+        tableHeight.value =
+          typeof props.autoHeight === 'function' ? props.autoHeight?.(height) : height
+      }
+    }
+
+    onMounted(() => {
+      calcTableHeight()
+    })
+
     expose({
       scrollTo: (pos: string | Position, behavior: 'auto' | 'smooth') => {
         tableRef.value?.scrollTo(pos, behavior)
@@ -415,6 +432,12 @@ export default defineComponent({
       }),
       bodyRef: computed(() => {
         return unref(tableRef.value?.bodyRef)
+      }),
+      rootRef: computed(() => {
+        return unref(tableRef.value?.rootRef)
+      }),
+      paginationRef: computed(() => {
+        return unref(tableRef.value?.paginationRef)
       }),
       copySelectedRange: () => {
         return tableRef.value?.copySelectedRange()
@@ -441,6 +464,7 @@ export default defineComponent({
       },
       reload,
       reset,
+      calcTableHeight,
     })
 
     return () => {
@@ -511,6 +535,7 @@ export default defineComponent({
               'onUpdate:selectedRowKeys',
               'onUpdate:columns',
             ])}
+            height={tableHeight.value}
             prefixCls={mergedPrefixCls.value}
             columns={mergeColumns || []}
             size={counter.tableSize.value}
@@ -587,6 +612,7 @@ export default defineComponent({
                     ...newValues,
                   })
                 }}
+                onCollapse={calcTableHeight}
               />
             )}
             {tableDom}

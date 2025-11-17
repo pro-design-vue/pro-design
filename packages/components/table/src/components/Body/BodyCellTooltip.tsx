@@ -29,26 +29,26 @@ export default defineComponent({
       range.setStart(firstChild, 0)
       range.setEnd(firstChild, firstChild.childNodes.length)
       let rangeWidth = range.getBoundingClientRect().width
-      let rangeHeight = range.getBoundingClientRect().height
+      // let rangeHeight = range.getBoundingClientRect().height
       rangeWidth - Math.floor(rangeWidth) < 1e-3 && (rangeWidth = Math.floor(rangeWidth))
-      rangeHeight - Math.floor(rangeHeight) < 1e-3 && (rangeHeight = Math.floor(rangeHeight))
+      // rangeHeight - Math.floor(rangeHeight) < 1e-3 && (rangeHeight = Math.floor(rangeHeight))
       const {
         pLeft: pLeft,
         pRight: pRight,
-        pTop: pTop,
-        pBottom: pBottom,
+        // pTop: pTop,
+        // pBottom: pBottom,
       } = ((child) => {
         const styles = window.getComputedStyle(child, null)
         return {
           pLeft: Number.parseInt(styles.paddingLeft, 10) || 0,
           pRight: Number.parseInt(styles.paddingRight, 10) || 0,
-          pTop: Number.parseInt(styles.paddingTop, 10) || 0,
-          pBottom: Number.parseInt(styles.paddingBottom, 10) || 0,
+          // pTop: Number.parseInt(styles.paddingTop, 10) || 0,
+          // pBottom: Number.parseInt(styles.paddingBottom, 10) || 0,
         }
       })(firstChild)
       return (
         rangeWidth + (pLeft + pRight) > firstChild.offsetWidth ||
-        rangeHeight + (pTop + pBottom) > firstChild.offsetHeight ||
+        // rangeHeight + (pTop + pBottom) > firstChild.offsetHeight ||
         firstChild.scrollWidth > firstChild.offsetWidth
       )
     }
@@ -67,6 +67,8 @@ export default defineComponent({
               if (el) {
                 const firstChild = el.childNodes[0]
                 const isEllipsis = firstChild && hasEllipsis(firstChild as HTMLElement)
+                console.log('🚀 ~ nextTick ~ firstChild:', firstChild)
+                console.log('🚀 ~ nextTick ~ isEllipsis:', isEllipsis)
                 shouldOpen.value = (props.shouldOpen as any)?.(isEllipsis)
               }
             })

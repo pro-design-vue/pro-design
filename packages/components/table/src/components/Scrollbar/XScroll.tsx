@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-07-30 10:56:15
+ * @LastEditTime: 2025-11-17 14:49:48
  * @Description:
  */
 import {
@@ -39,6 +39,8 @@ export default defineComponent({
       }
       return style
     })
+    const isApple = isMacOsUserAgent() || isIOSUserAgent()
+
     const stickyStyle = computed(() => {
       const scrollBarSize = `-${tableContext.scrollBarSize.value || 15}px`
       const horizontalScrollSticky = tableContext.props.horizontalScrollSticky
@@ -51,11 +53,15 @@ export default defineComponent({
               ? tableContext.bottomPaginationHeight.value
               : (paginationSticky.offsetBottom || 0) + tableContext.bottomPaginationHeight.value
         }
-        return { position: 'sticky', 'z-index': 8, bottom: `${bottom}px`, marginTop: scrollBarSize }
+        return {
+          position: 'sticky',
+          'z-index': 8,
+          bottom: `${bottom}px`,
+          marginTop: isApple ? scrollBarSize : 0,
+        }
       }
       return {}
     })
-    const isApple = isMacOsUserAgent() || isIOSUserAgent()
     const isIosScroll = computed(() => 0 === tableContext.scrollBarSize.value && isApple)
     const rootClass = computed(() => ({
       [`${prefixCls.value}-horizontal-scroll`]: true,

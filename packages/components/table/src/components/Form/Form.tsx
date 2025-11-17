@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-11-04 18:08:48
+ * @LastEditTime: 2025-11-17 17:23:17
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -53,6 +53,10 @@ export default defineComponent({
       type: Function as PropType<(params: any) => void>,
       default: undefined,
     },
+    onCollapse: {
+      type: Function as PropType<(val: boolean) => void>,
+      default: undefined,
+    },
   },
   setup: (props, { slots }) => {
     const activeTabKey = ref(
@@ -101,7 +105,7 @@ export default defineComponent({
           items={props.items}
           loading={props.loading}
           style={{
-            marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '30px',
+            marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '16px',
             ...props.search?.style,
           }}
           onReset={props.onReset}
@@ -118,6 +122,7 @@ export default defineComponent({
           onInit={(values) => {
             submit(values, true)
           }}
+          onCollapse={props.onCollapse}
         />
       )
       if (props.search?.cardProps !== false && props.tableShowCard) {

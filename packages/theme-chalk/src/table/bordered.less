@@ -2,7 +2,7 @@
 
 .@{table-prefix-cls}-bordered {
   border: @table-border;
-  border-right: 0;
+  // border-right: 0;
   .@{table-prefix-cls}-cell-box {
     &::before {
       background-color: transparent;
@@ -11,12 +11,15 @@
   .@{table-prefix-cls}-cell.@{table-prefix-cls}-body-cell-range-selected:not(
       .@{table-prefix-cls}-body-cell-range-right
     ):not(.@{table-prefix-cls}-body-cell-range-single-cell) {
-    border-right: @table-border;
+    border-left: @table-border;
   }
   .@{table-prefix-cls}-cell:not(.@{table-prefix-cls}-body-cell-range-single-cell):not(
       .@{table-prefix-cls}-body-cell-range-selected
     ) {
-    border-right: @table-border;
+    border-left: @table-border;
+  }
+  .@{table-prefix-cls}-cell.@{table-prefix-cls}-first-cell {
+    border-left: none !important;
   }
   .@{table-prefix-cls}-extra-cell,
   .@{table-prefix-cls}-header-extra-cell,
@@ -48,9 +51,9 @@
       background: @table-header-bg;
     }
   }
-  .@{table-prefix-cls}-empty-container {
-    border-right: @table-border;
-  }
+  // .@{table-prefix-cls}-empty-container {
+  //   border-right: @table-border;
+  // }
   .@{table-prefix-cls}-header {
     background: @table-header-bg;
     border-bottom: none;

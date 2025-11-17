@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-14 15:34:04
+ * @LastEditTime: 2025-11-17 17:18:01
  * @Description:
  */
 import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
@@ -152,6 +152,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
 
   const cellClass = {
     [`${prefixCls}-cell`]: true,
+    [`${prefixCls}-first-cell`]: column!.columnIndex === 0,
     [`${prefixCls}-body-cell`]: true,
     [`${prefixCls}-cell-multi`]: cellRowSpan > 1,
     [`${prefixCls}-cell-hidden`]: cellRowSpan === 0,

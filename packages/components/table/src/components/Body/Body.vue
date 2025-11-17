@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-09-28 14:23:27
+ * @LastEditTime: 2025-11-17 16:51:30
  * @Description:
 -->
 <script lang="ts">
@@ -20,7 +20,7 @@ import { useResizeObserver } from '@vueuse/core'
 import useTooltip from '../../hooks/useTooltip'
 import onClickOutside from '../../utils/onClickOutside'
 import BodyRows from './BodyRows.vue'
-import XScroll from '../Scrollbar/XScroll'
+// import XScroll from '../Scrollbar/XScroll'
 import YScroll from '../Scrollbar/YScroll'
 
 import type { PropType, CSSProperties } from 'vue'
@@ -34,7 +34,7 @@ export default defineComponent({
     Empty,
     RenderVNode,
     RenderSlot,
-    HorizontalScroll: XScroll,
+    // HorizontalScroll: XScroll,
     YScroll,
   },
   directives: { resize },
@@ -371,7 +371,7 @@ export default defineComponent({
         width,
         minWidth: width,
         maxWidth: width,
-        height: `${viewportHeight.value}px`,
+        // height: `${viewportHeight.value}px`,
       }
     })
     const rightStyle = computed<CSSProperties>(() => {
@@ -380,7 +380,7 @@ export default defineComponent({
         width,
         minWidth: width,
         maxWidth: width,
-        height: `${viewportHeight.value}px`,
+        // height: `${viewportHeight.value}px`,
       }
     })
     const summaryClass = computed(() => ({
@@ -710,5 +710,5 @@ export default defineComponent({
       </div>
     </div>
   </RenderSlot>
-  <HorizontalScroll />
+  <!-- <HorizontalScroll /> -->
 </template>
