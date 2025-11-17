@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 17:27:45
+ * @LastEditTime: 2025-11-17 17:34:16
  * @Description:
  */
 
@@ -19,7 +19,7 @@ import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
-import { merge, omit, omitKeysAndUndefined, runFunction } from '@pro-design-vue/utils'
+import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
