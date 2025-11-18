@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-18 17:23:04
+ * @LastEditTime: 2025-11-18 17:24:47
  * @Description:
  */
 
@@ -50,7 +50,7 @@ export default defineComponent({
   emits: ['keydown'],
   setup(props, { expose, slots, attrs, emit }) {
     const tableRef = ref()
-    const { table, prefixCls: antPrefixCls, dark } = useProConfigInject()
+    const { table, dark } = useProConfigInject()
     const prefixCls = usePrefixCls('table')
 
     const { hoverRowKey } = useProvideHover({

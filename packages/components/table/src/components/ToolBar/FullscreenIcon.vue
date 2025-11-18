@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-11-18 16:35:55
+ * @LastEditTime: 2025-11-18 17:25:04
  * @Description:
 -->
 <script lang="ts">
-import { computed, defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 import { Tooltip } from 'ant-design-vue'
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import { useIntl } from '../../../../config-provider'

@@ -28,14 +28,15 @@
 
   &-maximize {
     position: fixed;
-    left: 0;
-    padding: 10px 10px 0;
-    right: 0;
     top: 0;
+    right: 0;
+    left: 0;
     z-index: 100;
     min-height: 100vh;
+    padding: 10px 10px 0;
     background: hsl(var(--pro-background));
   }
+
   &-body-inner-measure,
   &-body-scroll-measure {
     position: absolute;
@@ -830,10 +831,11 @@
 
   // ========================== Pagination ==========================
   &-pagination-wrap {
-    margin-top: -1px;
-    border-top-width: 1px;
     padding: 15px 0;
+    margin-top: -1px;
     background: hsl(var(--pro-background));
+    border-top-width: 1px;
+
     &-small {
       padding: 10px 0;
     }
