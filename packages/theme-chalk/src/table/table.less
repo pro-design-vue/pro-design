@@ -8,12 +8,6 @@
   &-dark {
     color-scheme: dark;
   }
-
-  &:not(:root):fullscreen {
-    min-height: 100vh;
-    overflow: auto;
-    background: hsl(var(--pro-background));
-  }
 }
 .@{table-prefix-cls} {
   .reset-component();
@@ -32,6 +26,16 @@
     outline: none;
   }
 
+  &-maximize {
+    position: fixed;
+    left: 0;
+    padding: 10px 10px 0;
+    right: 0;
+    top: 0;
+    z-index: 100;
+    min-height: 100vh;
+    background: hsl(var(--pro-background));
+  }
   &-body-inner-measure,
   &-body-scroll-measure {
     position: absolute;
@@ -825,19 +829,19 @@
   }
 
   // ========================== Pagination ==========================
-  .@{table-prefix-cls}-wrapper &-pagination {
-    padding: 16px 0;
-  }
-
   &-pagination-wrap {
     margin-top: -1px;
     border-top-width: 1px;
+    padding: 15px 0;
+    background: hsl(var(--pro-background));
+    &-small {
+      padding: 10px 0;
+    }
   }
 
   &-pagination {
     float: none !important;
     display: flex;
-    background: hsl(var(--pro-background));
 
     &-left {
       justify-content: flex-start;

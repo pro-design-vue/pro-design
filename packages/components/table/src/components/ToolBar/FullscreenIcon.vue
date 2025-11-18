@@ -2,15 +2,15 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-10-12 22:05:21
+ * @LastEditTime: 2025-11-18 16:35:55
  * @Description:
 -->
 <script lang="ts">
-import { defineComponent, h, onMounted, ref } from 'vue'
+import { computed, defineComponent, h, ref } from 'vue'
 import { Tooltip } from 'ant-design-vue'
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import { useIntl } from '../../../../config-provider'
-import { isBrowser } from '@pro-design-vue/utils'
+import { useInjectContainer } from '../../hooks/useContainer'
 
 export default defineComponent({
   name: 'FullscreenIcon',
@@ -19,16 +19,8 @@ export default defineComponent({
   props: { prefixCls: String },
   setup() {
     const intl = useIntl()
-    const fullscreen = ref(false)
-
-    onMounted(() => {
-      if (!isBrowser()) {
-        return
-      }
-      document.onfullscreenchange = () => {
-        fullscreen.value = !!document.fullscreenElement
-      }
-    })
+    const counter = useInjectContainer()
+    const fullscreen = computed(() => counter.hasFullScreen.value)
 
     return {
       h,

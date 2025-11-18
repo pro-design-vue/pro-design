@@ -67,8 +67,6 @@ export default defineComponent({
               if (el) {
                 const firstChild = el.childNodes[0]
                 const isEllipsis = firstChild && hasEllipsis(firstChild as HTMLElement)
-                console.log('🚀 ~ nextTick ~ firstChild:', firstChild)
-                console.log('🚀 ~ nextTick ~ isEllipsis:', isEllipsis)
                 shouldOpen.value = (props.shouldOpen as any)?.(isEllipsis)
               }
             })

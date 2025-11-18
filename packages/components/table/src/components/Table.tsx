@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 17:34:16
+ * @LastEditTime: 2025-11-18 17:23:04
  * @Description:
  */
 
 import { defineComponent, ref, computed, watch, unref, onMounted, nextTick } from 'vue'
-import { Card, ConfigProvider } from 'ant-design-vue'
+import { Card } from 'ant-design-vue'
 import { theme } from './config'
 import { useProvideHover } from '../hooks/useHover'
 import { useProvideLevel } from '../hooks/useLevel'
@@ -405,7 +405,7 @@ export default defineComponent({
 
     const tableHeight = ref<number | undefined | string>(props.height)
     const calcTableHeight = async () => {
-      if (props.autoHeight) {
+      if (props.autoHeight || counter.hasFullScreen.value) {
         await nextTick()
         const height =
           window.innerHeight -
@@ -413,8 +413,17 @@ export default defineComponent({
           (tableRef.value?.paginationRef?.getBoundingClientRect()?.height || 0)
         tableHeight.value =
           typeof props.autoHeight === 'function' ? props.autoHeight?.(height) : height
+      } else {
+        tableHeight.value = props.height
       }
     }
+
+    watch(
+      () => counter.tableSize.value,
+      () => {
+        calcTableHeight()
+      },
+    )
 
     onMounted(() => {
       calcTableHeight()
@@ -482,16 +491,8 @@ export default defineComponent({
               actionsRef={{
                 ...actions,
                 fullScreen: () => {
-                  if (!counter.rootDomRef.value || !document.fullscreenEnabled) {
-                    return
-                  }
-                  if (document.fullscreenElement) {
-                    document.exitFullscreen()
-                    counter.hasFullScreen.value = false
-                  } else {
-                    counter.rootDomRef.value?.requestFullscreen()
-                    counter.hasFullScreen.value = true
-                  }
+                  counter.hasFullScreen.value = !counter.hasFullScreen.value
+                  calcTableHeight()
                 },
               }}
               tableColumn={tableColumn.value}
@@ -536,6 +537,7 @@ export default defineComponent({
               'onUpdate:columns',
             ])}
             height={tableHeight.value}
+            virtual={!!props.autoHeight || !!counter.hasFullScreen.value || props.virtual}
             prefixCls={mergedPrefixCls.value}
             columns={mergeColumns || []}
             size={counter.tableSize.value}
@@ -572,52 +574,45 @@ export default defineComponent({
       }
 
       return (
-        <ConfigProvider
-          prefixCls={antPrefixCls?.value}
-          getPopupContainer={() => {
-            if (counter.hasFullScreen.value && counter.rootDomRef.value) {
-              return counter.rootDomRef.value as any as HTMLElement
-            }
-            return document.body
-          }}
+        <div
+          ref={counter.rootDomRef}
+          {...attrs}
+          class={[
+            `${mergedPrefixCls.value}-wrapper ${props.bordered ? mergedPrefixCls.value + '-wrapper-bordered' : ''} ${
+              'dark' === theme.value ? mergedPrefixCls.value + '-wrapper-dark' : ''
+            } ${pollingLoading.value ? mergedPrefixCls.value + '-wrapper-polling' : ''}`,
+            {
+              [`${mergedPrefixCls.value}-maximize`]: counter.hasFullScreen.value,
+            },
+            attrs.class,
+          ]}
+          onKeydown={onKeydown}
         >
-          <div
-            ref={counter.rootDomRef}
-            {...attrs}
-            class={[
-              `${mergedPrefixCls.value}-wrapper ${props.bordered ? mergedPrefixCls.value + '-wrapper-bordered' : ''} ${
-                'dark' === theme.value ? mergedPrefixCls.value + '-wrapper-dark' : ''
-              } ${pollingLoading.value ? mergedPrefixCls.value + '-wrapper-polling' : ''}`,
-              attrs.class,
-            ]}
-            onKeydown={onKeydown}
-          >
-            {props.search !== false && !!formItems.value?.length && (
-              <FormRender
-                prefixCls={mergedPrefixCls.value}
-                items={formItems.value}
-                cardBordered={props.cardBordered ?? table?.value?.cardBordered ?? dark?.value}
-                search={props.search}
-                tableShowCard={props.cardProps !== false}
-                loading={formSubmitLoading.value}
-                beforeSearchSubmit={props.beforeSearchSubmit}
-                manual={props.manual || props.manualRequest}
-                v-slots={slots}
-                onReset={props.onReset}
-                onSubmit={props.onSubmit}
-                onFormSearchSubmit={onFormSearchSubmit}
-                onSearchTabChange={(newValues) => {
-                  actions.setFormSearch({
-                    ...actions.formSearch.value,
-                    ...newValues,
-                  })
-                }}
-                onCollapse={calcTableHeight}
-              />
-            )}
-            {tableDom}
-          </div>
-        </ConfigProvider>
+          {props.search !== false && !!formItems.value?.length && (
+            <FormRender
+              prefixCls={mergedPrefixCls.value}
+              items={formItems.value}
+              cardBordered={props.cardBordered ?? table?.value?.cardBordered ?? dark?.value}
+              search={props.search}
+              tableShowCard={props.cardProps !== false}
+              loading={formSubmitLoading.value}
+              beforeSearchSubmit={props.beforeSearchSubmit}
+              manual={props.manual || props.manualRequest}
+              v-slots={slots}
+              onReset={props.onReset}
+              onSubmit={props.onSubmit}
+              onFormSearchSubmit={onFormSearchSubmit}
+              onSearchTabChange={(newValues) => {
+                actions.setFormSearch({
+                  ...actions.formSearch.value,
+                  ...newValues,
+                })
+              }}
+              onCollapse={calcTableHeight}
+            />
+          )}
+          {tableDom}
+        </div>
       )
     }
   },

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 14:43:39
+ * @LastEditTime: 2025-11-18 17:20:06
  * @Description:
 -->
 <script lang="ts">
@@ -1110,7 +1110,7 @@ export default defineComponent({
         v-resize:height
         ref="paginationRef"
         :style="bottomPaginationStyle"
-        :class="`${prefixCls}-pagination-wrap`"
+        :class="`${prefixCls}-pagination-wrap ${prefixCls}-pagination-wrap-${size}`"
         @resizeheight="handlePaginationResize"
       >
         <Pagination
