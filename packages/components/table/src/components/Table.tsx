@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-18 17:24:47
+ * @LastEditTime: 2025-11-19 08:55:36
  * @Description:
  */
 
@@ -347,6 +347,10 @@ export default defineComponent({
         !slots.toolbarActions,
     )
 
+    const showTableCard = computed(() => {
+      return props.cardProps !== false && !counter.hasFullScreen.value
+    })
+
     /**
      * 是否需要 card 来包裹
      */
@@ -358,7 +362,7 @@ export default defineComponent({
     })
 
     const cardBodyStyle = computed(() => {
-      if (props.cardProps === false || notNeedCardDom.value === true) return {}
+      if (!showTableCard.value || notNeedCardDom.value === true) return {}
 
       if (hideToolbar.value) {
         return {
@@ -558,7 +562,7 @@ export default defineComponent({
         </>
       )
 
-      if (!(props.cardProps === false || notNeedCardDom.value)) {
+      if (!(!showTableCard.value || notNeedCardDom.value)) {
         tableDom = (
           <Card
             bordered={isBordered(
@@ -594,7 +598,7 @@ export default defineComponent({
               items={formItems.value}
               cardBordered={props.cardBordered ?? table?.value?.cardBordered ?? dark?.value}
               search={props.search}
-              tableShowCard={props.cardProps !== false}
+              tableShowCard={showTableCard.value}
               loading={formSubmitLoading.value}
               beforeSearchSubmit={props.beforeSearchSubmit}
               manual={props.manual || props.manualRequest}
