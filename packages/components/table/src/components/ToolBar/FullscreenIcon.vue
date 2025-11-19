@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-11-19 17:25:05
+ * @LastEditTime: 2025-11-19 17:30:27
  * @Description:
 -->
 <script lang="ts">
@@ -37,7 +37,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Tooltip :title="title" :key="fullscreen.toString()">
+  <Tooltip :title="title">
     <div :class="`${prefixCls}-toolbar-actions-item`" v-bind="$attrs">
       <template v-if="fullscreen">
         <FullscreenExitOutlined />
