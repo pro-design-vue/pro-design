@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-19 08:55:36
+ * @LastEditTime: 2025-11-19 17:11:10
  * @Description:
  */
 
@@ -416,7 +416,9 @@ export default defineComponent({
           (tableRef.value?.rootRef?.getBoundingClientRect()?.top || 0) -
           (tableRef.value?.paginationRef?.getBoundingClientRect()?.height || 0)
         tableHeight.value =
-          typeof props.autoHeight === 'function' ? props.autoHeight?.(height) : height
+          typeof props.autoHeight === 'function' && !counter.hasFullScreen.value
+            ? props.autoHeight?.(height)
+            : height
       } else {
         tableHeight.value = props.height
       }
