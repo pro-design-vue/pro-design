@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-11-18 17:25:04
+ * @LastEditTime: 2025-11-19 16:56:18
  * @Description:
 -->
 <script lang="ts">
@@ -22,9 +22,14 @@ export default defineComponent({
     const counter = useInjectContainer()
     const fullscreen = computed(() => counter.hasFullScreen.value)
 
+    const title = computed(() =>
+      fullscreen.value
+        ? intl.getMessage('tableToolBar.exitFullScreen', '退出全屏')
+        : intl.getMessage('tableToolBar.fullScreen', '全屏'),
+    )
     return {
       h,
-      intl,
+      title,
       fullscreen,
     }
   },
@@ -32,18 +37,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <template v-if="fullscreen">
-    <Tooltip :title="intl.getMessage('tableToolBar.exitFullScreen', '退出全屏')">
-      <div :class="`${prefixCls}-toolbar-actions-item`">
+  <Tooltip :title="title">
+    <div :class="`${prefixCls}-toolbar-actions-item`" v-bind="$attrs">
+      <template v-if="fullscreen">
         <FullscreenExitOutlined />
-      </div>
-    </Tooltip>
-  </template>
-  <template v-else>
-    <Tooltip :title="intl.getMessage('tableToolBar.fullScreen', '全屏')">
-      <div :class="`${prefixCls}-toolbar-actions-item`">
+      </template>
+      <template v-else>
         <FullscreenOutlined />
-      </div>
-    </Tooltip>
-  </template>
+      </template>
+    </div>
+  </Tooltip>
 </template>

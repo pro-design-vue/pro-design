@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-11-14 10:31:13
+ * @LastEditTime: 2025-11-19 16:52:29
  * @Description:
 -->
 <script lang="ts">
@@ -261,9 +261,11 @@ export default defineComponent({
                 :prefix-cls="prefixCls"
                 :columns="tableColumn"
               />
-              <span v-if="mergeOptions.fullScreen !== false" @click="onFullScreen">
-                <FullscreenIcon :prefixCls="prefixCls" />
-              </span>
+              <FullscreenIcon
+                :prefixCls="prefixCls"
+                v-if="mergeOptions.fullScreen !== false"
+                @click="onFullScreen"
+              />
             </template>
           </Space>
         </div>
