@@ -21,7 +21,11 @@ import type { TablePaginationConfig, TablePaginationPosition } from './Paginatio
 import type { InputProps } from 'ant-design-vue/es/input'
 import type { UseFetchDataAction } from '../hooks/useFetchData'
 import type { CardProps, PopoverProps } from 'ant-design-vue'
-import type { ProFormItemType, ProQueryFilterProps } from '@pro-design-vue/components/form'
+import type {
+  ProFormActionType,
+  ProFormItemType,
+  ProQueryFilterProps,
+} from '@pro-design-vue/components/form'
 export type DefaultRecordType = Record<string, any>
 export interface TooltipAlignConfig {
   points?: [string, string]
@@ -906,6 +910,7 @@ export interface TableExposeType {
   scrollLeft?: Ref<number>
   scrollTop?: Ref<number>
   bodyRef?: ComputedRef<HTMLDivElement>
+  formAction: ComputedRef<ProFormActionType>
   getSelectedRange: () => SelectedRangeItem[]
   clearAllSelectedRange: () => void
   clearDataSource: () => void
@@ -916,6 +921,7 @@ export interface TableExposeType {
   reload: (resetPageIndex?: boolean) => Promise<void>
   reset: () => void
   calcTableHeight: () => Promise<void>
+  formSearchSubmit: () => void
 }
 export interface DragRowsHandleInfo {
   y: number

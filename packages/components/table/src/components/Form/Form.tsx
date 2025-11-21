@@ -2,12 +2,16 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 17:23:17
+ * @LastEditTime: 2025-11-21 11:05:46
  * @Description:
  */
 import type { PropType } from 'vue'
 import type { Bordered, SearchConfig } from '../interface'
-import type { ProFormItemType, ProQueryFilterProps } from '@pro-design-vue/components/form'
+import type {
+  ProFormActionType,
+  ProFormItemType,
+  ProQueryFilterProps,
+} from '@pro-design-vue/components/form'
 
 import { computed, defineComponent, ref } from 'vue'
 import { ProQueryFilter } from '@pro-design-vue/components/form'
@@ -36,6 +40,9 @@ export default defineComponent({
     beforeSearchSubmit: {
       type: Function as PropType<(params: Partial<any>) => any>,
       default: (searchParams: Partial<any>) => searchParams,
+    },
+    setFormAction: {
+      type: Function as PropType<(action: ProFormActionType) => any>,
     },
     onSubmit: {
       type: Function as PropType<ProQueryFilterProps['onFinish']>,
@@ -101,7 +108,17 @@ export default defineComponent({
       const searchDom = (
         <ProQueryFilter
           class={`${props.prefixCls}-form`}
-          {...omit(props.search || {}, ['cardProps', 'tabName'])}
+          {...omit(props.search || {}, [
+            'cardProps',
+            'tabName',
+            'items',
+            'loading',
+            'onReset',
+            'onFinish',
+            'onValuesChange',
+            'onInit',
+            'onCollapse',
+          ])}
           items={props.items}
           loading={props.loading}
           style={{
@@ -111,6 +128,7 @@ export default defineComponent({
           onReset={props.onReset}
           onFinish={(values) => {
             submit(values, false)
+            props.search?.onFinish?.(values)
           }}
           onValuesChange={(values) => {
             if (props.search?.submitter === false) {
@@ -119,8 +137,10 @@ export default defineComponent({
             props.search?.onValuesChange?.(values)
           }}
           v-slots={slots}
-          onInit={(values) => {
+          onInit={(values, action) => {
             submit(values, true)
+            props.setFormAction?.(action)
+            props.search?.onInit?.(values, action)
           }}
           onCollapse={props.onCollapse}
         />

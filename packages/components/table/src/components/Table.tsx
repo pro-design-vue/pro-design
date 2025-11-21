@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-19 17:11:10
+ * @LastEditTime: 2025-11-21 11:08:47
  * @Description:
  */
 
@@ -11,7 +11,7 @@ import { Card } from 'ant-design-vue'
 import { theme } from './config'
 import { useProvideHover } from '../hooks/useHover'
 import { useProvideLevel } from '../hooks/useLevel'
-import { usePrefixCls } from '@pro-design-vue/hooks'
+import { usePrefixCls, useState } from '@pro-design-vue/hooks'
 import { convertChildrenToColumns, genColumnKey, isBordered } from '../utils/util'
 import { tableProps } from './interface'
 import { useFetchData } from '../hooks/useFetchData'
@@ -27,7 +27,7 @@ import ToolBar from './ToolBar/ToolBar.vue'
 import Alert from './Alert.vue'
 import FormRender from './Form/Form'
 
-import type { ProFormItemType } from '@pro-design-vue/components/form'
+import type { ProFormItemType, ProFormActionType } from '@pro-design-vue/components/form'
 import type {
   ColumnsType,
   GetRowKey,
@@ -389,6 +389,8 @@ export default defineComponent({
       return {}
     })
 
+    const [formAction, setFormAction] = useState<ProFormActionType>()
+
     const [mergeShowAlert, setMergeShowAlert] = useMergedState<boolean>(
       !!selectedRowKeys.value?.length,
       {
@@ -480,6 +482,16 @@ export default defineComponent({
       reload,
       reset,
       calcTableHeight,
+      formAction: computed(() => {
+        return unref(formAction.value)
+      }),
+      formSearchSubmit: () => {
+        const fieldValues = formAction.value?.getFieldsValue() ?? {}
+        actions.setFormSearch({
+          ...actions.formSearch.value,
+          ...fieldValues,
+        })
+      },
     })
 
     return () => {
@@ -603,6 +615,7 @@ export default defineComponent({
               tableShowCard={showTableCard.value}
               loading={formSubmitLoading.value}
               beforeSearchSubmit={props.beforeSearchSubmit}
+              setFormAction={setFormAction}
               manual={props.manual || props.manualRequest}
               v-slots={slots}
               onReset={props.onReset}
