@@ -907,10 +907,12 @@ type CellInfo = {
 }
 export interface TableExposeType {
   scrollTo: (pos: string | Position, behavior: 'auto' | 'smooth') => void
-  scrollLeft?: Ref<number>
-  scrollTop?: Ref<number>
-  bodyRef?: ComputedRef<HTMLDivElement>
-  formAction: ComputedRef<ProFormActionType>
+  scrollLeft?: number
+  scrollTop?: number
+  bodyRef: HTMLDivElement
+  rootRef: HTMLDivElement
+  paginationRef: HTMLDivElement
+  formAction: ProFormActionType
   getSelectedRange: () => SelectedRangeItem[]
   clearAllSelectedRange: () => void
   clearDataSource: () => void

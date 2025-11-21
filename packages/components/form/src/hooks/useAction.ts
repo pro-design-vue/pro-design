@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2025-09-22 16:11:16
+ * @LastEditTime: 2025-11-21 14:52:04
  * @Description:
  */
 
@@ -221,7 +221,11 @@ export function useAction({
   }
   const getFieldsValue = (nameList?: true | NamePath[]) => {
     if (nameList === true || nameList === undefined) {
-      return cloneDeep(formData.value)
+      return transformKeySubmitValue(
+        cloneDeep(formData.value),
+        transformerMap.value,
+        props.omitNil!,
+      )
     }
     const obj: any = {}
     nameList.forEach((name) => {
@@ -231,7 +235,7 @@ export function useAction({
         set(obj, namePath!, value)
       }
     })
-    return obj
+    return transformKeySubmitValue(obj, transformerMap.value, props.omitNil!)
   }
   const getFieldFormatValue = (name: NamePath) => {
     const namePath = covertFormName(name)
