@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-21 14:52:24
+ * @LastEditTime: 2025-11-21 16:31:50
  * @Description:
  */
 
@@ -347,10 +347,6 @@ export default defineComponent({
         !slots.toolbarActions,
     )
 
-    const showTableCard = computed(() => {
-      return props.cardProps !== false && !counter.hasFullScreen.value
-    })
-
     /**
      * 是否需要 card 来包裹
      */
@@ -361,8 +357,15 @@ export default defineComponent({
       return false
     })
 
+    const showTableCard = computed(() => {
+      if (counter.hasFullScreen.value) {
+        return false
+      }
+      return props.cardProps !== false && !notNeedCardDom.value
+    })
+
     const cardBodyStyle = computed(() => {
-      if (!showTableCard.value || notNeedCardDom.value === true) return {}
+      if (!showTableCard.value) return {}
 
       if (hideToolbar.value) {
         return {
@@ -576,7 +579,7 @@ export default defineComponent({
         </>
       )
 
-      if (!(!showTableCard.value || notNeedCardDom.value)) {
+      if (showTableCard.value) {
         tableDom = (
           <Card
             bordered={isBordered(
