@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-23 16:43:27
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 16:35:00
+ * @LastEditTime: 2025-11-21 17:13:48
  * @Description:
 -->
 <script setup lang="ts">
@@ -46,7 +46,15 @@ const hasFullscreen = computed(() => isMobile.value || fullscreen.value)
 const mergeShowFullscreen = computed(() => props.showFullscreen ?? drawer?.value?.showFullscreen)
 
 const drawerProps = computed(() =>
-  omitKeysAndUndefined(props, ['rootClassName', 'closable', 'onClose', 'title', 'width', 'height']),
+  omitKeysAndUndefined(props, [
+    'rootClassName',
+    'closable',
+    'onClose',
+    'title',
+    'width',
+    'height',
+    'bodyStyle',
+  ]),
 )
 
 const width = computed(() => {
@@ -125,7 +133,7 @@ const handleFullScreen = () => {
       </ProButton>
     </template>
     <template #default>
-      <div :class="`${prefixCls}-body`"><slot /></div>
+      <div :class="`${prefixCls}-body`" :style="bodyStyle"><slot /></div>
     </template>
 
     <template #footer v-if="$slots.footer">
