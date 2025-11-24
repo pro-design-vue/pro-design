@@ -916,6 +916,7 @@ export interface TableExposeType {
   reset: () => void
   calcTableHeight: () => Promise<void>
   formSearchSubmit: () => void
+  getSearchParams: () => Record<string, any>
 }
 export interface DragRowsHandleInfo {
   y: number

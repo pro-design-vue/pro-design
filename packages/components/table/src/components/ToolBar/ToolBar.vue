@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-11-19 16:52:29
+ * @LastEditTime: 2025-11-24 08:50:51
  * @Description:
 -->
 <script lang="ts">
@@ -188,7 +188,7 @@ export default defineComponent({
         :selected-row-keys="selectedRowKeys"
         :selected-rows="selectedRows"
         :actions-ref="actionsRef"
-        :searchParams="actionsRef?.searchParams?.value"
+        :search-params="actionsRef?.searchParams"
         :on-clean-selected="onCleanSelected"
       >
         <div :class="`${prefixCls}-toolbar-left`">
@@ -198,7 +198,7 @@ export default defineComponent({
               :selected-row-keys="selectedRowKeys"
               :selected-rows="selectedRows"
               :actions-ref="actionsRef"
-              :searchParams="actionsRef?.searchParams?.value"
+              :search-params="actionsRef?.searchParams"
               :on-clean-selected="onCleanSelected"
             >
               {{ title }}
@@ -217,7 +217,7 @@ export default defineComponent({
                 :selected-row-keys="selectedRowKeys"
                 :selected-rows="selectedRows"
                 :actions-ref="actionsRef"
-                :searchParams="actionsRef?.searchParams?.value"
+                :search-params="actionsRef?.searchParams"
                 :on-clean-selected="onCleanSelected"
               />
             </template>
@@ -233,7 +233,7 @@ export default defineComponent({
                 :selected-row-keys="selectedRowKeys"
                 :selected-rows="selectedRows"
                 :actions-ref="actionsRef"
-                :searchParams="actionsRef?.searchParams?.value"
+                :search-params="actionsRef?.searchParams"
                 :on-clean-selected="onCleanSelected"
               />
             </template>
@@ -243,7 +243,7 @@ export default defineComponent({
               :selected-row-keys="selectedRowKeys"
               :selected-rows="selectedRows"
               :actions-ref="actionsRef"
-              :searchParams="actionsRef?.searchParams?.value"
+              :search-params="actionsRef?.searchParams"
               :on-clean-selected="onCleanSelected"
             ></slot>
             <template v-if="options !== false">
@@ -277,7 +277,7 @@ export default defineComponent({
         :selected-row-keys="selectedRowKeys"
         :selected-rows="selectedRows"
         :actions-ref="actionsRef"
-        :searchParams="actionsRef?.searchParams?.value"
+        :search-params="actionsRef?.searchParams"
         :on-clean-selected="onCleanSelected"
       />
     </div>

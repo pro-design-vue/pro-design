@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-21 16:31:50
+ * @LastEditTime: 2025-11-24 08:54:12
  * @Description:
  */
 
@@ -494,6 +494,9 @@ export default defineComponent({
           ...actions.formSearch.value,
           ...fieldValues,
         })
+      },
+      getSearchParams: () => {
+        return actions.searchParams.value ?? {}
       },
     })
 
