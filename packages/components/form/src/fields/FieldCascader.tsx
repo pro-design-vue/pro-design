@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 16:30:21
+ * @LastEditTime: 2025-11-25 15:25:54
  * @Description:
  */
 import { defineComponent, computed } from 'vue'
@@ -12,11 +12,13 @@ import { useFieldOptions } from '../hooks/useFieldOptions'
 import { commonFieldProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { RenderVNode } from '@pro-design-vue/utils'
+import { useInjectForm } from '../context/FormContext'
+import { useInjectFormList } from '../context/FormListContext'
 import getSlot from '../utils/getSlot'
 import FieldReadonly from './FieldReadonly'
 
 import type { Option } from '../type'
-import { useInjectForm } from '../context/FormContext'
+
 const SLOT_NAMES = [
   'expandIcon',
   'clearIcon',
@@ -75,6 +77,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const intl = useIntl()
     const { formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
     const formSlotsContext = useInjectSlots()
     const { mergeOptions, loading, fieldNames } = useFieldOptions({
       request: props.request,
@@ -112,7 +115,10 @@ export default defineComponent({
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
           temp[name] = (props) => (
-            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value, ...(props ?? {}) }}
+            />
           )
         }
       })

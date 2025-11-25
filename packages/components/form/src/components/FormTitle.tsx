@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 13:00:22
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 08:50:02
+ * @LastEditTime: 2025-11-25 15:25:45
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -14,7 +14,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { useInjectSlots } from '../context/FormSlotsContext'
 import { useInjectForm } from '../context/FormContext'
 import { RenderVNode } from '@pro-design-vue/utils'
-
+import { useInjectFormList } from '../context/FormListContext'
 import getSlot from '../utils/getSlot'
 
 export default defineComponent({
@@ -37,6 +37,7 @@ export default defineComponent({
   setup(props) {
     const formSlotsContext = useInjectSlots()
     const { prefixCls, formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
     const title = computed(() => getSlot(props.title, formSlotsContext))
     const getPopupContainer = () => {
       return document.body
@@ -47,7 +48,11 @@ export default defineComponent({
           <span class={`${prefixCls}-item-title-text`}>
             <RenderVNode
               vnode={title.value}
-              props={{ formData: formData.value, readonly: props.readonly }}
+              props={{
+                formData: formData.value,
+                readonly: props.readonly,
+                rowData: rowData?.value,
+              }}
             />
           </span>
         )}
@@ -59,7 +64,11 @@ export default defineComponent({
                 props.tooltip === true ? (
                   <RenderVNode
                     vnode={title.value}
-                    props={{ formData: formData.value, readonly: props.readonly }}
+                    props={{
+                      formData: formData.value,
+                      readonly: props.readonly,
+                      rowData: rowData?.value,
+                    }}
                   />
                 ) : (
                   props.tooltip

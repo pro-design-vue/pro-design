@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 16:35:43
+ * @LastEditTime: 2025-11-25 15:30:41
  * @Description:
  */
 import { computed, defineComponent } from 'vue'
@@ -13,6 +13,7 @@ import getSlot from '../utils/getSlot'
 import FieldReadonly from './FieldReadonly'
 import { RenderVNode } from '@pro-design-vue/utils'
 import { useInjectForm } from '../context/FormContext'
+import { useInjectFormList } from '../context/FormListContext'
 
 const SLOT_NAMES = ['mark']
 
@@ -28,13 +29,18 @@ export default defineComponent({
   setup(props, { attrs }) {
     const formSlotsContext = useInjectSlots()
     const { formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
+
     const slotsGetter = computed(() => {
       const temp = {}
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
           temp[name] = (props) => (
-            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value, ...(props ?? {}) }}
+            />
           )
         }
       })

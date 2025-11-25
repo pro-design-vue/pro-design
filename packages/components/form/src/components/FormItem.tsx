@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 15:04:23
+ * @LastEditTime: 2025-11-25 14:46:07
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -108,7 +108,7 @@ export default defineComponent({
       () => props.item.ignoreWidth ?? IGNORE_WIDTH_VALUE_TYPE.includes(fieldType.value),
     )
     const formItemProps = computed(
-      () => runFunction(props.item.formItemProps, formData.value) ?? {},
+      () => runFunction(props.item.formItemProps, formData.value, rowData?.value) ?? {},
     )
     const restItemProps = computed(() =>
       omitUndefined({
@@ -121,14 +121,19 @@ export default defineComponent({
           : (formItemProps.value?.htmlFor ?? `form-${formKey.value ?? ''}-${props.item.key}`),
         rules: mergeReadonly.value
           ? undefined
-          : runFunction(props.item.rules ?? formItemProps.value.rules, formData.value, action),
+          : runFunction(
+              props.item.rules ?? formItemProps.value.rules,
+              formData.value,
+              action,
+              rowData?.value,
+            ),
       }),
     )
 
     const clearOnChange = (newValue: any) => {
       const { clear } = props.item.linkage ?? {}
       if (clear) {
-        const clearNamePaths = runFunction(clear, newValue, formData.value) ?? []
+        const clearNamePaths = runFunction(clear, newValue, formData.value, rowData?.value) ?? []
         if (clearNamePaths.length > 0) {
           clearNamePaths.forEach((namePath) => {
             const path = isList
@@ -146,7 +151,7 @@ export default defineComponent({
     }
 
     const fieldProps = computed(() => {
-      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value)
+      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value, rowData?.value)
       const mergeProps = {
         ...baseProps,
         id: baseProps?.id ?? `form-${formKey.value ?? ''}-${props.item.key}`,
@@ -182,7 +187,7 @@ export default defineComponent({
     })
 
     const fieldStyle = computed(() => {
-      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value)
+      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value, rowData?.value)
       const newStyle = {
         ...baseProps?.style,
       }
@@ -216,7 +221,12 @@ export default defineComponent({
       SLOT_NAMES.forEach((name) => {
         const slot = getSlot(formItemProps.value[name], formSlotsContext)
         if (slot) {
-          temp[name] = () => <RenderVNode vnode={slot} props={{ formData: formData.value }} />
+          temp[name] = () => (
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value }}
+            />
+          )
         }
       })
       if (props.item.title) {
@@ -231,7 +241,10 @@ export default defineComponent({
               />
             </div>
             <div class={`${prefixCls}-item-title-extra`}>
-              <RenderVNode vnode={extraRender} props={{ formData: formData.value }} />
+              <RenderVNode
+                vnode={extraRender}
+                props={{ formData: formData.value, rowData: rowData?.value }}
+              />
             </div>
           </>
         )
@@ -246,7 +259,7 @@ export default defineComponent({
         if (linkage) {
           const { hidden, disabled } = linkage
           if (hidden) {
-            const hiddenKeys = runFunction(hidden, newValue, formData.value) ?? []
+            const hiddenKeys = runFunction(hidden, newValue, formData.value, rowData?.value) ?? []
             if (!isEqual(hiddenKeys, linkageHiddenKeys.value)) {
               updateHiddenKeys(
                 props.item.key as string,
@@ -256,7 +269,8 @@ export default defineComponent({
           }
 
           if (disabled) {
-            const disabledKeys = runFunction(disabled, newValue, formData.value) ?? []
+            const disabledKeys =
+              runFunction(disabled, newValue, formData.value, rowData?.value) ?? []
             if (!isEqual(disabledKeys, linkageDisabledKeys.value)) {
               updateDisabledKeys(
                 props.item.key as string,
@@ -311,6 +325,7 @@ export default defineComponent({
               onChange: fieldProps.value.onChange,
               defaultDom,
               formData: formData.value,
+              rowData: rowData?.value,
               action,
               listName: listName?.value,
               name: props.item.name,
@@ -330,6 +345,7 @@ export default defineComponent({
                   formData: formData.value,
                   listName: listName?.value,
                   name: props.item.name,
+                  rowData: rowData?.value,
                 }}
               />
             </div>
@@ -352,6 +368,7 @@ export default defineComponent({
               props={{
                 formData: formData.value,
                 defaultDom: formItemDom,
+                rowData: rowData?.value,
               }}
             />
           ) : (

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 15:47:59
+ * @LastEditTime: 2025-11-25 15:30:21
  * @Description:
  */
 import { defineComponent, computed, type PropType } from 'vue'
@@ -15,6 +15,7 @@ import FieldReadonly from './FieldReadonly'
 import getSlot from '../utils/getSlot'
 import { useInjectForm } from '../context/FormContext'
 import { RenderVNode } from '@pro-design-vue/utils'
+import { useInjectFormList } from '../context/FormListContext'
 
 export default defineComponent({
   name: 'FieldRadioGroup',
@@ -28,6 +29,8 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const { formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
+
     const formSlotsContext = useInjectSlots()
     const { mergeOptions, loading } = useFieldOptions({
       request: props.request,
@@ -71,7 +74,12 @@ export default defineComponent({
                 {defaultSlot.value ? (
                   <RenderVNode
                     vnode={defaultSlot.value}
-                    props={{ option, value: props.value, formData: formData.value }}
+                    props={{
+                      option,
+                      value: props.value,
+                      formData: formData.value,
+                      rowData: rowData?.value,
+                    }}
                   />
                 ) : (
                   option.label

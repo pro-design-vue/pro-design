@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-09-01 13:33:51
+ * @LastEditTime: 2025-11-25 15:29:39
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -20,6 +20,7 @@ import fieldDateFormatterMap from '../utils/fieldDateFormatterMap'
 
 import FieldReadonly from './FieldReadonly'
 import { useInjectForm } from '../context/FormContext'
+import { useInjectFormList } from '../context/FormListContext'
 
 const SLOT_NAMES = [
   'dateRender',
@@ -92,6 +93,7 @@ export default defineComponent({
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
     const { formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
     const defaultFormat = computed(() => {
       const dataFormat = fieldDateFormatterMap[props.picker]
       if (props.showTime === true) {
@@ -118,7 +120,10 @@ export default defineComponent({
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
           temp[name] = (props) => (
-            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value, ...(props ?? {}) }}
+            />
           )
         }
       })

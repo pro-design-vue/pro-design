@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 15:05:30
+ * @LastEditTime: 2025-11-25 14:43:31
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -284,9 +284,9 @@ export type ExtraSItemType = {
   originName?: NamePath
   defaultKeyWords?: string
   linkage?: {
-    disabled?: Key[] | ((value: any, formData: any) => Key[])
-    hidden?: Key[] | ((value: any, formData: any) => Key[])
-    clear?: NamePath[] | ((value: any, formData: any) => NamePath[])
+    disabled?: Key[] | ((value: any, formData: any, rowData?: Entity) => Key[])
+    hidden?: Key[] | ((value: any, formData: any, rowData?: Entity) => Key[])
+    clear?: NamePath[] | ((value: any, formData: any, rowData?: Entity) => NamePath[])
     request?: Key[] | ((value: any) => Key[])
   }
 } & Pick<ProFormGridConfig, 'rowProps' | 'colProps'>
@@ -309,7 +309,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    *
    * @name 标题
    */
-  title?: ProVNode | ((params: { formData: T; readonly?: boolean }) => ProVNode)
+  title?: ProVNode | ((params: { formData: T; readonly?: boolean; rowData?: Entity }) => ProVNode)
 
   /**
    * 支持 VNode 和 方法
@@ -317,8 +317,8 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    * @name 标题扩展，
    */
   extra?: {
-    label?: ProVNode | ((params: { formData: T }) => ProVNode)
-    item?: ProVNode | ((params: { formData: T }) => ProVNode)
+    label?: ProVNode | ((params: { formData: T; rowData?: Entity }) => ProVNode)
+    item?: ProVNode | ((params: { formData: T; rowData?: Entity }) => ProVNode)
   }
 
   /**
@@ -327,7 +327,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
    * @name 映射值的类型
    */
   valueEnum?:
-    | ((formData: T) => ProValueEnumObj | ProValueEnumMap)
+    | ((formData: T, rowData?: Entity) => ProValueEnumObj | ProValueEnumMap)
     | ProValueEnumObj
     | ProValueEnumMap
   options?:
@@ -349,7 +349,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
   allowClear?: boolean
   disabled?: ((formData: T, rowData?: Entity) => boolean) | boolean
   rules?:
-    | ((formData: T, action: ProFormActionType) => FormItemProps['rules'])
+    | ((formData: T, action: ProFormActionType, rowData?: Entity) => FormItemProps['rules'])
     | FormItemProps['rules']
 
   /**
@@ -385,7 +385,7 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
   order?: number
   placeholder?: string | string[]
   fieldType?: FieldType | `${ProFieldType}`
-  fieldProps?: ((formData: T) => Record<string, any>) | Record<string, any>
+  fieldProps?: ((formData: T, rowData?: Entity) => Record<string, any>) | Record<string, any>
   spaceProps?: SpaceProps
   /** @name 从服务器请求枚举 */
   request?: FieldRequestData
@@ -400,15 +400,16 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
         onChange: <T = any>(value: T, ...args: any[]) => void
         defaultDom: VNode
         formData: T
+        rowData?: Entity
         action: ProFormActionType
       }) => VNode | string)
-  render?: ProVNode | ((params: { formData: T; defaultDom: VNode }) => ProVNode)
+  render?: ProVNode | ((params: { formData: T; defaultDom: VNode; rowData?: Entity }) => ProVNode)
   onChange?: (...args: any[]) => void
   onInit?: (ref: any) => void
   /** 嵌套子项 */
   children?:
     | ProFormItemType<T, FieldType | `${ProFieldType}`>[]
-    | ((formData: T) => ProFormItemType<T, FieldType | `${ProFieldType}`>[])
+    | ((formData: T, rowData?: Entity) => ProFormItemType<T, FieldType | `${ProFieldType}`>[])
 } & ExtraSItemType
 
 export type SFormListProps = {

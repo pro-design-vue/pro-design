@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 10:00:00
+ * @LastEditTime: 2025-11-25 15:31:42
  * @Description:
  */
 import { computed, defineComponent, ref, watch, type PropType } from 'vue'
@@ -14,6 +14,7 @@ import { commonFieldProps } from '../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { isFunction, RenderVNode } from '@pro-design-vue/utils'
 import getSlot from '../utils/getSlot'
+import { useInjectFormList } from '../context/FormListContext'
 const SLOT_NAMES = ['downloadIcon', 'itemRender', 'previewIcon', 'removeIcon']
 
 export default defineComponent({
@@ -79,6 +80,8 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const { prefixCls, formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
+
     const intl = useIntl()
     const formSlotsContext = useInjectSlots()
     const fileList = ref<any[]>([])
@@ -90,7 +93,10 @@ export default defineComponent({
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
           temp[name] = (props) => (
-            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value, ...(props ?? {}) }}
+            />
           )
         }
       })
@@ -100,7 +106,12 @@ export default defineComponent({
     const icon = computed(() => {
       const render = getSlot(props.iconRender, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
+        return (
+          <RenderVNode
+            vnode={render}
+            props={{ formData: formData.value, rowData: rowData?.value }}
+          />
+        )
       }
       return <InboxOutlined />
     })
@@ -108,7 +119,12 @@ export default defineComponent({
     const title = computed(() => {
       const render = getSlot(props.title, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
+        return (
+          <RenderVNode
+            vnode={render}
+            props={{ formData: formData.value, rowData: rowData?.value }}
+          />
+        )
       }
       return props.title || intl.getMessage('upload.dragger.text', '单击或拖动文件到此区域进行上传')
     })
@@ -116,7 +132,12 @@ export default defineComponent({
     const description = computed(() => {
       const render = getSlot(props.description, formSlotsContext)
       if (isFunction(render)) {
-        return <RenderVNode vnode={render} props={{ formData: formData.value }} />
+        return (
+          <RenderVNode
+            vnode={render}
+            props={{ formData: formData.value, rowData: rowData?.value }}
+          />
+        )
       }
       return props.description || intl.getMessage('upload.dragger.hint', '支持单次或批量上传')
     })

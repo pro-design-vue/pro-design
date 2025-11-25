@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 15:53:17
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 16:36:17
+ * @LastEditTime: 2025-11-25 15:31:11
  * @Description:
  */
 import { defineComponent, computed } from 'vue'
@@ -17,6 +17,7 @@ import FieldReadonly from './FieldReadonly'
 
 import type { Option } from '../type'
 import { useInjectForm } from '../context/FormContext'
+import { useInjectFormList } from '../context/FormListContext'
 const SLOT_NAMES = [
   'maxTagPlaceholder',
   'notFoundContent',
@@ -69,6 +70,8 @@ export default defineComponent({
   setup(props, { attrs }) {
     const intl = useIntl()
     const { formData } = useInjectForm()
+    const { rowData } = useInjectFormList()
+
     const formSlotsContext = useInjectSlots()
     const { mergeOptions, loading, fieldNames } = useFieldOptions({
       request: props.request,
@@ -109,7 +112,10 @@ export default defineComponent({
         const slot = getSlot(props[name], formSlotsContext)
         if (slot) {
           temp[name] = (props) => (
-            <RenderVNode vnode={slot} props={{ formData: formData.value, ...(props ?? {}) }} />
+            <RenderVNode
+              vnode={slot}
+              props={{ formData: formData.value, rowData: rowData?.value, ...(props ?? {}) }}
+            />
           )
         }
       })
