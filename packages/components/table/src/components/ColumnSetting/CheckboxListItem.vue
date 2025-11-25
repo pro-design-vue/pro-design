@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 13:39:31
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:44:32
+ * @LastEditTime: 2025-11-25 08:52:59
  * @Description:
 -->
 <script lang="ts">
@@ -48,9 +48,14 @@ export default defineComponent({
       setColumnsMap(columnKeyMap)
     }
 
+    const getPopupContainer = () => {
+      return document.body
+    }
+
     return {
       intl,
       onClick,
+      getPopupContainer,
     }
   },
 })
@@ -63,6 +68,7 @@ export default defineComponent({
     </div>
     <span v-if="isRoot" :class="`${className}-list-item-option`">
       <Tooltip
+        :getPopupContainer
         :title="intl.getMessage('tableToolBar.leftPin', '固定在列首')"
         v-if="fixed !== 'left'"
       >
@@ -70,13 +76,18 @@ export default defineComponent({
           <VerticalAlignTopOutlined />
         </span>
       </Tooltip>
-      <Tooltip :title="intl.getMessage('tableToolBar.noPin', '不固定')" v-if="!!fixed">
+      <Tooltip
+        :title="intl.getMessage('tableToolBar.noPin', '不固定')"
+        v-if="!!fixed"
+        :getPopupContainer
+      >
         <span @click.stop.prevent="onClick()">
           <VerticalAlignMiddleOutlined />
         </span>
       </Tooltip>
       <Tooltip
         :title="intl.getMessage('tableToolBar.rightPin', '固定在列尾')"
+        :getPopupContainer
         v-if="fixed !== 'right'"
       >
         <span @click.stop.prevent="onClick('right')">

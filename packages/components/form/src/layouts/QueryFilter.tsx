@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-10-13 17:22:46
+ * @LastEditTime: 2025-11-25 09:24:37
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -86,22 +86,29 @@ const getSpanConfig = (
 }
 
 const flatMapItems = (items: ProFormItemType[], ignoreRules?: boolean): ProFormItemType[] => {
-  return items?.flatMap((item: any) => {
-    if (item.fieldType === ProFieldType.GROUP && !item.title) {
-      return item.props.children
-    }
-    if (ignoreRules) {
-      return {
-        ...item,
-        rules: [],
-        formItemProps: {
-          ...item.formItemProps,
-          rules: [],
-        },
+  return items
+    ?.flatMap((item: any) => {
+      if (item.fieldType === ProFieldType.GROUP && !item.title) {
+        return item.props.children
       }
-    }
-    return item
-  })
+      if (ignoreRules) {
+        return {
+          ...item,
+          rules: [],
+          formItemProps: {
+            ...item.formItemProps,
+            rules: [],
+          },
+        }
+      }
+      return item
+    })
+    .sort((a, b) => {
+      if (b.order || a.order) {
+        return (b.order ?? 0) - (a.order ?? 0)
+      }
+      return 0
+    })
 }
 
 const defaultWidth = isBrowser() ? document?.body?.clientWidth : 1024

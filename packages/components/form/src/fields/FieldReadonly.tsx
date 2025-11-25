@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 11:19:32
+ * @LastEditTime: 2025-11-25 08:50:27
  * @Description:
  */
 import type { Theme } from '../type'
@@ -69,6 +69,10 @@ export default defineComponent({
       return props.text
     })
 
+    const getPopupContainer = () => {
+      return document.body
+    }
+
     return () => {
       const dom = (
         <div class={cls.value} style={attrs?.style as any}>
@@ -88,7 +92,7 @@ export default defineComponent({
         const title = typeof props.tooltip === 'string' ? props.tooltip : props.text
         if (title) {
           return (
-            <Tooltip placement="topLeft" title={title}>
+            <Tooltip placement="topLeft" title={title} getPopupContainer={getPopupContainer}>
               {dom}
             </Tooltip>
           )

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-12-17 11:35:56
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 13:25:11
+ * @LastEditTime: 2025-11-25 08:54:58
  * @Description:
 -->
 <script lang="ts">
@@ -83,7 +83,12 @@ export default defineComponent({
       'boolean' == typeof showCellPopover.value ? {} : showCellPopover.value,
     )
 
+    const getPopupContainer = () => {
+      return document.body
+    }
+
     return {
+      getPopupContainer,
       isShowPopover,
       tableSlotsContext,
       title,
@@ -116,7 +121,7 @@ export default defineComponent({
       <component :is="title"></component>
     </span>
     <template v-if="showCellPopover">
-      <Popover v-bind="popoverProps">
+      <Popover v-bind="popoverProps" :getPopupContainer>
         <template #title v-if="!popoverProps?.title">
           <component :is="title"></component>
         </template>
@@ -135,7 +140,7 @@ export default defineComponent({
       </Popover>
     </template>
     <template v-if="column.headerTooltip">
-      <Tooltip>
+      <Tooltip :getPopupContainer>
         <InfoCircleOutlined style="margin-inline-start: 3px; font-size: 12px" />
         <template #title>
           <component :is="title" v-if="column.headerTooltip === true"></component>

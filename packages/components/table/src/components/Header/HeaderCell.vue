@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 17:19:06
+ * @LastEditTime: 2025-11-25 08:54:01
  * @Description:
 -->
 <script lang="ts">
@@ -265,9 +265,14 @@ export default defineComponent({
       filters: props.column.filters,
     }))
 
+    const getPopupContainer = () => {
+      return document.body
+    }
+
     return {
       tableContext,
       sorterInfo,
+      getPopupContainer,
       handleSortClick: (column: FinallyColumnType<any>, nextSortOrder: SortOrder) => {
         if (!column.sorter) return
         const sortState = {
@@ -317,7 +322,7 @@ export default defineComponent({
   >
     <component :is="hasIcon ? 'div' : RenderSlot" :class="cellBoxClass">
       <span :class="titleClass">
-        <Tooltip v-if="column.sorter && showSorterTooltip" v-bind="tooltipProps">
+        <Tooltip v-if="column.sorter && showSorterTooltip" v-bind="tooltipProps" :getPopupContainer>
           <template #title>
             {{ sorterInfo.tip }}
           </template>

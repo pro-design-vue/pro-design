@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-09-30 16:52:24
+ * @LastEditTime: 2025-11-25 08:58:44
  * @Description:
 -->
 <script lang="ts">
@@ -128,7 +128,9 @@ export default defineComponent({
         }
         return autoHeight ? styles : { height: `${props.column.height}px` }
       }),
-      getPopupContainer: computed(() => tableContext.getPopupContainer.value),
+      getPopupContainer: () => {
+        return document.body
+      },
       rowSelectionType,
       hideSelectAll,
       onSelectAllChange: () => {

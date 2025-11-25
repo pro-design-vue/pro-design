@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 13:00:22
  * @LastEditors: shen
- * @LastEditTime: 2025-10-25 15:01:48
+ * @LastEditTime: 2025-11-25 08:50:02
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -38,6 +38,9 @@ export default defineComponent({
     const formSlotsContext = useInjectSlots()
     const { prefixCls, formData } = useInjectForm()
     const title = computed(() => getSlot(props.title, formSlotsContext))
+    const getPopupContainer = () => {
+      return document.body
+    }
     return () => (
       <>
         {title.value && (
@@ -50,6 +53,7 @@ export default defineComponent({
         )}
         {props.tooltip && (
           <Tooltip
+            getPopupContainer={getPopupContainer}
             v-slots={{
               title: () =>
                 props.tooltip === true ? (

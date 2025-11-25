@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 21:51:35
  * @LastEditors: shen
- * @LastEditTime: 2025-07-30 10:38:03
+ * @LastEditTime: 2025-11-25 08:57:24
  * @Description:
 -->
 <script lang="ts">
@@ -55,10 +55,6 @@ export default defineComponent({
         filteredKeys.value = filterState.value?.filteredKeys || []
       },
       { immediate: true },
-    )
-
-    const getPopupContainer = computed(
-      () => props.column?.getPopupContainer ?? tableContext.props.getPopupContainer,
     )
 
     const showFilterDropdown = ref(false)
@@ -176,7 +172,9 @@ export default defineComponent({
     })
 
     const filtered = eagerComputed(() => !!filteredKeys.value?.length)
-
+    const getPopupContainer = () => {
+      return document.body
+    }
     return {
       getPopupContainer,
       triggerOpen,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-24 08:54:12
+ * @LastEditTime: 2025-11-25 10:01:21
  * @Description:
  */
 
@@ -21,6 +21,7 @@ import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
 import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+import { promiseTimeout } from '@vueuse/core'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
 import ToolBar from './ToolBar/ToolBar.vue'
@@ -436,7 +437,8 @@ export default defineComponent({
       },
     )
 
-    onMounted(() => {
+    onMounted(async () => {
+      await promiseTimeout(0)
       calcTableHeight()
     })
 
