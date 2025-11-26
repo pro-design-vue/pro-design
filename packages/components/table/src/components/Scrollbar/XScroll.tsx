@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 11:08:25
+ * @LastEditTime: 2025-11-26 11:12:33
  * @Description:
  */
 import {
@@ -23,7 +23,7 @@ import type { CSSProperties } from 'vue'
 
 export default defineComponent({
   props: { onlyAutoShow: { type: Boolean }, notShowAuto: { type: Boolean } },
-  setup: (props, { expose }) => {
+  setup: (props) => {
     const tableContext = useInjectTable()
     const counter = useInjectContainer()
     const prefixCls = computed(() => `${tableContext.props.prefixCls}`)
