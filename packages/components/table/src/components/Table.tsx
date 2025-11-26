@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 10:01:21
+ * @LastEditTime: 2025-11-26 11:10:33
  * @Description:
  */
 
@@ -22,6 +22,7 @@ import { flatColumnsHandle } from '../utils/flatColumnsHandle'
 import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import { promiseTimeout } from '@vueuse/core'
+import { isMacOsUserAgent, isIOSUserAgent } from '../utils/browser'
 import useMergedState from '../hooks/useMergedState'
 import InteralTable from './InteralTable.vue'
 import ToolBar from './ToolBar/ToolBar.vue'
@@ -53,7 +54,7 @@ export default defineComponent({
     const tableRef = ref()
     const { table, dark } = useProConfigInject()
     const prefixCls = usePrefixCls('table')
-
+    const isApple = isMacOsUserAgent() || isIOSUserAgent()
     const { hoverRowKey } = useProvideHover({
       rowHoverDelay: computed(() => props.rowHoverDelay),
       rowHover: computed(() => props.rowHover ?? table?.value?.rowHover),
@@ -420,7 +421,9 @@ export default defineComponent({
         const height =
           window.innerHeight -
           (tableRef.value?.rootRef?.getBoundingClientRect()?.top || 0) -
-          (tableRef.value?.paginationRef?.getBoundingClientRect()?.height || 0)
+          (tableRef.value?.paginationRef?.getBoundingClientRect()?.height || 0) -
+          (!isApple ? counter.scrollViewportHeight.value : 0)
+
         tableHeight.value =
           typeof props.autoHeight === 'function' && !counter.hasFullScreen.value
             ? props.autoHeight?.(height)
@@ -430,12 +433,9 @@ export default defineComponent({
       }
     }
 
-    watch(
-      () => counter.tableSize.value,
-      () => {
-        calcTableHeight()
-      },
-    )
+    watch([counter.tableSize, counter.scrollViewportHeight], () => {
+      calcTableHeight()
+    })
 
     onMounted(async () => {
       await promiseTimeout(0)

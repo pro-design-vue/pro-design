@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 14:49:48
+ * @LastEditTime: 2025-11-26 11:08:25
  * @Description:
  */
 import {
@@ -18,13 +18,14 @@ import { useInjectTable } from '../context/TableContext'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { isMacOsUserAgent, isIOSUserAgent } from '../../utils/browser'
 import { addClass, removeClass } from '../../utils/class'
-
+import { useInjectContainer } from '../../hooks/useContainer'
 import type { CSSProperties } from 'vue'
 
 export default defineComponent({
   props: { onlyAutoShow: { type: Boolean }, notShowAuto: { type: Boolean } },
-  setup: (props) => {
+  setup: (props, { expose }) => {
     const tableContext = useInjectTable()
+    const counter = useInjectContainer()
     const prefixCls = computed(() => `${tableContext.props.prefixCls}`)
     const scrollViewportRef = ref<HTMLDivElement>()
     const rootRef = ref<HTMLDivElement>()
@@ -42,10 +43,14 @@ export default defineComponent({
     const isApple = isMacOsUserAgent() || isIOSUserAgent()
 
     const stickyStyle = computed(() => {
-      const scrollBarSize = `-${tableContext.scrollBarSize.value || 15}px`
       const horizontalScrollSticky = tableContext.props.horizontalScrollSticky
-      const paginationSticky = tableContext.props.paginationSticky
-      if (horizontalScrollSticky === true) {
+      const scrollBarSize = `-${tableContext.scrollBarSize.value || 15}px`
+      if (
+        horizontalScrollSticky === true &&
+        !counter.hasFullScreen.value &&
+        !tableContext.props.height
+      ) {
+        const paginationSticky = tableContext.props.paginationSticky
         let bottom = 0
         if (tableContext.pos.value.bottom && !!paginationSticky) {
           bottom +=
@@ -60,7 +65,9 @@ export default defineComponent({
           marginTop: isApple ? scrollBarSize : 0,
         }
       }
-      return {}
+      return {
+        marginTop: isApple ? scrollBarSize : 0,
+      }
     })
     const isIosScroll = computed(() => 0 === tableContext.scrollBarSize.value && isApple)
     const rootClass = computed(() => ({
@@ -108,6 +115,9 @@ export default defineComponent({
             scrollViewportRef.value.removeEventListener('scroll', onScroll)
             addHScrollDom(scrollViewportRef.value, true)
             scrollViewportRef.value.addEventListener('scroll', onScroll, { passive: true })
+            counter.setScrollViewportHeight(
+              scrollViewportRef.value?.getBoundingClientRect()?.height || 0,
+            )
           }
         },
         { immediate: true },

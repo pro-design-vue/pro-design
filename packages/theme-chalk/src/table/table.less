@@ -35,6 +35,9 @@
     min-height: 100vh;
     padding: 10px 10px 0;
     background: hsl(var(--pro-background));
+    .@{table-prefix-cls}-pagination-wrap {
+      margin-top: 0 !important;
+    }
   }
 
   &-body-inner-measure,
@@ -805,7 +808,7 @@
 
   &-horizontal-scroll-hidden {
     position: relative;
-    position: absolute;
+    // position: absolute;
     right: 0;
     bottom: 0;
     left: 0;
@@ -833,6 +836,8 @@
   &-pagination-wrap {
     padding: 15px 0;
     margin-top: -1px;
+    z-index: 11;
+    position: relative;
     background: hsl(var(--pro-background));
     border-top-width: 1px;
 

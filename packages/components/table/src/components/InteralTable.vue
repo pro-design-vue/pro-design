@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-11-18 17:20:06
+ * @LastEditTime: 2025-11-26 10:59:54
  * @Description:
 -->
 <script lang="ts">
@@ -610,7 +610,7 @@ export default defineComponent({
     })
     const bottomPaginationHeight = ref(0)
     const bottomPaginationStyle = computed<any>(() => {
-      if (!props.paginationSticky) {
+      if (!props.paginationSticky || counter.hasFullScreen.value || !!props.height) {
         return {}
       }
       if (props.paginationSticky === true) {
@@ -619,9 +619,7 @@ export default defineComponent({
       return {
         position: 'sticky',
         'z-index': 9,
-        bottom: counter.hasFullScreen.value
-          ? '0px'
-          : `${props.paginationSticky?.offsetBottom ?? 0}px`,
+        bottom: `${props.paginationSticky?.offsetBottom ?? 0}px`,
       }
     })
 

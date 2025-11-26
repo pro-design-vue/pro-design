@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-11-12 13:30:49
+ * @LastEditTime: 2025-11-26 10:57:37
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -10,13 +10,15 @@ import type { Ref, InjectionKey, ComputedRef } from 'vue'
 
 import { computed, provide, inject, watch, ref } from 'vue'
 import { genColumnKey } from '../utils/util'
-import { useMergedState } from '@pro-design-vue/hooks'
+import { useMergedState, useState } from '@pro-design-vue/hooks'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 
 export type ContainerContextProps = {
   props: ProTableProps
   tableSize: Ref<DensitySize>
   hasFullScreen: Ref<boolean>
+  scrollViewportHeight: Ref<number>
+  setScrollViewportHeight: (val: number) => void
   setTableSize: (val: DensitySize) => void
   sortKeyColumns: Ref<string[]>
   setSortKeyColumns: (keys: string[]) => void
@@ -33,7 +35,7 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
   const hasFullScreen = ref(false)
   const { componentSize, table } = useProConfigInject()
   const sortKeyColumns = ref<string[]>([])
-
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0)
   const [tableSize, setTableSize] = useMergedState<DensitySize>(
     () => props.size ?? table?.value?.size ?? componentSize?.value ?? 'middle',
     {
@@ -169,6 +171,8 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
     hasFullScreen,
     rootDomRef,
     tableSize,
+    scrollViewportHeight,
+    setScrollViewportHeight,
     setTableSize,
     sortKeyColumns,
     setSortKeyColumns: (keys: string[]) => {
