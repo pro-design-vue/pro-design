@@ -2,15 +2,12 @@
  * @Author: shen
  * @Date: 2023-11-09 11:35:58
  * @LastEditors: shen
- * @LastEditTime: 2025-07-30 10:47:53
+ * @LastEditTime: 2025-11-26 15:20:06
  * @Description:
 -->
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useInjectTable } from './context/TableContext'
-
-// import type { RenderExpandIconProps } from './interface'
-
 export default defineComponent({
   name: 'ProTableExpandIcon',
   props: {
@@ -20,16 +17,18 @@ export default defineComponent({
     expandable: Boolean,
     disabled: Boolean,
     onExpand: Function,
+    expandIconType: String,
   },
   emits: ['expand'],
   setup(props, { emit }) {
     const tableContext = useInjectTable()
 
     const className = computed(() => {
-      const { prefixCls, expanded, expandable, disabled } = props
+      const { prefixCls, expanded, expandable, disabled, expandIconType } = props
       const expandIconClass = `${prefixCls}-row-expand-icon`
       return {
         [expandIconClass]: true,
+        [`${expandIconClass}-${expandIconType}`]: true,
         [`${expandIconClass}-spaced`]: !expandable,
         [`${expandIconClass}-expanded`]: expandable && expanded,
         [`${expandIconClass}-collapsed`]: expandable && !expanded,

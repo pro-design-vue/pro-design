@@ -2,8 +2,8 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2023-12-22 10:31:47
- * @Description: 
+ * @LastEditTime: 2025-11-26 14:32:53
+ * @Description:
 -->
 <script lang="ts">
 import { defineComponent, ref, computed, watchEffect } from 'vue'
@@ -27,6 +27,7 @@ import type {
   RowSelectionType,
   CheckboxProps,
   CellType,
+  ExpandIconType,
 } from '../interface'
 
 export default defineComponent({
@@ -40,6 +41,7 @@ export default defineComponent({
     record: { type: Object as PropType<DefaultRecordType> },
     rowKey: { type: [Number, String] },
     expanded: Boolean as PropType<boolean>,
+    expandIconType: String as PropType<ExpandIconType>,
     supportExpand: Boolean,
   },
   setup(props) {
@@ -262,6 +264,7 @@ export default defineComponent({
       v-else-if="column.type === 'expand'"
       :prefix-cls="prefixCls"
       expandable
+      :expandIconType="expandIconType"
       :expanded="expanded"
       :record="record"
       :disabled="!supportExpand"

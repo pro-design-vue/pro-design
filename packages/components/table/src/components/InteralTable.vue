@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 10:59:54
+ * @LastEditTime: 2025-11-26 14:28:35
  * @Description:
 -->
 <script lang="ts">
@@ -257,6 +257,10 @@ export default defineComponent({
 
     const childrenColumnName = computed(
       () => props.childrenColumnName ?? table?.value?.childrenColumnName ?? 'children',
+    )
+
+    const expandIconType = computed(
+      () => props.expandIconType ?? table?.value?.expandIconType ?? 'default',
     )
 
     const { getRecordByKey, getIndexsByKey, getKeyByIndexs, allDataRowKeys, allDataRootRowKeys } =
@@ -662,6 +666,7 @@ export default defineComponent({
       status,
       useAnimate,
       animateRows,
+      expandIconType,
       watermarkMsg,
       onResizeColumn: (w: number, col: ColumnType, action: ResizeActionType) => {
         const width = col.width

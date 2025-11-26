@@ -165,6 +165,7 @@ export interface RenderExpandIconProps<RecordType> {
   onExpand: TriggerEventHandler<RecordType>
 }
 export type RenderExpandIcon<RecordType> = (props: RenderExpandIconProps<RecordType>) => any
+export type ExpandIconType = 'default' | 'arrow'
 export type SelectionItemSelectFn = (currentRowKeys: Key[]) => void
 export interface SelectionItem {
   key: string
@@ -326,6 +327,10 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   expandIcon: {
     type: Function as PropType<RenderExpandIcon<T>>,
+    default: undefined,
+  },
+  expandIconType: {
+    type: String as PropType<ExpandIconType>,
     default: undefined,
   },
   onExpand: {

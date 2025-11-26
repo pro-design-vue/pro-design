@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-05 12:12:38
  * @LastEditors: shen
- * @LastEditTime: 2024-01-11 18:05:16
+ * @LastEditTime: 2025-11-26 14:29:50
  * @Description:
  */
 import { inject, provide } from 'vue'
@@ -30,6 +30,7 @@ import type {
   TableLocale,
   TableRowSelection,
   TriggerEventHandler,
+  ExpandIconType,
 } from '../interface'
 
 type PaginationPos = {
@@ -77,6 +78,7 @@ export interface TableContextProps
   onTriggerExpand: TriggerEventHandler<any>
   childrenColumnName: Ref<string>
   expandType: Ref<ExpandType>
+  expandIconType: ComputedRef<ExpandIconType>
   supportSticky: boolean
   mergedRowSelection: Ref<TableRowSelection>
   getPopupContainer: Ref<GetPopupContainer>

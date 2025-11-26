@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-12 13:29:42
+ * @LastEditTime: 2025-11-26 14:25:41
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
@@ -14,6 +14,7 @@ import type {
   OptionConfig,
   TablePaginationConfig,
   DensitySize,
+  ExpandIconType,
 } from '@pro-design-vue/components/table/src/components/interface'
 
 interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
@@ -32,6 +33,7 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     expandRowByClick?: boolean
     rowKey?: string
     size?: DensitySize
+    expandIconType?: ExpandIconType
     rowHover?: boolean
     summaryFixed?: boolean
     columnEmptyText?: string

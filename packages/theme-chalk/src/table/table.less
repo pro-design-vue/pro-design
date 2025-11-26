@@ -904,9 +904,6 @@
     color: hsl(var(--pro-muted-foreground));
     user-select: none;
     outline: none;
-    background: @table-expand-icon-bg;
-    border: @table-border-width-base @table-border-style-base @table-border-color;
-    border-radius: @checkbox-border-radius;
     transform: scale((unit(@checkbox-size) / unit(@expand-icon-size)));
     transition: all 0.3s;
     @expand-icon-size: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3) / 2)) * 2 +
@@ -918,35 +915,64 @@
       border-color: currentcolor;
     }
 
-    &::before,
-    &::after {
-      position: absolute;
-      content: '';
-      background: currentcolor;
-      transition: transform 0.3s ease-out;
+    &-arrow {
+      background: transparent;
+
+      &::before {
+        position: absolute;
+        content: '';
+        transition: transform 0.3s ease-out;
+      }
+
+      &::before {
+        top: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3 - 10) / 2));
+        width: 10px;
+        height: 10px;
+        border: 2px solid hsl(var(--pro-muted-foreground));
+        border-top-width: 0;
+        border-left-width: 0;
+        transform: rotate(45deg) scale(0.8);
+      }
     }
 
-    &::before {
-      top: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3) / 2));
-      right: 3px;
-      left: 3px;
-      height: @table-border-width-base;
+    &-arrow&-collapsed::before {
+      transform: rotate(-45deg) scale(0.8);
     }
 
-    &::after {
-      top: 3px;
-      bottom: 3px;
-      left: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3) / 2));
-      width: @table-border-width-base;
-      transform: rotate(90deg);
+    &-default {
+      background: @table-expand-icon-bg;
+      border: @table-border-width-base @table-border-style-base @table-border-color;
+      border-radius: @checkbox-border-radius;
+
+      &::before,
+      &::after {
+        position: absolute;
+        content: '';
+        background: currentcolor;
+        transition: transform 0.3s ease-out;
+      }
+
+      &::before {
+        top: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3) / 2));
+        right: 3px;
+        left: 3px;
+        height: @table-border-width-base;
+      }
+
+      &::after {
+        top: 3px;
+        bottom: 3px;
+        left: ceil(((@table-font-size-sm * 1.4 - @table-border-width-base * 3) / 2));
+        width: @table-border-width-base;
+        transform: rotate(90deg);
+      }
     }
 
-    // Motion effect
-    &-collapsed::before {
+    &-default&-collapsed::before {
       transform: rotate(-180deg);
     }
 
-    &-collapsed::after {
+    &-default&-collapsed::after {
       transform: rotate(0deg);
     }
 

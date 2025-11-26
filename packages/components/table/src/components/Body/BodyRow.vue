@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:34:32
+ * @LastEditTime: 2025-11-26 14:33:58
  * @Description:
 -->
 <script lang="ts">
@@ -172,6 +172,7 @@ export default defineComponent({
 
     const isExpanded = ref(false)
     const expandedRowKeys = computed(() => tableContext.expandedRowKeys.value)
+    const expandIconType = computed(() => tableContext.expandIconType.value)
     const expanded = eagerComputed(() => expandedRowKeys.value.has?.(props.rowKey!))
     const expandIconColumnIndex = computed(() => tableContext.expandIconColumnIndex.value || 0)
     const indentSize = computed(() => tableContext.indentSize.value)
@@ -334,6 +335,7 @@ export default defineComponent({
       expandIconColumnIndex,
       indentSize,
       expanded,
+      expandIconType,
       onInternalTriggerExpand,
       customRowProps,
       expandColumnKey: ExpandColumnKey,
@@ -402,6 +404,7 @@ export default defineComponent({
           :type="type"
           :column="mergedColumns?.[index]"
           :expanded="expanded"
+          :expandIconType="expandIconType"
           :support-expand="mergedExpandable"
           :record="record"
           @mouseenter="
@@ -445,6 +448,7 @@ export default defineComponent({
               ></span>
               <ExpandIcon
                 :expanded="expanded"
+                :expandIconType="expandIconType"
                 :prefix-cls="prefixCls"
                 :expandable="hasNestChildren"
                 :record="record"
