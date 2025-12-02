@@ -2,19 +2,18 @@
  * @Author: shen
  * @Date: 2023-11-09 22:29:52
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 16:34:58
+ * @LastEditTime: 2025-12-02 17:16:19
  * @Description:
 -->
 <script lang="ts">
 import type { PropType } from 'vue'
 import type { EditableTrigger, FinallyColumnType, Key, RowType } from '../interface'
-import type { RangeCell } from '../../hooks/RangeInterface'
 import { defineComponent, computed, watch, onMounted } from 'vue'
 import { get } from '@pro-design-vue/utils'
 import { useInjectTable } from '../context/TableContext'
+import { getCellKey } from '../../utils/util'
 import BodyTextCell from './BodyTextCell'
 import BodyEditCell from './BodyEditCell'
-import { getCellKey } from '../../utils/util'
 export default defineComponent({
   inheritAttrs: false,
   props: {

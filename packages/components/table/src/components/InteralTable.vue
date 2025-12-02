@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 17:08:15
+ * @LastEditTime: 2025-12-02 17:16:36
  * @Description:
 -->
 <script lang="ts">
@@ -54,7 +54,6 @@ import useData from '../hooks/useData'
 import supportSticky from '../utils/supportSticky'
 import classNames from '../utils/classNames'
 import useCellProps from '../hooks/useCellProps'
-import KeyCode from '../utils/KeyCode'
 import TableSlotsContextProvider from './context/TableSlotsContext'
 import MeasureWidth from './MeasureWidth.vue'
 import PopupContainer from './PopupContainer.vue'
