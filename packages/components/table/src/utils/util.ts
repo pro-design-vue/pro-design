@@ -54,6 +54,11 @@ export const genColumnKey = (key?: string | number, index?: number | string): st
 export function getColumnPos(index: number, pos?: string) {
   return pos ? `${pos}-${index}` : `${index}`
 }
+
+export function getCellKey(rowKey: Key, colKey: Key) {
+  return [rowKey, colKey].join('_')
+}
+
 export declare function getNewColumnsByWidth<RecordType>(
   columns: ColumnsType<RecordType>,
   newWidths: Record<string, number>,

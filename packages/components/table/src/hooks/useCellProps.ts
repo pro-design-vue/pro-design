@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2022-11-05 14:16:25
  * @LastEditors: shen
- * @LastEditTime: 2025-09-29 14:02:06
+ * @LastEditTime: 2025-12-01 14:33:05
  * @Description:
  */
 import type { Ref, CSSProperties } from 'vue'
@@ -30,6 +30,10 @@ interface UseCellProps {
   bodyWidth: Ref<number>
   leftWidth: Ref<number>
   centerWidth: Ref<number>
+  cancelEditable: (recordKey: Key) => boolean
+  startEditable: (recordKey: Key, recordValue?: any) => boolean
+  saveEditable: (recordKey: Key) => Promise<boolean>
+  isEditable: (recordKey: Key) => boolean
   getColumnPosition: (
     index: number,
     colSpan?: number,
@@ -59,6 +63,10 @@ const useCellProps = ({
   leftWidth,
   centerWidth,
   getRowHeight,
+  cancelEditable,
+  startEditable,
+  saveEditable,
+  isEditable,
   customCell: contextCustomCell,
 }: UseCellProps): UseCellPropsRes => {
   const allCellProps = shallowRef<Record<string, Record<string, RenderedCell>>>({})
@@ -89,6 +97,10 @@ const useCellProps = ({
         value,
         record,
         index: rowIndex,
+        cancelEditable,
+        startEditable,
+        saveEditable,
+        isEditable,
         column: originColumn as FinallyColumnType,
       })
       if (

@@ -210,6 +210,65 @@ type GetComponentProps<DataType> = (
 }
 export type ResizeActionType = 'start' | 'move' | 'end'
 export type SummaryFixed = boolean | 'top' | 'bottom'
+export interface ValueParserParams<RecordType = DefaultRecordType, TValue = any> {
+  newValue: TValue
+  oldValue: TValue
+  record: RecordType
+  recordIndexs: number[]
+  column: ColumnType<RecordType>
+}
+export interface EditableValueParams<RecordType = DefaultRecordType, TValue = any> {
+  value: TValue
+  record: RecordType
+  recordIndexs: number[]
+  column: ColumnType<RecordType>
+}
+
+export interface ValueParserFunc<T = any, TValue = any> {
+  (params: EditableValueParams<T, TValue>): TValue | null | undefined
+}
+export interface ValueGetterFunc<T = any, TValue = any> {
+  (params: EditableValueParams<T, TValue>): string | null | undefined
+}
+export type EditableTrigger = 'click' | 'dblClick' | 'contextmenu'
+
+export interface PlainObject {
+  [key: string]: any
+}
+export type EditableCellProps<T> = PlainObject | ((params: EditableValueParams<T>) => PlainObject)
+
+export type EditableCellRules<T> = EditRule[] | ((params: EditableValueParams<T>) => EditRule[])
+
+export type EditableCellType<T> = (params: EditableValueParams<T>) => boolean
+
+export type RowEditableType = 'single' | 'multiple'
+export type RowEditableConfig<DataType> = {
+  /**
+   * @type single | multiple
+   * @name 编辑的类型，支持单选和多选
+   */
+  type?: RowEditableType
+  /** @name 正在编辑的列 */
+  editableKeys?: Key[]
+  /** 只能编辑一行的的提示 */
+  onlyOneLineEditorAlertMessage?: string
+  /** 同时只能新增一行的提示 */
+  onlyAddOneLineAlertMessage?: string | false
+  /** 正在编辑的列修改的时候 */
+  onChange?: (editableKeys: Key[], editableRows: DataType[] | DataType) => void
+  // /** 正在编辑的列修改的时候 */
+  // onValuesChange?: (record: DataType, dataSource: DataType[]) => void
+  /** 行保存的时候 */
+  onSave?: (
+    /** 行 id，一般是唯一id */
+    key: Key,
+    /** 当前修改的行的值 */
+    record: DataType & { index?: number },
+    /** 原始值，可以用于判断是否修改 */
+    originRow: DataType & { index?: number },
+  ) => Promise<any | void> | any | void
+}
+
 export const baseTableProps = <T = DefaultRecordType>() => ({
   ignoreCellKey: Boolean,
   showHeaderScrollbar: Boolean,
@@ -325,6 +384,10 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
     type: Boolean,
     default: undefined,
   },
+  selectRowByClick: {
+    type: Boolean,
+    default: undefined,
+  },
   expandIcon: {
     type: Function as PropType<RenderExpandIcon<T>>,
     default: undefined,
@@ -395,6 +458,14 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
       }) => Record<string, any>
     >,
     default: () => ({}),
+  },
+  editableKeys: {
+    type: Array as PropType<Key[]>,
+    default: undefined,
+  },
+  rowEditable: {
+    type: Object as PropType<RowEditableConfig<T>>,
+    default: undefined,
   },
   showHeader: {
     type: Boolean,
@@ -495,6 +566,9 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
     type: Boolean,
     default: undefined,
   },
+  editableCellState: {
+    type: Function as PropType<EditableCellType<T>>,
+  },
 
   paginationSticky: {
     type: [Boolean, Object] as PropType<boolean | BottomSticky>,
@@ -550,6 +624,15 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   onCloseEditor: {
     type: Function as PropType<(opt: CellRenderArgs) => void>,
     default: undefined,
+  },
+  onDataChange: {
+    type: Function as PropType<(dataSource: T[]) => void>,
+  },
+  onRowValidate: {
+    type: Function as PropType<(TablePromiseErrorData) => void>,
+  },
+  onValidate: {
+    type: Function as PropType<(TablePromiseErrorData) => void>,
   },
   'onUpdate:pagination': {
     type: Function as PropType<(info: TablePaginationConfig) => void>,
@@ -739,27 +822,63 @@ export interface CellTooltip {
   shouldOpen?: (isEllipsis: boolean, args: CellRenderArgs) => boolean
   allowEnter?: boolean
 }
-export interface ValueParserParams<RecordType = DefaultRecordType, TValue = any> {
-  newValue: TValue
-  oldValue: TValue
-  record: RecordType
-  recordIndexs: number[]
-  column: ColumnType<RecordType>
+
+export interface EditableCellConfig<T = DefaultRecordType> {
+  /**
+   * 除了点击非自身元素退出编辑态之外，还有哪些事件退出编辑态。示例：`abortEditOnEvent: ['onChange']`
+   */
+  abortEditOnEvent?: string[]
+  editableTrigger?: EditableTrigger | EditableTrigger[]
+  /**
+   * 组件定义，如：`Input` `Select`。对于完全自定义的组件（非组件库内的组件），组件需要支持 `value` 和 `onChange` ；如果还需要支持校验规则，则组件还需实现 `tips` 和 `status` 两个 API，实现规则可参考 `Input` 组件
+   */
+  component?: any
+  /**
+   * 单元格默认状态是否为编辑态
+   * @default false
+   */
+  defaultEditable?: boolean
+  /**
+   * 设置当前列的单元格始终保持为编辑态
+   * @default false
+   */
+  keepEditMode?: boolean
+
+  /**
+   * 是否可以编辑
+   */
+  editable?: (context: EditableValueParams<T>) => boolean
+  valueParser?: ValueParserFunc<T>
+  valueGetter?: ValueGetterFunc<T>
+  valueSetter?: (params: EditableValueParams<T>) => boolean | Promise<any>
+  /**
+   * 透传给编辑组件的事件，参数有({ row, rowIndex, col, colIndex, editedRow, updateEditedCellValue })。可以使用参数 `updateEditedCellValue` 更新当前单元格（或当前行任意编辑状态单元格）的值。<br/>更新当前单元格数据示例：`updateEditedCellValue(value)`；<br/>更新当前行编辑态数据示例：`updateEditedCellValue({ isUpdateCurrentRow: true, column_key: 'test'  })`；<br/>更新其他行编辑态数据示例：`updateEditedCellValue({ rowValue: '124', column_key: 'test' })`
+   */
+  on?: (context: EditableValueParams<T>) => { [eventName: string]: Function }
+  /**
+   * 编辑完成后，退出编辑模式时触发
+   */
+  onEdited?: (context: EditableValueParams<T>) => void
+  /**
+   * 透传给组件 `edit.component` 的属性，可以使用 `updateEditedCellValue` 更新当前行任意编辑状态单元格的值
+   */
+  props?: EditableCellProps<T>
+  /**
+   * 校验规则
+   */
+  rules?: EditableCellRules<T>
+  /**
+   * 是否显示编辑图标
+   * @default true
+   */
+  // showEditIcon?: boolean
+  /**
+   * 触发校验的时机，有 2 种：退出编辑时和数据变化时
+   * @default 'exit'
+   */
+  validateTrigger?: 'exit' | 'change'
 }
-export interface EditableValueParams<RecordType = DefaultRecordType, TValue = any> {
-  value: TValue
-  record: RecordType
-  recordIndexs: number[]
-  column: ColumnType<RecordType>
-}
-export interface ValueParserFunc<T = any, TValue = any> {
-  (params: ValueParserParams<T, TValue>): TValue | null | undefined
-}
-export interface ValueGetterFunc<T = any, TValue = any> {
-  (params: EditableValueParams<T, TValue>): string | null | undefined
-}
-type CellEditorSlot = 'cellEditorSlot'
-export type EditableTrigger = 'click' | 'dblClick' | 'contextmenu'
+
 export interface ColumnType<RecordType = DefaultRecordType>
   extends ColumnSharedType,
     Omit<
@@ -837,12 +956,16 @@ export interface ColumnType<RecordType = DefaultRecordType>
     record: RecordType
     index: number
     column: ColumnType<RecordType>
+    cancelEditable: (recordKey: Key) => boolean
+    startEditable: (recordKey: Key, recordValue?: any) => boolean
+    saveEditable: (recordKey: Key) => Promise<boolean>
+    isEditable: (recordKey: Key) => boolean
   }) => any | RenderedCell
-  editable?:
-    | boolean
-    | CellEditorSlot
-    | ((params: EditableValueParams<RecordType>) => boolean | CellEditorSlot)
-  editableTrigger?: EditableTrigger | EditableTrigger[]
+  /**
+   * 可编辑单元格配置项，具体属性参考文档 `EditableCellConfig` 描述
+   */
+  edit?: EditableCellConfig<RecordType>
+
   valueParser?: ValueParserFunc<RecordType>
   valueGetter?: ValueGetterFunc<RecordType>
   valueSetter?: (params: ValueParserParams<RecordType>) => boolean | Promise<any>
@@ -857,7 +980,9 @@ export interface ColumnType<RecordType = DefaultRecordType>
     title?: string
   }
   valueEnum?: ((row: RecordType) => Record<string, ValueEnumType>) | Record<string, ValueEnumType>
-  valueStatus?: ((value: any, row: RecordType) => ValueStatus) | ValueStatus
+  valueStatus?:
+    | ((value: any, row: RecordType, valueEnum?: ValueEnumType) => ValueStatus)
+    | ValueStatus
   renderText?: (text: any, record: RecordType, rowIndex: number) => string | number
   /** @name 列设置的 disabled */
   disable?:
@@ -922,6 +1047,12 @@ export interface TableExposeType {
   calcTableHeight: () => Promise<void>
   formSearchSubmit: () => void
   getSearchParams: () => Record<string, any>
+  validateRowData: (rowValue: any) => Promise<TablePromiseErrorData>
+  validateTableData: () => Promise<TablePromiseErrorData>
+  addEditRecord: (recordValue?: any, options?: AddLineOptions) => false | undefined
+  startEditable: (recordKey: Key, recordValue?: any) => boolean
+  cancelEditable: (recordKey: Key) => boolean
+  saveEditable: (recordKey: Key) => Promise<boolean>
 }
 export interface DragRowsHandleInfo {
   y: number
@@ -1072,3 +1203,109 @@ export type Bordered =
       search?: boolean
       table?: boolean
     }
+
+export interface IsDateOptions {
+  format: string
+  strictMode: boolean
+  delimiters: string[]
+}
+
+export type CustomValidator = (
+  val: any,
+) => CustomValidateResolveType | Promise<CustomValidateResolveType>
+
+export type CustomValidateResolveType = boolean | CustomValidateObj
+
+export interface CustomValidateObj {
+  result: boolean
+  message: string
+  type?: 'error' | 'warning' | 'success'
+}
+
+export type AddLineOptions = {
+  position?: 'top' | 'bottom'
+  newRecordType?: 'dataSource' | 'cache'
+}
+
+export type TableEditingCell<RecordType = DefaultRecordType> = {
+  recordIndexs: number[]
+  column: ColumnType<RecordType>
+  rowKey: Key
+  originRecord: RecordType
+  rowIndex: number
+  columnKey: Key
+  validateEdit: () => Promise<true | AllValidateResult[]>
+}
+export type AllValidateResult = CustomValidateObj | ValidateResultType
+
+export type TableErrorListMap = { [key: string]: AllValidateResult[] }
+export type ErrorListObjectType = TableEditingCell & { errorList: AllValidateResult[] }
+
+export interface TablePromiseErrorData {
+  errors: ErrorListObjectType[]
+  errorMap: TableErrorListMap
+  data?: DefaultRecordType[]
+}
+export interface ValidateResultType extends EditRule {
+  result: boolean
+}
+export interface EditRule {
+  /**
+   * 内置校验方法，校验值类型是否为布尔类型，示例：`{ boolean: true, message: '数据类型必须是布尔类型' }`
+   */
+  boolean?: boolean
+  /**
+   * 内置校验方法，校验值是否属于枚举值中的值。示例：`{ enum: ['primary', 'info', 'warning'], message: '值只能是 primary/info/warning 中的一种' }`
+   */
+  enum?: Array<string>
+  /**
+   * 内置校验方法，校验值是否为身份证号码，组件校验正则为 `/^(\\d{18,18}|\\d{15,15}|\\d{17,17}x)$/i`，示例：`{ idcard: true, message: '请输入正确的身份证号码' }`
+   */
+  idcard?: boolean
+  /**
+   * 内置校验方法，校验值固定长度，如：len: 10 表示值的字符长度只能等于 10 ，中文表示 2 个字符，英文为 1 个字符。示例：`{ len: 10, message: '内容长度不对' }`。<br />如果希望字母和中文都是同样的长度，示例：`{ validator: (val) => val.length === 10, message: '内容文本长度只能是 10 个字' }`
+   */
+  len?: number | boolean
+  /**
+   * 内置校验方法，校验值最大长度，如：max: 100 表示值最多不能超过 100 个字符，中文表示 2 个字符，英文为 1 个字符。示例：`{ max: 10, message: '内容超出' }`。<br />如果希望字母和中文都是同样的长度，示例：`{ validator: (val) => val.length <= 10, message: '内容文本长度不能超过 10 个字' }`<br />如果数据类型数字（Number），则自动变为数字大小的比对
+   */
+  max?: number | boolean
+  /**
+   * 校验未通过时呈现的错误信息，值为空则不显示
+   * @default ''
+   */
+  message?: string
+  /**
+   * 内置校验方法，校验值最小长度，如：min: 10 表示值最多不能少于 10 个字符，中文表示 2 个字符，英文为 1 个字符。示例：`{ min: 10, message: '内容长度不够' }`。<br />如果希望字母和中文都是同样的长度，示例：`{ validator: (val) => val.length >= 10, message: '内容文本长度至少为 10 个字' }`。<br />如果数据类型数字（Number），则自动变为数字大小的比对
+   */
+  min?: number | boolean
+  /**
+   * 内置校验方法，校验值是否为数字（1.2 、 1e5  都算数字），示例：`{ number: true, message: '请输入数字' }`
+   */
+  number?: boolean
+  /**
+   * 内置校验方法，校验值是否符合正则表达式匹配结果，示例：`{ pattern: /@qq.com/, message: '请输入 QQ 邮箱' }`
+   */
+  pattern?: RegExp
+  /**
+   * 内置校验方法，校验值是否已经填写。该值为 true，默认显示必填标记，可通过设置 `requiredMark: false` 隐藏必填标记
+   */
+  required?: boolean
+  /**
+   * 内置校验方法，校验值是否为手机号码，校验正则为 `/^1[3-9]\d{9}$/`，示例：`{ telnumber: true, message: '请输入正确的手机号码' }`
+   */
+  telnumber?: boolean
+  /**
+   * 校验未通过时呈现的错误信息类型，有 告警信息提示 和 错误信息提示 等两种
+   * @default error
+   */
+  type?: 'error' | 'warning'
+  /**
+   * 自定义校验规则，示例：`{ validator: (val) => val.length > 0, message: '请输入内容'}`
+   */
+  validator?: CustomValidator
+  /**
+   * 内置校验方法，校验值是否为空格。示例：`{ whitespace: true, message: '值不能为空' }`
+   */
+  whitespace?: boolean
+}

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-05 12:12:38
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 14:29:50
+ * @LastEditTime: 2025-12-01 14:33:01
  * @Description:
  */
 import { inject, provide } from 'vue'
@@ -106,6 +106,10 @@ export interface TableContextProps
   bottomPaginationHeight: Ref<number>
   pos: ComputedRef<PaginationPos>
   rootRef: Ref<HTMLDivElement | undefined>
+  cancelEditable: (recordKey: Key) => boolean
+  startEditable: (recordKey: Key, recordValue?: any) => boolean
+  saveEditable: (recordKey: Key) => Promise<boolean>
+  isEditable: (recordKey: Key) => boolean
 }
 
 export const TableContextKey: InjectionKey<TableContextProps> = Symbol('TableContextProps')

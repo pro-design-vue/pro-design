@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 11:10:33
+ * @LastEditTime: 2025-12-02 17:08:47
  * @Description:
  */
 
@@ -31,6 +31,7 @@ import FormRender from './Form/Form'
 
 import type { ProFormItemType, ProFormActionType } from '@pro-design-vue/components/form'
 import type {
+  AddLineOptions,
   ColumnsType,
   GetRowKey,
   Key,
@@ -446,12 +447,32 @@ export default defineComponent({
       scrollTo: (pos: string | Position, behavior: 'auto' | 'smooth') => {
         tableRef.value?.scrollTo(pos, behavior)
       },
+      validateRowData: (recordKey: any) => {
+        return tableRef.value?.validateRowData(recordKey)
+      },
+      validateTableData: () => {
+        return tableRef.value?.validateTableData()
+      },
+
+      addEditRecord: (recordValue?: any, options?: AddLineOptions) => {
+        return tableRef.value?.addEditRecord(recordValue, options)
+      },
+      startEditable: (recordKey: Key, recordValue?: any) => {
+        return tableRef.value?.startEditable(recordKey, recordValue)
+      },
+      cancelEditable: (recordValue?: any, options?: AddLineOptions) => {
+        return tableRef.value?.cancelEditable(recordValue, options)
+      },
+      saveEditable: (recordKey: Key) => {
+        return tableRef.value?.saveEditable(recordKey)
+      },
       scrollLeft: computed(() => {
         return unref(tableRef.value?.scrollLeft)
       }),
       scrollTop: computed(() => {
         return unref(tableRef.value?.scrollTop)
       }),
+
       bodyRef: computed(() => {
         return unref(tableRef.value?.bodyRef)
       }),
@@ -461,15 +482,6 @@ export default defineComponent({
       paginationRef: computed(() => {
         return unref(tableRef.value?.paginationRef)
       }),
-      copySelectedRange: () => {
-        return tableRef.value?.copySelectedRange()
-      },
-      getSelectedRange: () => {
-        return tableRef.value?.getSelectedRange()
-      },
-      clearAllSelectedRange: () => {
-        return tableRef.value?.clearAllSelectedRange()
-      },
       clearDataSource: () => {
         dataSource.value = []
       },
@@ -477,12 +489,6 @@ export default defineComponent({
       setSelected: setRowSelected,
       appendCellToSelectedRange: (params: AppendCellRange) => {
         return tableRef.value?.appendCellToSelectedRange(params)
-      },
-      openEditor: (cellInfos: any[]) => {
-        return tableRef.value?.openEditor(cellInfos)
-      },
-      closeEditor: (cellInfos: any[]) => {
-        return tableRef.value?.closeEditor(cellInfos)
       },
       reload,
       reset,

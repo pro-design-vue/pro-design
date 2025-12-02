@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 14:25:41
+ * @LastEditTime: 2025-11-27 14:45:23
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
@@ -31,6 +31,7 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     cardBordered?: Bordered
     childrenColumnName?: string
     expandRowByClick?: boolean
+    selectRowByClick?: boolean
     rowKey?: string
     size?: DensitySize
     expandIconType?: ExpandIconType

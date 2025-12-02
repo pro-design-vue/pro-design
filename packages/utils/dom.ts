@@ -85,3 +85,29 @@ export function triggerWindowResize(): void {
   // 触发 window 的 resize 事件
   window.dispatchEvent(resizeEvent)
 }
+
+export const on = ((): any => {
+  return (
+    element: Node,
+    event: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): any => {
+    if (element && event && handler) {
+      element.addEventListener(event, handler, options)
+    }
+  }
+})()
+
+export const off = ((): any => {
+  return (
+    element: Node,
+    event: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): any => {
+    if (element && event) {
+      element.removeEventListener(event, handler, options)
+    }
+  }
+})()

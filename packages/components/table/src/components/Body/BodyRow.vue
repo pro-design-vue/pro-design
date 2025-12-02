@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 14:33:58
+ * @LastEditTime: 2025-12-02 15:53:41
  * @Description:
 -->
 <script lang="ts">
@@ -21,19 +21,18 @@ import { useInjectBody } from '../context/BodyContext'
 import { useInjectBodyRows, useProvideBodyRow } from '../context/BodyRowsContext'
 import { ExpandColumnKey } from '../../hooks/useColumns'
 import { RenderSlot } from '../../utils/renderVNode'
-import { useEditInject } from '../../hooks/useEdit'
-import { useCellSelection } from '../../hooks/useCellSelection'
-import { useCellKeyboard } from '../../hooks/useCellKeyboard'
 import { useInjectHover } from '../../hooks/useHover'
 import { addClass, removeClass } from '../../utils/class'
+import { useEditInject } from '../../hooks/useEdit'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import ResizeObserver from 'resize-observer-polyfill'
 import eagerComputed from '../../utils/eagerComputed'
 import classNames from '../../utils/classNames'
-import BodyCell from './BodyCell'
+import BodyCell from './BodyCell.vue'
 import ExpandedRow from './ExpandedRow.vue'
 import BodyExtraCell from './BodyExtraCell.vue'
 import ExpandIcon from '../ExpandIcon.vue'
+import BodyTextCell from './BodyTextCell'
 
 import type { CSSProperties, PropType } from 'vue'
 import type { RowClassName, RowType, Key } from '../interface'
@@ -47,6 +46,7 @@ export default defineComponent({
     ExpandedRow,
     BodyExtraCell,
     RenderSlot,
+    BodyTextCell,
   },
   inheritAttrs: false,
   props: {
@@ -68,13 +68,18 @@ export default defineComponent({
     const tableContext = useInjectTable()
     const rowInstance = getCurrentInstance()
     const { table } = useProConfigInject()
-    const { editCellKeys, closeEditor, openEditor } = useEditInject()
-
+    const { editCellKeys, isRowEdit, mergedEditableKeys, editRowsMap, closeEditor, openEditor } =
+      useEditInject()
+    const editRow = computed(() => editRowsMap.value[props.rowKey])
     let isUnmount = false
     const bodyRow = ref()
 
-    const { onCellMousedown, onCellMousemove, onCellClick } = useCellSelection()
-    const { onCellKeydown } = useCellKeyboard()
+    const isCurrentEditRow = computed(() => {
+      if (isRowEdit.value) {
+        return mergedEditableKeys.value?.includes(props.rowKey)
+      }
+      return true
+    })
 
     const calMaxHeight = () => {
       if (isUnmount) return
@@ -320,6 +325,7 @@ export default defineComponent({
       rowStyle,
       cellClass,
       tableContext,
+      isCurrentEditRow,
       mergedRowHeights,
       handleCellBlur,
       handleCellHover,
@@ -347,18 +353,17 @@ export default defineComponent({
       resizeObserver,
       calMaxHeight,
       bodyRow,
+      editCellKeys,
+      isRowEdit,
+      editRow,
+      mergedEditableKeys,
+      openEditor,
+      closeEditor,
       hoverRowKey,
       hoverColumnKey,
       xVirtual: eagerComputed(() => tableContext.xVirtual.value),
       getPopupContainer: () => popupContainer.value!,
-      editCellKeys,
-      closeEditor,
-      openEditor,
       mergedTooltipOpen,
-      onCellMousedown,
-      onCellKeydown,
-      onCellMousemove,
-      onCellClick,
     }
   },
 })
@@ -413,6 +418,51 @@ export default defineComponent({
           @mouseleave="handleCellBlur"
         />
         <BodyCell
+          v-else-if="column && column.edit?.component && isCurrentEditRow"
+          :prefix-cls="prefixCls"
+          :item="record"
+          :row-key="rowKey"
+          :type="type"
+          :row-index="rowIndex!"
+          :flatten-row-index="flattenRowIndex!"
+          :wrap-text="wrapText"
+          :column="column"
+          :resize-observer="resizeObserver"
+          :cal-max-height="calMaxHeight"
+          :has-append-node="column.columnIndex === expandIconColumnIndex && nestExpandable"
+          :height="cellHeight"
+          :get-popup-container="getPopupContainer"
+          :tooltip-open="mergedTooltipOpen && hoverColumnKey === column.columnKey"
+          :edit-cell-keys="editCellKeys"
+          :editable-keys="mergedEditableKeys"
+          :is-row-edit="isRowEdit"
+          :edit-row="editRow"
+          @closeEditor="closeEditor"
+          @openEditor="openEditor"
+          @mouseenter="
+            handleCellHover(rowKey, column.columnKey, tableContext.draggingRowKey.value!)
+          "
+          @cellLeave="handleCellBlur"
+        >
+          <template #appendNode>
+            <div :class="`${prefixCls}-append-node`">
+              <span
+                :style="`padding-left: ${(indent || 0) * indentSize}px`"
+                :class="`${prefixCls}-row-indent indent-level-${indent}`"
+              ></span>
+              <ExpandIcon
+                :expanded="expanded"
+                :expandIconType="expandIconType"
+                :prefix-cls="prefixCls"
+                :expandable="hasNestChildren"
+                :record="record"
+                :disabled="!mergedExpandable"
+                @expand="onInternalTriggerExpand"
+              />
+            </div>
+          </template>
+        </BodyCell>
+        <BodyTextCell
           v-else-if="column"
           :prefix-cls="prefixCls"
           :item="record"
@@ -435,10 +485,6 @@ export default defineComponent({
             handleCellHover(rowKey, column.columnKey, tableContext.draggingRowKey.value!)
           "
           @cellLeave="handleCellBlur"
-          @mousedown="onCellMousedown"
-          @mousemove="onCellMousemove"
-          @keydown="onCellKeydown"
-          @click="onCellClick"
         >
           <template #appendNode>
             <div :class="`${prefixCls}-append-node`">
@@ -457,7 +503,7 @@ export default defineComponent({
               />
             </div>
           </template>
-        </BodyCell>
+        </BodyTextCell>
       </template>
     </RenderSlot>
     <div v-if="type !== 'center'" :class="`${prefixCls}-cell-shadow-${type}`"></div>

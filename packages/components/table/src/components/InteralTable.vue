@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 14:28:35
+ * @LastEditTime: 2025-12-02 17:08:15
  * @Description:
 -->
 <script lang="ts">
@@ -30,7 +30,6 @@ import { useProvidePopup } from './context/PopupContext'
 import { useHScrollSyncProvide } from '../hooks/useHScrollSync'
 import { useVScrollSyncProvide } from '../hooks/useVScrollSync'
 import { useProvideTable } from './context/TableContext'
-import { useProvideRangeStore } from '../hooks/useRangeStore'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { resize } from '@pro-design-vue/directives'
 import { omit, debounce, isPromise } from '@pro-design-vue/utils'
@@ -128,6 +127,7 @@ export default defineComponent({
     'resizeColumn',
     'update:dataSource',
     'cellKeydown',
+    'data-change',
   ],
   slots: {} as CustomSlotsType<ContextSlots>,
   setup(props, { expose, emit, slots }) {
@@ -136,10 +136,7 @@ export default defineComponent({
     const rowKey = computed(() => props.rowKey ?? table?.value?.rowKey ?? 'id')
     const popupContainer = shallowRef<any>(null)
     const customUiCls = usePrefixCls('custom-ui')
-    const { editCellKeys, openEditor, closeEditor } = useEditProvider()
-
     useProvidePopup()
-
     const getPopupContainer = computed(() => props.getPopupContainer!)
     const { status, watermarkMsg } = useLicense()
 
@@ -255,6 +252,10 @@ export default defineComponent({
       { immediate: true, deep: !!props.deepWatchColumns },
     )
 
+    watch(rawData, (newData) => {
+      emit('data-change', newData)
+    })
+
     const childrenColumnName = computed(
       () => props.childrenColumnName ?? table?.value?.childrenColumnName ?? 'children',
     )
@@ -290,6 +291,21 @@ export default defineComponent({
       } else {
         return { spinning: false }
       }
+    })
+
+    const {
+      validateRowData,
+      addEditRecord,
+      cancelEditable,
+      startEditable,
+      saveEditable,
+      isEditable,
+      validateTableData,
+    } = useEditProvider(props, {
+      getIndexsByKey,
+      getRecordByKey,
+      rawData,
+      getRowKey,
     })
 
     onActivated(() => {
@@ -643,6 +659,10 @@ export default defineComponent({
       centerWidth,
       getRowHeight: cal.getRowHeight,
       customCell: toRef(props, 'customCell'),
+      cancelEditable,
+      startEditable,
+      saveEditable,
+      isEditable,
     })
 
     watch(
@@ -657,6 +677,10 @@ export default defineComponent({
       ...cal,
       ...columns,
       ...cellProps,
+      cancelEditable,
+      startEditable,
+      saveEditable,
+      isEditable,
       rootRef,
       rawData,
       getRowFlattenIndexByKey,
@@ -881,101 +905,21 @@ export default defineComponent({
     const tabGuardTopRef = ref()
     const tabGuardBottomRef = ref()
 
-    const {
-      navigationService,
-      getSelectedRange,
-      clearAllSelectedRange,
-      copySelectedRange,
-      appendCellToSelectedRange,
-      onBodyKeydown,
-    } = useProvideRangeStore({
-      allColumns: columns.allColumns,
-      flattenData,
-      rangeSelection: computed(() => props.rangeSelection),
-      getRowByFlattenIndex,
-      rootRef,
-      prefixCls: computed(() => props.prefixCls!),
-      allCellProps: cellProps.allCellProps,
-      tabGuardTopRef,
-      tabGuardBottomRef,
-      ensureCellColumnVisible: (cell: RangeCell) => {
-        if (!cell.column || cell.column.fixed) return
-        const sl = scrollLeft.value
-        const pos = columns.getColumnPositionByKey(cell.column.columnKey)
-        if (pos) {
-          const { width, left } = pos
-          const lw = leftWidth.value
-          const rw = rightWidth.value
-          left - lw < sl
-            ? (scrollLeft.value = left - lw)
-            : left + width > sl + bodyWidth.value - rw &&
-              (scrollLeft.value = left + width - bodyWidth.value + rw)
-        }
-      },
-      ensureCellRowVisible: (cell: RangeCell) => {
-        const { rowIndex } = cell
-        const st = scrollTop.value
-        const row = getRowByFlattenIndex(rowIndex)
-        const pos = cal.getRowPositionByKey(row.rowKey)
-        const cprops =
-          (cellProps.allCellProps.value[row.rowKey]?.[cell.column!.columnKey] || {}).props || {}
-        const height = cal.getRowHeight(rowIndex, cprops.rowSpan)
-        if (pos !== undefined) {
-          updateAnimate()
-          if (pos < st) {
-            scrollTop.value = pos
-          } else {
-            if (pos + height > st + bodyHeight.value) {
-              scrollTop.value = pos + height - bodyHeight.value
-            }
-          }
-        }
-      },
-      latestRangeStartCell,
-      bodyRef: computed(() => {
-        return (bodyRef.value as any)?.bodyRef
-      }),
-      scrollLeft,
-      scrollTop,
-      scrollTo,
-      showVerticalScrollbar,
-      showHorizontalScrollbar,
-      getIndexsByKey,
-      formatRangeCellText: (parmas) => {
-        if (props.formatRangeCellText) {
-          return props.formatRangeCellText(parmas)
-        } else if (parmas.value) {
-          return parmas.value
-        }
-        return ''
-      },
-      editCellKeys,
-      copyDelimiter: computed(() => props.copyDelimiter),
-    })
-
     expose({
       scrollTo,
       scrollLeft,
       scrollTop,
       rootRef,
       paginationRef,
+      validateRowData,
+      addEditRecord,
+      cancelEditable,
+      startEditable,
+      saveEditable,
+      validateTableData,
       bodyRef: computed(() => {
         return (bodyRef.value as any)?.bodyRef
       }),
-      getSelectedRange,
-      clearAllSelectedRange,
-      copySelectedRange,
-      appendCellToSelectedRange,
-      openEditor: (cellInfos: any[]) => {
-        openEditor(cellInfos.map((info) => `${info.rowKey} ${info.columnKey}`))
-      },
-      closeEditor: (cellInfos: any[]) => {
-        if (cellInfos) {
-          closeEditor(cellInfos.map((info) => `${info.rowKey} ${info.columnKey}`))
-        } else {
-          closeEditor()
-        }
-      },
     })
 
     return {
@@ -988,7 +932,6 @@ export default defineComponent({
       watermarkMsg,
       rootStyle,
       rootClass,
-      onBodyKeydown,
       watermarkStyle: computed<any>(() => ({
         minWidth: '100px!important',
         minHeight: '40px!important',
@@ -1033,16 +976,6 @@ export default defineComponent({
         bottomPaginationHeight.value = e.detail.height
       },
       popupContainer,
-      handleGuardTopKeydown: (e: KeyboardEvent) => {
-        e.keyCode !== KeyCode.TAB ||
-          e.shiftKey ||
-          (navigationService.getFirstCellToFocus(e.shiftKey), e.preventDefault())
-      },
-      handleGuardBottomKeydown: (e: KeyboardEvent) => {
-        e.keyCode === KeyCode.TAB &&
-          e.shiftKey &&
-          (navigationService.getLastCellToFocus(e.shiftKey), e.preventDefault())
-      },
       tabGuardTopRef,
       tabGuardBottomRef,
       onShowSizeChange,
@@ -1069,7 +1002,6 @@ export default defineComponent({
         role="presentation"
         tabindex="0"
         :style="{ position: 'absolute', width: '0', height: '0' }"
-        @keydown="handleGuardTopKeydown"
       ></div>
       <div key="content" ref="rootRef" :class="rootClass" :style="rootStyle">
         <template v-if="showHeader">
@@ -1093,7 +1025,6 @@ export default defineComponent({
           :summary-fixed="mergedSummaryFixed"
           :summary="$slots.summary"
           :empty-text="$slots.emptyText"
-          @keydown="onBodyKeydown"
         />
       </div>
       <HorizontalScroll />
@@ -1102,7 +1033,6 @@ export default defineComponent({
         role="presentation"
         tabindex="0"
         :style="{ position: 'absolute', width: '0', height: '0' }"
-        @keydown="handleGuardBottomKeydown"
       ></div>
       <div v-if="$slots.footer" key="footer" :class="`${prefixCls}-footer`">
         <slot name="footer" />

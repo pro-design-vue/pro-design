@@ -2,30 +2,27 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 17:18:01
+ * @LastEditTime: 2025-12-02 17:15:26
  * @Description:
  */
-import type { InnerKeydownPayload, RangeCell } from '../../hooks/RangeInterface'
+import type { RangeCell } from '../../hooks/RangeInterface'
 import type { PropType, ExtractPropTypes, FunctionalComponent, VNode } from 'vue'
-import type { FinallyColumnType, Key, RowType } from '../interface'
+import type { FinallyColumnType, RowType } from '../interface'
 
 import { withDirectives, createVNode, mergeProps, cloneVNode } from 'vue'
 import { Badge, Tag } from 'ant-design-vue'
 import { useInjectSlots } from '../context/TableSlotsContext'
 import { useInjectTable } from '../context/TableContext'
 import { useInjectBody } from '../context/BodyContext'
-import { useInjectRangeStore } from '../../hooks/useRangeStore'
 import { useInjectLevel } from '../../hooks/useLevel'
 import { isValidElement, ensureValidVNode } from '../../utils/util'
 import { isEventSupported } from '../../utils/events'
 import { isIOSUserAgent } from '../../utils/browser'
-import { useEditInject } from '../../hooks/useEdit'
-import { get, isObject, isPromise, runFunction } from '@pro-design-vue/utils'
+import { get, isObject, runFunction } from '@pro-design-vue/utils'
 import { cellResize } from '@pro-design-vue/directives'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import RowHandler from '../Drag/RowHandler.vue'
 import BodyCellTooltip from './BodyCellTooltip'
-import EditInput from './EditInput.vue'
 
 const cellProps = {
   prefixCls: String as PropType<string>,
@@ -43,17 +40,19 @@ const cellProps = {
   tooltipOpen: Boolean as PropType<boolean>,
   getPopupContainer: Function as PropType<() => HTMLElement>,
   onCellLeave: Function,
-  editCellKeys: Array as PropType<string[]>,
-  onOpenEditor: Function,
-  onCloseEditor: Function,
-  onMousedown: Function as PropType<(e: any, cellPosition: RangeCell) => void>,
-  onMousemove: Function as PropType<(e: any, cellPosition: RangeCell) => void>,
-  onKeydown: Function as PropType<(e: KeyboardEvent, payload: InnerKeydownPayload) => void>,
   onClick: Function as PropType<(e: MouseEvent, cellPosition: RangeCell) => void>,
 }
 
 type CellProps = Partial<ExtractPropTypes<typeof cellProps>>
 let lastClickTime = 0
+
+const hasSupportedDblclick = () => {
+  if (!isIOSUserAgent() || isEventSupported('dblclick')) return false
+  const now = new Date().getTime()
+  const is = now - lastClickTime < 200
+  lastClickTime = now
+  return is
+}
 
 const ValueStatusEnum = {
   success: '#03bf64',
@@ -61,26 +60,14 @@ const ValueStatusEnum = {
   error: '#e8353e',
   warning: '#eb8903',
 }
+
 const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const { table } = useProConfigInject()
   const tableSlotsContext = useInjectSlots()
   const tableContext = useInjectTable()
   const { onBodyCellContextmenu } = useInjectBody()
-  const { getRangeCellClass } = useInjectRangeStore()
   const level = useInjectLevel()
-  const { oldValuesMap } = useEditInject()
-  const {
-    prefixCls,
-    column,
-    wrapText,
-    rowKey,
-    item,
-    rowIndex,
-    hasAppendNode,
-    tooltipOpen,
-    editCellKeys,
-  } = props
-
+  const { prefixCls, column, wrapText, rowKey, item, rowIndex, hasAppendNode, tooltipOpen } = props
   const columnKey = column!.columnKey
   const valueEnum = runFunction(column?.valueEnum, props.item)
   const rowDrag =
@@ -98,31 +85,8 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       ? column!.renderText(get(item, column!.dataIndex), item, rowIndex!)
       : get(item, column!.dataIndex)
     : undefined
-  const valueStatus = runFunction(column?.valueStatus, value, props.item)
+  const valueStatus = runFunction(column?.valueStatus, value, props.item, valueEnum?.[value])
   const recordIndexs = tableContext.getIndexsByKey(rowKey!)
-
-  let customEditable = false
-  let isEditing = editCellKeys?.includes(key)
-
-  if (isEditing) {
-    const editable =
-      'function' == typeof column!.editable &&
-      column!.editable({
-        record: item,
-        column: column!.originColumn!,
-        recordIndexs,
-        value,
-      })
-    customEditable = 'cellEditorSlot' === column!.editable || 'cellEditorSlot' === editable
-    isEditing =
-      isEditing &&
-      ((customEditable && !!tableSlotsContext.cellEditor) ||
-        true === column!.editable ||
-        !!editable)
-  }
-
-  let { editableTrigger = ['dblClick'] } = column!
-  editableTrigger = Array.isArray(editableTrigger) ? editableTrigger : [editableTrigger]
 
   const cellInnerClass = { [`${prefixCls}-cell-inner`]: true }
   const cellContentClass = {
@@ -148,8 +112,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const cellProps: any = cellRender.props || {}
   const cellRowSpan = cellProps.rowSpan!
 
-  const cellPosition = { rowIndex: props.flattenRowIndex, rowPinned: null, column: column }
-
   const cellClass = {
     [`${prefixCls}-cell`]: true,
     [`${prefixCls}-first-cell`]: column!.columnIndex === 0,
@@ -158,58 +120,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     [`${prefixCls}-cell-hidden`]: cellRowSpan === 0,
     [`${prefixCls}-column-sort`]: sorterInfo.sorterOrder,
     [`${prefixCls}-with-append`]: hasAppendNode,
-    [`${prefixCls}-cell-inline-edit`]: isEditing,
-    [getRangeCellClass(cellPosition)]: true,
-  }
-
-  const openEditor = () => {
-    const oldValue =
-      props.column?.valueGetter?.({
-        value,
-        record: item,
-        column: column!,
-        recordIndexs: recordIndexs,
-      }) ?? value
-    const beforeOpen = tableContext.props?.onBeforeOpenEditor?.(cellRenderArgs)
-    if (isPromise(beforeOpen)) {
-      beforeOpen.then((res) => {
-        if (res) {
-          emit('openEditor', key, { [key]: oldValue })
-          tableContext.props?.onOpenEditor?.(cellRenderArgs)
-        }
-      })
-    } else {
-      if (false !== beforeOpen) {
-        emit('openEditor', key, { [key]: oldValue })
-        tableContext.props?.onOpenEditor?.(cellRenderArgs)
-      }
-    }
-  }
-
-  const closeEditor = (currentKey?: Key) => {
-    const beforeClose = tableContext.props?.onBeforeCloseEditor?.({
-      ...cellRenderArgs,
-      oldValue: oldValuesMap.value[key],
-    })
-    if (isPromise(beforeClose)) {
-      beforeClose.then((res) => {
-        if (res) {
-          emit('closeEditor', currentKey ?? key)
-          tableContext.props?.onCloseEditor?.({
-            ...cellRenderArgs,
-            oldValue: oldValuesMap.value[key],
-          })
-        }
-      })
-    } else {
-      if (false !== beforeClose) {
-        emit('closeEditor', currentKey ?? key)
-        tableContext.props?.onCloseEditor?.({
-          ...cellRenderArgs,
-          oldValue: oldValuesMap.value[key],
-        })
-      }
-    }
   }
 
   const cellRenderArgs: any = {
@@ -221,8 +131,10 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     recordIndexs: tableContext.getIndexsByKey(rowKey!),
     key,
     valueStatus,
-    openEditor,
-    closeEditor,
+    cancelEditable: tableContext.cancelEditable,
+    startEditable: tableContext.startEditable,
+    saveEditable: tableContext.saveEditable,
+    isEditable: tableContext.isEditable,
   }
 
   let bodyCell: VNode[] = (recordIndexs && tableSlotsContext.bodyCell?.(cellRenderArgs)) || []
@@ -319,16 +231,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       showTooltip = !(!tooltipProps.title && tooltipProps.title !== 0)
     }
 
-    // if (!tooltipProps.placement) {
-    //   if (!column!.align || column!.align === 'left') {
-    //     tooltipProps.placement = 'topLeft'
-    //   } else if (column!.align === 'center') {
-    //     tooltipProps.placement = 'top'
-    //   } else {
-    //     tooltipProps.placement = 'topRight'
-    //   }
-    // }
-
     renderCellVNode = createVNode(
       BodyCellTooltip,
       {
@@ -368,31 +270,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     renderCellVNode = cellVNode
   }
 
-  const onDblclick = () => {
-    editableTrigger.includes('dblClick') && openEditor()
-  }
-
-  const editInputRender = isEditing
-    ? createVNode(
-        EditInput,
-        {
-          prefixCls,
-          recordIndexs,
-          rowKey,
-          cellKey: key,
-          column: column,
-          record: item,
-          onCloseEditor: closeEditor,
-          value,
-          customEditable,
-          getPopupContainer: props.getPopupContainer,
-          multiple: editCellKeys!.length > 1,
-          autoHeight,
-        },
-        null,
-      )
-    : null
-
   return createVNode(
     'div',
     mergeProps(cellProps, {
@@ -404,44 +281,24 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       'data-column-key': columnKey,
       class: cellClass,
       onContextmenu: (e) => {
-        if (
-          (tableContext.props.hasContextmenuPopup || tableContext.props.rangeSelection) &&
-          0 === e.button &&
-          e.ctrlKey
-        ) {
+        if (tableContext.props.hasContextmenuPopup && 0 === e.button && e.ctrlKey) {
           e.preventDefault()
         } else {
           onBodyCellContextmenu(e, cellRenderArgs, props.type!)
-          editableTrigger.includes('contextmenu') && openEditor()
+          emit('contextmenu', e)
         }
       },
-      onDblclick,
+      onDblclick: (e: MouseEvent) => {
+        emit('dblClick', e)
+      },
       onClick: (e: MouseEvent) => {
         tableContext.props?.onCellClick?.(e, cellRenderArgs)
-        if (
-          (() => {
-            if (!isIOSUserAgent() || isEventSupported('dblclick')) return false
-            const now = new Date().getTime()
-            const is = now - lastClickTime < 200
-            lastClickTime = now
-            return is
-          })()
-        ) {
-          onDblclick()
+        if (hasSupportedDblclick()) {
+          emit('dblclick', e)
           e.preventDefault()
           return
         }
-        emit('click', e, cellPosition)
-        editableTrigger.includes('click') && openEditor()
-      },
-      onMousedown: (e: any) => {
-        emit('mousedown', e, cellPosition)
-      },
-      onMousemove: (e: any) => {
-        emit('mousemove', e, cellPosition)
-      },
-      onKeydown: (e: KeyboardEvent) => {
-        emit('keydown', e, { cellPosition, isEditing })
+        emit('click', e)
       },
       'data-level': level,
       'aria-selected': 'true',
@@ -459,25 +316,6 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
           )
         : null,
       renderCellVNode,
-      autoHeight && editInputRender
-        ? createVNode(
-            'label',
-            {
-              class: `${prefixCls}-cell-edit-wrapper`,
-              onMousedown: (e) => e.stopPropagation(),
-            },
-            [withDirectives(editInputRender, [[cellResize, cellResizeValue]])],
-          )
-        : editInputRender
-          ? createVNode(
-              'label',
-              {
-                class: `${prefixCls}-cell-edit-wrapper`,
-                onMousedown: (e) => e.stopPropagation(),
-              },
-              [editInputRender],
-            )
-          : null,
     ],
   )
 }
