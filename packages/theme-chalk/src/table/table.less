@@ -586,15 +586,16 @@
       &-message {
         color: hsl(var(--pro-error));
       }
+
       &-inline {
         position: absolute;
         top: 50%;
         right: 20px;
+        z-index: 1;
         color: hsl(var(--pro-error));
-        transform: translateY(-50%);
         pointer-events: none;
         opacity: 0.8;
-        z-index: 1;
+        transform: translateY(-50%);
       }
     }
   }
