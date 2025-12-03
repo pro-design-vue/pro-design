@@ -825,9 +825,8 @@ export interface CellTooltip {
 
 export interface EditableCellConfig<T = DefaultRecordType> {
   /**
-   * 除了点击非自身元素退出编辑态之外，还有哪些事件退出编辑态。示例：`abortEditOnEvent: ['onChange']`
+   * 触发编辑的事件
    */
-  abortEditOnEvent?: string[]
   editableTrigger?: EditableTrigger | EditableTrigger[]
   /**
    * 组件定义，如：`Input` `Select`。对于完全自定义的组件（非组件库内的组件），组件需要支持 `value` 和 `onChange` ；如果还需要支持校验规则，则组件还需实现 `tips` 和 `status` 两个 API，实现规则可参考 `Input` 组件
@@ -844,6 +843,11 @@ export interface EditableCellConfig<T = DefaultRecordType> {
    */
   keepEditMode?: boolean
 
+  /**
+   * 行内错误提示
+   * @default false
+   */
+  inlineError?: boolean
   /**
    * 是否可以编辑
    */
@@ -871,12 +875,6 @@ export interface EditableCellConfig<T = DefaultRecordType> {
    * 是否显示编辑图标
    * @default true
    */
-  // showEditIcon?: boolean
-  /**
-   * 触发校验的时机，有 2 种：退出编辑时和数据变化时
-   * @default 'exit'
-   */
-  validateTrigger?: 'exit' | 'change'
 }
 
 export interface ColumnType<RecordType = DefaultRecordType>

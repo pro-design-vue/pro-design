@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-03 11:03:37
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 17:15:49
+ * @LastEditTime: 2025-12-03 09:33:50
  * @Description:
  */
 import type { Ref, ShallowRef, InjectionKey, ComputedRef } from 'vue'
@@ -108,7 +108,9 @@ export const useEditProvider = (
     const closeKeys = editCellKeys.value.filter((cellKey) => cellKey !== key)
     const closeCells = closeKeys
       .map((key) => editingCells.value[key]!)
-      .filter((cell) => !cell.column?.edit?.keepEditMode)
+      .filter((cell) => {
+        return cell && !cell.column?.edit?.keepEditMode
+      })
     const list = closeCells.map(
       (cell) =>
         new Promise((resolve) => {

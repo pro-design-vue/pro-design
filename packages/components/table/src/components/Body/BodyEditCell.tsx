@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2025-11-27 10:42:18
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 16:12:31
+ * @LastEditTime: 2025-12-03 09:23:19
  * @Description:
  */
 import type { PropType } from 'vue'
-import type { AllValidateResult, FinallyColumnType, Key } from '../interface'
+import type { AllValidateResult, FinallyColumnType, Key, ValueEnumType } from '../interface'
 
 import { defineComponent, ref, computed, watch, triggerRef, onMounted, onUnmounted } from 'vue'
 import { set, isFunction, get, runFunction } from '@pro-design-vue/utils'
@@ -16,6 +16,42 @@ import { useInjectLevel } from '../../hooks/useLevel'
 import { CloseCircleFilled } from '@ant-design/icons-vue'
 import { useEditInject } from '../../hooks/useEdit'
 import { validate } from '../../utils/form-model'
+
+export const parsingValueEnumToArray = (
+  valueEnum: Record<string, ValueEnumType>,
+): ValueEnumType[] | undefined => {
+  const enumArray: ValueEnumType[] = []
+  const valueKeys = Object.keys(valueEnum ?? {})
+  if (!valueKeys?.length) {
+    return
+  }
+  valueKeys.forEach((key) => {
+    const value = valueEnum[key] as {
+      text: string
+      disabled?: boolean
+    }
+
+    if (!value) {
+      return
+    }
+
+    if (typeof value === 'object' && value?.text) {
+      enumArray.push({
+        text: value?.text as unknown as string,
+        value: key,
+        label: value?.text as unknown as string,
+        disabled: value.disabled,
+      })
+      return
+    }
+    enumArray.push({
+      text: value as unknown as string,
+      value: key,
+      label: value as unknown as string,
+    })
+  })
+  return enumArray
+}
 
 export default defineComponent({
   inheritAttrs: false,
@@ -36,6 +72,9 @@ export default defineComponent({
     const columnKey = computed(() => props.column!.columnKey)
     const recordIndexs = computed(() => tableContext.getIndexsByKey(props.rowKey!))
     const childrenColumnName = computed(() => tableContext.props.childrenColumnName || 'children')
+    const valueEnum = computed(() =>
+      parsingValueEnumToArray(runFunction(props.column?.valueEnum, props.item)),
+    )
     const errorList = ref<AllValidateResult[]>()
     const { editRowsMap, setEditingCell } = useEditInject()
     const cellValue = computed(() =>
@@ -93,15 +132,15 @@ export default defineComponent({
       return isFunction(edit.props) ? edit.props(cellParams.value) : { ...edit.props }
     })
 
+    const options = computed(() => editProps.value?.options ?? valueEnum.value)
+
     const componentProps = computed(() => {
       const { edit } = props.column
       if (!edit) return {}
       const tmpProps = { ...editProps.value }
       delete tmpProps.onChange
       delete tmpProps.value
-      edit.abortEditOnEvent?.forEach((item) => {
-        delete tmpProps[item]
-      })
+      delete tmpProps.options
       return tmpProps
     })
 
@@ -193,17 +232,15 @@ export default defineComponent({
         },
         false,
       )
-      props.column?.edit?.onEdited?.({
-        column: props.column,
-        record: props.isRowEdit ? props.editRow : props.item,
-        recordIndexs: recordIndexs.value,
-        value: cellValue.value,
-      })
+      props.column?.edit?.onEdited?.(cellParams.value)
     })
 
     return () => {
       const Component = props.column.edit?.component
       const errorMessage = errorList.value?.[0]?.message
+      const inlineError = props.column.edit?.inlineError
+      const tmpEditOnListeners = { ...editOnListeners.value }
+      delete tmpEditOnListeners.onChange
       return (
         <div
           {...cellProps.value}
@@ -224,28 +261,33 @@ export default defineComponent({
               v-model:value={editValue.value}
               getPopupContainer={() => document.body}
               {...componentProps.value}
+              {...tmpEditOnListeners}
+              options={options.value}
               onChange={onEditChange}
             />
-            {errorMessage && (
-              <Popover
-                arrowPointAtCenter
-                placement="topRight"
-                getPopupContainer={() => document.body}
-                v-slots={{
-                  content: () => (
-                    <div class={`${props.prefixCls}-cell-content-error-message`}>
-                      {errorList.value?.map((error) => (
-                        <div key={error.message}>{error.message}</div>
-                      ))}
-                    </div>
-                  ),
-                }}
-              >
-                <span class={`${props.prefixCls}-cell-content-error`}>
-                  <CloseCircleFilled />
-                </span>
-              </Popover>
-            )}
+            {errorMessage &&
+              (!inlineError ? (
+                <Popover
+                  arrowPointAtCenter
+                  placement="topRight"
+                  getPopupContainer={() => document.body}
+                  v-slots={{
+                    content: () => (
+                      <div class={`${props.prefixCls}-cell-content-error-message`}>
+                        {errorList.value?.map((error) => (
+                          <div key={error.message}>{error.message}</div>
+                        ))}
+                      </div>
+                    ),
+                  }}
+                >
+                  <span class={`${props.prefixCls}-cell-content-error`}>
+                    <CloseCircleFilled />
+                  </span>
+                </Popover>
+              ) : (
+                <div class={`${props.prefixCls}-cell-content-error-inline`}>{errorMessage}</div>
+              ))}
           </div>
         </div>
       )
