@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-03 11:03:37
  * @LastEditors: shen
- * @LastEditTime: 2025-12-03 09:33:50
+ * @LastEditTime: 2025-12-04 10:52:15
  * @Description:
  */
 import type { Ref, ShallowRef, InjectionKey, ComputedRef } from 'vue'
@@ -28,7 +28,7 @@ import { getCellKey } from '../utils/util'
 
 type EditProps = {
   editCellKeys: Ref<string[]>
-  openEditor: (key: string | string[]) => void
+  openEditor: (key: string | string[], values?: Record<string, any>) => void
   closeEditor: (key: string) => void
   // oldValuesMap: ShallowRef<Record<string, any>>
   editableType: ComputedRef<RowEditableType | undefined>

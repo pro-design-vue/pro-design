@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-08 21:59:48
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 15:53:41
+ * @LastEditTime: 2025-12-04 17:30:59
  * @Description:
 -->
 <script lang="ts">
@@ -418,7 +418,7 @@ export default defineComponent({
           @mouseleave="handleCellBlur"
         />
         <BodyCell
-          v-else-if="column && column.edit?.component && isCurrentEditRow"
+          v-else-if="column && column.edit?.component"
           :prefix-cls="prefixCls"
           :item="record"
           :row-key="rowKey"

@@ -222,6 +222,7 @@ export interface EditableValueParams<RecordType = DefaultRecordType, TValue = an
   record: RecordType
   recordIndexs: number[]
   column: ColumnType<RecordType>
+  updateEditedCellValue?: (key: DataIndex, value: any) => void
 }
 
 export interface ValueParserFunc<T = any, TValue = any> {
@@ -875,6 +876,9 @@ export interface EditableCellConfig<T = DefaultRecordType> {
    * 是否显示编辑图标
    * @default true
    */
+  request?: (params: Record<string, any>) => Promise<Record<string, any>[]>
+  /** @name 依赖字段的name，暂时只在拥有 request 的项目中生效，会自动注入到 params 中 */
+  dependencies?: DataIndex[]
 }
 
 export interface ColumnType<RecordType = DefaultRecordType>

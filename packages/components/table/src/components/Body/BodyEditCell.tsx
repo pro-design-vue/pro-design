@@ -2,20 +2,27 @@
  * @Author: shen
  * @Date: 2025-11-27 10:42:18
  * @LastEditors: shen
- * @LastEditTime: 2025-12-03 09:23:19
+ * @LastEditTime: 2025-12-04 17:40:28
  * @Description:
  */
 import type { PropType } from 'vue'
-import type { AllValidateResult, FinallyColumnType, Key, ValueEnumType } from '../interface'
+import type {
+  AllValidateResult,
+  DataIndex,
+  FinallyColumnType,
+  Key,
+  ValueEnumType,
+} from '../interface'
 
 import { defineComponent, ref, computed, watch, triggerRef, onMounted, onUnmounted } from 'vue'
-import { set, isFunction, get, runFunction } from '@pro-design-vue/utils'
+import { set, isFunction, get, runFunction, isEqual, debounce } from '@pro-design-vue/utils'
 import { useInjectTable } from '../context/TableContext'
 import { Popover } from 'ant-design-vue'
 import { useInjectLevel } from '../../hooks/useLevel'
 import { CloseCircleFilled } from '@ant-design/icons-vue'
 import { useEditInject } from '../../hooks/useEdit'
 import { validate } from '../../utils/form-model'
+import { useFetchData } from '@pro-design-vue/hooks'
 
 export const parsingValueEnumToArray = (
   valueEnum: Record<string, ValueEnumType>,
@@ -67,20 +74,20 @@ export default defineComponent({
   },
   emits: ['closeEditor', 'keydown'],
   setup(props) {
+    const loading = ref(false)
     const tableContext = useInjectTable()
     const level = useInjectLevel()
+    const fetchOptions = ref<any>()
     const columnKey = computed(() => props.column!.columnKey)
     const recordIndexs = computed(() => tableContext.getIndexsByKey(props.rowKey!))
-    const childrenColumnName = computed(() => tableContext.props.childrenColumnName || 'children')
     const valueEnum = computed(() =>
       parsingValueEnumToArray(runFunction(props.column?.valueEnum, props.item)),
     )
+    const originValue = get(props.item, props.column!.dataIndex!)
     const errorList = ref<AllValidateResult[]>()
     const { editRowsMap, setEditingCell } = useEditInject()
     const cellValue = computed(() =>
-      props.column!.dataIndex
-        ? get(!props.isRowEdit ? props.item : props.editRow, props.column!.dataIndex)
-        : undefined,
+      props.column!.dataIndex ? get(props.editRow, props.column!.dataIndex) : undefined,
     )
     const cellRender = computed(
       () => tableContext.allCellProps.value?.[props.rowKey!]?.[props.column!.columnKey] || {},
@@ -102,11 +109,15 @@ export default defineComponent({
       [`${props.prefixCls}-column-sort`]: sorterOrder.value,
     }))
 
+    const hasFetchOptions = computed(
+      () => props.column.edit?.request && props.column.edit?.dependencies?.length,
+    )
+
     const rules = computed(() => {
       return (
         runFunction(props.column.edit?.rules, {
           column: props.column,
-          record: props.isRowEdit ? props.editRow : props.item,
+          record: props.editRow,
           recordIndexs: recordIndexs.value,
           newValue: cellValue.value,
         }) ?? []
@@ -116,11 +127,22 @@ export default defineComponent({
     const validateEnabled = computed(() => rules.value.length > 0)
 
     const editValue = ref()
+
+    const updateEditedCellValue = (key: DataIndex, value: any) => {
+      setTimeout(() => {
+        const editRow = { ...props.editRow }
+        set(editRow, key, value)
+        editRowsMap.value[props.rowKey!] = editRow
+        triggerRef(editRowsMap)
+      }, 10)
+    }
+
     const cellParams = computed(() => ({
       column: props.column,
-      record: !props.isRowEdit ? props.item : props.editRow,
+      record: props.editRow,
       recordIndexs: recordIndexs.value!,
       value: editValue.value,
+      updateEditedCellValue,
     }))
 
     const editOnListeners = computed(() => {
@@ -132,7 +154,9 @@ export default defineComponent({
       return isFunction(edit.props) ? edit.props(cellParams.value) : { ...edit.props }
     })
 
-    const options = computed(() => editProps.value?.options ?? valueEnum.value)
+    const options = computed(
+      () => fetchOptions.value ?? editProps.value?.options ?? valueEnum.value,
+    )
 
     const componentProps = computed(() => {
       const { edit } = props.column
@@ -150,6 +174,15 @@ export default defineComponent({
           resolve(true)
           return true
         }
+
+        // 值相同且不为空时不触发变化及校验
+        if (
+          isEqual(originValue, editValue.value) &&
+          !(originValue === undefined || originValue === null || originValue === '')
+        ) {
+          resolve(true)
+          return true
+        }
         validate(editValue.value, rules.value).then((result) => {
           const list = result?.filter((t) => !t.result)
           if (!list || !list.length) {
@@ -163,48 +196,86 @@ export default defineComponent({
       })
     }
 
+    const updateEditRow = () => {
+      const editRow = { ...props.editRow }
+      set(editRow, props.column.dataIndex!, editValue.value)
+      editRowsMap.value[props.rowKey!] = { ...editRow }
+      triggerRef(editRowsMap)
+    }
+
+    const fetchData = useFetchData({ request: props.column.edit?.request })
+
+    const requestOptions = debounce(async (newRow?: any) => {
+      const row = { ...props.item, ...newRow }
+      const params = { rowKey: props.rowKey }
+      props.column.edit?.dependencies?.forEach((dataIndex) => {
+        const newValue = get(row, dataIndex)
+        set(params, dataIndex, newValue)
+      })
+      loading.value = true
+      const result = await fetchData(params)
+      fetchOptions.value = result
+      loading.value = false
+    }, 200)
+
     const onEditChange = (val: any, ...args: any) => {
-      const params: any = {
-        column: props.column,
-        record: props.isRowEdit ? props.editRow : props.item,
-        recordIndexs: recordIndexs.value,
-        newValue: cellValue.value,
-      }
-      const value = props.column.edit?.valueParser?.(params) ?? editValue.value
       const valueSetter = props.column.edit?.valueSetter
       if (valueSetter) {
-        valueSetter(params)
+        valueSetter(cellParams.value)
       } else {
-        editProps.value?.onChange?.(val, ...args)
-        editOnListeners.value?.onChange?.(params)
-        if (props.isRowEdit) {
-          const record = { ...props.editRow }
-          set(record, props.column.dataIndex!, value)
-          editRowsMap.value[props.rowKey!] = record
-          triggerRef(editRowsMap)
-        } else {
-          let record: any = {}
-          let dataSource = tableContext.rawData.value || []
-          recordIndexs.value.forEach((index) => {
-            record = dataSource[index]
-            dataSource = record[childrenColumnName.value] || []
-          })
-          set(record, props.column.dataIndex!, value)
-          triggerRef(tableContext.rawData)
-        }
+        editProps.value?.onChange?.(val, ...args, cellParams.value)
+        editOnListeners.value?.onChange?.(cellParams.value)
+        updateEditRow()
       }
       validateEdit()
     }
+
+    const updateRecordValue = debounce(async (newValue) => {
+      let record: any = {}
+      let dataSource = tableContext.rawData.value || []
+      recordIndexs.value.forEach((index) => {
+        record = dataSource[index]
+        dataSource = record[tableContext.childrenColumnName.value] || []
+      })
+      set(record, props.column.dataIndex!, newValue)
+      triggerRef(tableContext.rawData)
+    }, 200)
 
     watch(
       cellValue,
       (value) => {
         editValue.value = props.column.edit?.valueGetter?.(cellParams.value) ?? value
+        if (!props.isRowEdit) {
+          updateRecordValue(value)
+        }
       },
       { immediate: true },
     )
 
+    watch(
+      () => props.editRow,
+      (newRow, oldRow) => {
+        if (hasFetchOptions.value) {
+          const isSame = props.column.edit?.dependencies?.every((dataIndex) => {
+            const newValue = get(newRow, dataIndex)
+            const oldIndex = get(oldRow, dataIndex)
+            return isEqual(newValue, oldIndex)
+          })
+          if (!isSame) {
+            requestOptions(newRow)
+          }
+        }
+      },
+    )
+
     onMounted(() => {
+      if (!props.isRowEdit && !editRowsMap.value[props.rowKey!]) {
+        editRowsMap.value[props.rowKey!] = { ...props.item }
+        triggerRef(editRowsMap)
+      }
+      if (props.column.edit?.request) {
+        requestOptions()
+      }
       setEditingCell(
         {
           recordIndexs: recordIndexs.value,
