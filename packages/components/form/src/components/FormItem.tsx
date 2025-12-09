@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 14:46:07
+ * @LastEditTime: 2025-12-09 14:15:51
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -151,7 +151,12 @@ export default defineComponent({
     }
 
     const fieldProps = computed(() => {
-      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value, rowData?.value)
+      const baseProps = runFunction(
+        props.item.fieldProps ?? {},
+        formData.value,
+        action,
+        rowData?.value,
+      )
       const mergeProps = {
         ...baseProps,
         id: baseProps?.id ?? `form-${formKey.value ?? ''}-${props.item.key}`,

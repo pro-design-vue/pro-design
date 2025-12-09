@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-07-30 08:16:19
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 14:43:31
+ * @LastEditTime: 2025-12-09 14:15:26
  * @Description:
  */
 import dayjs from 'dayjs'
@@ -385,7 +385,9 @@ export type ProFormItemType<T = Entity, FieldType = 'text'> = {
   order?: number
   placeholder?: string | string[]
   fieldType?: FieldType | `${ProFieldType}`
-  fieldProps?: ((formData: T, rowData?: Entity) => Record<string, any>) | Record<string, any>
+  fieldProps?:
+    | ((formData: T, action: ProFormActionType, rowData?: Entity) => Record<string, any>)
+    | Record<string, any>
   spaceProps?: SpaceProps
   /** @name 从服务器请求枚举 */
   request?: FieldRequestData
