@@ -41,19 +41,21 @@
   }
 
   &-card {
-    box-sizing: border-box;
     position: relative;
+    box-sizing: border-box;
+    padding: 24px;
     background: hsl(var(--pro-background));
     border-radius: 8px;
-    padding: 24px;
+
     &-bordered {
       border-width: 1px;
     }
+
     &:not(&-card-bordered) {
       box-shadow:
-        0 1px 2px 0 rgba(0, 0, 0, 0.03),
-        0 1px 6px -1px rgba(0, 0, 0, 0.02),
-        0 2px 4px 0 rgba(0, 0, 0, 0.02);
+        0 1px 2px 0 rgb(0 0 0 / 3%),
+        0 1px 6px -1px rgb(0 0 0 / 2%),
+        0 2px 4px 0 rgb(0 0 0 / 2%);
     }
   }
 

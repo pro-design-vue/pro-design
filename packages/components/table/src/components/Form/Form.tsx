@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-12-09 17:32:52
+ * @LastEditTime: 2025-12-09 17:34:12
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -13,13 +13,10 @@ import type {
   ProQueryFilterProps,
 } from '@pro-design-vue/components/form'
 
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { ProQueryFilter } from '@pro-design-vue/components/form'
-// import { Card } from 'ant-design-vue'
 import { isBordered } from '../../utils/util'
 import { omit, omitUndefined } from '@pro-design-vue/utils'
-import { useProConfigInject } from '@pro-design-vue/components/config-provider'
-import { useToken } from 'ant-design-vue/es/theme/internal'
 
 export default defineComponent({
   props: {
