@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-11-21 11:05:46
+ * @LastEditTime: 2025-12-09 17:32:52
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -15,9 +15,11 @@ import type {
 
 import { computed, defineComponent, ref } from 'vue'
 import { ProQueryFilter } from '@pro-design-vue/components/form'
-import { Card } from 'ant-design-vue'
+// import { Card } from 'ant-design-vue'
 import { isBordered } from '../../utils/util'
 import { omit, omitUndefined } from '@pro-design-vue/utils'
+import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+import { useToken } from 'ant-design-vue/es/theme/internal'
 
 export default defineComponent({
   props: {
@@ -66,29 +68,11 @@ export default defineComponent({
     },
   },
   setup: (props, { slots }) => {
-    const activeTabKey = ref(
-      props.search?.cardProps !== false ? props.search?.cardProps?.activeTabKey : '',
-    )
-
-    const cardProps = computed(() => {
-      if (!props.search?.cardProps) {
-        return {}
-      }
-      return props.search?.cardProps
-    })
-
     /** 提交表单，根据两种模式不同，方法不相同 */
     const submit = async (values: any, firstLoad: boolean) => {
-      const tabParams = cardProps.value?.tabList?.length
-        ? {
-            [props.search?.tabName ?? 'tab']:
-              cardProps.value.activeTabKey || cardProps.value?.tabList?.[0]?.key,
-          }
-        : {}
       const submitParams = omitUndefined(
         props.beforeSearchSubmit({
           ...values,
-          ...tabParams,
         }),
       )
       props.onFormSearchSubmit?.(submitParams)
@@ -97,69 +81,73 @@ export default defineComponent({
       }
     }
 
-    const onTabChange = (key: string) => {
-      activeTabKey.value = key
-      props.onSearchTabChange?.({
-        [props.search?.tabName ?? 'tab']: key,
-      })
-      cardProps.value?.onTabChange?.(key)
-    }
+    const isCard = computed(() => props.search?.cardProps !== false && props.tableShowCard)
+
+    const className = computed(() => ({
+      [`${props.prefixCls}-search`]: true,
+      [`${props.prefixCls}-card`]: isCard.value,
+      [`${props.prefixCls}-card-bordered`]:
+        isCard.value && isBordered('search', props.cardBordered),
+    }))
+
     return () => {
-      const searchDom = (
-        <ProQueryFilter
-          class={`${props.prefixCls}-form`}
-          {...omit(props.search || {}, [
-            'cardProps',
-            'tabName',
-            'items',
-            'loading',
-            'onReset',
-            'onFinish',
-            'onValuesChange',
-            'onInit',
-            'onCollapse',
-          ])}
-          items={props.items}
-          loading={props.loading}
-          style={{
-            marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '16px',
-            ...props.search?.style,
-          }}
-          onReset={props.onReset}
-          onFinish={(values) => {
-            submit(values, false)
-            props.search?.onFinish?.(values)
-          }}
-          onValuesChange={(values) => {
-            if (props.search?.submitter === false) {
+      return (
+        <div class={className.value} style={{ marginBlockEnd: isCard.value ? '16px' : '' }}>
+          <ProQueryFilter
+            class={`${props.prefixCls}-form`}
+            {...omit(props.search || {}, [
+              'cardProps',
+              'tabName',
+              'items',
+              'loading',
+              'onReset',
+              'onFinish',
+              'onValuesChange',
+              'onInit',
+              'onCollapse',
+            ])}
+            items={props.items}
+            loading={props.loading}
+            style={{
+              marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '16px',
+              ...props.search?.style,
+            }}
+            onReset={props.onReset}
+            onFinish={(values) => {
+              submit(values, false)
+              props.search?.onFinish?.(values)
+            }}
+            onValuesChange={(values) => {
+              if (props.search?.submitter === false) {
+                submit(values, true)
+              }
+              props.search?.onValuesChange?.(values)
+            }}
+            v-slots={slots}
+            onInit={(values, action) => {
               submit(values, true)
-            }
-            props.search?.onValuesChange?.(values)
-          }}
-          v-slots={slots}
-          onInit={(values, action) => {
-            submit(values, true)
-            props.setFormAction?.(action)
-            props.search?.onInit?.(values, action)
-          }}
-          onCollapse={props.onCollapse}
-        />
+              props.setFormAction?.(action)
+              props.search?.onInit?.(values, action)
+            }}
+            onCollapse={props.onCollapse}
+          />
+        </div>
       )
-      if (props.search?.cardProps !== false && props.tableShowCard) {
-        return (
-          <Card
-            class={`${props.prefixCls}-search`}
-            activeTabKey={activeTabKey.value}
-            bordered={isBordered('search', props.cardBordered)}
-            style={{ marginBlockEnd: '16px' }}
-            {...omit(cardProps.value ?? {}, ['onTabChange', 'activeTabKey'])}
-            onTabChange={onTabChange}
-          >
-            {searchDom}
-          </Card>
-        )
-      }
-      return searchDom
+      // if (props.search?.cardProps !== false && props.tableShowCard) {
+      //   return (
+      //     <Card
+      //       class={`${props.prefixCls}-search`}
+      //       activeTabKey={activeTabKey.value}
+      //       bordered={isBordered('search', props.cardBordered)}
+      //       style={{ marginBlockEnd: '16px' }}
+      //       {...omit(cardProps.value ?? {}, ['onTabChange', 'activeTabKey'])}
+      //       onTabChange={onTabChange}
+      //     >
+      //       {searchDom}
+      //     </Card>
+      //   )
+      // }
+      // return searchDom
     }
   },
 })
