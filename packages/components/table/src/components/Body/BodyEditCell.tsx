@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-11-27 10:42:18
  * @LastEditors: shen
- * @LastEditTime: 2025-12-04 17:40:28
+ * @LastEditTime: 2025-12-08 14:15:50
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -23,7 +23,7 @@ import { CloseCircleFilled } from '@ant-design/icons-vue'
 import { useEditInject } from '../../hooks/useEdit'
 import { validate } from '../../utils/form-model'
 import { useFetchData } from '@pro-design-vue/hooks'
-
+// import useSWRV from 'swrv'
 export const parsingValueEnumToArray = (
   valueEnum: Record<string, ValueEnumType>,
 ): ValueEnumType[] | undefined => {
@@ -205,6 +205,9 @@ export default defineComponent({
 
     const fetchData = useFetchData({ request: props.column.edit?.request })
 
+    // const result = useSWRV(columnKey.value.toString(), fetchData)
+    // console.log('🚀 ~ setup ~ result:', result)
+
     const requestOptions = debounce(async (newRow?: any) => {
       const row = { ...props.item, ...newRow }
       const params = { rowKey: props.rowKey }
@@ -273,9 +276,9 @@ export default defineComponent({
         editRowsMap.value[props.rowKey!] = { ...props.item }
         triggerRef(editRowsMap)
       }
-      if (props.column.edit?.request) {
-        requestOptions()
-      }
+      // if (props.column.edit?.request) {
+      //   requestOptions()
+      // }
       setEditingCell(
         {
           recordIndexs: recordIndexs.value,

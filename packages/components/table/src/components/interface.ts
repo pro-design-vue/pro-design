@@ -1055,6 +1055,7 @@ export interface TableExposeType {
   startEditable: (recordKey: Key, recordValue?: any) => boolean
   cancelEditable: (recordKey: Key) => boolean
   saveEditable: (recordKey: Key) => Promise<boolean>
+  cleanSelected: (keys?: Key[]) => void
 }
 export interface DragRowsHandleInfo {
   y: number

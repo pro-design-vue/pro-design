@@ -88,7 +88,7 @@ export default defineComponent({
       if (shouldOpen.value) {
         return (
           <Tooltip
-            get-popup-container={props.getPopupContainer}
+            get-popup-container={() => document.body}
             align={align.value}
             {...props.tooltipProps}
             open={props.open}
