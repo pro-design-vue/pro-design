@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-10 16:41:53
+ * @LastEditTime: 2025-12-10 16:51:04
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -96,7 +96,7 @@ export default defineComponent({
     onMenuClick: Function as PropType<MenuProps['onClick']>,
   },
   emits: ['confirm', 'click', 'cancel', 'menu-click'],
-  setup(props, { attrs, slots }) {
+  setup(props, { attrs, slots, emit }) {
     const prefixCls = usePrefixCls('button')
     const { accessCodes } = useProConfigInject()
     const renderConfirmContent = (key: string) => {
@@ -109,12 +109,12 @@ export default defineComponent({
       return undefined
     }
 
-    const onClick = (e: MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
       if (props.stop) {
         e.stopPropagation()
       }
       if (props.mode === 'default') {
-        props.onClick?.(e)
+        emit('click', e)
         return
       }
 
@@ -166,7 +166,7 @@ export default defineComponent({
           'onCancel',
           'onMenuClick',
         ]),
-        onClick,
+        onClick: handleClick,
       }
 
       let defaultDom = (
