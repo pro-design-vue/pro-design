@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 13:39:31
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 08:52:59
+ * @LastEditTime: 2025-12-10 10:46:53
  * @Description:
 -->
 <script lang="ts">
@@ -12,6 +12,7 @@ import type { ColumnsState } from '../interface'
 import { defineComponent } from 'vue'
 import { Tooltip } from 'ant-design-vue'
 import {
+  HolderOutlined,
   VerticalAlignTopOutlined,
   VerticalAlignMiddleOutlined,
   VerticalAlignBottomOutlined,
@@ -24,6 +25,7 @@ export default defineComponent({
   inheritAttrs: false,
   components: {
     Tooltip,
+    HolderOutlined,
     VerticalAlignMiddleOutlined,
     VerticalAlignTopOutlined,
     VerticalAlignBottomOutlined,
@@ -64,6 +66,7 @@ export default defineComponent({
 <template>
   <span :class="`${className}-list-item`" :key="columnKey">
     <div :class="`${className}-list-item-title`">
+      <HolderOutlined style="opacity: 0.5" />
       <slot />
     </div>
     <span v-if="isRoot" :class="`${className}-list-item-option`">

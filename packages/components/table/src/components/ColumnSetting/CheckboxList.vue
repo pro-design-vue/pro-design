@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-19 13:39:31
  * @LastEditors: shen
- * @LastEditTime: 2025-09-02 14:41:27
+ * @LastEditTime: 2025-12-10 10:51:33
  * @Description:
 -->
 <script lang="ts">
@@ -102,7 +102,11 @@ export default defineComponent({
         const newData = loopData(props.list)
         triggerRef(checkedKeys)
         treeData.value = newData?.map((config) => {
-          return omit(config, ['disabled'])
+          return {
+            ...omit(config, ['disabled']),
+            fixed: config.fixed === true ? 'left' : config.fixed,
+            children: undefined,
+          }
         })
       },
       { immediate: true },

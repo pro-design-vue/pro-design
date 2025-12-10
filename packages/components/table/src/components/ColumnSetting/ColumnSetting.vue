@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-18 13:06:40
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 13:44:46
+ * @LastEditTime: 2025-12-10 10:51:52
  * @Description:
 -->
 <script lang="ts">
@@ -134,7 +134,7 @@ export default defineComponent({
     placement="bottomLeft"
     :arrow="false"
     :overlay-class-name="`${className}-popover`"
-    :overlay-style="{ paddingTop: '0', width: '224px' }"
+    :overlay-style="{ paddingTop: '0', width: '200px' }"
   >
     <Tooltip :title="intl.getMessage('tableToolBar.columnSetting', '列设置')">
       <div :class="`${prefixCls}-toolbar-actions-item`">
