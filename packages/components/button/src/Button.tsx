@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-12-10 16:41:53
  * @Description:
  */
-import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
+import { type PropType, defineComponent, type CSSProperties } from 'vue'
 import {
   Button,
   Tooltip,
