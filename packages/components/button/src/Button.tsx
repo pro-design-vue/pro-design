@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-10 16:29:50
+ * @LastEditTime: 2025-12-10 16:38:14
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
@@ -135,8 +135,7 @@ export default defineComponent({
         e.stopPropagation()
       }
       if (props.mode === 'default') {
-        // props.onClick?.(e)
-        emit('click', e)
+        props.onClick?.(e)
         return
       }
 
@@ -177,7 +176,7 @@ export default defineComponent({
           v-slots={{
             icon: () => icon,
           }}
-          onClick={props.mode === 'popconfirm' || props.mode === 'dropdown' ? undefined : onClick}
+          onClick={onClick}
         >
           {slots.default?.()}
         </Button>
