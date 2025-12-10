@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-10 16:39:55
+ * @LastEditTime: 2025-12-10 16:41:53
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
@@ -109,27 +109,6 @@ export default defineComponent({
       return undefined
     }
 
-    const buttonProps = computed(() =>
-      omit(props, [
-        'items',
-        'permission',
-        'iconStyle',
-        'icon',
-        'stop',
-        'confirmProps',
-        'popconfirmProps',
-        'menuProps',
-        'dropdownProps',
-        'tooltipProps',
-        'tooltip',
-        'mode',
-        'onConfirm',
-        'onClick',
-        'onCancel',
-        'onMenuClick',
-      ]),
-    )
-
     const onClick = (e: MouseEvent) => {
       if (props.stop) {
         e.stopPropagation()
@@ -168,15 +147,36 @@ export default defineComponent({
         icon = slots.icon ? slots.icon() : <ProIcon icon={props.icon} />
       }
 
+      const buttonProps = {
+        ...omit(props, [
+          'items',
+          'permission',
+          'iconStyle',
+          'icon',
+          'stop',
+          'confirmProps',
+          'popconfirmProps',
+          'menuProps',
+          'dropdownProps',
+          'tooltipProps',
+          'tooltip',
+          'mode',
+          'onConfirm',
+          'onClick',
+          'onCancel',
+          'onMenuClick',
+        ]),
+        onClick,
+      }
+
       let defaultDom = (
         <Button
           {...attrs}
-          {...buttonProps.value}
+          {...buttonProps}
           class={prefixCls}
           v-slots={{
             icon: () => icon,
           }}
-          onClick={onClick}
         >
           {slots.default?.()}
         </Button>
