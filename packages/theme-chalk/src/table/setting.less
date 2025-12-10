@@ -11,6 +11,15 @@
     .@{ant-prefix}-tree-treenode:hover .@{setting-prefix-cls}-list-item-option {
       display: block;
     }
+    .@{ant-prefix}-tree {
+      &-checkbox {
+        margin-inline-end: 0;
+        margin-block-start: 0;
+      }
+      &-switcher {
+        width: 10px;
+      }
+    }
   }
 
   &-title {
@@ -44,7 +53,7 @@
 
       &-title {
         flex: 1;
-        max-width: 80px;
+        max-width: 120px;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
