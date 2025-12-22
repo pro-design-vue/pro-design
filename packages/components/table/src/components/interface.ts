@@ -1121,6 +1121,7 @@ export type Request<T = DefaultRecordType, U = Record<string, any>> = (
   },
   sorters?: SorterResult<T>[],
   filter?: Record<string, (string | number)[] | null>,
+  abort?: AbortController,
 ) => Promise<Partial<RequestData<T>>>
 
 export type RequestData<T = DefaultRecordType> = {

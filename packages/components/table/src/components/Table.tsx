@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-12-09 16:55:45
+ * @LastEditTime: 2025-12-22 10:24:22
  * @Description:
  */
 
@@ -102,12 +102,13 @@ export default defineComponent({
         params?: Record<string, any>,
         sorters?: SorterResult<any>[],
         filter?: Record<string, (string | number)[] | null>,
+        abort?: AbortController,
       ) => {
         const actionParams = {
           ...(params || {}),
           ...(props.params || {}),
         }
-        const response = await props.request!(actionParams, sorters, filter)
+        const response = await props.request!(actionParams, sorters, filter, abort)
         return response as RequestData
       }
     })

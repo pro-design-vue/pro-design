@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-10 16:51:04
+ * @LastEditTime: 2025-12-22 10:44:51
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -85,15 +85,19 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    data: {
+      type: [String, Boolean, Number, Array, Object] as PropType<any>,
+      default: undefined,
+    },
     items: {
       type: Array as PropType<ItemType[]>,
       default: () => [],
     },
-    onClick: Function as PropType<(e: MouseEvent) => void>,
+    onClick: Function as PropType<(e: MouseEvent, data?: any) => void>,
     // onMousedown: Function as PropType<(e: MouseEvent) => void>,
-    onConfirm: Function as PropType<(e: MouseEvent) => void>,
-    onCancel: Function as PropType<(e: MouseEvent) => void>,
-    onMenuClick: Function as PropType<MenuProps['onClick']>,
+    onConfirm: Function as PropType<(...args: any[]) => void>,
+    onCancel: Function as PropType<(...args: any[]) => void>,
+    onMenuClick: Function as PropType<(...args: any[]) => void>,
   },
   emits: ['confirm', 'click', 'cancel', 'menu-click'],
   setup(props, { attrs, slots, emit }) {
@@ -114,7 +118,7 @@ export default defineComponent({
         e.stopPropagation()
       }
       if (props.mode === 'default') {
-        emit('click', e)
+        emit('click', e, props.data)
         return
       }
 
@@ -127,10 +131,10 @@ export default defineComponent({
           title:
             renderConfirmContent(props.confirmProps?.title as string) || props.confirmProps?.title,
           onCancel() {
-            return props.onCancel?.()
+            return props.onCancel?.(props.data)
           },
           onOk() {
-            return props.onConfirm?.()
+            return props.onConfirm?.(props.data)
           },
         })
       }
@@ -198,8 +202,8 @@ export default defineComponent({
         return (
           <Popconfirm
             {...props.popconfirmProps}
-            onConfirm={props.onConfirm}
-            onCancel={props.onCancel}
+            onConfirm={() => props.onConfirm?.(props.data)}
+            onCancel={() => props.onCancel?.(props.data)}
           >
             {defaultDom}
           </Popconfirm>
@@ -212,7 +216,11 @@ export default defineComponent({
             {...props.dropdownProps}
             v-slots={{
               overlay: () => (
-                <Menu {...props.menuProps} items={props.items} onClick={props.onMenuClick} />
+                <Menu
+                  {...props.menuProps}
+                  items={props.items}
+                  onClick={(...args) => props.onMenuClick?.(...args, props.data)}
+                />
               ),
             }}
           >

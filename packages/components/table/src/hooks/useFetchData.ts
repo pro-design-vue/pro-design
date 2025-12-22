@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-11-14 10:20:37
+ * @LastEditTime: 2025-12-22 10:25:28
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -118,6 +118,7 @@ export const useFetchData = (
         params?: Record<string, any>,
         sorters?: SorterResult<any>[],
         filter?: Record<string, (string | number)[] | null>,
+        abort?: AbortController,
       ) => Promise<RequestData>)
     | undefined
   >,
@@ -215,7 +216,7 @@ export const useFetchData = (
     pollingLoading.value = false
   }
 
-  const fetchList = async (isPolling: boolean) => {
+  const fetchList = async (isPolling: boolean, abort: AbortController) => {
     // 需要手动触发的首次请求
     if (manualRequestRef.value) {
       manualRequestRef.value = false
@@ -249,8 +250,9 @@ export const useFetchData = (
         success,
         total = 0,
         ...rest
-      } = (await getData.value?.(params, toRaw(sorters.value), toRaw(filter.value))) || {}
+      } = (await getData.value?.(params, toRaw(sorters.value), toRaw(filter.value), abort)) || {}
       // 如果失败了，直接返回，不走剩下的逻辑了
+      if (abort.signal.aborted) return
       if (success === false) return []
       setTableDataList(data)
       if (pagination.value?.total !== total) {
@@ -267,7 +269,9 @@ export const useFetchData = (
       if (tableDataList.value === undefined) setTableDataList([])
       props.onRequestError(e as Error)
     } finally {
-      requestFinally()
+      if (!abort.signal.aborted) {
+        requestFinally()
+      }
     }
   }
 
@@ -283,7 +287,7 @@ export const useFetchData = (
 
     try {
       const msg = (await Promise.race([
-        fetchList(isPolling),
+        fetchList(isPolling, abort),
         new Promise((_, reject) => {
           abortRef.value?.signal.addEventListener('abort', () => {
             reject('aborted')
