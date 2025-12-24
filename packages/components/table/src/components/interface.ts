@@ -295,7 +295,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   },
   virtual: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
   xVirtual: {
     type: Boolean,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-12-22 10:24:22
+ * @LastEditTime: 2025-12-24 13:26:43
  * @Description:
  */
 
@@ -341,6 +341,12 @@ export default defineComponent({
       }
     }
 
+    const virtual = computed(() =>
+      props.virtual !== undefined
+        ? props.virtual
+        : !!props.autoHeight || !!counter.hasFullScreen.value,
+    )
+
     const hideToolbar = computed(
       () =>
         mergeOptions.value === false &&
@@ -570,7 +576,7 @@ export default defineComponent({
               'onUpdate:columns',
             ])}
             height={tableHeight.value}
-            virtual={!!props.autoHeight || !!counter.hasFullScreen.value || props.virtual}
+            virtual={virtual.value}
             prefixCls={mergedPrefixCls.value}
             columns={mergeColumns || []}
             size={counter.tableSize.value}
