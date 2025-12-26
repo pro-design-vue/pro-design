@@ -1,0 +1,45 @@
+@import 'common/var';
+
+// .@{pro-prefix}-field {
+// }
+
+.@{pro-prefix}-field-color-picker {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 3px;
+  border: 1px solid hsl(var(--pro-border));
+  border-radius: @border-radius-base;
+  &:not(.@{pro-prefix}-field-color-picker-disabled):hover {
+    border-color: hsl(var(--pro-primary));
+  }
+  &-inner {
+    border-radius: @border-radius-base;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+  }
+  &-empty {
+    position: relative;
+    border-radius: @border-radius-base;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border: 1px solid hsl(var(--pro-border) / 90);
+    &:after {
+      content: '';
+      position: absolute;
+      inset-inline-end: calc(-1 * 1px);
+      top: 0px;
+      display: block;
+      width: 28px;
+      height: 2px;
+      transform-origin: calc(100% - 1px) 4px;
+      transform: rotate(-45deg);
+      background-color: hsl(var(--pro-red-600));
+    }
+  }
+}

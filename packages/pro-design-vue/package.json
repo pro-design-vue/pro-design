@@ -95,7 +95,8 @@
     "dayjs": "^1.11.13",
     "lodash-es": "^4.17.21",
     "lodash-unified": "^1.0.3",
-    "resize-observer-polyfill": "^1.5.1"
+    "resize-observer-polyfill": "^1.5.1",
+    "vue-color": "^3.3.3"
   },
   "devDependencies": {
     "@types/node": "*",

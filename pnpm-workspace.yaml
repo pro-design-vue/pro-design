@@ -100,3 +100,4 @@ catalog:
   vue-router: ^4.5.1
   vue-tsc: ^2.0.28
   vue-types: ^6.0.0
+  vue-color: ^3.3.3

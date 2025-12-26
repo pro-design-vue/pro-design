@@ -57,7 +57,9 @@
     "lodash-es": "catalog:",
     "lodash-unified": "catalog:",
     "resize-observer-polyfill": "catalog:",
-    "theme-colors": "catalog:"
+    "swrv": "^1.1.0",
+    "theme-colors": "catalog:",
+    "vue-color": "catalog:"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
@@ -121,5 +123,7 @@
   },
   "engines": {
     "node": ">= 22"
-  }
+  },
+  "name": "",
+  "version": ""
 }

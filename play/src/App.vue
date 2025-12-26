@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-17 10:11:59
  * @LastEditors: shen
- * @LastEditTime: 2025-10-20 15:52:08
+ * @LastEditTime: 2025-12-25 14:27:14
  * @Description:
 -->
 <script setup lang="ts">
@@ -30,14 +30,21 @@ const open = ref(false)
 const handleDark = () => {
   dark.value = !dark.value
 }
+
+const getPopupContainer = (triggerNode?: HTMLElement) => {
+  return (triggerNode?.parentNode || document.body) as HTMLElement
+}
 </script>
 
 <template>
+  <!-- <button @click="handleDark">安内</button> -->
   <ProConfigProvider
     :dark
     :token
+    :getPopupContainer
     pro-prefix-cls="pro1"
     prefix-cls="pro-ant"
+    :accessCodes="new Set(['aaa', 'bbb'])"
     :modal="{
       showFullscreen: true,
       draggable: false,
@@ -46,16 +53,17 @@ const handleDark = () => {
       showFullscreen: true,
     }"
     :form="{
-      // resetOnSubmit: true,
+      colon: false,
     }"
     :table="{
       // cardBordered: true,
-      bordered: true,
+      size: 'small',
       options: {
-        fullScreen: false,
+        // fullScreen: false,
       },
+      expandIconType: 'arrow',
       pagination: {
-        pageSize: 25,
+        pageSize: 10,
         pageSizeOptions: ['5', '10', '25', '50'],
         fieldNames: {
           current: 'pageNum',
@@ -64,16 +72,6 @@ const handleDark = () => {
       },
     }"
   >
-    <ProButton @click="handleColor">#1677ff</ProButton>
-    <ProButton @click="handleColor2">#006be6</ProButton>
-    <ProButton @click="handleDark" type="link">暗黑</ProButton>
-    <!-- <ProLayout> -->
-    <!-- <template #content> -->
-    <!-- <div style="background-color: aliceblue"> -->
     <RouterView />
-    <!-- </div> -->
-
-    <!-- </template> -->
-    <!-- </ProLayout> -->
   </ProConfigProvider>
 </template>

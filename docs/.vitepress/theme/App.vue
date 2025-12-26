@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-09-06 11:17:01
  * @LastEditors: shen
- * @LastEditTime: 2025-10-14 14:38:53
+ * @LastEditTime: 2025-11-25 08:47:14
  * @Description:
 -->
 <script setup lang="ts">
@@ -12,12 +12,17 @@ import DefaultTheme from 'vitepress/theme'
 
 const { Layout } = DefaultTheme
 const { isDark } = useData()
+
+const getPopupContainer = (triggerNode?: HTMLElement) => {
+  return (triggerNode?.parentNode || document.body) as HTMLElement
+}
 </script>
 
 <template>
   <ClientOnly>
     <ProConfigProvider
       :dark="isDark"
+      :getPopupContainer
       :token="{
         colorPrimary: 'hsl(212 100% 45%)',
       }"
