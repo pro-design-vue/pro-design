@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-27 09:56:36
  * @LastEditors: shen
- * @LastEditTime: 2025-12-22 17:20:11
+ * @LastEditTime: 2025-12-29 16:10:28
  * @Description:
  */
 export * from './antd'
@@ -29,6 +29,7 @@ export * from './render-vnode'
 export * from './clone-element'
 export * from './render-slot-fragments'
 export * from './object-to-empty'
+export * from './parse-value-to-day'
 export {
   cloneDeep,
   merge,

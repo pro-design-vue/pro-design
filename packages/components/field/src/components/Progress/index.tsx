@@ -2,44 +2,46 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:01:27
+ * @LastEditTime: 2025-12-29 16:00:25
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
 
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  ref,
-  toRefs,
-  unref,
-  type PropType,
-  type VNode,
-} from 'vue'
+import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { Input, type InputProps } from 'ant-design-vue'
+import { InputNumber, Progress, type InputNumberProps, type ProgressProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
+import { toNumber } from '../Percent/util'
+
+export function getProgressStatus(text: number): 'success' | 'exception' | 'normal' | 'active' {
+  if (text === 100) {
+    return 'success'
+  }
+  if (text < 0) {
+    return 'exception'
+  }
+  if (text < 100) {
+    return 'active'
+  }
+
+  return 'normal'
+}
 
 export default defineComponent({
-  name: 'FieldText',
+  name: 'FieldProgress',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
     text: {
-      type: String,
+      type: [Number, String],
       default: undefined,
-    },
-    emptyText: {
-      type: [Object, String, Number, null, Boolean, Array] as PropType<ProFieldProps['emptyText']>,
-      default: '-',
     },
     fieldProps: {
       type: Object as PropType<
-        InputProps & {
-          autoFocus?: boolean
+        InputNumberProps & {
+          progressProps?: ProgressProps
           onChange?: (...args: any[]) => void
         }
       >,
@@ -48,38 +50,21 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-text')
+    const prefixCls = usePrefixCls('field-progress')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
-    const { mode, text, emptyText, fieldProps } = toRefs(props)
-    const prefixNode = computed<VNode>(() => {
-      const prefix = renderContent('prefix', {
-        slotFirst: true,
-        props: fieldProps.value,
-      })
-      if (prefix) return prefix
-      return null
-    })
+    const { mode, text, fieldProps } = toRefs(props)
 
-    const suffixNode = computed<VNode>(() => {
-      const suffix = renderContent('suffix', {
-        slotFirst: true,
-        props: fieldProps.value,
-      })
-      if (suffix) return suffix
-      return null
-    })
+    const realValue = computed(() =>
+      typeof text.value === 'string' && (text.value as string).includes('%')
+        ? toNumber((text.value as string).replace('%', ''))
+        : toNumber(text.value),
+    )
 
-    const onChange: InputProps['onChange'] = (e) => {
-      fieldProps.value?.onChange?.(e.target.value, e)
-      props.onChange?.(e.target.value, e)
+    const onChange: InputNumberProps['onChange'] = (value) => {
+      fieldProps.value?.onChange?.(value)
+      props.onChange?.(value)
     }
-
-    onMounted(() => {
-      if (fieldProps.value?.autoFocus) {
-        fieldRef.value?.focus()
-      }
-    })
 
     expose({
       fieldRef: computed(() => {
@@ -88,14 +73,17 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
+        const size = fieldProps.value?.progressProps?.size ?? 'small'
         const dom = (
-          <>
-            {prefixNode.value}
-            {text.value || emptyText.value}
-            {suffixNode.value}
-          </>
+          <Progress
+            ref={ref}
+            size={size}
+            style={{ minWidth: 100, maxWidth: 320 }}
+            percent={realValue.value}
+            status={getProgressStatus(realValue.value as number)}
+            {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}
+          />
         )
-
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
           slotFirst: true,
@@ -110,24 +98,13 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
         const dom = (
-          <Input
+          <InputNumber
             ref={fieldRef}
             placeholder={placeholder}
-            allowClear={fieldProps.value?.allowClear ?? true}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, [
-              'onChange',
-              'suffix',
-              'prefix',
-              'placeholder',
-              'allowClear',
-            ])}
-            v-slots={{
-              ...slots,
-              prefix: () => prefixNode.value,
-              suffix: () => suffixNode.value,
-            }}
+            {...omit(fieldProps.value ?? {}, ['onChange', 'placeholder', 'progressProps'])}
+            v-slots={slots}
             onChange={onChange}
           />
         )

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-26 15:01:48
+ * @LastEditTime: 2025-12-29 16:01:03
  * @Description:
  */
 import type { ProFieldProps, ProSchemaValueEnumObj, RequestOptionsType } from '../../type'
@@ -10,7 +10,6 @@ import type { ProFieldProps, ProSchemaValueEnumObj, RequestOptionsType } from '.
 import {
   computed,
   defineComponent,
-  onMounted,
   ref,
   toRefs,
   unref,
@@ -164,6 +163,8 @@ export default defineComponent({
       fieldRef: computed(() => {
         return unref(fieldRef)
       }),
+      fetchData,
+      resetData,
     })
     return () => {
       if (mode.value === 'read') {
@@ -189,7 +190,6 @@ export default defineComponent({
           fieldProps.value?.placeholder || intl.getMessage('tableForm.selectPlaceholder', '请选择')
         const dom = (
           <Select
-            {...attrs}
             ref={fieldRef}
             class={prefixCls}
             allowClear={fieldProps.value?.allowClear ?? true}
@@ -206,6 +206,8 @@ export default defineComponent({
                 setSearchValue(undefined)
               }
             }}
+            style={{ minWidth: '100px' }}
+            {...attrs}
             {...omit(fieldProps.value ?? {}, [
               'searchValue',
               'loading',
@@ -289,7 +291,7 @@ export default defineComponent({
                     ? {
                         ...(value as any),
                         // 这里有一种情况，如果用户使用了 request和labelInValue，保存之后，刷新页面，正常回显，但是再次添加会出现 label 丢失的情况。所以需要兼容
-                        label: preserveOriginalLabel
+                        label: preserveOriginalLabel.value
                           ? dataItem?.label || (value as any)?.label
                           : (value as any)?.label,
                       }
@@ -300,7 +302,7 @@ export default defineComponent({
                     {
                       ...(value as any),
                       ...dataItem,
-                      label: preserveOriginalLabel ? dataItem.label : (value as any)?.label,
+                      label: preserveOriginalLabel.value ? dataItem.label : (value as any)?.label,
                     },
                     optionList,
                     ...rest,
@@ -319,7 +321,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 09:15:41
  * @LastEditors: shen
- * @LastEditTime: 2025-12-25 15:05:01
+ * @LastEditTime: 2025-12-29 08:59:34
  * @Description:
  */
 
@@ -234,14 +234,15 @@ export type ProFieldValueTypeWithFieldProps = {
   /** 树形选择 */
   treeSelect: TreeSelectProps
   /** 颜色选择器 */
-  color: SketchPickerProps &
-    ColorPickerProps & {
-      value?: string
-      popoverProps?: PopoverProps
-      mode?: 'read' | 'edit'
-      onChange?: (color: string) => void
-      colors?: string[]
-    }
+  color: {
+    disabled?: boolean
+    value?: string
+    popoverProps?: PopoverProps
+    disableAlpha?: boolean
+    disableFields?: boolean
+    presetColors?: string[]
+    onChange?: (...args: any[]) => void
+  }
   /** 分段器 */
   segmented: SegmentedProps
   /** 分组 */

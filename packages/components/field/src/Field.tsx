@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-26 16:26:14
+ * @LastEditTime: 2025-12-29 17:20:41
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
@@ -25,6 +25,18 @@ import FieldSelect from './components/Select'
 import FieldMoney from './components/Money'
 import FieldImage from './components/Image'
 import FieldColorPicker from './components/ColorPicker'
+import FieldDigitRange from './components/DigitRange'
+import FieldSecond from './components/Second'
+import FieldPercent from './components/Percent'
+import FieldRate from './components/Rate'
+import FieldCheckbox from './components/Checkbox'
+import FieldRadio from './components/Radio'
+import FieldCascader from './components/Cascader'
+import FieldProgress from './components/Progress'
+import FieldSlider from './components/Slider'
+import FieldDatePicker from './components/DatePicker'
+import FieldFromNow from './components/FromNow'
+import FieldRangePicker from './components/RangePicker'
 
 export default defineComponent({
   name: 'ProField',
@@ -169,6 +181,181 @@ export default defineComponent({
         )
       }
 
+      if (valueType.value === 'digitRange') {
+        return (
+          <FieldDigitRange
+            v-slots={slots}
+            class={prefixCls}
+            text={dataValue as number[]}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'second') {
+        return (
+          <FieldSecond
+            v-slots={slots}
+            class={prefixCls}
+            text={dataValue as number}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'percent') {
+        return (
+          <FieldPercent
+            v-slots={slots}
+            class={prefixCls}
+            text={dataValue as number}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'rate') {
+        return (
+          <FieldRate
+            v-slots={slots}
+            class={prefixCls}
+            text={dataValue as number}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'checkbox') {
+        return (
+          <FieldCheckbox
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'radio') {
+        return (
+          <FieldRadio
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'radioButton') {
+        return (
+          <FieldRadio
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            optionType="button"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'cascader') {
+        return (
+          <FieldCascader
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'progress') {
+        return (
+          <FieldProgress
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'slider') {
+        return (
+          <FieldSlider
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'dateTime') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD HH:mm:ss"
+            showTime
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'fromNow') {
+        return (
+          <FieldFromNow
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是日期范围的值 */
+      if (valueType.value === 'dateRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是日期加时间类型的值的值 */
+      if (valueType.value === 'dateTimeRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD HH:mm:ss"
+            showTime
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
       if (
         valueType.value === 'select' ||
         (valueType.value === 'text' && (props.valueEnum || props.request))

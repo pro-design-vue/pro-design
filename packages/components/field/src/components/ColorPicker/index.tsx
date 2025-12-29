@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-26 17:08:47
+ * @LastEditTime: 2025-12-29 15:58:53
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -87,12 +87,16 @@ export default defineComponent({
       mode.value === 'read' ? text.value : color.value?.toRgbString(),
     )
 
+    const onChange = (value: string) => {
+      fieldProps.value?.onChange?.(value)
+      props.onChange?.(value)
+    }
+
     watch(color, (newColor, oldColor) => {
       const value = newColor?.toRgbString()
       const oldValue = oldColor?.toRgbString()
       if (value !== oldValue) {
-        fieldProps.value?.onChange?.(value)
-        props.onChange?.(value)
+        onChange(value)
       }
     })
     return () => {
@@ -154,7 +158,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

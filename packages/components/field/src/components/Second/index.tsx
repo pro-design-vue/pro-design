@@ -2,44 +2,65 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:01:27
+ * @LastEditTime: 2025-12-29 16:00:55
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
 
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  ref,
-  toRefs,
-  unref,
-  type PropType,
-  type VNode,
-} from 'vue'
+import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { Input, type InputProps } from 'ant-design-vue'
+import { InputNumber, type InputNumberProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
 
+/**
+ * 格式化秒
+ *
+ * @param result
+ * @returns {string}
+ */
+export function formatSecond(result: number) {
+  let newResult = result
+  let formatText = ''
+  let past = false
+  if (newResult < 0) {
+    newResult = -newResult
+    past = true
+  }
+  const d = Math.floor(newResult / (3600 * 24))
+  const h = Math.floor((newResult / 3600) % 24)
+  const m = Math.floor((newResult / 60) % 60)
+  const s = Math.floor(newResult % 60)
+  formatText = `${s}秒`
+  if (m > 0) {
+    formatText = `${m}分钟${formatText}`
+  }
+  if (h > 0) {
+    formatText = `${h}小时${formatText}`
+  }
+  if (d > 0) {
+    formatText = `${d}天${formatText}`
+  }
+  if (past) {
+    formatText += '前'
+  }
+  return formatText
+}
+
 export default defineComponent({
-  name: 'FieldText',
+  name: 'FieldSecond',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
     text: {
-      type: String,
+      type: [Number, String],
       default: undefined,
-    },
-    emptyText: {
-      type: [Object, String, Number, null, Boolean, Array] as PropType<ProFieldProps['emptyText']>,
-      default: '-',
     },
     fieldProps: {
       type: Object as PropType<
-        InputProps & {
-          autoFocus?: boolean
+        InputNumberProps & {
+          placeholder?: string
           onChange?: (...args: any[]) => void
         }
       >,
@@ -48,38 +69,15 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-text')
+    const prefixCls = usePrefixCls('field-digit')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
-    const { mode, text, emptyText, fieldProps } = toRefs(props)
-    const prefixNode = computed<VNode>(() => {
-      const prefix = renderContent('prefix', {
-        slotFirst: true,
-        props: fieldProps.value,
-      })
-      if (prefix) return prefix
-      return null
-    })
+    const { mode, text, fieldProps } = toRefs(props)
 
-    const suffixNode = computed<VNode>(() => {
-      const suffix = renderContent('suffix', {
-        slotFirst: true,
-        props: fieldProps.value,
-      })
-      if (suffix) return suffix
-      return null
-    })
-
-    const onChange: InputProps['onChange'] = (e) => {
-      fieldProps.value?.onChange?.(e.target.value, e)
-      props.onChange?.(e.target.value, e)
+    const onChange: InputNumberProps['onChange'] = (value) => {
+      fieldProps.value?.onChange?.(value)
+      props.onChange?.(value)
     }
-
-    onMounted(() => {
-      if (fieldProps.value?.autoFocus) {
-        fieldRef.value?.focus()
-      }
-    })
 
     expose({
       fieldRef: computed(() => {
@@ -88,13 +86,8 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
-        const dom = (
-          <>
-            {prefixNode.value}
-            {text.value || emptyText.value}
-            {suffixNode.value}
-          </>
-        )
+        const secondText = formatSecond(Number(text.value) as number)
+        const dom = <span ref={ref}>{secondText}</span>
 
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
@@ -110,24 +103,15 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
         const dom = (
-          <Input
+          <InputNumber
             ref={fieldRef}
             placeholder={placeholder}
-            allowClear={fieldProps.value?.allowClear ?? true}
             class={prefixCls}
+            min={fieldProps.value?.min ?? 0}
+            style={{ width: '100%' }}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, [
-              'onChange',
-              'suffix',
-              'prefix',
-              'placeholder',
-              'allowClear',
-            ])}
-            v-slots={{
-              ...slots,
-              prefix: () => prefixNode.value,
-              suffix: () => suffixNode.value,
-            }}
+            {...omit(fieldProps.value ?? {}, ['onChange', 'placeholder', 'min'])}
+            v-slots={slots}
             onChange={onChange}
           />
         )

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-11 11:10:03
  * @LastEditors: shen
- * @LastEditTime: 2025-12-25 11:09:13
+ * @LastEditTime: 2025-12-28 16:18:41
  * @Description:
  */
 import type { ProFieldProps, ProFieldValueEnumType, SelectOptionType } from '../type'
@@ -75,7 +75,7 @@ export function useFetchData(props: ProFieldProps) {
   }
 
   const defaultOptions = computed(() => {
-    if (!fieldProps) return undefined
+    if (!fieldProps?.value) return undefined
     const data = fieldProps?.value.options || fieldProps?.value.treeData
     if (!data) return undefined
     const { children, label, value } = fieldProps.value.fieldNames || {}

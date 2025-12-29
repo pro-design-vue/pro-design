@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-26 15:01:14
+ * @LastEditTime: 2025-12-29 16:00:10
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -304,7 +304,7 @@ export default defineComponent({
               if (value && moneySymbol.value) {
                 return `${moneySymbol.value} ${getFormateValue(value)}`
               }
-              return value!?.toString()
+              return value?.toString()
             }}
             parser={(value) => {
               if (moneySymbol.value && value) {
@@ -330,8 +330,8 @@ export default defineComponent({
               fieldProps?.value?.onBlur
                 ? (e: any) => {
                     let value = e.target?.value
-                    if (moneySymbol && value) {
-                      value = value.replace(new RegExp(`\\${moneySymbol}\\s?|(,*)`, 'g'), '')
+                    if (moneySymbol.value && value) {
+                      value = value.replace(new RegExp(`\\${moneySymbol.value}\\s?|(,*)`, 'g'), '')
                     }
                     fieldProps?.value?.onBlur?.(value)
                   }
@@ -341,7 +341,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

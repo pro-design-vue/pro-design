@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 15:59:07
+ * @LastEditTime: 2025-12-29 16:29:39
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,12 +10,25 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { InputNumber, type InputNumberProps } from 'ant-design-vue'
+import { DatePicker, type DatePickerProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { isNil, omit } from '@pro-design-vue/utils'
+import { omit, parseValueToDay } from '@pro-design-vue/utils'
+import dayjs from 'dayjs'
+import weekOfYear from 'dayjs/plugin/weekOfYear.js'
+
+dayjs.extend(weekOfYear)
+
+const formatDate = (text: any, format: any) => {
+  if (!text) return '-'
+  if (typeof format === 'function') {
+    return format(dayjs(text))
+  } else {
+    return dayjs(text).format((Array.isArray(format) ? format[0] : format) || 'YYYY-MM-DD')
+  }
+}
 
 export default defineComponent({
-  name: 'FieldDigit',
+  name: 'FieldDatePicker',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
@@ -23,11 +36,18 @@ export default defineComponent({
       type: [Number, String],
       default: undefined,
     },
+    format: {
+      type: String,
+      default: undefined,
+    },
+    showTime: {
+      type: Boolean,
+      default: undefined,
+    },
     fieldProps: {
       type: Object as PropType<
-        InputNumberProps & {
-          placeholder?: string
-          intlProps?: Record<string, any>
+        DatePickerProps & {
+          format?: string
           onChange?: (...args: any[]) => void
         }
       >,
@@ -36,26 +56,15 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-digit')
+    const prefixCls = usePrefixCls('field-date-picker')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
-
-    const proxyChange = (value: number | string | null) => {
-      let val = value ?? undefined
-
-      if (!fieldProps.value?.stringMode && typeof val === 'string') {
-        val = Number(val)
-      }
-      if (typeof val === 'number' && !isNil(val) && !isNil(fieldProps.value?.precision)) {
-        val = Number(val.toFixed(fieldProps.value?.precision))
-      }
-      return val
-    }
-
-    const onChange: InputNumberProps['onChange'] = (value) => {
-      fieldProps.value?.onChange?.(proxyChange(value))
-      props.onChange?.(proxyChange(value))
+    const dayValue = computed(() => parseValueToDay(fieldProps.value?.value as any) as dayjs.Dayjs)
+    const onChange: any = (date, dateString) => {
+      // 修正onChange 第一个参数为value
+      fieldProps.value?.onChange?.(dateString, date)
+      props.onChange?.(dateString, date)
     }
 
     expose({
@@ -65,26 +74,7 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
-        let fractionDigits = {} as Record<string, any> as any
-        if (fieldProps.value?.precision) {
-          fractionDigits = {
-            minimumFractionDigits: Number(fieldProps.value.precision),
-            maximumFractionDigits: Number(fieldProps.value.precision),
-          }
-        }
-        const digit = new Intl.NumberFormat(undefined, {
-          ...fractionDigits,
-          ...(fieldProps.value?.intlProps || {}),
-        }).format(Number(text.value) as number)
-        // 如果是 string 模式，什么都不要处理了
-        const dom = !fieldProps.value?.stringMode ? (
-          <span>
-            {fieldProps.value?.formatter?.(digit, { userTyping: false, input: '' }) || digit}
-          </span>
-        ) : (
-          <span>{text.value}</span>
-        )
-
+        const dom = formatDate(text.value, fieldProps.value?.format || props.format)
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
           slotFirst: true,
@@ -97,14 +87,23 @@ export default defineComponent({
 
       if (mode.value === 'edit' || mode.value === 'update') {
         const placeholder =
-          fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
+          fieldProps.value?.placeholder || intl.getMessage('tableForm.selectPlaceholder', '请选择')
         const dom = (
-          <InputNumber
+          <DatePicker
             ref={fieldRef}
+            value={dayValue.value}
             placeholder={placeholder}
+            showTime={props.showTime}
+            format={fieldProps.value?.format || props.format}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'placeholder', 'intlProps'])}
+            {...(omit(fieldProps.value ?? {}, [
+              'onChange',
+              'placeholder',
+              'value',
+              'showTime',
+              'format',
+            ]) as any)}
             v-slots={slots}
             onChange={onChange}
           />
