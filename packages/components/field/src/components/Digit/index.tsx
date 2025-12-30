@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 15:59:07
+ * @LastEditTime: 2025-12-30 17:28:53
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -53,11 +53,6 @@ export default defineComponent({
       return val
     }
 
-    const onChange: InputNumberProps['onChange'] = (value) => {
-      fieldProps.value?.onChange?.(proxyChange(value))
-      props.onChange?.(proxyChange(value))
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -104,14 +99,14 @@ export default defineComponent({
             placeholder={placeholder}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'placeholder', 'intlProps'])}
+            {...omit(fieldProps.value ?? {}, ['placeholder', 'intlProps', 'onChange'])}
             v-slots={slots}
-            onChange={onChange}
+            onChange={(val) => fieldProps.value?.onChange?.(proxyChange(val))}
           />
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

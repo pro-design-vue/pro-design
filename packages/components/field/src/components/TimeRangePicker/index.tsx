@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 13:05:34
+ * @LastEditTime: 2025-12-30 13:05:28
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,13 +10,13 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { DatePicker, type DatePickerProps } from 'ant-design-vue'
+import { TimePicker, type TimePickerProps } from 'ant-design-vue'
 import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit, parseValueToDay } from '@pro-design-vue/utils'
 import dayjs from 'dayjs'
 
 export default defineComponent({
-  name: 'FieldRangePicker',
+  name: 'FieldTimeRangePicker',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
@@ -28,18 +28,11 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-    showTime: {
-      type: Boolean,
-      default: undefined,
-    },
-    picker: {
-      type: String as PropType<'date' | 'week' | 'month' | 'quarter' | 'year'>,
-      default: undefined,
-    },
     fieldProps: {
       type: Object as PropType<
-        DatePickerProps & {
+        TimePickerProps & {
           separator?: string
+          format?: string
           onChange?: (...args: any[]) => void
         }
       >,
@@ -48,33 +41,46 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-range-picker')
+    const prefixCls = usePrefixCls('field-time-range-picker')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
-    const genFormatText = (formatValue: dayjs.Dayjs) => {
-      if (typeof fieldProps.value?.format === 'function') {
-        return fieldProps.value?.format?.(formatValue)
-      }
-      return fieldProps.value?.format || props.format || 'YYYY-MM-DD'
-    }
+    const finalFormat = computed(() => fieldProps.value?.format || props.format || 'HH:mm:ss')
 
     const parsedText = computed(() => {
       const [startText, endText] = Array.isArray(text.value) ? text.value : []
+      const startTextIsNumberOrMoment = dayjs.isDayjs(startText) || typeof startText === 'number'
+      const endTextIsNumberOrMoment = dayjs.isDayjs(endText) || typeof endText === 'number'
+
       return [
         startText
-          ? dayjs(startText as string).format(genFormatText(dayjs(startText as string)) as string)
+          ? dayjs(
+              startText as string,
+              startTextIsNumberOrMoment ? undefined : (finalFormat.value as string),
+            ).format(finalFormat.value as string)
           : '',
         endText
-          ? dayjs(endText as string).format(genFormatText(dayjs(endText as string)) as string)
+          ? dayjs(
+              endText as string,
+              endTextIsNumberOrMoment ? undefined : (finalFormat.value as string),
+            ).format(finalFormat.value as string)
           : '',
       ]
     })
 
     const [dayValue, setDayValue] = useMergedState(
-      parseValueToDay(fieldProps.value?.defaultPickerValue as any) as dayjs.Dayjs[],
+      parseValueToDay(
+        fieldProps.value?.defaultValue as any,
+        finalFormat.value as string,
+      ) as dayjs.Dayjs[],
       {
-        value: computed(() => parseValueToDay(fieldProps.value?.value as any) as dayjs.Dayjs[]),
+        value: computed(
+          () =>
+            parseValueToDay(
+              fieldProps.value?.value as any,
+              finalFormat.value as string,
+            ) as dayjs.Dayjs[],
+        ),
       },
     )
 
@@ -125,25 +131,21 @@ export default defineComponent({
 
       if (mode.value === 'edit' || mode.value === 'update') {
         const dom = (
-          <DatePicker.RangePicker
+          <TimePicker.TimeRangePicker
             ref={fieldRef}
             value={dayValue.value}
             placeholder={[
               intl.getMessage('tableForm.selectPlaceholder', '请选择'),
               intl.getMessage('tableForm.selectPlaceholder', '请选择'),
             ]}
-            showTime={props.showTime ?? fieldProps.value?.showTime}
-            format={fieldProps.value?.format || props.format}
-            picker={props.picker || fieldProps.value?.picker}
+            format={finalFormat.value}
             class={prefixCls}
             {...attrs}
             {...(omit(fieldProps.value ?? {}, [
               'onChange',
               'placeholder',
               'value',
-              'showTime',
               'format',
-              'picker',
               'separator',
             ]) as any)}
             v-slots={{

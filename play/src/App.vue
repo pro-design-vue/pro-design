@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-17 10:11:59
  * @LastEditors: shen
- * @LastEditTime: 2025-12-25 14:27:14
+ * @LastEditTime: 2025-12-30 16:05:44
  * @Description:
 -->
 <script setup lang="ts">
@@ -37,7 +37,7 @@ const getPopupContainer = (triggerNode?: HTMLElement) => {
 </script>
 
 <template>
-  <!-- <button @click="handleDark">安内</button> -->
+  <button @click="handleDark">暗黑模式</button>
   <ProConfigProvider
     :dark
     :token

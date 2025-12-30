@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:00:10
+ * @LastEditTime: 2025-12-30 09:38:28
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -255,11 +255,6 @@ export default defineComponent({
       return `${resultInt}${resultFloat}`
     }
 
-    const onChange: InputNumberProps['onChange'] = (value) => {
-      fieldProps.value?.onChange?.(value)
-      props.onChange?.(value)
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -321,11 +316,9 @@ export default defineComponent({
               'numberFormatOptions',
               'customSymbol',
               'moneySymbol',
-              'onChange',
               'onBlur',
             ])}
             v-slots={slots}
-            onChange={onChange}
             onBlur={
               fieldProps?.value?.onBlur
                 ? (e: any) => {
@@ -341,7 +334,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

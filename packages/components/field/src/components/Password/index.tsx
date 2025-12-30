@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:39:10
+ * @LastEditTime: 2025-12-30 16:02:38
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,39 +10,26 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { InputNumber, Progress, type InputNumberProps, type ProgressProps } from 'ant-design-vue'
-import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
+import { Input, Space, type InputProps } from 'ant-design-vue'
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons-vue'
+import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
-import { toNumber } from '../Percent/util'
-
-export function getProgressStatus(text: number): 'success' | 'exception' | 'normal' | 'active' {
-  if (text === 100) {
-    return 'success'
-  }
-  if (text < 0) {
-    return 'exception'
-  }
-  if (text < 100) {
-    return 'active'
-  }
-
-  return 'normal'
-}
 
 export default defineComponent({
-  name: 'FieldProgress',
+  name: 'FieldPassword',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
     text: {
-      type: [Number, String],
+      type: String,
       default: undefined,
     },
     fieldProps: {
       type: Object as PropType<
-        InputNumberProps & {
-          progressProps?: ProgressProps
+        InputProps & {
           onChange?: (...args: any[]) => void
+          open?: boolean
+          onOpenChange?: (visible: boolean) => void
         }
       >,
       default: undefined,
@@ -50,16 +37,19 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-progress')
+    const prefixCls = usePrefixCls('field-password')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
-    const realValue = computed(() =>
-      typeof text.value === 'string' && (text.value as string).includes('%')
-        ? toNumber((text.value as string).replace('%', ''))
-        : toNumber(text.value),
-    )
+    const [open, setOpen] = useMergedState<boolean>(() => fieldProps.value?.open || false, {
+      value: computed(() => fieldProps.value?.open as any),
+      onChange: fieldProps.value?.onOpenChange,
+    })
+
+    const onChange: InputProps['onChange'] = (e) => {
+      fieldProps.value?.onChange?.(e.target.value, e)
+    }
 
     expose({
       fieldRef: computed(() => {
@@ -68,17 +58,17 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
-        const size = fieldProps.value?.progressProps?.size ?? 'small'
-        const dom = (
-          <Progress
-            ref={ref}
-            size={size}
-            style={{ minWidth: 100, maxWidth: 320 }}
-            percent={realValue.value}
-            status={getProgressStatus(realValue.value as number)}
-            {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}
-          />
-        )
+        let dom = <>-</>
+        if (text.value) {
+          dom = (
+            <Space>
+              <span ref={ref}>{open.value ? text.value : '********'}</span>
+              <a onClick={() => setOpen(!open.value)}>
+                {open.value ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+              </a>
+            </Space>
+          )
+        }
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
           slotFirst: true,
@@ -93,13 +83,14 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
         const dom = (
-          <InputNumber
+          <Input.Password
             ref={fieldRef}
             placeholder={placeholder}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['placeholder', 'progressProps'])}
+            {...omit(fieldProps.value ?? {}, ['placeholder', 'onChange'])}
             v-slots={slots}
+            onChange={onChange}
           />
         )
 

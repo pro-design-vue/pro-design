@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:39:10
+ * @LastEditTime: 2025-12-30 16:14:40
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,38 +10,41 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { InputNumber, Progress, type InputNumberProps, type ProgressProps } from 'ant-design-vue'
+import { Input, theme, type TextAreaProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
-import { toNumber } from '../Percent/util'
 
-export function getProgressStatus(text: number): 'success' | 'exception' | 'normal' | 'active' {
-  if (text === 100) {
-    return 'success'
+const languageFormat = (text: string, language: string) => {
+  if (typeof text !== 'string') {
+    return text
   }
-  if (text < 0) {
-    return 'exception'
+  try {
+    if (language === 'json') {
+      return JSON.stringify(JSON.parse(text), null, 2)
+    }
+  } catch (error) {
+    // console.log(error)
   }
-  if (text < 100) {
-    return 'active'
-  }
-
-  return 'normal'
+  return text
 }
 
 export default defineComponent({
-  name: 'FieldProgress',
+  name: 'FieldCode',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
     text: {
-      type: [Number, String],
+      type: String,
+      default: undefined,
+    },
+    language: {
+      type: String as PropType<'json' | 'text'>,
       default: undefined,
     },
     fieldProps: {
       type: Object as PropType<
-        InputNumberProps & {
-          progressProps?: ProgressProps
+        TextAreaProps & {
+          language?: 'json' | 'text'
           onChange?: (...args: any[]) => void
         }
       >,
@@ -50,16 +53,18 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-progress')
+    const prefixCls = usePrefixCls('field-code')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
+    const { token } = theme.useToken()
     const { mode, text, fieldProps } = toRefs(props)
-
-    const realValue = computed(() =>
-      typeof text.value === 'string' && (text.value as string).includes('%')
-        ? toNumber((text.value as string).replace('%', ''))
-        : toNumber(text.value),
+    const code = computed(() =>
+      languageFormat(text.value!, props.language ?? fieldProps.value?.language ?? 'text'),
     )
+
+    const onChange: TextAreaProps['onChange'] = (e) => {
+      fieldProps.value?.onChange?.(e.target.value, e)
+    }
 
     expose({
       fieldRef: computed(() => {
@@ -68,16 +73,23 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
-        const size = fieldProps.value?.progressProps?.size ?? 'small'
         const dom = (
-          <Progress
+          <pre
             ref={ref}
-            size={size}
-            style={{ minWidth: 100, maxWidth: 320 }}
-            percent={realValue.value}
-            status={getProgressStatus(realValue.value as number)}
-            {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}
-          />
+            {...attrs}
+            style={{
+              padding: '16px',
+              overflow: 'auto',
+              fontSize: '85%',
+              lineHeight: 1.45,
+              color: token.value.colorTextSecondary,
+              backgroundColor: 'rgba(150, 150, 150, 0.1)',
+              borderRadius: '3px',
+              width: 'min-content',
+            }}
+          >
+            <code>{code.value}</code>
+          </pre>
         )
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
@@ -93,13 +105,22 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
         const dom = (
-          <InputNumber
+          <Input.TextArea
             ref={fieldRef}
+            value={code.value}
+            rows={fieldProps.value?.rows ?? 5}
             placeholder={placeholder}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['placeholder', 'progressProps'])}
+            {...omit(fieldProps.value ?? {}, [
+              'placeholder',
+              'rows',
+              'value',
+              'language',
+              'onChange',
+            ])}
             v-slots={slots}
+            onChange={onChange}
           />
         )
 

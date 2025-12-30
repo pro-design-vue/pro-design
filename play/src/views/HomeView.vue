@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 17:31:00
+ * @LastEditTime: 2025-12-30 17:31:54
  * @Description:
 -->
 <script setup lang="tsx">
@@ -10,11 +10,23 @@ import { ProField } from '@pro-design-vue/components'
 import { Space, Radio, Descriptions, Form } from 'ant-design-vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-
 const state = ref<any>('read')
-
 const radio = ref('open')
 const numberRange = ref([123, 456])
+const dateValue = ref(dayjs('2019-11-16 12:50:26').valueOf())
+const dateRangeValue = ref([
+  dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+  dayjs('2019-11-16 12:50:26').valueOf(),
+])
+
+const switchValue = ref(true)
+
+const codeValue = ref(`
+yarn run v1.22.0
+$ eslint --format=pretty ./packages
+Done in 9.70s.
+          `)
+
 const handleRateChange = (value) => {
   console.log('🚀 ~ handleRateChange ~ value:', value)
 }
@@ -41,6 +53,12 @@ const handleRateChange = (value) => {
             mode="read"
             valueType="avatar"
           />
+        </Descriptions.Item>
+        <Descriptions.Item label="列序号">
+          <ProField :text="1" valueType="index" />
+        </Descriptions.Item>
+        <Descriptions.Item label="列序号2">
+          <ProField :text="1" valueType="indexBorder" />
         </Descriptions.Item>
         <Descriptions.Item label="文本">
           <ProField text="这是一段文本" valueType="text" :mode="state" />
@@ -291,6 +309,9 @@ const handleRateChange = (value) => {
         <Descriptions.Item label="滑动输入条">
           <ProField text="40" valueType="slider" :mode="state" style="width: 100%" />
         </Descriptions.Item>
+        <Descriptions.Item label="开关">
+          <ProField v-model:value="switchValue" valueType="switch" :mode="state" />
+        </Descriptions.Item>
         <Descriptions.Item label="相对于当前时间">
           <ProField text="2019-11-16 12:50:26" valueType="fromNow" :mode="state" />
         </Descriptions.Item>
@@ -307,6 +328,8 @@ const handleRateChange = (value) => {
             :mode="state"
             :field-props="{
               separator: '至',
+              format: 'YYYY年MM月DD日',
+              valueFormat: 'YYYY-MM-DD',
             }"
           >
             <template #separator><span style="color: red">~</span></template>
@@ -323,6 +346,103 @@ const handleRateChange = (value) => {
             :field-props="{
               separator: '~',
             }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="周区间">
+          <ProField
+            :text="[
+              dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+              dayjs('2019-11-16 12:50:26').valueOf(),
+            ]"
+            valueType="dateWeekRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="月区间">
+          <ProField
+            :text="[dayjs('2019-11-16').add(-1, 'd').valueOf(), dayjs('2019-12-16').valueOf()]"
+            valueType="dateMonthRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="季度区间">
+          <ProField
+            :text="[dayjs('2019-06-16').add(-1, 'd').valueOf(), dayjs('2019-12-16').valueOf()]"
+            valueType="dateQuarterRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+              format: 'YYYY年Q季度',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="年区间">
+          <ProField
+            :text="[dayjs('2019-11-16').add(-1, 'd').valueOf(), dayjs('2020-12-16').valueOf()]"
+            valueType="dateYearRange"
+            :mode="state"
+            :field-props="{
+              format: 'YYYY年',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="时间">
+          <ProField v-model:value="dateValue" valueType="time" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="时间区间">
+          <ProField
+            v-model:value="dateRangeValue"
+            valueType="timeRange"
+            :field-props="{
+              separator: '~',
+            }"
+            :mode="state"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="密码">
+          <ProField text="password" valueType="password" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="代码块">
+          <ProField v-model:value="codeValue" valueType="code" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="JSON 代码块">
+          <ProField
+            :text="`{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;esnext&quot;,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;jsx&quot;: &quot;preserve&quot;,
+    &quot;esModuleInterop&quot;: true,
+    &quot;experimentalDecorators&quot;: true,
+    &quot;strict&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;noImplicitReturns&quot;: true,
+
+    &quot;declaration&quot;: true,
+    &quot;skipLibCheck&quot;: true
+  },
+  &quot;include&quot;: [&quot;**/src&quot;, &quot;**/docs&quot;, &quot;scripts&quot;, &quot;**/demo&quot;, &quot;.eslintrc.js&quot;]
+}
+`"
+            valueType="jsonCode"
+            :mode="state"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="文本域">
+          <ProField
+            :text="`
+yarn run v1.22.0
+$ eslint --format=pretty ./packages
+Done in 9.70s.
+          `"
+            valueType="textarea"
+            :mode="state"
           />
         </Descriptions.Item>
       </Descriptions>

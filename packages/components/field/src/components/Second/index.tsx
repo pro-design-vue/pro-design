@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:00:55
+ * @LastEditTime: 2025-12-30 09:41:14
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -74,11 +74,6 @@ export default defineComponent({
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
-    const onChange: InputNumberProps['onChange'] = (value) => {
-      fieldProps.value?.onChange?.(value)
-      props.onChange?.(value)
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -110,14 +105,13 @@ export default defineComponent({
             min={fieldProps.value?.min ?? 0}
             style={{ width: '100%' }}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'placeholder', 'min'])}
+            {...omit(fieldProps.value ?? {}, ['placeholder', 'min'])}
             v-slots={slots}
-            onChange={onChange}
           />
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

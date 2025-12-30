@@ -41,11 +41,6 @@ export default defineComponent({
 
     const { loading, options, fetchData, resetData } = useFetchData(props)
 
-    const onChange: CheckboxGroupProps['onChange'] = (...args) => {
-      fieldProps.value?.onChange?.(...args)
-      props.onChange?.(...args)
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -99,14 +94,13 @@ export default defineComponent({
             class={{ [prefixCls]: true, [`${prefixCls}-${layout}`]: true }}
             options={options.value as CheckboxGroupProps['options']}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'options', 'layout'])}
+            {...omit(fieldProps.value ?? {}, ['options', 'layout'])}
             v-slots={slots}
-            onChange={onChange}
           />
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

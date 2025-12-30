@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:39:10
+ * @LastEditTime: 2025-12-30 17:04:43
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,38 +10,23 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { InputNumber, Progress, type InputNumberProps, type ProgressProps } from 'ant-design-vue'
+import { Input, type TextAreaProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
-import { toNumber } from '../Percent/util'
-
-export function getProgressStatus(text: number): 'success' | 'exception' | 'normal' | 'active' {
-  if (text === 100) {
-    return 'success'
-  }
-  if (text < 0) {
-    return 'exception'
-  }
-  if (text < 100) {
-    return 'active'
-  }
-
-  return 'normal'
-}
+import FieldTextAreaReadonly from './Readonly'
 
 export default defineComponent({
-  name: 'FieldProgress',
+  name: 'FieldTextArea',
   inheritAttrs: false,
   props: {
     ...baseFieldProps,
     text: {
-      type: [Number, String],
+      type: String,
       default: undefined,
     },
     fieldProps: {
       type: Object as PropType<
-        InputNumberProps & {
-          progressProps?: ProgressProps
+        TextAreaProps & {
           onChange?: (...args: any[]) => void
         }
       >,
@@ -50,35 +35,23 @@ export default defineComponent({
   },
   setup(props, { slots, attrs, expose }) {
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-progress')
+    const prefixCls = usePrefixCls('field-textarea')
     const fieldRef = ref<HTMLInputElement>()
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
-
-    const realValue = computed(() =>
-      typeof text.value === 'string' && (text.value as string).includes('%')
-        ? toNumber((text.value as string).replace('%', ''))
-        : toNumber(text.value),
-    )
+    const onChange: TextAreaProps['onChange'] = (e) => {
+      fieldProps.value?.onChange?.(e.target.value, e)
+    }
 
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
       }),
     })
+
     return () => {
       if (mode.value === 'read') {
-        const size = fieldProps.value?.progressProps?.size ?? 'small'
-        const dom = (
-          <Progress
-            ref={ref}
-            size={size}
-            style={{ minWidth: 100, maxWidth: 320 }}
-            percent={realValue.value}
-            status={getProgressStatus(realValue.value as number)}
-            {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}
-          />
-        )
+        const dom = <FieldTextAreaReadonly text={text.value} />
         const render = renderContent('render', {
           params: { text, mode, ...fieldProps.value, dom },
           slotFirst: true,
@@ -93,13 +66,15 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.inputPlaceholder', '请输入')
         const dom = (
-          <InputNumber
+          <Input.TextArea
             ref={fieldRef}
+            rows={fieldProps.value?.rows ?? 3}
             placeholder={placeholder}
             class={prefixCls}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['placeholder', 'progressProps'])}
+            {...omit(fieldProps.value ?? {}, ['placeholder', 'rows', 'onChange'])}
             v-slots={slots}
+            onChange={onChange}
           />
         )
 

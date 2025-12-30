@@ -40,7 +40,6 @@ export default defineComponent({
       value: computed(() => fieldProps.value?.value),
       onChange: (value) => {
         fieldProps.value?.onChange?.(value)
-        props.onChange?.(value)
       },
     })
 
@@ -86,7 +85,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange: setInnerValue }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

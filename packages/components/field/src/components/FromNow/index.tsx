@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:56:58
+ * @LastEditTime: 2025-12-30 11:04:58
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -24,7 +24,7 @@ export default defineComponent({
   props: {
     ...baseFieldProps,
     text: {
-      type: [Number, String],
+      type: [Number, String, Object] as PropType<string | number | dayjs.Dayjs>,
       default: undefined,
     },
     format: {
@@ -51,7 +51,6 @@ export default defineComponent({
     const onChange: any = (date, dateString) => {
       // 修正onChange 第一个参数为value
       fieldProps.value?.onChange?.(dateString, date)
-      props.onChange?.(dateString, date)
     }
 
     expose({
@@ -103,7 +102,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

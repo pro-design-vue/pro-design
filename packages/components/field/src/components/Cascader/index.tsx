@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 15:57:05
+ * @LastEditTime: 2025-12-30 09:34:41
  * @Description:
  */
 import type { ProFieldProps, ProSchemaValueEnumObj } from '../../type'
@@ -69,11 +69,6 @@ export default defineComponent({
       return traverseOptions(options.value)
     })
 
-    const onChange: CascaderProps['onChange'] = (...args) => {
-      fieldProps.value?.onChange?.(...args)
-      props.onChange?.(...args)
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -112,15 +107,14 @@ export default defineComponent({
             placeholder={placeholder}
             style={{ minWidth: '100px' }}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['options', 'allowClear', 'placeholder', 'onChange'])}
+            {...omit(fieldProps.value ?? {}, ['options', 'allowClear', 'placeholder'])}
             options={options.value as CascaderProps['options']}
             v-slots={slots}
-            onChange={onChange}
           />
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

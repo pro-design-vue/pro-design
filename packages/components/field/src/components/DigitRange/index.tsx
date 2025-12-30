@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 15:59:48
+ * @LastEditTime: 2025-12-30 09:37:36
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -54,7 +54,6 @@ export default defineComponent({
       value: computed(() => fieldProps.value?.value as ValuePair),
       onChange: (value) => {
         fieldProps.value?.onChange?.(value)
-        props.onChange?.(value)
       },
     })
 
@@ -182,7 +181,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange: setValuePair }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

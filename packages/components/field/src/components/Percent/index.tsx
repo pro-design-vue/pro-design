@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:00:19
+ * @LastEditTime: 2025-12-30 09:38:42
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -73,11 +73,6 @@ export default defineComponent({
       return fieldProps.value?.showSymbol
     })
 
-    const onChange: InputNumberProps['onChange'] = (value) => {
-      fieldProps.value?.onChange?.(value)
-      props.onChange?.(value)
-    }
-
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
@@ -128,7 +123,6 @@ export default defineComponent({
             parser={(value) => (value ? value.replace(/.*\s|,/g, '') : '')}
             {...attrs}
             {...omit(fieldProps.value ?? {}, [
-              'onChange',
               'placeholder',
               'formatter',
               'parser',
@@ -138,12 +132,11 @@ export default defineComponent({
               'suffix',
             ])}
             v-slots={slots}
-            onChange={onChange}
           />
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value, onChange }, dom },
+          params: { text, props: { mode, ...fieldProps.value }, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

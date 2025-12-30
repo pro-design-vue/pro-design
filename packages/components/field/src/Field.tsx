@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 17:20:41
+ * @LastEditTime: 2025-12-30 17:24:10
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
@@ -20,6 +20,9 @@ import {
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { Avatar } from 'ant-design-vue'
 import FieldText from './components/Text'
+import FieldPassword from './components/Password'
+import FieldTextArea from './components/TextArea'
+import FieldCode from './components/Code'
 import FieldDigit from './components/Digit'
 import FieldSelect from './components/Select'
 import FieldMoney from './components/Money'
@@ -34,9 +37,29 @@ import FieldRadio from './components/Radio'
 import FieldCascader from './components/Cascader'
 import FieldProgress from './components/Progress'
 import FieldSlider from './components/Slider'
-import FieldDatePicker from './components/DatePicker'
 import FieldFromNow from './components/FromNow'
+import FieldDatePicker from './components/DatePicker'
 import FieldRangePicker from './components/RangePicker'
+import FieldTimePicker from './components/TimePicker'
+import FieldTimeRangePicker from './components/TimeRangePicker'
+import FieldIndexColumn from './components/IndexColumn'
+import FieldSwitch from './components/Switch'
+
+import advancedFormat from 'dayjs/plugin/advancedFormat.js'
+import isoWeek from 'dayjs/plugin/isoWeek.js'
+import localeData from 'dayjs/plugin/localeData.js'
+import localizedFormat from 'dayjs/plugin/localizedFormat.js'
+import weekday from 'dayjs/plugin/weekday.js'
+import weekOfYear from 'dayjs/plugin/weekOfYear.js'
+
+import dayjs from 'dayjs'
+
+dayjs.extend(localeData)
+dayjs.extend(advancedFormat)
+dayjs.extend(isoWeek)
+dayjs.extend(weekOfYear)
+dayjs.extend(weekday)
+dayjs.extend(localizedFormat)
 
 export default defineComponent({
   name: 'ProField',
@@ -127,6 +150,229 @@ export default defineComponent({
           }
           return <>{emptyText.value}</>
         }
+      }
+
+      if (valueType.value === 'index') {
+        return <FieldIndexColumn text={(dataValue as number) + 1} />
+      }
+
+      if (valueType.value === 'indexBorder') {
+        return <FieldIndexColumn text={(dataValue as number) + 1} border />
+      }
+
+      /** 如果是日期的值 */
+      if (valueType.value === 'date') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+      /** 如果是周的值 */
+      if (valueType.value === 'dateWeek') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-wo"
+            picker="week"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是月的值 */
+      if (valueType.value === 'dateMonth') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM"
+            picker="month"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是季度的值 */
+      if (valueType.value === 'dateQuarter') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-[Q]Q"
+            picker="quarter"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是年的值 */
+      if (valueType.value === 'dateYear') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY"
+            picker="year"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'dateTime') {
+        return (
+          <FieldDatePicker
+            text={dataValue as number}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD HH:mm:ss"
+            showTime
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'fromNow') {
+        return (
+          <FieldFromNow
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是日期范围的值 */
+      if (valueType.value === 'dateRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是日期加时间类型的值的值 */
+      if (valueType.value === 'dateTimeRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM-DD HH:mm:ss"
+            showTime
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是周范围的值 */
+      if (valueType.value === 'dateWeekRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            picker="week"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是月范围的值 */
+      if (valueType.value === 'dateMonthRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-MM"
+            picker="month"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是季范围的值 */
+      if (valueType.value === 'dateQuarterRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY-Q"
+            picker="quarter"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是年范围的值 */
+      if (valueType.value === 'dateYearRange') {
+        return (
+          <FieldRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="YYYY"
+            picker="year"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是时间类型的值 */
+      if (valueType.value === 'time') {
+        return (
+          <FieldTimePicker
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            format="HH:mm:ss"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      /** 如果是时间类型的值 */
+      if (valueType.value === 'timeRange') {
+        return (
+          <FieldTimeRangePicker
+            text={dataValue as string[]}
+            v-slots={slots}
+            class={prefixCls}
+            format="HH:mm:ss"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
       }
 
       if (valueType.value === 'avatar' && typeof dataValue === 'string' && props.mode === 'read') {
@@ -266,6 +512,18 @@ export default defineComponent({
         )
       }
 
+      if (valueType.value === 'switch') {
+        return (
+          <FieldSwitch
+            text={dataValue as boolean}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
       if (valueType.value === 'cascader') {
         return (
           <FieldCascader
@@ -302,23 +560,12 @@ export default defineComponent({
         )
       }
 
-      if (valueType.value === 'dateTime') {
+      if (
+        valueType.value === 'select' ||
+        (valueType.value === 'text' && (props.valueEnum || props.request))
+      ) {
         return (
-          <FieldDatePicker
-            text={dataValue as number}
-            v-slots={slots}
-            class={prefixCls}
-            format="YYYY-MM-DD HH:mm:ss"
-            showTime
-            {...attrs}
-            {...(omit(proFieldProps.value, ['text']) as any)}
-          />
-        )
-      }
-
-      if (valueType.value === 'fromNow') {
-        return (
-          <FieldFromNow
+          <FieldSelect
             text={dataValue as string}
             v-slots={slots}
             class={prefixCls}
@@ -328,40 +575,46 @@ export default defineComponent({
         )
       }
 
-      /** 如果是日期范围的值 */
-      if (valueType.value === 'dateRange') {
+      if (valueType.value === 'code') {
         return (
-          <FieldRangePicker
-            text={dataValue as string[]}
+          <FieldCode
+            text={dataValue as string}
             v-slots={slots}
             class={prefixCls}
-            format="YYYY-MM-DD"
             {...attrs}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
       }
 
-      /** 如果是日期加时间类型的值的值 */
-      if (valueType.value === 'dateTimeRange') {
+      if (valueType.value === 'jsonCode') {
         return (
-          <FieldRangePicker
-            text={dataValue as string[]}
+          <FieldCode
+            text={dataValue as string}
             v-slots={slots}
             class={prefixCls}
-            format="YYYY-MM-DD HH:mm:ss"
-            showTime
+            language="json"
             {...attrs}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
       }
-      if (
-        valueType.value === 'select' ||
-        (valueType.value === 'text' && (props.valueEnum || props.request))
-      ) {
+
+      if (valueType.value === 'password') {
         return (
-          <FieldSelect
+          <FieldPassword
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'textarea') {
+        return (
+          <FieldTextArea
             text={dataValue as string}
             v-slots={slots}
             class={prefixCls}
