@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:41:40
+ * @LastEditTime: 2025-12-31 09:35:16
  * @Description:
  */
 import type { ProFieldProps, ProSchemaValueEnumObj, RequestOptionsType } from '../../type'
@@ -19,7 +19,7 @@ import {
 } from 'vue'
 import { selectFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { Select, type SelectProps } from 'ant-design-vue'
+import { Select, Spin, type SelectProps } from 'ant-design-vue'
 import { usePrefixCls, useState, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useFetchData } from '../../hooks/useFetchData'
 import { objectToMap } from '../../utils/objectToMap'
@@ -167,6 +167,9 @@ export default defineComponent({
     })
     return () => {
       if (mode.value === 'read') {
+        if (loading.value) {
+          return <Spin size="small" />
+        }
         const dom = proFieldParsingText(
           text.value!,
           objectToMap(

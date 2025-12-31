@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 17:24:10
+ * @LastEditTime: 2025-12-31 10:49:02
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
@@ -25,6 +25,7 @@ import FieldTextArea from './components/TextArea'
 import FieldCode from './components/Code'
 import FieldDigit from './components/Digit'
 import FieldSelect from './components/Select'
+import FieldTreeSelect from './components/TreeSelect'
 import FieldMoney from './components/Money'
 import FieldImage from './components/Image'
 import FieldColorPicker from './components/ColorPicker'
@@ -44,6 +45,7 @@ import FieldTimePicker from './components/TimePicker'
 import FieldTimeRangePicker from './components/TimeRangePicker'
 import FieldIndexColumn from './components/IndexColumn'
 import FieldSwitch from './components/Switch'
+import FieldSegmented from './components/Segmented'
 
 import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import isoWeek from 'dayjs/plugin/isoWeek.js'
@@ -512,6 +514,18 @@ export default defineComponent({
         )
       }
 
+      if (valueType.value === 'segmented') {
+        return (
+          <FieldSegmented
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
       if (valueType.value === 'switch') {
         return (
           <FieldSwitch
@@ -566,6 +580,18 @@ export default defineComponent({
       ) {
         return (
           <FieldSelect
+            text={dataValue as string}
+            v-slots={slots}
+            class={prefixCls}
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'treeSelect') {
+        return (
+          <FieldTreeSelect
             text={dataValue as string}
             v-slots={slots}
             class={prefixCls}

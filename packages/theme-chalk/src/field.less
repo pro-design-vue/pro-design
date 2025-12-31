@@ -1,5 +1,5 @@
 @import 'common/var';
-
+// @import (css) 'vue-color/style.css';
 // .@{pro-prefix}-field {
 // }
 
@@ -66,12 +66,14 @@
   justify-content: center;
   width: 18px;
   height: 18px;
+
   &-border {
-    color: #fff;
     font-size: 12px;
     line-height: 12px;
+    color: #fff;
     background-color: #314659;
     border-radius: 9px;
+
     &.top-three {
       background-color: #979797;
     }
@@ -81,8 +83,8 @@
 .@{pro-prefix}-field-readonly {
   &-textarea {
     display: inline-block;
-    line-height: 1.5715;
     max-width: 100%;
+    line-height: 1.5715;
     white-space: pre-wrap;
   }
 }

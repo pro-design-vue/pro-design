@@ -2,29 +2,28 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 14:18:52
+ * @LastEditTime: 2025-12-31 10:51:00
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
 
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
-import { baseFieldProps } from '../../props'
-import { Rate, type RateProps } from 'ant-design-vue'
+import { selectFieldProps } from '../../props'
+import { Spin, Segmented, type SegmentedProps } from 'ant-design-vue'
 import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
+import { useFetchData } from '../../hooks/useFetchData'
+import { objectToMap } from '../../utils/objectToMap'
+import { proFieldParsingText } from '../../utils/proFieldParsingText'
 import { omit } from '@pro-design-vue/utils'
 
 export default defineComponent({
-  name: 'FieldRate',
+  name: 'FieldSegmented',
   inheritAttrs: false,
   props: {
-    ...baseFieldProps,
-    text: {
-      type: Number,
-      default: undefined,
-    },
+    ...selectFieldProps,
     fieldProps: {
       type: Object as PropType<
-        RateProps & {
+        SegmentedProps & {
           onChange?: (...args: any[]) => void
         }
       >,
@@ -32,35 +31,46 @@ export default defineComponent({
     },
   },
   setup(props, { slots, attrs, expose }) {
-    const fieldRef = ref<HTMLInputElement>()
-    const prefixCls = usePrefixCls('field-rate')
-    const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
-    const [innerValue, setInnerValue] = useMergedState(undefined, {
+    const prefixCls = usePrefixCls('field-segmented')
+    const renderContent = useVNodeJSX()
+    const fieldRef = ref<HTMLInputElement>()
+
+    const [innerValue, setInnerValue] = useMergedState('', {
       value: computed(() => fieldProps.value?.value),
       onChange: (value) => {
         fieldProps.value?.onChange?.(value)
       },
     })
 
+    const { loading, options, fetchData, resetData } = useFetchData(props)
+
+    const onChange: SegmentedProps['onChange'] = (value) => {
+      setInnerValue(value)
+    }
+
     expose({
       fieldRef: computed(() => {
         return unref(fieldRef)
       }),
+      fetchData,
+      resetData,
     })
     return () => {
+      if (loading.value) {
+        return <Spin size="small" />
+      }
+
       if (mode.value === 'read') {
-        const dom = (
-          <Rate
-            disabled
-            allowHalf
-            style={{
-              lineHeight: 1,
-            }}
-            {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'allowHalf', 'disabled', 'value'])}
-            value={text.value}
-          />
+        const optionsValueEnum = options.value?.length
+          ? options.value?.reduce((pre: any, cur) => {
+              return { ...pre, [(cur.value as any) ?? '']: cur.label }
+            }, {})
+          : undefined
+
+        const dom = proFieldParsingText(
+          text.value!,
+          objectToMap(props.valueEnum || optionsValueEnum),
         )
 
         const render = renderContent('render', {
@@ -75,18 +85,15 @@ export default defineComponent({
 
       if (mode.value === 'edit' || mode.value === 'update') {
         const dom = (
-          <Rate
+          <Segmented
             ref={fieldRef}
             class={prefixCls}
             value={innerValue.value}
-            allowHalf={fieldProps.value?.allowHalf ?? true}
-            style={{
-              lineHeight: 1,
-            }}
+            options={options.value as SegmentedProps['options']}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['onChange', 'allowHalf', 'value'])}
+            {...omit(fieldProps.value ?? {}, ['onChange', 'options', 'value'])}
             v-slots={slots}
-            onChange={setInnerValue}
+            onChange={onChange}
           />
         )
 

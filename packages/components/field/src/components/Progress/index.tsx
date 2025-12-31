@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:39:10
+ * @LastEditTime: 2025-12-31 14:30:52
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -73,7 +73,7 @@ export default defineComponent({
           <Progress
             ref={ref}
             size={size}
-            style={{ minWidth: 100, maxWidth: 320 }}
+            style={{ minWidth: '100px', maxWidth: '320px', marginBottom: 0, marginInlineEnd: 0 }}
             percent={realValue.value}
             status={getProgressStatus(realValue.value as number)}
             {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}

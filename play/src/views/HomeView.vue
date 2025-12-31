@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 17:31:54
+ * @LastEditTime: 2025-12-31 17:14:25
  * @Description:
 -->
 <script setup lang="tsx">
@@ -10,6 +10,7 @@ import { ProField } from '@pro-design-vue/components'
 import { Space, Radio, Descriptions, Form } from 'ant-design-vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
+import { sleep } from '@pro-design-vue/utils'
 const state = ref<any>('read')
 const radio = ref('open')
 const numberRange = ref([123, 456])
@@ -19,7 +20,44 @@ const dateRangeValue = ref([
   dayjs('2019-11-16 12:50:26').valueOf(),
 ])
 
+const treeData = [
+  {
+    label: 'Node1',
+    value: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+      },
+    ],
+  },
+  {
+    label: 'Node2',
+    value: '0-1',
+    children: [
+      {
+        label: 'Child Node3',
+        value: '0-1-0',
+      },
+      {
+        label: 'Child Node4',
+        value: '0-1-1',
+      },
+      {
+        label: 'Child Node5',
+        value: '0-1-2',
+      },
+    ],
+  },
+]
+
+const requestTreeData = async () => {
+  await sleep(2000)
+  return treeData
+}
+
 const switchValue = ref(true)
+const treeValue = ref('0-1')
 
 const codeValue = ref(`
 yarn run v1.22.0
@@ -74,7 +112,7 @@ const handleRateChange = (value) => {
           <ProField text="100" valueType="money" :mode="state" />
         </Descriptions.Item>
         <Descriptions.Item label="颜色">
-          <ProField valueType="color" :mode="state" />
+          <ProField value="red" valueType="color" :mode="state" />
         </Descriptions.Item>
         <Descriptions.Item label="数字">
           <ProField text="19897979797979" valueType="digit" :mode="state" />
@@ -114,6 +152,86 @@ const handleRateChange = (value) => {
           <ProField
             text="open"
             :mode="state"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="树形选择框">
+          <ProField
+            v-model:value="treeValue"
+            :mode="state"
+            valueType="treeSelect"
+            style="width: 100%"
+            :request="
+              async () => {
+                await sleep(5000)
+                return [
+                  {
+                    value: 'zhejiang',
+                    name: '浙江',
+                    children: [
+                      {
+                        value: 'hangzhou',
+                        name: '杭州',
+                        children: [
+                          {
+                            value: 'xihu',
+                            name: '西湖',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    value: 'jiangsu',
+                    name: '江苏',
+                    children: [
+                      {
+                        value: 'nanjing',
+                        name: '南京',
+                        children: [
+                          {
+                            value: 'zhonghuamen',
+                            name: 'Zhong Hua Men',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ]
+              }
+            "
+            :field-props="{
+              // multiple: true,
+              // showSearch: true,
+              // autoClearSearchValue: true,
+              treeDefaultExpandAll: true,
+              treeNodeFilterProp: 'label',
+              fieldNames: {
+                label: 'name',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="分段控制器">
+          <ProField
+            text="open"
+            v-model:value="radio"
+            :mode="state"
+            valueType="segmented"
             :value-enum="{
               all: { text: '全部', disabled: true, status: 'Default' },
               open: {
@@ -237,21 +355,24 @@ const handleRateChange = (value) => {
             :mode="state"
             valueType="select"
             :request="
-              async () => [
-                { label: '全部', value: 'all' },
-                { label: '未解决', value: 'open' },
-                { label: '已解决', value: 'closed' },
-                { label: '解决中', value: 'processing' },
-                {
-                  label: '特殊选项',
-                  value: 'optGroup',
-                  optionType: 'optGroup',
-                  options: [
-                    { label: '不解决', value: 'no' },
-                    { label: '已废弃', value: 'clear' },
-                  ],
-                },
-              ]
+              async () => {
+                await sleep(5000)
+                return [
+                  { label: '全部', value: 'all' },
+                  { label: '未解决', value: 'open' },
+                  { label: '已解决', value: 'closed' },
+                  { label: '解决中', value: 'processing' },
+                  {
+                    label: '特殊选项',
+                    value: 'optGroup',
+                    optionType: 'optGroup',
+                    options: [
+                      { label: '不解决', value: 'no' },
+                      { label: '已废弃', value: 'clear' },
+                    ],
+                  },
+                ]
+              }
             "
           />
         </Descriptions.Item>
@@ -266,40 +387,43 @@ const handleRateChange = (value) => {
               },
             }"
             :request="
-              async () => [
-                {
-                  value: 'zhejiang',
-                  name: '浙江',
-                  children: [
-                    {
-                      value: 'hangzhou',
-                      name: '杭州',
-                      children: [
-                        {
-                          value: 'xihu',
-                          name: '西湖',
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  value: 'jiangsu',
-                  name: '江苏',
-                  children: [
-                    {
-                      value: 'nanjing',
-                      name: '南京',
-                      children: [
-                        {
-                          value: 'zhonghuamen',
-                          name: 'Zhong Hua Men',
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ]
+              async () => {
+                await sleep(5000)
+                return [
+                  {
+                    value: 'zhejiang',
+                    name: '浙江',
+                    children: [
+                      {
+                        value: 'hangzhou',
+                        name: '杭州',
+                        children: [
+                          {
+                            value: 'xihu',
+                            name: '西湖',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    value: 'jiangsu',
+                    name: '江苏',
+                    children: [
+                      {
+                        value: 'nanjing',
+                        name: '南京',
+                        children: [
+                          {
+                            value: 'zhonghuamen',
+                            name: 'Zhong Hua Men',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ]
+              }
             "
           />
         </Descriptions.Item>

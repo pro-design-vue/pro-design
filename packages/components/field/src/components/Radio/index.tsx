@@ -2,14 +2,14 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 09:39:53
+ * @LastEditTime: 2025-12-31 09:34:08
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
 
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { selectFieldProps } from '../../props'
-import { Spin, theme, Radio, type RadioGroupProps } from 'ant-design-vue'
+import { Spin, Radio, type RadioGroupProps } from 'ant-design-vue'
 import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useFetchData } from '../../hooks/useFetchData'
 import { objectToMap } from '../../utils/objectToMap'
@@ -34,7 +34,6 @@ export default defineComponent({
     },
   },
   setup(props, { slots, attrs, expose }) {
-    const { token } = theme.useToken()
     const { mode, text, fieldProps } = toRefs(props)
     const prefixCls = usePrefixCls('field-radio')
     const renderContent = useVNodeJSX()

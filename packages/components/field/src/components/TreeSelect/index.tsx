@@ -2,17 +2,16 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 09:37:54
+ * @LastEditTime: 2025-12-31 10:41:27
  * @Description:
  */
 import type { ProFieldProps, ProSchemaValueEnumObj } from '../../type'
 
-import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
+import { computed, defineComponent, ref, toRefs, unref, watch, type PropType } from 'vue'
 import { selectFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
-import { Cascader, Spin, type CascaderProps } from 'ant-design-vue'
-import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { LoadingOutlined } from '@ant-design/icons-vue'
+import { Spin, TreeSelect, type TreeSelectProps } from 'ant-design-vue'
+import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useFetchData } from '../../hooks/useFetchData'
 import { objectToMap } from '../../utils/objectToMap'
 import { proFieldParsingText } from '../../utils/proFieldParsingText'
@@ -20,13 +19,16 @@ import { omit } from '@pro-design-vue/utils'
 import type { DefaultOptionType } from 'ant-design-vue/es/select'
 
 export default defineComponent({
-  name: 'FieldCascader',
+  name: 'FieldTreeSelect',
   inheritAttrs: false,
   props: {
     ...selectFieldProps,
     fieldProps: {
       type: Object as PropType<
-        CascaderProps & {
+        TreeSelectProps & {
+          defaultSearchValue?: string
+          fetchDataOnSearch?: boolean
+          searchOnFocus?: boolean
           onChange?: (...args: any[]) => void
         }
       >,
@@ -36,10 +38,23 @@ export default defineComponent({
   setup(props, { slots, attrs, expose }) {
     const { mode, text, fieldProps } = toRefs(props)
     const intl = useIntl()
-    const prefixCls = usePrefixCls('field-cascader')
+    const prefixCls = usePrefixCls('field-tree-select')
     const renderContent = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
+    const fetchDataOnSearch = computed(() => fieldProps?.value?.fetchDataOnSearch ?? true)
+    const autoClearSearchValue = computed(() => fieldProps?.value?.autoClearSearchValue ?? true)
+    const [searchValue, setSearchValue] = useMergedState<string | undefined>(undefined, {
+      onChange: fieldProps.value?.onSearch as any,
+      value: computed(() => fieldProps.value?.searchValue),
+    })
     const { loading, options, fetchData, resetData } = useFetchData(props)
+
+    watch(
+      () => fieldProps?.value?.searchValue,
+      (newSearchValue) => {
+        setSearchValue(newSearchValue)
+      },
+    )
 
     const optionsValueEnum = computed(() => {
       if (mode.value !== 'read') return
@@ -47,7 +62,7 @@ export default defineComponent({
       const {
         label: labelPropsName = 'label',
         value: valuePropsName = 'value',
-        children: optionsPropsName = 'children',
+        children: childrenPropsName = 'children',
       } = fieldProps?.value?.fieldNames || {}
 
       const valuesMap = new Map()
@@ -61,13 +76,22 @@ export default defineComponent({
         while (i < length) {
           const cur = _options[i++]
           valuesMap.set(cur?.[valuePropsName], cur?.[labelPropsName])
-          traverseOptions(cur?.[optionsPropsName])
+          traverseOptions(cur?.[childrenPropsName])
         }
         return valuesMap
       }
 
       return traverseOptions(options.value)
     })
+
+    const onChange: TreeSelectProps['onChange'] = (value, optionList, extra) => {
+      // 将搜索框置空 和 antd 行为保持一致
+      if (fieldProps.value?.showSearch && fieldProps.value?.autoClearSearchValue) {
+        fetchData(undefined)
+        setSearchValue(undefined)
+      }
+      fieldProps.value?.onChange?.(value, optionList, extra)
+    }
 
     expose({
       fieldRef: computed(() => {
@@ -102,18 +126,50 @@ export default defineComponent({
         const placeholder =
           fieldProps.value?.placeholder || intl.getMessage('tableForm.selectPlaceholder', '请选择')
         const dom = (
-          <Cascader
+          <TreeSelect
             ref={fieldRef}
             class={prefixCls}
             allowClear={fieldProps.value?.allowClear ?? true}
-            suffixIcon={loading.value ? <LoadingOutlined /> : undefined}
-            placeholder={placeholder}
             loading={loading.value}
-            style={{ minWidth: '100px' }}
+            searchValue={searchValue.value}
+            autoClearSearchValue={autoClearSearchValue.value}
+            placeholder={placeholder}
+            onClear={() => {
+              fieldProps?.value?.onClear?.()
+              fetchData(undefined)
+              if (fieldProps?.value?.showSearch) {
+                setSearchValue(undefined)
+              }
+            }}
+            treeData={options.value as TreeSelectProps['treeData']}
+            style={{ minWidth: '60px' }}
             {...attrs}
-            {...omit(fieldProps.value ?? {}, ['options', 'allowClear', 'loading', 'placeholder'])}
-            options={options.value as CascaderProps['options']}
+            {...omit(fieldProps.value ?? {}, [
+              'searchValue',
+              'loading',
+              'allowClear',
+              'placeholder',
+              'fetchDataOnSearch',
+              'defaultSearchValue',
+              'autoClearSearchValue',
+              'onChange',
+              'onSearch',
+              'onClear',
+              'onBlur',
+            ])}
             v-slots={slots}
+            onSearch={(value) => {
+              if (fetchDataOnSearch.value) {
+                fetchData(value)
+              }
+              setSearchValue(value)
+            }}
+            onBlur={(e) => {
+              setSearchValue(undefined)
+              fetchData(undefined)
+              fieldProps?.value?.onBlur?.(e)
+            }}
+            onChange={onChange}
           />
         )
 

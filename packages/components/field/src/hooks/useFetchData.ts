@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-11 11:10:03
  * @LastEditors: shen
- * @LastEditTime: 2025-12-28 16:18:41
+ * @LastEditTime: 2025-12-31 10:39:50
  * @Description:
  */
 import type { ProFieldProps, ProFieldValueEnumType, SelectOptionType } from '../type'
@@ -52,8 +52,9 @@ export function useFetchData(props: ProFieldProps) {
   const { fieldProps } = toRefs(props)
 
   const [keyWords, setKeyWords] = useState<string | undefined>(props.defaultKeyWords)
+
   /** Key 是用来缓存请求的，如果不在是有问题 */
-  const cacheKey = computed(() => {
+  const [cacheKey] = useState(() => {
     if (props.proFieldKey) {
       return props.proFieldKey.toString()
     }
@@ -199,7 +200,6 @@ export function useFetchData(props: ProFieldProps) {
       setKeyWords(fetchKeyWords)
     },
     resetData: () => {
-      console.log('34534534')
       setKeyWords(undefined)
       setLocaleData(() => [])
     },
