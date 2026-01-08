@@ -1,3 +1,10 @@
+/*
+ * @Author: shen
+ * @Date: 2025-12-29 09:06:22
+ * @LastEditors: shen
+ * @LastEditTime: 2026-01-05 15:55:39
+ * @Description:
+ */
 /** 获取展示符号 */
 export function getSymbolByRealValue(realValue: number) {
   if (realValue === 0) {
@@ -12,7 +19,7 @@ export function getSymbolByRealValue(realValue: number) {
 /** 获取颜色 */
 export function getColorByRealValue(realValue: number /** ,color: string */) {
   if (realValue === 0) {
-    return '#595959'
+    return ''
   }
   return realValue > 0 ? '#52c41a' : '#ff4d4f'
 }

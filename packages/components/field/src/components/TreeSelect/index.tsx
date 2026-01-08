@@ -2,20 +2,20 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 10:41:27
+ * @LastEditTime: 2026-01-06 14:47:58
  * @Description:
  */
-import type { ProFieldProps, ProSchemaValueEnumObj } from '../../type'
+import type { ProFieldProps } from '../../type'
 
 import { computed, defineComponent, ref, toRefs, unref, watch, type PropType } from 'vue'
 import { selectFieldProps } from '../../props'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { Spin, TreeSelect, type TreeSelectProps } from 'ant-design-vue'
 import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { useFetchData } from '../../hooks/useFetchData'
+import { useFieldFetchData } from '../../hooks/useFieldFetchData'
 import { objectToMap } from '../../utils/objectToMap'
 import { proFieldParsingText } from '../../utils/proFieldParsingText'
-import { omit } from '@pro-design-vue/utils'
+import { omit, type ProSchemaValueEnumObj } from '@pro-design-vue/utils'
 import type { DefaultOptionType } from 'ant-design-vue/es/select'
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
       onChange: fieldProps.value?.onSearch as any,
       value: computed(() => fieldProps.value?.searchValue),
     })
-    const { loading, options, fetchData, resetData } = useFetchData(props)
+    const { loading, options, fetchData, resetData } = useFieldFetchData(props)
 
     watch(
       () => fieldProps?.value?.searchValue,

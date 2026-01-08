@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-12-31 09:37:54
  * @Description:
  */
-import type { ProFieldProps, ProSchemaValueEnumObj } from '../../type'
+import type { ProFieldProps } from '../../type'
 
 import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNode } from 'vue'
 import { selectFieldProps } from '../../props'
@@ -13,10 +13,10 @@ import { useIntl } from '@pro-design-vue/components/config-provider'
 import { Cascader, Spin, type CascaderProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { LoadingOutlined } from '@ant-design/icons-vue'
-import { useFetchData } from '../../hooks/useFetchData'
+import { useFieldFetchData } from '../../hooks/useFieldFetchData'
 import { objectToMap } from '../../utils/objectToMap'
 import { proFieldParsingText } from '../../utils/proFieldParsingText'
-import { omit } from '@pro-design-vue/utils'
+import { omit, type ProSchemaValueEnumObj } from '@pro-design-vue/utils'
 import type { DefaultOptionType } from 'ant-design-vue/es/select'
 
 export default defineComponent({
@@ -39,7 +39,7 @@ export default defineComponent({
     const prefixCls = usePrefixCls('field-cascader')
     const renderContent = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
-    const { loading, options, fetchData, resetData } = useFetchData(props)
+    const { loading, options, fetchData, resetData } = useFieldFetchData(props)
 
     const optionsValueEnum = computed(() => {
       if (mode.value !== 'read') return

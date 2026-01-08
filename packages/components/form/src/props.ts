@@ -1,26 +1,19 @@
 /*
  * @Author: shen
- * @Date: 2023-07-30 08:16:14
+ * @Date: 2026-01-04 09:12:57
  * @LastEditors: shen
- * @LastEditTime: 2025-10-24 13:50:43
+ * @LastEditTime: 2026-01-07 16:35:59
  * @Description:
  */
-import type { CSSProperties, ExtractPropTypes, PropType } from 'vue'
-import type {
-  ProFormPropsType,
-  ProFormItemType,
-  Entity,
-  SpanConfig,
-  ProFormActionType,
-  KeyboardEventHandler,
-} from './type'
+import type { FormProps } from 'ant-design-vue'
+import type { PropType } from 'vue'
+import type { BaseFormProps } from './type'
+import { omit } from '@pro-design-vue/utils'
 
-import type { StepsProps, StepProps, FormProps } from 'ant-design-vue'
-
-export const antFormProps = () => ({
+const antFormProps = {
   layout: {
     type: String as PropType<FormProps['layout']>,
-    default: 'horizontal',
+    default: undefined,
   },
   labelCol: {
     type: Object as PropType<FormProps['labelCol']>,
@@ -62,51 +55,10 @@ export const antFormProps = () => ({
     default: false,
   },
   name: String,
-})
+}
 
-export const commonFieldProps = () => ({
-  value: {
-    type: [String, Array, Number, Object, Boolean] as PropType<any>,
-  },
-  readonly: {
-    type: Boolean,
-    default: undefined,
-  },
-  readonlyProps: {
-    type: Object as PropType<ProFormItemType['readonlyProps']>,
-    default: undefined,
-  },
-  valueEnum: {
-    type: [Function, Object] as PropType<ProFormItemType['valueEnum']>,
-    default: undefined,
-  },
-  options: {
-    type: [Array, Function] as PropType<ProFormItemType['options']>,
-    default: undefined,
-  },
-  request: {
-    type: Function as PropType<ProFormItemType['request']>,
-    default: undefined,
-  },
-  params: {
-    type: [Function, Object] as PropType<ProFormItemType['params']>,
-    default: undefined,
-  },
-  dependencies: {
-    type: Array as PropType<ProFormItemType['dependencies']>,
-    default: undefined,
-  },
-  onChange: {
-    type: Function as PropType<ProFormItemType['onChange']>,
-  },
-  onPressEnter: {
-    type: Function as PropType<KeyboardEventHandler>,
-  },
-})
-
-export const baseFormProps = () => ({
-  ...antFormProps(),
-  // name: String,
+export const baseFormProps = {
+  ...antFormProps,
   loading: {
     type: Boolean,
     default: undefined,
@@ -119,10 +71,6 @@ export const baseFormProps = () => ({
     type: Boolean,
     default: true,
   },
-  gridSubmitter: {
-    type: Boolean,
-    default: false,
-  },
   omitNil: { type: Boolean, default: true },
   readonly: Boolean,
   grid: Boolean,
@@ -131,192 +79,74 @@ export const baseFormProps = () => ({
     default: undefined,
   },
   formKey: String,
-  theme: {
-    type: String as PropType<ProFormPropsType['theme']>,
-    default: 'custom',
+  autoFocusFirstInput: {
+    type: Boolean,
+    default: undefined,
   },
   customUi: {
     type: Boolean,
     default: true,
   },
   initialValues: {
-    type: Object as PropType<ProFormPropsType['initialValues']>,
+    type: Object as PropType<BaseFormProps['initialValues']>,
   },
-  readonlyProps: {
-    type: Object as PropType<ProFormPropsType['readonlyProps']>,
+  formItemProps: {
+    type: Object as PropType<BaseFormProps['formItemProps']>,
+  },
+  fieldProps: {
+    type: Object as PropType<BaseFormProps['fieldProps']>,
+  },
+  proFieldProps: {
+    type: Object as PropType<BaseFormProps['proFieldProps']>,
+  },
+  groupProps: {
+    type: Object as PropType<BaseFormProps['groupProps']>,
+  },
+  formComponentType: {
+    type: Object as PropType<BaseFormProps['formComponentType']>,
   },
   colProps: {
-    type: Object as PropType<ProFormPropsType['colProps']>,
+    type: Object as PropType<BaseFormProps['colProps']>,
   },
   rowProps: {
-    type: Object as PropType<ProFormPropsType['rowProps']>,
+    type: Object as PropType<BaseFormProps['rowProps']>,
   },
   dateFormatter: {
-    type: [String, Function, Boolean] as PropType<ProFormPropsType['dateFormatter']>,
+    type: [String, Function, Boolean] as PropType<BaseFormProps['dateFormatter']>,
     default: 'string',
   },
-  params: {
-    type: Object as PropType<ProFormPropsType['params']>,
+  formRef: {
+    type: Function as PropType<BaseFormProps['formRef']>,
   },
-  items: {
-    type: Array as PropType<ProFormItemType<Entity, any>[]>,
+  params: {
+    type: Object as PropType<BaseFormProps['params']>,
   },
   request: {
-    type: Function as PropType<ProFormPropsType['request']>,
+    type: Function as PropType<BaseFormProps['request']>,
   },
   requestAbort: {
     type: Boolean,
   },
   submitter: {
-    type: [Object, Boolean] as PropType<ProFormPropsType['submitter']>,
+    type: [Object, Boolean] as PropType<BaseFormProps['submitter']>,
     default: undefined,
-  },
-  onReset: {
-    type: Function as PropType<ProFormPropsType['onReset']>,
   },
   onFinish: {
-    type: Function as PropType<ProFormPropsType['onFinish']>,
+    type: Function as PropType<BaseFormProps['onFinish']>,
   },
   onFinishFailed: {
-    type: Function as PropType<ProFormPropsType['onFinishFailed']>,
+    type: Function as PropType<BaseFormProps['onFinishFailed']>,
   },
   onLoadingChange: {
-    type: Function as PropType<ProFormPropsType['onLoadingChange']>,
+    type: Function as PropType<BaseFormProps['onLoadingChange']>,
   },
   onValuesChange: {
-    type: Function as PropType<ProFormPropsType['onValuesChange']>,
+    type: Function as PropType<BaseFormProps['onValuesChange']>,
   },
   onInit: {
-    type: Function as PropType<(values: any, formAction: ProFormActionType) => void>,
+    type: Function as PropType<BaseFormProps['onInit']>,
     default: undefined,
   },
-})
+}
 
-export const drawerOrModalFormProps = () => ({
-  ...baseFormProps(),
-  submitTimeout: {
-    type: Number,
-    default: undefined,
-  },
-  title: {
-    type: String,
-    default: undefined,
-  },
-  width: {
-    type: [String, Number] as PropType<string | number>,
-    default: 800,
-  },
-  open: {
-    type: Boolean,
-    default: undefined,
-  },
-  closeOnFinish: {
-    type: Boolean,
-    default: true,
-  },
-  confirmOnValuesChange: {
-    type: Boolean,
-    default: true,
-  },
-  onOpenChange: {
-    type: Function as PropType<(open: boolean) => void>,
-    default: undefined,
-  },
-})
-
-export const queryFilterProps = () => ({
-  ...baseFormProps(),
-  preserve: {
-    type: Boolean,
-    default: true,
-  },
-  defaultCollapsed: {
-    type: Boolean,
-    default: true,
-  },
-  collapsed: {
-    type: Boolean as PropType<boolean | undefined>,
-    default: undefined,
-  },
-  defaultColsNumber: Number,
-  defaultFormItemsNumber: Number,
-  labelWidth: {
-    type: [String, Number] as PropType<number | 'auto'>,
-    default: undefined,
-  },
-  searchText: {
-    type: String,
-    default: undefined,
-  },
-  resetText: {
-    type: String,
-    default: undefined,
-  },
-  searchGutter: {
-    type: Number,
-    default: 24,
-  },
-  span: {
-    type: [Number, Object] as PropType<SpanConfig>,
-  },
-  // span: definePropType<SpanConfig>([Number, String]),
-  showHiddenNum: Boolean,
-  ignoreRules: Boolean,
-  resetOnSubmit: {
-    type: Boolean,
-    default: undefined,
-  },
-  onCollapse: {
-    type: Function as PropType<(val: boolean) => void>,
-    default: undefined,
-  },
-  onResize: {
-    type: Function as PropType<(width: number, height: number) => void>,
-    default: undefined,
-  },
-})
-export const stepsFormProps = () => ({
-  ...baseFormProps(),
-  current: {
-    type: Number,
-    default: undefined,
-  },
-  steps: {
-    type: Array as PropType<(StepProps & { formProps?: BaseFormProps })[]>,
-    default: () => [],
-  },
-  items: {
-    type: Array as PropType<ProFormItemType<Entity, any>[][]>,
-    default: () => [],
-  },
-  stepsProps: {
-    type: Object as PropType<StepsProps>,
-  },
-  containerStyle: {
-    type: Object as PropType<CSSProperties>,
-  },
-  onCurrentChange: {
-    type: Function as PropType<(current: number) => void>,
-    default: undefined,
-  },
-})
-
-export const formProps = () => ({
-  ...baseFormProps(),
-  ...drawerOrModalFormProps(),
-  ...queryFilterProps(),
-  ...stepsFormProps(),
-  items: {
-    type: Array as PropType<Array<ProFormItemType<Entity, any>[]> | ProFormItemType<Entity, any>[]>,
-    default: () => [],
-  },
-})
-
-export type BaseFormProps = Partial<ExtractPropTypes<ReturnType<typeof baseFormProps>>>
-
-export type ProFormProps = Partial<ExtractPropTypes<ReturnType<typeof formProps>>>
-export type ProQueryFilterProps = Partial<ExtractPropTypes<ReturnType<typeof queryFilterProps>>>
-export type ProStepsFormProps = Partial<ExtractPropTypes<ReturnType<typeof stepsFormProps>>>
-export type ProDrawerOrModalFormProps = Partial<
-  ExtractPropTypes<ReturnType<typeof drawerOrModalFormProps>>
->
+export const proFormProps = omit(baseFormProps, ['formComponentType'])

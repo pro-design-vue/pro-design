@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-22 10:44:51
+ * @LastEditTime: 2026-01-01 14:05:36
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -175,6 +175,7 @@ export default defineComponent({
 
       let defaultDom = (
         <Button
+          style={props.type === 'link' ? { height: 'auto', padding: 0 } : {}}
           {...attrs}
           {...buttonProps}
           class={prefixCls}

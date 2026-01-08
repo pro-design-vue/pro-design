@@ -11,7 +11,7 @@ import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNod
 import { selectFieldProps } from '../../props'
 import { Spin, theme, Checkbox, type CheckboxGroupProps } from 'ant-design-vue'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { useFetchData } from '../../hooks/useFetchData'
+import { useFieldFetchData } from '../../hooks/useFieldFetchData'
 import { objectToMap } from '../../utils/objectToMap'
 import { proFieldParsingText } from '../../utils/proFieldParsingText'
 import { omit } from '@pro-design-vue/utils'
@@ -39,7 +39,7 @@ export default defineComponent({
     const renderContent = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
 
-    const { loading, options, fetchData, resetData } = useFetchData(props)
+    const { loading, options, fetchData, resetData } = useFieldFetchData(props)
 
     expose({
       fieldRef: computed(() => {

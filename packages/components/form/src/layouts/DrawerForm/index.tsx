@@ -2,15 +2,15 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-05 13:19:00
+ * @LastEditTime: 2026-01-06 09:01:35
  * @Description:
  */
 import type { PropType } from 'vue'
 
 import { defineComponent } from 'vue'
+import BaseForm from '../../BaseForm'
 import { omit } from '@pro-design-vue/utils'
-import { proFormProps } from './props'
-import BaseForm from './BaseForm'
+import { proFormProps } from '../../props'
 
 export default defineComponent({
   name: 'ProForm',
@@ -20,13 +20,9 @@ export default defineComponent({
     return () => (
       <BaseForm
         {...attrs}
-        {...omit(props, ['layout', 'formRef', 'onInit'])}
-        v-slots={slots}
         layout={props.layout ?? 'vertical'}
-        onInit={(values, form) => {
-          props.formRef?.(form)
-          props.onInit?.(values, form)
-        }}
+        {...omit(props, ['layout'])}
+        v-slots={slots}
       />
     )
   },

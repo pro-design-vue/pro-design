@@ -114,6 +114,7 @@ export default defineComponent({
             placeholder={placeholder}
             allowClear={fieldProps.value?.allowClear ?? true}
             class={prefixCls}
+            style={{ minWidth: '100px' }}
             {...attrs}
             {...omit(fieldProps.value ?? {}, [
               'onChange',

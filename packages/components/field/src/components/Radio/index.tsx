@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 09:34:08
+ * @LastEditTime: 2026-01-04 09:34:58
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -11,7 +11,7 @@ import { computed, defineComponent, ref, toRefs, unref, type PropType, type VNod
 import { selectFieldProps } from '../../props'
 import { Spin, Radio, type RadioGroupProps } from 'ant-design-vue'
 import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { useFetchData } from '../../hooks/useFetchData'
+import { useFieldFetchData } from '../../hooks/useFieldFetchData'
 import { objectToMap } from '../../utils/objectToMap'
 import { proFieldParsingText } from '../../utils/proFieldParsingText'
 import { omit } from '@pro-design-vue/utils'
@@ -46,7 +46,7 @@ export default defineComponent({
       },
     })
 
-    const { loading, options, fetchData, resetData } = useFetchData(props)
+    const { loading, options, fetchData, resetData } = useFieldFetchData(props)
 
     const onChange: RadioGroupProps['onChange'] = (e) => {
       setInnerValue(e.target.value)

@@ -1,8 +1,7 @@
 import { Fragment, type CSSProperties, type FunctionalComponent, type VNode } from 'vue'
-import type { ProFieldValueEnumType, ProSchemaValueEnumMap } from '../type'
-import type { ProVNode } from 'pro-design-vue'
 import { Badge, Space } from 'ant-design-vue'
 import { getType } from './objectToMap'
+import type { ProFieldValueEnumType, ProSchemaValueEnumMap, ProVNode } from '@pro-design-vue/utils'
 
 type StatusProps = {
   className?: string

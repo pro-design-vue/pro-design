@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 09:15:45
  * @LastEditors: shen
- * @LastEditTime: 2025-12-26 14:42:34
+ * @LastEditTime: 2026-01-08 09:27:35
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -110,7 +110,9 @@ export const proFieldProps = {
     default: 'text',
   },
   emptyText: {
-    type: [Object, String, Number, null, Boolean, Array] as PropType<ProFieldProps['emptyText']>,
+    type: [Object, String, Number, null, Boolean, Array, Function] as PropType<
+      ProFieldProps['emptyText']
+    >,
     default: '-',
   },
   open: {

@@ -2,13 +2,13 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 17:14:25
+ * @LastEditTime: 2026-01-08 17:19:59
  * @Description:
 -->
 <script setup lang="tsx">
-import { ProField } from '@pro-design-vue/components'
-import { Space, Radio, Descriptions, Form } from 'ant-design-vue'
-import { ref } from 'vue'
+import { ProField, ProButton, ProFormItem, ProFormField, ProForm } from '@pro-design-vue/components'
+import { Space, Radio, Descriptions, Form, Input } from 'ant-design-vue'
+import { Fragment, ref } from 'vue'
 import dayjs from 'dayjs'
 import { sleep } from '@pro-design-vue/utils'
 const state = ref<any>('read')
@@ -58,7 +58,14 @@ const requestTreeData = async () => {
 
 const switchValue = ref(true)
 const treeValue = ref('0-1')
-
+const optionRender = () => {
+  return (
+    <Fragment>
+      <ProButton>aaa</ProButton>
+      <ProButton>bbb</ProButton>
+    </Fragment>
+  )
+}
 const codeValue = ref(`
 yarn run v1.22.0
 $ eslint --format=pretty ./packages
@@ -68,10 +75,68 @@ Done in 9.70s.
 const handleRateChange = (value) => {
   console.log('🚀 ~ handleRateChange ~ value:', value)
 }
+
+const fetchaData = async () => {
+  return {
+    age: '909090',
+  }
+}
 </script>
 
 <template>
   <div style="width: 1000px; padding: 50px 30px; margin: 100px; border: 1px solid #f1f1f1">
+    <ProForm :request="fetchaData" :initial-values="{ age: '666666' }">
+      <ProForm.Field
+        label="内部"
+        tooltip="我是Pro Component"
+        initialValue="222222"
+        name="age"
+        width="lg"
+        addonBefore="addonBefore"
+        addonAfter="addonAfter"
+        :allow-clear="false"
+        placeholder="请输入内部名称"
+        :mode="state"
+        :rules="[{ required: true }]"
+      />
+      <ProFormField
+        label="性别"
+        initialValue="0"
+        value-type="select"
+        name="sex"
+        width="sm"
+        :mode="state"
+        :value-enum="{
+          0: {
+            text: '男',
+          },
+        }"
+      />
+      <ProFormField
+        label="颜色"
+        initialValue="red"
+        value-type="color"
+        name="color"
+        width="sm"
+        :mode="state"
+        :rules="[{ required: true }]"
+      />
+      <ProForm.Item
+        name="age1"
+        label="测试"
+        addonBefore="addonBefore"
+        addonAfter="addonAfter"
+        help="asdas"
+        tooltip="12312312312"
+      >
+        <template #default="{ value, onChange }">
+          <Input :value="value" @change="(e) => onChange(e.target.value)" />
+        </template>
+      </ProForm.Item>
+    </ProForm>
+    <!-- <ProFormItem>
+      <ProField text="" mode="read" />
+    </ProFormItem> -->
     <Form>
       <Space>
         <Radio.Group v-model:value="state">
@@ -83,7 +148,9 @@ const handleRateChange = (value) => {
       <br />
       <Descriptions :column="2">
         <Descriptions.Item label="空字符串">
-          <ProField text="" mode="read" />
+          <ProField text="" mode="read">
+            <!-- <template #render></template> -->
+          </ProField>
         </Descriptions.Item>
         <Descriptions.Item label="头像">
           <ProField
@@ -531,6 +598,15 @@ const handleRateChange = (value) => {
         </Descriptions.Item>
         <Descriptions.Item label="密码">
           <ProField text="password" valueType="password" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="操作">
+          <ProField valueType="option" :render="optionRender">
+            <!-- <template #render>
+              <ProButton type="link">aaa</ProButton>
+              <ProButton type="link">bbb</ProButton>
+              <ProButton type="link">ccc</ProButton>
+            </template> -->
+          </ProField>
         </Descriptions.Item>
         <Descriptions.Item label="代码块">
           <ProField v-model:value="codeValue" valueType="code" :mode="state" />

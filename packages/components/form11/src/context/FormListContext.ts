@@ -1,17 +1,23 @@
 /*
  * @Author: shen
- * @Date: 2026-01-06 16:38:46
+ * @Date: 2022-06-08 20:07:35
  * @LastEditors: shen
- * @LastEditTime: 2026-01-06 17:02:54
+ * @LastEditTime: 2025-07-18 13:21:20
  * @Description:
  */
-import type { NamePath } from '@pro-design-vue/components/form11'
-import { inject, provide, type ComputedRef, type InjectionKey } from 'vue'
+import type { ComputedRef, InjectionKey } from 'vue'
+import type { Entity, NamePath } from '../type'
+
+import { inject, provide } from 'vue'
 
 export interface FormListContextProps {
-  listName: ComputedRef<any>
-  name: ComputedRef<number>
-  key: ComputedRef<number>
+  isList: boolean
+  fieldKey: number
+  originName?: NamePath
+  index?: ComputedRef<number>
+  listName?: ComputedRef<(string | number)[]>
+  listKey?: string
+  rowData: ComputedRef<Entity>
 }
 
 export const FormListContextKey: InjectionKey<FormListContextProps> = Symbol('FormListContext')

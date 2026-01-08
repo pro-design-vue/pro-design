@@ -2,10 +2,11 @@
  * @Author: shen
  * @Date: 2025-12-23 10:48:04
  * @LastEditors: shen
- * @LastEditTime: 2025-12-23 14:42:15
+ * @LastEditTime: 2026-01-06 14:48:50
  * @Description:
  */
-import type { ProFieldValueEnumType, ProSchemaValueEnumMap } from '../type'
+
+import type { ProFieldValueEnumType, ProSchemaValueEnumMap } from '@pro-design-vue/utils'
 
 /**
  * 获取类型的 type

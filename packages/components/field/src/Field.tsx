@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 10:49:02
+ * @LastEditTime: 2026-01-01 10:11:34
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
@@ -16,8 +16,9 @@ import {
   omitKeysAndUndefined,
   omitUndefined,
   pickProProps,
+  type ProVNode,
 } from '@pro-design-vue/utils'
-import { usePrefixCls } from '@pro-design-vue/hooks'
+import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { Avatar } from 'ant-design-vue'
 import FieldText from './components/Text'
 import FieldPassword from './components/Password'
@@ -46,6 +47,7 @@ import FieldTimeRangePicker from './components/TimeRangePicker'
 import FieldIndexColumn from './components/IndexColumn'
 import FieldSwitch from './components/Switch'
 import FieldSegmented from './components/Segmented'
+import FieldOptions from './components/Options'
 
 import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import isoWeek from 'dayjs/plugin/isoWeek.js'
@@ -70,6 +72,7 @@ export default defineComponent({
   setup(props, { slots, attrs, emit }) {
     const fieldRef = ref(null)
     const prefixCls = usePrefixCls('field')
+    const renderContent = useVNodeJSX()
     const { mode, text, emptyText, fieldProps: restFieldProps, valueType, readonly } = toRefs(props)
     const onChangeCallBack = (...restParams: any[]) => {
       restFieldProps.value?.onChange?.(...restParams)
@@ -143,12 +146,12 @@ export default defineComponent({
         valueType.value !== 'switch'
       ) {
         if (typeof dataValue !== 'boolean' && typeof dataValue !== 'number' && !dataValue) {
-          if (props.render) {
-            return props.render({
-              text: dataValue,
-              props: { ...proFieldProps.value } as ProFieldRenderProps,
-              dom: <>{emptyText.value}</>,
-            })
+          const render = renderContent('render', {
+            params: { ...proFieldProps.value, text: dataValue, dom: <>{emptyText.value}</> },
+            slotFirst: true,
+          })
+          if (render) {
+            return render
           }
           return <>{emptyText.value}</>
         }
@@ -371,6 +374,18 @@ export default defineComponent({
             v-slots={slots}
             class={prefixCls}
             format="HH:mm:ss"
+            {...attrs}
+            {...(omit(proFieldProps.value, ['text']) as any)}
+          />
+        )
+      }
+
+      if (valueType.value === 'option') {
+        return (
+          <FieldOptions
+            class={prefixCls}
+            v-slots={slots}
+            text={dataValue as string}
             {...attrs}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />

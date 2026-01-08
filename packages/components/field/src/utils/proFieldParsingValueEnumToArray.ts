@@ -2,10 +2,11 @@
  * @Author: shen
  * @Date: 2025-12-23 10:46:09
  * @LastEditors: shen
- * @LastEditTime: 2025-12-23 10:50:16
+ * @LastEditTime: 2026-01-06 14:49:27
  * @Description:
  */
-import type { ProFieldValueEnumType, RequestOptionsType, SelectOptionType } from '../type'
+import type { ProFieldValueEnumType, RequestOptionsType } from '@pro-design-vue/utils'
+import type { SelectOptionType } from '../type'
 import { objectToMap } from './objectToMap'
 
 /**
