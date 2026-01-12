@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 17:23:51
+ * @LastEditTime: 2026-01-12 17:01:44
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -18,6 +18,8 @@ import ProField from '@pro-design-vue/components/field'
 import ProFormItem from '../FormItem'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { pickProFormItemProps } from '../../utils/pickProFormItemProps'
+import ColWrapper from '../Grid/ColWrapper'
+import { useInjectForm } from '../../context/FormContext'
 const ITEM_SLOTS_KEYS = ['extra', 'help', 'label', 'extra', 'addonAfter', 'tooltip', 'addonBefore']
 export type ProFormFieldProps<T = any, FiledProps = Record<string, any>> = ProSchema<
   T,
@@ -77,6 +79,10 @@ export const proFormFieldProps = {
     default: undefined,
   },
   disabled: {
+    type: Boolean as PropType<ProFormFieldProps['disabled']>,
+    default: undefined,
+  },
+  autoFocus: {
     type: Boolean as PropType<ProFormFieldProps['disabled']>,
     default: undefined,
   },
@@ -142,6 +148,10 @@ export const proFormFieldProps = {
     type: Object as PropType<ProFormFieldProps['params']>,
     default: undefined,
   },
+  grid: {
+    type: Object as PropType<ProFormFieldProps['grid']>,
+    default: undefined,
+  },
   bordered: {
     type: Boolean,
     default: undefined,
@@ -203,8 +213,8 @@ export default defineComponent({
   inheritAttrs: false,
   props: proFormFieldProps,
   setup(props, { slots, attrs }) {
-    const { store, grid, form, proFieldProps, formKey, fieldProps, formItemProps } =
-      useInjectField()
+    const { store, form } = useInjectForm()
+    const { grid, proFieldProps, formKey, fieldProps, formItemProps } = useInjectField()
     const { mode } = useInjectFormEditOrReadOnly()
     const prefixCls = usePrefixCls('form-field')
     const namePath = computed(() => getNamePath(props.name!))
@@ -279,6 +289,7 @@ export default defineComponent({
         ...fieldProps?.value,
         ...props.fieldProps,
         style: style.value,
+        autoFocus: props.autoFocus,
         placeholder: props.placeholder,
         disabled: props.disabled,
         class: className.value,
@@ -286,9 +297,9 @@ export default defineComponent({
     })
 
     return () => {
-      // const fieldValue = store.getFieldValue(namePath.value)
-      return (
+      const formItem = (
         <ProFormItem
+          {...attrs}
           tooltip={props.tooltip}
           key={props.proFormFieldKey || props.name?.toString()}
           {...otherFormItemProps.value}
@@ -316,6 +327,11 @@ export default defineComponent({
             }}
           />
         </ProFormItem>
+      )
+      return (
+        <ColWrapper grid={props.grid} colProps={props.colProps}>
+          {formItem}
+        </ColWrapper>
       )
     }
   },

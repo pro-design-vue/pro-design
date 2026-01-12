@@ -2,18 +2,16 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 17:21:17
+ * @LastEditTime: 2026-01-12 17:01:57
  * @Description:
  */
-import type { CSSProperties, PropType, Slot, VNode } from 'vue'
+import type { CSSProperties, PropType, VNode } from 'vue'
 
 import { computed, defineComponent, watchEffect } from 'vue'
 import { Form, Tooltip, type FormItemProps } from 'ant-design-vue'
 import {
   cloneDeep,
-  cloneElement,
   get,
-  isValidElement,
   merge,
   omit,
   omitUndefined,
@@ -29,6 +27,8 @@ import { getNamePath } from '../../utils/getNamePath'
 import { useProvideFormItem } from '../../context/FormItemContext'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
+import { useInjectForm } from '../../context/FormContext'
+import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
 export type ProFormItemProps = FormItemProps & {
   ignoreFormItem?: boolean
   valueType?: ProFieldValueType
@@ -114,7 +114,9 @@ export default defineComponent({
   setup(props, { attrs }) {
     const formListField = useInjectFormList()
     const prefixCls = usePrefixCls('form-item')
-    const { store, form, setFieldValueType, formItemProps } = useInjectField()
+    const { store, form } = useInjectForm()
+    const { mode } = useInjectFormEditOrReadOnly()
+    const { setFieldValueType, formItemProps } = useInjectField()
     const renderContent = useVNodeJSX()
     const namePath = computed(() => getNamePath(props.name))
     const name = computed(() => {
@@ -129,6 +131,7 @@ export default defineComponent({
 
     const renderParams = computed(() => ({
       form,
+      mode: mode?.value,
       value: fieldValue.value,
       formValues: cloneDeep(store.formValues.value),
     }))

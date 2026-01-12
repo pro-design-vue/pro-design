@@ -2,23 +2,35 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 17:14:21
+ * @LastEditTime: 2026-01-12 16:18:55
  * @Description:
  */
 import type { PropType } from 'vue'
+import type { SubmitterProps } from '../type'
+
 import { Form, Spin, type FormInstance } from 'ant-design-vue'
 import { computed, defineComponent, onMounted, ref, shallowRef } from 'vue'
 import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { baseFormProps } from '../props'
 import { useFetchData } from '../hooks/useFetchData'
 import { useProvideFormEditOrReadOnly } from '../context/EditOrReadOnlyContext'
-import { set, type ProFieldValueType, type SearchTransformKeyFn } from '@pro-design-vue/utils'
+import {
+  cloneElement,
+  isValidElement,
+  set,
+  type ProFieldValueType,
+  type SearchTransformKeyFn,
+} from '@pro-design-vue/utils'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
 import { transformKeySubmitValue } from '../utils/transformKeySubmitValue'
 import { conversionMomentValue } from '../utils/conversionMomentValue'
 import { useFormStore } from '../hooks/useFormStore'
 import { useProvideField } from '../context/FieldContext'
 import { useFormInstance } from '../hooks/useFormInstance'
+import { useProvideGrid } from '../context/GridContext'
+import { useProvideForm } from '../context/FormContext'
+import RowWrapper from '../components/Grid/RowWrapper'
+import Submitter from '../components/Submitter'
 
 let requestFormCacheId = 0
 export default defineComponent({
@@ -51,7 +63,6 @@ export default defineComponent({
       initialValues: props.initialValues,
       onValuesChange,
     })
-    const formInstace = useFormInstance()
     const transformKeyRef = shallowRef<Record<string, SearchTransformKeyFn | undefined>>({})
 
     const fieldsValueType = shallowRef<
@@ -64,7 +75,7 @@ export default defineComponent({
       >
     >({})
 
-    const transformKey = (values: any, paramsOmitNil: boolean, parentKey?: NamePath) => {
+    const transformKey = (values: any, paramsOmitNil?: boolean, parentKey?: NamePath) => {
       return transformKeySubmitValue(
         conversionMomentValue(
           values,
@@ -78,23 +89,13 @@ export default defineComponent({
       )
     }
 
-    const getPopupContainer = computed(() => {
-      if (typeof window === 'undefined') return undefined
-      // 如果在 drawerForm 和  modalForm 里就渲染dom到父节点里
-      // modalForm 可能高度太小不适合
-      if (props.formComponentType && ['DrawerForm'].includes(props.formComponentType)) {
-        return (e: HTMLElement) => e.parentNode || document.body
-      }
-      return undefined
-    })
-
-    const onFinish = async (finalValues) => {
+    const onFinish = async () => {
       // 没设置 onFinish 就不执行
       if (!props.onFinish) return
       // 防止重复提交
-      if (loading) return
+      if (loading.value) return
       try {
-        // const finalValues = formRef?.value?.getFieldsFormatValue?.()
+        const finalValues = formInstace.getFieldsFormatValue?.()
         const response = props.onFinish(finalValues)
         if (response instanceof Promise) {
           setLoading(true)
@@ -107,20 +108,90 @@ export default defineComponent({
       }
     }
 
+    const formInstace = useFormInstance({
+      props,
+      formRef,
+      transformKey,
+      store: formStore,
+      onFinish,
+    })
+
+    const getPopupContainer = computed(() => {
+      if (typeof window === 'undefined') return undefined
+      // 如果在 drawerForm 和  modalForm 里就渲染dom到父节点里
+      // modalForm 可能高度太小不适合
+      if (props.formComponentType && ['DrawerForm'].includes(props.formComponentType)) {
+        return (e: HTMLElement) => e.parentNode || document.body
+      }
+      return undefined
+    })
+
+    const items = computed(() => {
+      const children = slots.default?.()
+      return children?.map((item, index) => {
+        if (index === 0 && isValidElement(item) && props.autoFocusFirstInput) {
+          return cloneElement(item, {
+            ...item.props,
+            autoFocus: props.autoFocusFirstInput,
+          })
+        }
+        return item
+      })
+    })
+
+    /** 计算 props 的对象 */
+    const submitterProps = computed<SubmitterProps>(() =>
+      typeof props.submitter === 'boolean' || !props.submitter ? {} : props.submitter,
+    )
+
+    /** 渲染提交按钮与重置按钮 */
+    const submitterNode = computed(() => {
+      if (props.submitter === false) return undefined
+      return (
+        <Submitter
+          key="submitter"
+          {...submitterProps}
+          onReset={() => {
+            const finalValues = transformKey(formInstace?.getFieldsValue(), props.omitNil)
+            submitterProps.value?.onReset?.(finalValues)
+            props.onReset?.(finalValues)
+          }}
+          submitButtonProps={{
+            loading: loading.value,
+            ...submitterProps.value.submitButtonProps,
+          }}
+          v-slots={{
+            render: slots.submitter,
+          }}
+        />
+      )
+    })
+
+    const content = computed(() => {
+      const wrapItems = props.grid ? <RowWrapper>{items.value}</RowWrapper> : items.value
+      if (props.contentRender) {
+        return props.contentRender(wrapItems as any, submitterNode.value, formInstace)
+      }
+      return wrapItems
+    })
+
     useProvideFormEditOrReadOnly({
       mode: computed(() => (props.readonly ? 'read' : 'edit')),
     })
 
+    useProvideGrid({
+      grid: computed(() => props.grid!),
+      colProps: computed(() => props.colProps!),
+    })
+
     useProvideField({
-      store: formStore,
-      form: formInstace,
       fieldProps: computed(() => props.fieldProps!),
       proFieldProps: computed(() => props.proFieldProps!),
       groupProps: computed(() => props.groupProps!),
       formItemProps: computed(() => props.formItemProps!),
       formComponentType: computed(() => props.formComponentType!),
       formKey: computed(() => props.formKey!),
-      grid: computed(() => props.grid!),
+
       getPopupContainer,
       setFieldValueType: (name, { valueType = 'text', dateFormat, transform }) => {
         if (!Array.isArray(name)) return
@@ -132,8 +203,15 @@ export default defineComponent({
       },
     })
 
+    useProvideForm({
+      store: formStore,
+      form: formInstace,
+    })
+
     onMounted(() => {
       requestFormCacheId += 0
+      const finalValues = transformKey(formInstace?.getFieldsValue?.(true), props.omitNil)
+      props.onInit?.(finalValues, formInstace)
     })
     return () => {
       if (!initialData.value && props.request) {
@@ -151,7 +229,7 @@ export default defineComponent({
           class={prefixCls}
           onFinish={onFinish}
         >
-          {slots.default?.()}
+          {content.value}
         </Form>
       )
     }

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-04 09:12:57
  * @LastEditors: shen
- * @LastEditTime: 2026-01-07 16:35:59
+ * @LastEditTime: 2026-01-12 09:49:25
  * @Description:
  */
 import type { FormProps } from 'ant-design-vue'
@@ -131,6 +131,9 @@ export const baseFormProps = {
     type: [Object, Boolean] as PropType<BaseFormProps['submitter']>,
     default: undefined,
   },
+  contentRender: {
+    type: Function as PropType<BaseFormProps['contentRender']>,
+  },
   onFinish: {
     type: Function as PropType<BaseFormProps['onFinish']>,
   },
@@ -142,6 +145,9 @@ export const baseFormProps = {
   },
   onValuesChange: {
     type: Function as PropType<BaseFormProps['onValuesChange']>,
+  },
+  onReset: {
+    type: Function as PropType<BaseFormProps['onReset']>,
   },
   onInit: {
     type: Function as PropType<BaseFormProps['onInit']>,

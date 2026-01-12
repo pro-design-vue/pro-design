@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 10:20:32
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 17:23:27
+ * @LastEditTime: 2026-01-12 10:47:51
  * @Description:
  */
 import type {
@@ -38,13 +38,15 @@ export type Key = string | number | bigint
 export type Entity = Record<string, any>
 
 export type ProFormInstance<Values = Entity> = {
+  /** @name 获取被 ProForm 格式化后的所有数据 */
+  getFieldsFormatValue: (allData?: true) => any
   /** @name 获取对应字段名的值 */
   getFieldValue: (name: NamePath) => any
   /** @name 获取一组字段名对应的值，会按照对应结构返回。默认返回现存字段值，当调用getFieldsValue(true)时返回所有值 */
   getFieldsValue: (nameList?: true | NamePath[]) => Partial<Values> | undefined
-  /** @name 获取被SForm格式化后的单个数据 */
-  getFieldFormatValue: (name: NamePath) => Values | undefined
-  /** @name 获取被SForm格式化后的单个数据,包含他的name */
+  /** @name 获取被 ProForm 格式化后的单个数据 */
+  getFieldFormatValue: (name: NamePath) => any
+  /** @name 获取被 ProForm 格式化后的单个数据,包含他的name */
   getFieldFormatValueObject: (name: NamePath) => Values | undefined
   /** @name 验字段后返回格式化之后的所有数据 */
   validateFieldsReturnFormatValue: (nameList?: NamePath[]) => Promise<any> | undefined
@@ -55,11 +57,13 @@ export type ProFormInstance<Values = Entity> = {
   /** @name 重置一组字段到initialValues */
   resetInitialValues: (values: Entity) => void
   /** @name 重置一组字段到initialValues */
-  resetField: (name: NamePath) => void
+  resetFields: (nameList?: NamePath[]) => void
   /** @name 移除表单项的校验结果。传入待移除的表单项的name属性或者name组成的数组，如不传则移除整个表单的校验结果 */
-  clearValidate: (name?: NamePath) => void
+  clearValidate: (nameList?: NamePath[]) => void
   /** @name 触发表单验证 */
   validateFields: (nameList?: NamePath[]) => Promise<Values> | undefined
+  /** @name 触发表单验证 */
+  validate: (nameList?: NamePath[]) => Promise<Values> | undefined
   /** @name 重置所有字段到initialValues */
   reset: () => void
   /** @name 提交表单，与点击submit按钮效果相同 */

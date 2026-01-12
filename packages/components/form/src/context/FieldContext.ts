@@ -2,24 +2,16 @@
  * @Author: shen
  * @Date: 2026-01-06 16:38:46
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 10:39:18
+ * @LastEditTime: 2026-01-12 09:02:09
  * @Description:
  */
 import type { NamePath } from '@pro-design-vue/components/form11'
 import type { FieldProps, ProFormGroupProps } from '../type'
-import type {
-  ProFieldProps,
-  ProFieldValueType,
-  ProFormInstance,
-  SearchTransformKeyFn,
-} from '@pro-design-vue/utils'
+import type { ProFieldProps, ProFieldValueType, SearchTransformKeyFn } from '@pro-design-vue/utils'
 import type { FormItemProps } from 'ant-design-vue'
 import { inject, provide, type ComputedRef, type InjectionKey } from 'vue'
-import type { FormStore } from '../hooks/useFormStore'
 
 export type FieldContextProps = {
-  form: ProFormInstance
-  store: FormStore
   fieldProps?: ComputedRef<FieldProps>
   proFieldProps?: ComputedRef<ProFieldProps>
   formItemProps?: ComputedRef<FormItemProps>

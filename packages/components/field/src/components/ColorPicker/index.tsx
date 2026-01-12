@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-31 17:16:28
+ * @LastEditTime: 2026-01-12 16:48:55
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -64,7 +64,7 @@ export default defineComponent({
     const prefixCls = usePrefixCls('field-color-picker')
     const renderContent = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
-    const color = ref(fieldProps?.value?.value ? tinycolor(fieldProps?.value?.value) : null)
+    const color = ref()
 
     const popoverProps = computed(() => {
       const { popoverProps = {} } = fieldProps?.value || {}
@@ -94,6 +94,19 @@ export default defineComponent({
         fieldProps.value?.onChange?.(value)
       }
     })
+
+    watch(
+      () => fieldProps.value?.value,
+      () => {
+        if (fieldProps.value?.value !== color.value) {
+          color.value = fieldProps?.value?.value ? tinycolor(fieldProps?.value?.value) : null
+        }
+      },
+      {
+        immediate: true,
+      },
+    )
+
     return () => {
       const readDom = (
         <div

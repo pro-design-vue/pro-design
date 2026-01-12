@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-04 09:12:53
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 09:08:48
+ * @LastEditTime: 2026-01-12 09:49:01
  * @Description:
  */
 
@@ -96,9 +96,9 @@ export type SearchConfig = {
 
 export type SubmitterProps<T = Entity> = {
   /** @name 提交方法 */
-  onSubmit?: (value?: T) => void
+  onSubmit?: (value?: T, form?: ProFormInstance) => void
   /** @name 重置方法 */
-  onReset?: (value?: T) => void
+  onReset?: (value?: T, form?: ProFormInstance) => void
   /** @name 搜索的配置，一般用来配置文本 */
   searchConfig?: SearchConfig
   /** @name 提交按钮的 props */
@@ -110,6 +110,7 @@ export type SubmitterProps<T = Entity> = {
     | ((
         props: SubmitterProps &
           T & {
+            form: ProFormInstance
             submit: () => void
             reset: () => void
           },
@@ -149,7 +150,12 @@ export type CommonFormProps<T = Entity, U = Entity> = {
    *
    * @example onFinish={async (values) => { await save(values); return true }}
    */
-  onFinish?: (formData: T) => Promise<boolean | void> | void
+  onFinish?: (values: T) => Promise<boolean | void> | void
+
+  /**
+   * @name 表单数据重置回调事件
+   */
+  onReset?: (values?: T) => void
   /**
    * @name 表单按钮的 loading 状态
    */
@@ -255,6 +261,7 @@ export type FieldProps = {
 }
 
 export type BaseFormProps<T = Entity, U = Entity> = {
+  contentRender?: (items: VNode[], submitter: VNode | undefined, form: ProFormInstance) => ProVNode
   fieldProps?: FieldProps
   proFieldProps?: ProFieldProps
   formItemProps?: FormItemProps
@@ -305,5 +312,5 @@ export type ProFormFieldItemProps<T = Record<string, any>, K = any> = {
    */
   proFieldProps?: ProFieldProps
 } & Omit<ProFormItemProps, 'valueType'> &
-  Pick<ProFormGridConfig, 'colProps' | 'rowProps'> &
+  ProFormGridConfig &
   ExtendsProps

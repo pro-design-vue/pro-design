@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 17:19:59
+ * @LastEditTime: 2026-01-12 17:02:49
  * @Description:
 -->
 <script setup lang="tsx">
@@ -77,26 +77,41 @@ const handleRateChange = (value) => {
 }
 
 const fetchaData = async () => {
-  return {
-    age: '909090',
-  }
+  return {}
+}
+
+const formRef = ref<any>()
+const onValuesChange = (changedValues, formValues) => {
+  // console.log('🚀 ~ onValuesChange ~ changedValues:', changedValues)
+  // console.log('🚀 ~ onValuesChange ~ formValues:', formValues)
+}
+
+const onFinish = async (values) => {
+  console.log(formRef.value)
+  await sleep(2000)
+  console.log('🚀 ~ onFinish ~ values:', values)
 }
 </script>
 
 <template>
   <div style="width: 1000px; padding: 50px 30px; margin: 100px; border: 1px solid #f1f1f1">
-    <ProForm :request="fetchaData" :initial-values="{ age: '666666' }">
+    <ProForm
+      :request="fetchaData"
+      autoFocusFirstInput
+      :readonly="state === 'read'"
+      :formRef="(ref) => (formRef = ref)"
+      @values-change="onValuesChange"
+      @finish="onFinish"
+    >
       <ProForm.Field
         label="内部"
         tooltip="我是Pro Component"
-        initialValue="222222"
         name="age"
         width="lg"
         addonBefore="addonBefore"
         addonAfter="addonAfter"
         :allow-clear="false"
         placeholder="请输入内部名称"
-        :mode="state"
         :rules="[{ required: true }]"
       />
       <ProFormField
@@ -105,7 +120,6 @@ const fetchaData = async () => {
         value-type="select"
         name="sex"
         width="sm"
-        :mode="state"
         :value-enum="{
           0: {
             text: '男',
@@ -118,7 +132,6 @@ const fetchaData = async () => {
         value-type="color"
         name="color"
         width="sm"
-        :mode="state"
         :rules="[{ required: true }]"
       />
       <ProForm.Item
@@ -129,8 +142,14 @@ const fetchaData = async () => {
         help="asdas"
         tooltip="12312312312"
       >
-        <template #default="{ value, onChange }">
-          <Input :value="value" @change="(e) => onChange(e.target.value)" />
+        <template #default="{ value, onChange, mode }">
+          <template v-if="mode === 'read'">
+            {{ value }}
+          </template>
+          <Input v-else :value="value" style="flex: 1" @change="(e) => onChange(e.target.value)" />
+        </template>
+        <template #addonBefore="{ formValues }">
+          {{ formValues.age }}
         </template>
       </ProForm.Item>
     </ProForm>
