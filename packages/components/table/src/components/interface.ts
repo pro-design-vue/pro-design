@@ -1141,6 +1141,8 @@ export type SettingOptionType = {
 }
 
 export type OptionSearchProps = Omit<InputProps, 'onSearch'> & {
+  loading?: boolean
+  enterButton?: boolean
   /** 如果 onSearch 返回一个false，直接拦截请求 */
   onSearch?: (keyword: string) => Promise<boolean | undefined> | boolean | undefined
 }
