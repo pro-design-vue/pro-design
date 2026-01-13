@@ -816,6 +816,7 @@ export interface CellTooltip {
     | 'rightBottom'
   color?: string
   overlayStyle?: CSSProperties
+  overlayInnerStyle?: CSSProperties
   overlayClassName?: string
   openClassName?: string
   title?: (args: CellRenderArgs) => any
