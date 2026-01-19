@@ -2,25 +2,18 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 17:01:44
+ * @LastEditTime: 2026-01-19 13:25:29
  * @Description:
  */
 import type { PropType } from 'vue'
 import type { ProFormFieldItemProps } from '../../type'
 
-import { computed, defineComponent } from 'vue'
-import { get, omit, omitUndefined, pick, runFunction, type ProSchema } from '@pro-design-vue/utils'
-import { useInjectField } from '../../context/FieldContext'
-import { getNamePath } from '../../utils/getNamePath'
+import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
+import { isDeepEqual, isEqual, omit, runFunction, type ProSchema } from '@pro-design-vue/utils'
 import { formItemProps } from 'ant-design-vue/es/form'
-import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
+import { createField } from '../../BaseForm/createField'
 import ProField from '@pro-design-vue/components/field'
-import ProFormItem from '../FormItem'
-import { usePrefixCls } from '@pro-design-vue/hooks'
-import { pickProFormItemProps } from '../../utils/pickProFormItemProps'
-import ColWrapper from '../Grid/ColWrapper'
-import { useInjectForm } from '../../context/FormContext'
-const ITEM_SLOTS_KEYS = ['extra', 'help', 'label', 'extra', 'addonAfter', 'tooltip', 'addonBefore']
+
 export type ProFormFieldProps<T = any, FiledProps = Record<string, any>> = ProSchema<
   T,
   ProFormFieldItemProps<FiledProps> & {
@@ -57,6 +50,10 @@ export const proFormFieldProps = {
     default: undefined,
   },
   text: {
+    type: [Object, String, Number, null, Boolean, Array] as PropType<ProFormFieldProps['text']>,
+    default: undefined,
+  },
+  value: {
     type: [Object, String, Number, null, Boolean, Array] as PropType<ProFormFieldProps['text']>,
     default: undefined,
   },
@@ -190,149 +187,61 @@ export const proFormFieldProps = {
   },
 }
 
-const WIDTH_SIZE_ENUM = {
-  // 适用于短数字，短文本或者选项
-  xs: 104,
-  s: 216,
-  // 适用于较短字段录入、如姓名、电话、ID 等。
-  sm: 216,
-  m: 328,
-  // 标准宽度，适用于大部分字段长度。
-  md: 328,
-  l: 440,
-  // 适用于较长字段录入，如长网址、标签组、文件路径等。
-  lg: 440,
-  // 适用于长文本录入，如长链接、描述、备注等，通常搭配自适应多行输入框或定高文本域使用。
-  xl: 552,
-}
-
-const ignoreWidthValueType = ['switch', 'radioButton', 'radio', 'rate']
-
-export default defineComponent({
+const preProps = {}
+const BaseProFormField = defineComponent({
   name: 'ProFormField',
   inheritAttrs: false,
   props: proFormFieldProps,
-  setup(props, { slots, attrs }) {
-    const { store, form } = useInjectForm()
-    const { grid, proFieldProps, formKey, fieldProps, formItemProps } = useInjectField()
-    const { mode } = useInjectFormEditOrReadOnly()
-    const prefixCls = usePrefixCls('form-field')
-    const namePath = computed(() => getNamePath(props.name!))
-    if (namePath.value?.length) {
-      store.initEntityValue(namePath.value, props.initialValue)
-    }
-
-    const fieldValue = computed(() => get(store.formValues.value, namePath.value))
-
-    const proFieldKey = computed(() => {
-      let name = props.name
-      if (Array.isArray(name)) name = name.join('_')
-      const key = name && `form-${formKey?.value ?? ''}-field-${name}`
-      return key
+  setup(props, { slots }) {
+    const fieldProps = shallowRef({
+      autoFocus: props.autoFocus,
+      ...props.fieldProps,
     })
-
-    const isIgnoreWidth = computed(
-      () => props.ignoreWidth || ignoreWidthValueType.includes(props.valueType),
+    watch(
+      () => props.fieldProps,
+      (newValue, oldValue) => {
+        if (!isDeepEqual(newValue, oldValue, ['onChange', 'onBlur'])) {
+          fieldProps.value = {
+            autoFocus: props.autoFocus,
+            ...newValue,
+          }
+        }
+      },
     )
 
-    const className = computed(() => {
-      const isSizeEnum = props.width && WIDTH_SIZE_ENUM[props.width as 'xs']
-      return {
-        [prefixCls]: isSizeEnum,
-        [`${prefixCls}-${props.width}`]: isSizeEnum && !isIgnoreWidth.value,
-      }
-    })
-
-    const style = computed(() => {
-      const newStyle = {
-        width:
-          props.width && !WIDTH_SIZE_ENUM[props.width as 'xs']
-            ? props.width
-            : grid?.value
-              ? '100%'
-              : undefined,
-        ...props.fieldProps?.style,
-      }
-
-      if (isIgnoreWidth.value) Reflect.deleteProperty(newStyle, 'width')
-
-      return omitUndefined(newStyle)
-    })
-
-    const otherFormItemProps = computed(() => {
-      const restFormItemProps = pickProFormItemProps(props)
-      return {
-        ...formItemProps,
-        ...restFormItemProps,
-      }
-    })
-
-    const fieldProFieldProps = computed(() => {
-      return omitUndefined({
-        ...proFieldProps?.value,
-        mode: props.mode,
-        readonly: props.readonly,
-        params: props.params,
-        proFieldKey: proFieldKey.value,
-        ...props.proFieldProps,
-        onChange: (value: any, ...args: any[]) => {
-          store.updateValue(namePath.value, value)
-          props.fieldProps?.onChange?.(value, form, ...args)
-          props.onChange?.(value, form, ...args)
-        },
-      })
-    })
-
-    const fieldFieldProps = computed(() => {
-      return {
-        allowClear: props.allowClear,
-        ...fieldProps?.value,
-        ...props.fieldProps,
-        style: style.value,
-        autoFocus: props.autoFocus,
-        placeholder: props.placeholder,
-        disabled: props.disabled,
-        class: className.value,
-      }
-    })
-
-    return () => {
-      const formItem = (
-        <ProFormItem
-          {...attrs}
-          tooltip={props.tooltip}
-          key={props.proFormFieldKey || props.name?.toString()}
-          {...otherFormItemProps.value}
-          ignoreFormItem={props.ignoreFormItem}
-          transform={props.transform}
-          valueType={props.valueType}
-          convertValue={props.convertValue}
-          dataFormat={fieldFieldProps.value?.format}
-          v-slots={{
-            ...pick(slots, ITEM_SLOTS_KEYS),
-          }}
-        >
-          <ProField
-            text={props.fieldProps?.value}
-            render={props.render as any}
-            renderFormItem={props.renderFormItem as any}
-            valueType={(props.valueType as 'text') || 'text'}
-            valueEnum={runFunction(props.valueEnum)}
-            fieldProps={fieldFieldProps.value}
-            {...omit(fieldProFieldProps.value ?? {}, ['mode'])}
-            mode={props.proFieldProps?.mode || props.mode || mode?.value || 'edit'}
-            value={fieldValue.value}
-            v-slots={{
-              ...omit(slots, ITEM_SLOTS_KEYS),
-            }}
-          />
-        </ProFormItem>
-      )
-      return (
-        <ColWrapper grid={props.grid} colProps={props.colProps}>
-          {formItem}
-        </ColWrapper>
-      )
-    }
+    return () => (
+      <ProField
+        text={props.fieldProps?.value}
+        render={props.render as any}
+        renderFormItem={props.renderFormItem as any}
+        valueType={(props.valueType as 'text') || 'text'}
+        valueEnum={runFunction(props.valueEnum)}
+        fieldProps={fieldProps.value}
+        {...omit(props ?? {}, [
+          'text',
+          'mode',
+          'readonly',
+          'fieldProps',
+          'labelCol',
+          'label',
+          'autoFocus',
+          'render',
+          'proFieldProps',
+          'renderFormItem',
+          'valueType',
+          'initialValue',
+          'onChange',
+          'valueEnum',
+          'params',
+          'name',
+        ])}
+        {...props.proFieldProps}
+        v-slots={slots}
+      />
+    )
   },
 })
+
+const ProFormField = createField<ProFormFieldProps>(BaseProFormField)
+
+export default ProFormField

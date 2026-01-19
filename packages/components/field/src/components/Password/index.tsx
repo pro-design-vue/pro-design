@@ -70,7 +70,7 @@ export default defineComponent({
           )
         }
         const render = renderContent('render', {
-          params: { text, mode, ...fieldProps.value, dom },
+          params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
         if (render) {
@@ -95,7 +95,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2025-12-30 17:29:53
+ * @LastEditTime: 2026-01-19 15:47:04
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -84,7 +84,7 @@ export default defineComponent({
       if (mode.value === 'read') {
         const dom = formatDate(text.value, fieldProps.value?.format || props.format)
         const render = renderContent('render', {
-          params: { text, mode, ...fieldProps.value, dom },
+          params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
         if (render) {
@@ -120,7 +120,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2026-01-01 14:07:32
+ * @LastEditTime: 2026-01-19 15:48:20
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -41,7 +41,7 @@ export default defineComponent({
 
     return () => {
       let doms = renderContent('render', {
-        params: { text, mode, ...fieldProps.value },
+        params: { text: text.value, mode: mode.value, ...fieldProps.value },
         slotFirst: true,
       })
       if (isObject(doms) && doms.type === Fragment) {

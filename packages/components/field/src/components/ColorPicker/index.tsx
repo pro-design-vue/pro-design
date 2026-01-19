@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 16:48:55
+ * @LastEditTime: 2026-01-19 15:47:13
  * @Description:
  */
 import type { ProFieldProps } from '../../type'
@@ -10,7 +10,7 @@ import type { ProFieldProps } from '../../type'
 import { computed, defineComponent, ref, toRefs, watch, type PropType, type VNode } from 'vue'
 import { baseFieldProps } from '../../props'
 import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { Popover, theme, type PopoverProps } from 'ant-design-vue'
+import { Form, Popover, theme, type PopoverProps } from 'ant-design-vue'
 import { SketchPicker, tinycolor } from 'vue-color'
 import 'vue-color/style.css'
 
@@ -63,8 +63,9 @@ export default defineComponent({
     const { token } = theme.useToken()
     const prefixCls = usePrefixCls('field-color-picker')
     const renderContent = useVNodeJSX()
+    const formItemContext = Form.useInjectFormItemContext()
     const { mode, text, fieldProps } = toRefs(props)
-    const color = ref()
+    const color = ref(fieldProps?.value?.value ? tinycolor(fieldProps?.value?.value) : null)
 
     const popoverProps = computed(() => {
       const { popoverProps = {} } = fieldProps?.value || {}
@@ -92,6 +93,7 @@ export default defineComponent({
       const oldValue = oldColor?.toRgbString()
       if (value !== oldValue) {
         fieldProps.value?.onChange?.(value)
+        formItemContext.onFieldChange()
       }
     })
 
@@ -166,7 +168,7 @@ export default defineComponent({
         )
 
         const renderFormItem = renderContent('renderFormItem', {
-          params: { text, props: { mode, ...fieldProps.value }, dom },
+          params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
         if (renderFormItem) {

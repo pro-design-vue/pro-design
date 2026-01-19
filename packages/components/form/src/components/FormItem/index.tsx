@@ -2,19 +2,17 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 17:01:57
+ * @LastEditTime: 2026-01-16 14:57:51
  * @Description:
  */
-import type { CSSProperties, PropType, VNode } from 'vue'
+import type { PropType } from 'vue'
 
 import { computed, defineComponent, watchEffect } from 'vue'
-import { Form, Tooltip, type FormItemProps } from 'ant-design-vue'
+import { type FormItemProps } from 'ant-design-vue'
 import {
-  cloneDeep,
-  get,
   merge,
   omit,
-  omitUndefined,
+  type ProFieldMode,
   type ProFieldValueType,
   type ProVNode,
   type SearchConvertKeyFn,
@@ -24,13 +22,11 @@ import { useInjectFormList } from '../../context/FormListContext'
 import { formItemProps } from 'ant-design-vue/es/form'
 import { useInjectField } from '../../context/FieldContext'
 import { getNamePath } from '../../utils/getNamePath'
-import { useProvideFormItem } from '../../context/FormItemContext'
-import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
-import { QuestionCircleOutlined } from '@ant-design/icons-vue'
-import { useInjectForm } from '../../context/FormContext'
-import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
+import WrapFormItem from './WrapFormItem'
+import WithValueFomField from './WithValueFomField'
 export type ProFormItemProps = FormItemProps & {
   ignoreFormItem?: boolean
+  mode?: ProFieldMode
   valueType?: ProFieldValueType
   /**
    * @name 提交时转化值，一般用于将值转化为提交的数据
@@ -55,10 +51,6 @@ export type ProFormItemProps = FormItemProps & {
   /** @name 后置的dom * */
   addonAfter?: ProVNode
   /**
-   * 包裹的样式，一般没用
-   */
-  addonWarpStyle?: CSSProperties
-  /**
    * @name 获取时转化值，一般用于将数据格式化为组件接收的格式
    * @param value 字段的值
    * @param namePath 字段的name
@@ -74,7 +66,6 @@ export type ProFormItemProps = FormItemProps & {
   convertValue?: SearchConvertKeyFn
   help?: ProVNode | ((params: { errors: ProVNode[]; warnings: ProVNode[] }) => ProVNode)
 }
-const SLOT_KEYS: any[] = ['extra', 'help', 'label']
 
 export default defineComponent({
   name: 'ProFormItem',
@@ -82,7 +73,11 @@ export default defineComponent({
   props: {
     ...formItemProps(),
     ignoreFormItem: Boolean,
-    isProFormComponent: Boolean,
+    proFormFieldKey: [String, Number],
+    mode: {
+      type: String as PropType<ProFormItemProps['mode']>,
+      default: undefined,
+    },
     dataFormat: {
       type: String,
       default: undefined,
@@ -107,17 +102,10 @@ export default defineComponent({
         ProFormItemProps['addonAfter']
       >,
     },
-    addonWarpStyle: {
-      type: Object as PropType<ProFormItemProps['addonWarpStyle']>,
-    },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const formListField = useInjectFormList()
-    const prefixCls = usePrefixCls('form-item')
-    const { store, form } = useInjectForm()
-    const { mode } = useInjectFormEditOrReadOnly()
     const { setFieldValueType, formItemProps } = useInjectField()
-    const renderContent = useVNodeJSX()
     const namePath = computed(() => getNamePath(props.name))
     const name = computed(() => {
       if (!namePath?.value?.length) return props.name
@@ -127,63 +115,16 @@ export default defineComponent({
       return namePath.value
     })
 
-    const fieldValue = computed(() => get(store.formValues.value, namePath.value))
-
-    const renderParams = computed(() => ({
-      form,
-      mode: mode?.value,
-      value: fieldValue.value,
-      formValues: cloneDeep(store.formValues.value),
-    }))
-
     const mergeFormItemProps = computed(() =>
-      omit(merge({}, formItemProps, props), [
-        ...SLOT_KEYS,
+      omit(merge({}, formItemProps?.value, props), [
         'name',
-        'addonAfter',
         'valueType',
         'ignoreFormItem',
-        'addonBefore',
-        'addonWarpStyle',
         'convertValue',
+        'rules',
         'dataFormat',
-        'tooltip',
       ]),
     )
-
-    const mergeFormItemSlots = computed(() => {
-      const tooltipRender = renderContent('tooltip', {
-        slotFirst: true,
-        props,
-        params: renderParams.value,
-      })
-      const slots: any = {
-        tooltip: tooltipRender
-          ? () => {
-              return (
-                <Tooltip
-                  getPopupContainer={() => document.body}
-                  v-slots={{ title: () => tooltipRender }}
-                >
-                  <QuestionCircleOutlined
-                    class={`${prefixCls}-tooltip-icon`}
-                    style="margin-inline-start: 3px"
-                  />
-                </Tooltip>
-              )
-            }
-          : undefined,
-      }
-      SLOT_KEYS.forEach((key) => {
-        const render = renderContent(key, {
-          slotFirst: true,
-          props,
-          params: renderParams.value,
-        })
-        slots[key] = render ? () => render : undefined
-      })
-      return omitUndefined(slots)
-    })
 
     watchEffect(() => {
       if (!setFieldValueType || !namePath.value?.length) {
@@ -202,88 +143,28 @@ export default defineComponent({
       )
     })
 
-    const addonAfterNode = computed<VNode>(() => {
-      const addonAfter = renderContent('addonAfter', {
-        slotFirst: true,
-        props,
-        params: renderParams.value,
-      })
-      if (addonAfter) return addonAfter
-      return null
-    })
-
-    const addonBeforeNode = computed<VNode>(() => {
-      const addonBefore = renderContent('addonBefore', {
-        slotFirst: true,
-        props,
-        params: renderParams.value,
-      })
-      if (addonBefore) return addonBefore
-      return null
-    })
-
-    const childrenNode = computed<VNode>(() => {
-      const children = renderContent('default', {
-        slotFirst: true,
-        props,
-        params: {
-          ...renderParams.value,
-          onChange: (value: any) => {
-            store.updateValue(namePath.value, value)
-          },
-        },
-      })
-      if (children) return children
-      return null
-    })
-
-    useProvideFormItem({
-      name: computed(() => props.name as any),
-      label: computed(() => props.label as any),
-    })
-
     return () => {
+      const formField = (
+        <WithValueFomField key={props.proFormFieldKey || props.name?.toString()} name={name.value}>
+          {slots.default?.()}
+        </WithValueFomField>
+      )
+      // const formField = slots.default?.()
       if (props.ignoreFormItem) {
-        return childrenNode.value
-      }
-      if (!addonAfterNode.value && !addonBeforeNode.value) {
-        return (
-          <Form.Item
-            {...attrs}
-            {...mergeFormItemProps.value}
-            name={name.value}
-            v-slots={{ ...mergeFormItemSlots.value }}
-          >
-            {childrenNode.value}
-          </Form.Item>
-        )
+        return <>{formField}</>
       }
       return (
-        <Form.Item
-          {...attrs}
-          {...mergeFormItemProps.value}
+        <WrapFormItem
+          key={props.proFormFieldKey || props.name?.toString()}
+          class={attrs.class}
+          style={attrs.style}
           name={name.value}
-          v-slots={{
-            ...mergeFormItemSlots.value,
-          }}
+          rules={props.mode === 'read' ? undefined : props.rules}
+          v-slots={{ ...omit(slots, ['default']) }}
+          {...mergeFormItemProps.value}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              ...props.addonWarpStyle,
-            }}
-          >
-            {addonBeforeNode.value ? (
-              <div style={{ marginInlineEnd: '8px' }}>{addonBeforeNode.value}</div>
-            ) : null}
-            {childrenNode.value}
-            {addonAfterNode.value ? (
-              <div style={{ marginInlineStart: '8px' }}>{addonAfterNode.value}</div>
-            ) : null}
-          </div>
-        </Form.Item>
+          {formField}
+        </WrapFormItem>
       )
     }
   },

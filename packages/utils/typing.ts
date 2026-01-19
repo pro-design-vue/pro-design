@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 10:20:32
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 10:47:51
+ * @LastEditTime: 2026-01-16 09:15:41
  * @Description:
  */
 import type {
@@ -36,6 +36,7 @@ import type { CSSProperties, VNode } from 'vue'
 export type ProVNode = string | number | boolean | VNode | null | undefined
 export type Key = string | number | bigint
 export type Entity = Record<string, any>
+export type ProFieldMode = 'read' | 'edit' | 'update'
 
 export type ProFormInstance<Values = Entity> = {
   /** @name 获取被 ProForm 格式化后的所有数据 */
@@ -389,7 +390,11 @@ export type ProFormBaseGroupProps = {
    *  @example 自定义Icon
    * <ProForm.Group title="标题"  tooltip={{icon:<Info/>,title:自定义提示信息}}>
    */
-  tooltip?: TooltipProps | string
+  tooltip?:
+    | (TooltipProps & {
+        icon?: ProVNode
+      })
+    | string
   /**
    * @name 额外的内容配置,在标题的另外一边
    *

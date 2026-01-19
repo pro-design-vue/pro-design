@@ -1,276 +1,697 @@
 <!--
  * @Author: shen
- * @Date: 2025-07-17 10:11:59
+ * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2025-09-23 10:35:36
+ * @LastEditTime: 2026-01-19 17:20:35
  * @Description:
 -->
-<script setup lang="ts">
+<script setup lang="tsx">
 import {
-  ProPage,
+  ProField,
   ProButton,
-  ProDrawer,
-  ProModal,
-  ProTable,
-  ProFieldType,
-  ProModalForm,
-  type ProTableColumnsType,
-  type ProTableRowSelection,
-  type ProTableKey,
-  type ProTableRequest,
-  type ProFormItemType,
+  ProFormItem,
+  ProFormField,
+  ProForm,
+  ProFormFieldSet,
 } from '@pro-design-vue/components'
-import { computed, ref } from 'vue'
-import { Space } from 'ant-design-vue'
+import { Space, Radio, Descriptions, Form, Input } from 'ant-design-vue'
+import { Fragment, ref } from 'vue'
+import dayjs from 'dayjs'
 import { sleep } from '@pro-design-vue/utils'
-import { FullscreenOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
-
-const openDrawer = ref(false)
-const openModal = ref(false)
-const params = ref({
-  tab: 'tab1',
-})
-
-const columns: ProTableColumnsType = [
-  {
-    title: '你的标题太长了会被缩进',
-    dataIndex: 'name',
-    fixed: 'left',
-    width: 150,
-    rowDrag: ({ record }) => {
-      return record.id !== 1
-    },
-    headerTooltip: '你的标题太长了会被缩进',
-    key: 'name',
-    initialValue: '11',
-    resizable: true,
-    filters: [
-      {
-        text: 'aa',
-        value: '22',
-      },
-    ],
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    fixed: 'left',
-    fieldType: ProFieldType.DIGIT,
-    sorter: (a, b) => a.age - b.age,
-    width: 100,
-  },
-  {
-    title: 'Column 1',
-    dataIndex: 'address',
-    align: 'center',
-    fieldType: ProFieldType.SELECT,
-    options: [
-      { value: '1', text: '男' },
-      { value: '2', text: '女' },
-    ],
-  },
-  {
-    title: 'Column 2',
-    dataIndex: 'address1',
-  },
-  // {
-  //   title: 'Column 3',
-  //   hideInSearch: true,
-  //   dataIndex: 'address',
-  // },
-  // {
-  //   title: 'Column 4',
-  //   hideInSearch: true,
-  //   dataIndex: 'address',
-  // },
-  // { title: 'Column 5', dataIndex: 'address', hideInSearch: true },
-  {
-    title: 'Action',
-    key: 'operation',
-    fixed: 'right',
-    hideInSearch: true,
-    width: 100,
-  },
-]
-const data: any[] = []
-for (let i = 0; i < 1000; i++) {
-  data.push({
-    id: i,
-    name: `Edrward ${i}`,
-    age: i + 1,
-    address: `London Park no. ${i}`,
-  })
-}
-const pagination = ref({
-  pageSize: 20,
-})
-const rowSelection = computed<ProTableRowSelection>(() => {
-  return {
-    // type: 'radio',
-    hideDefaultSelections: true,
-    selections: [
-      ProTable.SELECTION_ALL,
-      ProTable.SELECTION_INVERT,
-      ProTable.SELECTION_NONE,
-      {
-        key: 'odd',
-        text: 'Select Odd Row',
-        onSelect: (changableRowKeys) => {
-          let newSelectedRowKeys: ProTableKey[] = []
-          newSelectedRowKeys = changableRowKeys.filter((_key, index) => {
-            if (index % 2 !== 0) {
-              return false
-            }
-            return true
-          })
-        },
-      },
-      {
-        key: 'even',
-        text: 'Select Even Row',
-        onSelect: (changableRowKeys) => {
-          let newSelectedRowKeys: ProTableKey[] = []
-          newSelectedRowKeys = changableRowKeys.filter((_key, index) => {
-            if (index % 2 !== 0) {
-              return true
-            }
-            return false
-          })
-        },
-      },
-    ],
-    getCheckboxProps(record) {
-      return {
-        disabled: record.id === 1,
-      }
-    },
-  }
-})
-
-const fetchData: ProTableRequest = async (params, sorters, filter) => {
-  // console.log('🚀 ~ constfetchData:ProTableRequest= ~ sorters:', sorters)
-  // console.log('🚀 ~ constfetchData:ProTableRequest= ~ filter:', filter)
-  // console.log('🚀 ~ constfetchData:ProTableRequest= ~ params:', params)
-  await sleep(1000)
-  return {
-    success: true,
-    data: params.status === 'tab2' ? [] : data,
-  }
-}
-
-const beforeSearchSubmit = (values) => {
-  console.log('🚀 ~ values:', values)
-  return {
-    ...values,
-    aaa: '12312312',
-  }
-}
-
-const tabList = ref([
-  {
-    key: 'tab1',
-    tab: '全部',
-  },
-  {
-    key: 'tab2',
-    tab: '未激活',
-  },
+const state = ref<any>('read')
+const radio = ref('open')
+const numberRange = ref([123, 456])
+const dateValue = ref(dayjs('2019-11-16 12:50:26').valueOf())
+const dateRangeValue = ref([
+  dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+  dayjs('2019-11-16 12:50:26').valueOf(),
 ])
 
-const formItems: ProFormItemType[] = [
+const treeData = [
   {
-    name: 'name',
-    title: '名称',
-    rules: [{ required: true, message: '请输入名称', trigger: 'change' }],
+    label: 'Node1',
+    value: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+      },
+    ],
+  },
+  {
+    label: 'Node2',
+    value: '0-1',
+    children: [
+      {
+        label: 'Child Node3',
+        value: '0-1-0',
+      },
+      {
+        label: 'Child Node4',
+        value: '0-1-1',
+      },
+      {
+        label: 'Child Node5',
+        value: '0-1-2',
+      },
+    ],
   },
 ]
+
+const requestTreeData = async () => {
+  await sleep(2000)
+  return treeData
+}
+
+const switchValue = ref(true)
+const treeValue = ref('0-1')
+const optionRender = () => {
+  return (
+    <Fragment>
+      <ProButton>aaa</ProButton>
+      <ProButton>bbb</ProButton>
+    </Fragment>
+  )
+}
+const codeValue = ref(`
+yarn run v1.22.0
+$ eslint --format=pretty ./packages
+Done in 9.70s.
+          `)
+
+const handleRateChange = (value) => {
+  console.log('🚀 ~ handleRateChange ~ value:', value)
+}
+
+const fetchaData = async () => {
+  return {}
+}
+
+const formRef = ref<any>()
+const onValuesChange = (changedValues, formValues) => {
+  // console.log('🚀 ~ onValuesChange ~ changedValues:', changedValues)
+  console.log('🚀 ~ onValuesChange ~ formValues:', formValues)
+}
+
+const onFinish = async (values) => {
+  console.log(formRef.value)
+  await sleep(2000)
+  console.log('🚀 ~ onFinish ~ values:', values)
+}
+
+const onChange = (...args) => {
+  console.log('🚀 ~ onChange ~ args:', args)
+}
 </script>
 
 <template>
-  <ProPage title="我是页面标题">
-    <template #extra>
-      <Space>
-        <ProModalForm
-          grid
-          :width="600"
-          title="创建"
-          :items="formItems"
-          :col-props="{ span: 24 }"
-          :modal-props="{ destroyOnClose: true }"
-          layout="horizontal"
-        >
-          <template #trigger>
-            <ProButton type="primary">创建用户</ProButton>
-          </template>
-        </ProModalForm>
-        <ProButton type="primary" @click="openDrawer = true">打开抽屉</ProButton>
-        <ProButton type="primary" @click="openModal = true">打开对话框</ProButton>
-      </Space>
-    </template>
-    <template #default="{ activeKey, offset }">
-      <ProTable
-        v-model:pagination="pagination"
-        :columns="columns"
-        :params="params"
-        :sticky="{
-          offsetHeader: offset.top,
-        }"
-        :paginationSticky="{
-          offsetBottom: offset.bottom,
-        }"
-        :polling="0"
-        :request="fetchData"
-        title="高级表格"
-        sub-title="这里是子标题"
-        tooltip="这是一个标题提示"
-        column-drag
-        :beforeSearchSubmit
-        :options="{
-          search: {
-            value: '111',
-          },
-        }"
-        :search="{
-          cardProps: {
-            activeTabKey: 'tab1',
-            tabList: [
-              {
-                key: 'tab1',
-                tab: '全部',
-              },
-              {
-                key: 'tab2',
-                tab: '未激活',
-              },
-            ],
-          },
-          tabName: 'status',
-          resetOnSubmit: true,
-          layout: 'horizontal',
-        }"
-        :scroll="{ x: 1500 }"
-        :row-selection="rowSelection"
+  <div style="width: 1000px; padding: 50px 30px; margin: 100px; border: 1px solid #f1f1f1">
+    <ProForm
+      grid
+      :request="fetchaData"
+      autoFocusFirstInput
+      :formRef="(ref) => (formRef = ref)"
+      :col-props="{ span: 12 }"
+      :row-props="{ gutter: 16 }"
+      @values-change="onValuesChange"
+      @finish="onFinish"
+    >
+      <ProFormFieldSet
+        name="list"
+        readonly
+        label="组件列表"
+        :col-props="{ span: 12 }"
+        :initialValue="['0', 'red']"
+        :transform="(value: any) => ({
+          list: value,
+          startTime: value[0],
+          endTime: value[1],
+        })"
+        :rules="[{ required: true }]"
       >
-        <template #alertActions>
-          <a class="pro-link">批量删除</a>
-          <a class="pro-link">导出数据</a>
-        </template>
-        <template #toolbarActions>
-          <ProButton type="primary" :icon="FullscreenOutlined">
-            <!-- <template #icon><FullscreenOutlined /></template> -->
-            创建应用{{ activeKey }}
-          </ProButton>
-          <ProButton>
-            <template #icon>
-              <EllipsisOutlined />
-            </template>
-          </ProButton>
-          <FullscreenOutlined style="font-size: 16px" />
-        </template>
-      </ProTable>
-    </template>
-  </ProPage>
-  <ProDrawer title="抽屉" v-model:open="openDrawer">内容</ProDrawer>
-  <ProModal title="对话框" v-model:open="openModal">内容</ProModal>
+        <ProFormField
+          value-type="select"
+          :col-props="{ span: 20 }"
+          :value-enum="{
+            0: {
+              text: '男',
+            },
+          }"
+        >
+          <!-- <template #renderFormItem="{ dom, onChange }">
+            <Input @change="(e) => onChange(e.target.value)">aa</Input>
+          </template> -->
+        </ProFormField>
+        <ProFormField value-type="color" :col-props="{ span: 4 }" />
+      </ProFormFieldSet>
+      <ProForm.Group
+        title="分组标题"
+        tooltip="啊啊啊啊"
+        extra="extra"
+        collapsible
+        :col-props="{ span: 24 }"
+      >
+        <ProForm.Field
+          label="姓名"
+          tooltip="我是Pro Component"
+          name="name"
+          width="sm"
+          :rules="[{ required: true }]"
+          @change="onChange"
+        />
+        <ProFormField
+          label="性别"
+          initialValue="0"
+          value-type="select"
+          name="sex1"
+          @change="onChange"
+          :value-enum="{
+            0: {
+              text: '男',
+            },
+          }"
+        />
+      </ProForm.Group>
+      <ProForm.Field
+        label="内部"
+        tooltip="我是Pro Component"
+        name="age"
+        width="lg"
+        initial-value="123"
+        placeholder="请输入内部名称"
+        @change="onChange"
+        :rules="[{ required: true }]"
+      />
+    </ProForm>
+    <Form>
+      <Space>
+        <Radio.Group v-model:value="state">
+          <Radio value="read">只读</Radio>
+          <Radio value="edit">编辑</Radio>
+        </Radio.Group>
+      </Space>
+      <br />
+      <br />
+      <Descriptions :column="2">
+        <Descriptions.Item label="空字符串">
+          <ProField text="" mode="read">
+            <!-- <template #render></template> -->
+          </ProField>
+        </Descriptions.Item>
+        <Descriptions.Item label="头像">
+          <ProField
+            text="https://avatars2.githubusercontent.com/u/8186664?s=60&v=4"
+            mode="read"
+            valueType="avatar"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="列序号">
+          <ProField :text="1" valueType="index" />
+        </Descriptions.Item>
+        <Descriptions.Item label="列序号2">
+          <ProField :text="1" valueType="indexBorder" />
+        </Descriptions.Item>
+        <Descriptions.Item label="文本">
+          <ProField text="这是一段文本" valueType="text" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="图片">
+          <ProField
+            text="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+            valueType="image"
+            :mode="state"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="金额">
+          <ProField text="100" valueType="money" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="颜色">
+          <ProField value="red" valueType="color" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="数字">
+          <ProField text="19897979797979" valueType="digit" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="数字范围">
+          <ProField v-model:value="numberRange" valueType="digitRange" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="秒格式化">
+          <ProField text="2000000" valueType="second" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="百分比">
+          <Space>
+            <ProField
+              :text="100"
+              valueType="percent"
+              :mode="state"
+              :field-props="{ showColor: true, showSymbol: true }"
+            />
+            <ProField
+              :text="0"
+              valueType="percent"
+              :mode="state"
+              :field-props="{ showColor: true, showSymbol: true }"
+            />
+            <ProField
+              :text="-80"
+              valueType="percent"
+              :mode="state"
+              :field-props="{ showColor: true, showSymbol: true }"
+            />
+          </Space>
+        </Descriptions.Item>
+        <Descriptions.Item label="评分">
+          <ProField :text="3.5" valueType="rate" :mode="state" @change="handleRateChange" />
+        </Descriptions.Item>
+        <Descriptions.Item label="选择框">
+          <ProField
+            text="open"
+            :mode="state"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="树形选择框">
+          <ProField
+            v-model:value="treeValue"
+            :mode="state"
+            valueType="treeSelect"
+            style="width: 100%"
+            :request="
+              async () => {
+                await sleep(5000)
+                return [
+                  {
+                    value: 'zhejiang',
+                    name: '浙江',
+                    children: [
+                      {
+                        value: 'hangzhou',
+                        name: '杭州',
+                        children: [
+                          {
+                            value: 'xihu',
+                            name: '西湖',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    value: 'jiangsu',
+                    name: '江苏',
+                    children: [
+                      {
+                        value: 'nanjing',
+                        name: '南京',
+                        children: [
+                          {
+                            value: 'zhonghuamen',
+                            name: 'Zhong Hua Men',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ]
+              }
+            "
+            :field-props="{
+              // multiple: true,
+              // showSearch: true,
+              // autoClearSearchValue: true,
+              treeDefaultExpandAll: true,
+              treeNodeFilterProp: 'label',
+              fieldNames: {
+                label: 'name',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="分段控制器">
+          <ProField
+            text="open"
+            v-model:value="radio"
+            :mode="state"
+            valueType="segmented"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="多选">
+          <ProField
+            :text="['open', 'closed']"
+            :mode="state"
+            valueType="checkbox"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="多选 labelInValue">
+          <ProField
+            :text="[
+              {
+                value: 'open1',
+                label: '打开',
+              },
+              {
+                value: 'closed2',
+                label: '关闭',
+              },
+            ]"
+            :mode="state"
+            valueType="checkbox"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+
+        <Descriptions.Item label="单选">
+          <ProField
+            text="open"
+            v-model:value="radio"
+            :mode="state"
+            valueType="radio"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="单选按钮">
+          <ProField
+            text="open"
+            v-model:value="radio"
+            :mode="state"
+            valueType="radioButton"
+            :value-enum="{
+              all: { text: '全部', disabled: true, status: 'Default' },
+              open: {
+                text: '未解决',
+                status: 'Error',
+              },
+              closed: {
+                text: '已解决',
+                status: 'Success',
+              },
+              processing: {
+                text: '解决中',
+                status: 'Processing',
+              },
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="远程选择框">
+          <ProField
+            text="open"
+            :mode="state"
+            valueType="select"
+            :request="
+              async () => {
+                await sleep(5000)
+                return [
+                  { label: '全部', value: 'all' },
+                  { label: '未解决', value: 'open' },
+                  { label: '已解决', value: 'closed' },
+                  { label: '解决中', value: 'processing' },
+                  {
+                    label: '特殊选项',
+                    value: 'optGroup',
+                    optionType: 'optGroup',
+                    options: [
+                      { label: '不解决', value: 'no' },
+                      { label: '已废弃', value: 'clear' },
+                    ],
+                  },
+                ]
+              }
+            "
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="级联选择框">
+          <ProField
+            :text="['zhejiang', 'hangzhou', 'xihu']"
+            :mode="state"
+            valueType="cascader"
+            :fieldProps="{
+              fieldNames: {
+                label: 'name',
+              },
+            }"
+            :request="
+              async () => {
+                await sleep(5000)
+                return [
+                  {
+                    value: 'zhejiang',
+                    name: '浙江',
+                    children: [
+                      {
+                        value: 'hangzhou',
+                        name: '杭州',
+                        children: [
+                          {
+                            value: 'xihu',
+                            name: '西湖',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    value: 'jiangsu',
+                    name: '江苏',
+                    children: [
+                      {
+                        value: 'nanjing',
+                        name: '南京',
+                        children: [
+                          {
+                            value: 'zhonghuamen',
+                            name: 'Zhong Hua Men',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ]
+              }
+            "
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="进度条">
+          <ProField text="40" valueType="progress" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="滑动输入条">
+          <ProField text="40" valueType="slider" :mode="state" style="width: 100%" />
+        </Descriptions.Item>
+        <Descriptions.Item label="开关">
+          <ProField v-model:value="switchValue" valueType="switch" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="相对于当前时间">
+          <ProField text="2019-11-16 12:50:26" valueType="fromNow" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="日期时间">
+          <ProField text="2023-11-16 12:50:26" valueType="dateTime" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="日期区间">
+          <ProField
+            :text="[
+              dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+              dayjs('2019-11-16 12:50:26').valueOf(),
+            ]"
+            valueType="dateRange"
+            :mode="state"
+            :field-props="{
+              separator: '至',
+              format: 'YYYY年MM月DD日',
+              valueFormat: 'YYYY-MM-DD',
+            }"
+          >
+            <template #separator><span style="color: red">~</span></template>
+          </ProField>
+        </Descriptions.Item>
+        <Descriptions.Item label="日期时间区间">
+          <ProField
+            :text="[
+              dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+              dayjs('2019-11-16 12:50:26').valueOf(),
+            ]"
+            valueType="dateTimeRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="周区间">
+          <ProField
+            :text="[
+              dayjs('2019-11-16 12:50:26').add(-1, 'd').valueOf(),
+              dayjs('2019-11-16 12:50:26').valueOf(),
+            ]"
+            valueType="dateWeekRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="月区间">
+          <ProField
+            :text="[dayjs('2019-11-16').add(-1, 'd').valueOf(), dayjs('2019-12-16').valueOf()]"
+            valueType="dateMonthRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="季度区间">
+          <ProField
+            :text="[dayjs('2019-06-16').add(-1, 'd').valueOf(), dayjs('2019-12-16').valueOf()]"
+            valueType="dateQuarterRange"
+            :mode="state"
+            :field-props="{
+              separator: '~',
+              format: 'YYYY年Q季度',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="年区间">
+          <ProField
+            :text="[dayjs('2019-11-16').add(-1, 'd').valueOf(), dayjs('2020-12-16').valueOf()]"
+            valueType="dateYearRange"
+            :mode="state"
+            :field-props="{
+              format: 'YYYY年',
+            }"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="时间">
+          <ProField v-model:value="dateValue" valueType="time" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="时间区间">
+          <ProField
+            v-model:value="dateRangeValue"
+            valueType="timeRange"
+            :field-props="{
+              separator: '~',
+            }"
+            :mode="state"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="密码">
+          <ProField text="password" valueType="password" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="操作">
+          <ProField valueType="option" :render="optionRender">
+            <!-- <template #render>
+              <ProButton type="link">aaa</ProButton>
+              <ProButton type="link">bbb</ProButton>
+              <ProButton type="link">ccc</ProButton>
+            </template> -->
+          </ProField>
+        </Descriptions.Item>
+        <Descriptions.Item label="代码块">
+          <ProField v-model:value="codeValue" valueType="code" :mode="state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="JSON 代码块">
+          <ProField
+            :text="`{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;esnext&quot;,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;jsx&quot;: &quot;preserve&quot;,
+    &quot;esModuleInterop&quot;: true,
+    &quot;experimentalDecorators&quot;: true,
+    &quot;strict&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;noImplicitReturns&quot;: true,
+
+    &quot;declaration&quot;: true,
+    &quot;skipLibCheck&quot;: true
+  },
+  &quot;include&quot;: [&quot;**/src&quot;, &quot;**/docs&quot;, &quot;scripts&quot;, &quot;**/demo&quot;, &quot;.eslintrc.js&quot;]
+}
+`"
+            valueType="jsonCode"
+            :mode="state"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="文本域">
+          <ProField
+            :text="`
+yarn run v1.22.0
+$ eslint --format=pretty ./packages
+Done in 9.70s.
+          `"
+            valueType="textarea"
+            :mode="state"
+          />
+        </Descriptions.Item>
+      </Descriptions>
+    </Form>
+  </div>
 </template>

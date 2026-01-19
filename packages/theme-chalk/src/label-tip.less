@@ -1,0 +1,35 @@
+@import 'common/var';
+.@{pro-prefix}-label-tip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+
+  &-title {
+    display: inline-flex;
+    flex: 1;
+
+    &&-ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: keep-all;
+      white-space: nowrap;
+    }
+  }
+
+  &-subtitle {
+    margin-inline-start: 8px;
+    font-weight: normal;
+    color: hsl(var(--pro-muted-foreground));
+    white-space: nowrap;
+  }
+
+  &-icon {
+    display: block;
+    margin-inline-start: 4px;
+    cursor: pointer;
+
+    &:hover {
+      color: hsl(var(--pro-primary));
+    }
+  }
+}

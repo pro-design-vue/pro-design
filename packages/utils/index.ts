@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-27 09:56:36
  * @LastEditors: shen
- * @LastEditTime: 2025-12-29 16:10:28
+ * @LastEditTime: 2026-01-16 14:04:07
  * @Description:
  */
 export * from './antd'
@@ -30,6 +30,7 @@ export * from './clone-element'
 export * from './render-slot-fragments'
 export * from './object-to-empty'
 export * from './parse-value-to-day'
+export * from './is-deep-equal'
 export {
   cloneDeep,
   merge,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 16:45:30
+ * @LastEditTime: 2026-01-16 11:21:19
  * @Description:
  */
 import type { InternalNamePath, NamePath } from 'ant-design-vue/es/form/interface'
@@ -57,7 +57,6 @@ export function useFormStore({
 
   const resetFields = (name?: NamePath) => {
     if (!name) {
-      console.log('🚀 ~ resetFields ~ merge(initialValues.value):', initialValues.value)
       updateValues(initialValues.value)
       return
     }

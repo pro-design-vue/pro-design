@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 09:15:41
  * @LastEditors: shen
- * @LastEditTime: 2026-01-06 13:26:09
+ * @LastEditTime: 2026-01-16 09:15:47
  * @Description:
  */
 
@@ -10,14 +10,13 @@ import type { VNode } from 'vue'
 
 import type {
   Key,
+  ProFieldMode,
   ProFieldValueType,
   ProSchemaValueEnumMap,
   ProSchemaValueEnumObj,
   ProVNode,
   RequestOptionsType,
 } from '@pro-design-vue/utils'
-
-export type ProFieldMode = 'read' | 'edit' | 'update'
 
 export type SelectOptionType = Partial<RequestOptionsType>[]
 

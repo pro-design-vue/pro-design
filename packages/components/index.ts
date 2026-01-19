@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-08-26 15:17:24
  * @LastEditors: shen
- * @LastEditTime: 2026-01-04 09:38:55
+ * @LastEditTime: 2026-01-14 11:15:13
  * @Description:
  */
 export * from './config-provider'
@@ -21,3 +21,4 @@ export * from './slot'
 export * from './spinner'
 // export * from './table'
 export * from './field'
+export * from './label-tip'

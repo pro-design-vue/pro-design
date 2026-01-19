@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-09 16:56:22
+ * @LastEditTime: 2026-01-16 11:22:27
  * @Description:
  */
 import type { RowProps } from 'ant-design-vue'
@@ -30,14 +30,14 @@ export default defineComponent({
     const mergeGrid = computed(() => props.grid ?? grid?.value)
     const mergeRowProps = computed(() => ({ gutter: 8, ...rowProps?.value, ...props.rowProps }))
     return () => {
-      if (mergeGrid?.value) {
-        return (
-          <Row {...mergeRowProps.value} class={attrs.class}>
-            {slots.default?.()}
-          </Row>
-        )
+      if (!mergeGrid?.value) {
+        return slots.default?.()
       }
-      return slots.default?.()
+      return (
+        <Row {...mergeRowProps.value} class={attrs.class}>
+          {slots.default?.()}
+        </Row>
+      )
     }
   },
 })

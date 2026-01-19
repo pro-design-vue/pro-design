@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2026-01-01 10:11:34
+ * @LastEditTime: 2026-01-19 17:09:36
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
 
-import { computed, defineComponent, ref, toRefs, type VNode } from 'vue'
+import { computed, defineComponent, ref, toRefs, watch, type VNode } from 'vue'
 import { proFieldProps } from './props'
 import {
   omit,
@@ -89,7 +89,6 @@ export default defineComponent({
         }
       )
     })
-
     const proFieldProps = computed(() => {
       const rest = omitKeysAndUndefined(props, [
         'mode',
@@ -119,7 +118,6 @@ export default defineComponent({
               return newDom
             }
           : undefined,
-
         placeholder: renderFormItem
           ? undefined
           : (props.placeholder ?? fieldProps.value?.placeholder),
@@ -135,6 +133,8 @@ export default defineComponent({
     })
 
     return () => {
+      console.log('🚀 ~ return ~ valueType.value:', valueType.value)
+
       const dataValue =
         mode.value === 'edit'
           ? (fieldProps.value?.value ?? text.value)
@@ -164,16 +164,15 @@ export default defineComponent({
       if (valueType.value === 'indexBorder') {
         return <FieldIndexColumn text={(dataValue as number) + 1} border />
       }
-
       /** 如果是日期的值 */
       if (valueType.value === 'date') {
         return (
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM-DD"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -184,10 +183,10 @@ export default defineComponent({
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-wo"
             picker="week"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -199,10 +198,10 @@ export default defineComponent({
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM"
             picker="month"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -214,10 +213,10 @@ export default defineComponent({
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-[Q]Q"
             picker="quarter"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -229,10 +228,10 @@ export default defineComponent({
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY"
             picker="year"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -243,10 +242,10 @@ export default defineComponent({
           <FieldDatePicker
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM-DD HH:mm:ss"
             showTime
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -257,8 +256,8 @@ export default defineComponent({
           <FieldFromNow
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -270,9 +269,9 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM-DD"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -284,10 +283,10 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM-DD HH:mm:ss"
             showTime
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -299,9 +298,9 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             picker="week"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -313,10 +312,10 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-MM"
             picker="month"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -328,10 +327,10 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY-Q"
             picker="quarter"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -343,10 +342,10 @@ export default defineComponent({
           <FieldRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="YYYY"
             picker="year"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -358,9 +357,9 @@ export default defineComponent({
           <FieldTimePicker
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
             format="HH:mm:ss"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -372,9 +371,9 @@ export default defineComponent({
           <FieldTimeRangePicker
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
             format="HH:mm:ss"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -383,10 +382,10 @@ export default defineComponent({
       if (valueType.value === 'option') {
         return (
           <FieldOptions
-            class={prefixCls}
             v-slots={slots}
             text={dataValue as string}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -400,9 +399,9 @@ export default defineComponent({
         return (
           <FieldImage
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as string}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -412,9 +411,9 @@ export default defineComponent({
         return (
           <FieldColorPicker
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as string}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -424,9 +423,9 @@ export default defineComponent({
         return (
           <FieldMoney
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -436,9 +435,9 @@ export default defineComponent({
         return (
           <FieldDigit
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -448,9 +447,9 @@ export default defineComponent({
         return (
           <FieldDigitRange
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number[]}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -460,9 +459,9 @@ export default defineComponent({
         return (
           <FieldSecond
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -472,9 +471,9 @@ export default defineComponent({
         return (
           <FieldPercent
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -484,9 +483,9 @@ export default defineComponent({
         return (
           <FieldRate
             v-slots={slots}
-            class={prefixCls}
             text={dataValue as number}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -497,8 +496,8 @@ export default defineComponent({
           <FieldCheckbox
             text={dataValue as string[]}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -509,8 +508,8 @@ export default defineComponent({
           <FieldRadio
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -521,9 +520,9 @@ export default defineComponent({
           <FieldRadio
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
             optionType="button"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -534,8 +533,8 @@ export default defineComponent({
           <FieldSegmented
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -546,8 +545,8 @@ export default defineComponent({
           <FieldSwitch
             text={dataValue as boolean}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -558,8 +557,8 @@ export default defineComponent({
           <FieldCascader
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -570,8 +569,8 @@ export default defineComponent({
           <FieldProgress
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -582,8 +581,8 @@ export default defineComponent({
           <FieldSlider
             text={dataValue as number}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -597,8 +596,8 @@ export default defineComponent({
           <FieldSelect
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -609,8 +608,8 @@ export default defineComponent({
           <FieldTreeSelect
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -621,8 +620,8 @@ export default defineComponent({
           <FieldCode
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -633,9 +632,9 @@ export default defineComponent({
           <FieldCode
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
             language="json"
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -646,8 +645,8 @@ export default defineComponent({
           <FieldPassword
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -658,8 +657,8 @@ export default defineComponent({
           <FieldTextArea
             text={dataValue as string}
             v-slots={slots}
-            class={prefixCls}
-            {...attrs}
+            class={[prefixCls, attrs.class]}
+            style={attrs.style}
             {...(omit(proFieldProps.value, ['text']) as any)}
           />
         )
@@ -669,8 +668,8 @@ export default defineComponent({
         <FieldText
           text={dataValue as string}
           v-slots={slots}
-          class={prefixCls}
-          {...attrs}
+          class={[prefixCls, attrs.class]}
+          style={attrs.style}
           {...(omit(proFieldProps.value, ['text']) as any)}
         />
       )

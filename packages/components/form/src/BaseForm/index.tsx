@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 16:18:55
+ * @LastEditTime: 2026-01-15 17:10:14
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -168,7 +168,13 @@ export default defineComponent({
     })
 
     const content = computed(() => {
-      const wrapItems = props.grid ? <RowWrapper>{items.value}</RowWrapper> : items.value
+      const wrapItems = props.grid ? (
+        <RowWrapper grid={props.grid} rowProps={props.rowProps}>
+          {items.value}
+        </RowWrapper>
+      ) : (
+        items.value
+      )
       if (props.contentRender) {
         return props.contentRender(wrapItems as any, submitterNode.value, formInstace)
       }
@@ -178,10 +184,10 @@ export default defineComponent({
     useProvideFormEditOrReadOnly({
       mode: computed(() => (props.readonly ? 'read' : 'edit')),
     })
-
     useProvideGrid({
       grid: computed(() => props.grid!),
       colProps: computed(() => props.colProps!),
+      rowProps: computed(() => props.rowProps!),
     })
 
     useProvideField({
@@ -206,6 +212,7 @@ export default defineComponent({
     useProvideForm({
       store: formStore,
       form: formInstace,
+      formProps: props,
     })
 
     onMounted(() => {

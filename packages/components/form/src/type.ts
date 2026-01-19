@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-04 09:12:53
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 09:49:01
+ * @LastEditTime: 2026-01-15 11:20:17
  * @Description:
  */
 
@@ -18,6 +18,7 @@ import type { ProRequestData } from './hooks/useFetchData'
 import type {
   Entity,
   ProFieldProps,
+  ProFieldValueType,
   ProFormBaseGroupProps,
   ProFormInstance,
   ProVNode,
@@ -314,3 +315,16 @@ export type ProFormFieldItemProps<T = Record<string, any>, K = any> = {
 } & Omit<ProFormItemProps, 'valueType'> &
   ProFormGridConfig &
   ExtendsProps
+
+export type ProFormItemCreateConfig = {
+  /** 自定义类型 */
+  valueType?: ProFieldValueType
+  /** 自定义 lightMode */
+  customLightMode?: boolean
+  /** Light mode 自定义的 label 模式 */
+  lightFilterLabelFormatter?: (value: any) => string
+  /** 默认的props，如果用户设置会被覆盖 */
+  defaultProps?: Record<string, any>
+  /** @name 不使用默认的宽度 */
+  ignoreWidth?: boolean
+} & ProFormItemProps

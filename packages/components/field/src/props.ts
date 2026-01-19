@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-08 09:15:45
  * @LastEditors: shen
- * @LastEditTime: 2026-01-08 09:27:35
+ * @LastEditTime: 2026-01-14 09:22:27
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -72,6 +72,12 @@ export const selectFieldProps = {
   valueEnum: {
     type: Object as PropType<ProFieldProps['valueEnum']>,
     default: undefined,
+  },
+  emptyText: {
+    type: [Object, String, Number, null, Boolean, Array, Function] as PropType<
+      ProFieldProps['emptyText']
+    >,
+    default: '-',
   },
   debounceTime: {
     type: Number,
