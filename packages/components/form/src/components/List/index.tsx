@@ -268,7 +268,7 @@ export default defineComponent({
       }
       isDeepEqual(prevProps, { ...props }, [], true)
       prevProps = { ...props }
-      let listContent = renderContent('default', 'content')
+      const listContent = renderContent('default', 'content')
       console.log('🚀 ~ return ~ listContent:', listContent)
       const label = renderVNodeJSX('label', {
         slotFirst: true,

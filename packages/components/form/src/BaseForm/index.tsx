@@ -128,7 +128,7 @@ export default defineComponent({
     })
 
     const items = computed(() => {
-      let children = renderContent('default', 'content')
+      const children = renderContent('default', 'content')
       return children?.map((item, index) => {
         if (index === 0 && isValidElement(item) && props.autoFocusFirstInput) {
           return cloneElement(item, {
