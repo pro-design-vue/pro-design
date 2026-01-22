@@ -51,6 +51,7 @@ const columns: ProTableColumnType[] = [
     hideInSearch: true,
     dataIndex: 'age',
     sorter: true,
+    resizable: true,
   },
   {
     title: '性别',
@@ -66,6 +67,16 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     hideInSearch: true,
+    width: 200,
+    ellipsis: true,
+    renderText: () => '11111111',
+    tooltip: {
+      shouldOpen: () => true,
+      title: (args) => {
+        console.log('🚀 ~ args:', args)
+        return '11'
+      },
+    },
     dataIndex: 'detail.email',
   },
   {
