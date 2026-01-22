@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-16 14:57:51
+ * @LastEditTime: 2026-01-21 09:27:37
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -24,6 +24,7 @@ import { useInjectField } from '../../context/FieldContext'
 import { getNamePath } from '../../utils/getNamePath'
 import WrapFormItem from './WrapFormItem'
 import WithValueFomField from './WithValueFomField'
+import { useContent } from '@pro-design-vue/hooks'
 export type ProFormItemProps = FormItemProps & {
   ignoreFormItem?: boolean
   mode?: ProFieldMode
@@ -105,6 +106,7 @@ export default defineComponent({
   },
   setup(props, { attrs, slots }) {
     const formListField = useInjectFormList()
+    const renderContent = useContent()
     const { setFieldValueType, formItemProps } = useInjectField()
     const namePath = computed(() => getNamePath(props.name))
     const name = computed(() => {
@@ -144,12 +146,12 @@ export default defineComponent({
     })
 
     return () => {
+      const children = renderContent('default', 'content')
       const formField = (
         <WithValueFomField key={props.proFormFieldKey || props.name?.toString()} name={name.value}>
-          {slots.default?.()}
+          {children?.[0]}
         </WithValueFomField>
       )
-      // const formField = slots.default?.()
       if (props.ignoreFormItem) {
         return <>{formField}</>
       }

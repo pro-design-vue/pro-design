@@ -34,7 +34,7 @@ export default defineComponent({
   setup(props, { slots, attrs, expose }) {
     const prefixCls = usePrefixCls('field-slider')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
     expose({
@@ -45,7 +45,7 @@ export default defineComponent({
     return () => {
       if (mode.value === 'read') {
         const dom = text.value
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -69,7 +69,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

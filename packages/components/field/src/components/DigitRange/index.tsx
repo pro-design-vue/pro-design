@@ -47,7 +47,7 @@ export default defineComponent({
     const { token } = theme.useToken()
     const prefixCls = usePrefixCls('field-digit-range')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
     const [valuePair, setValuePair] = useMergedState(() => fieldProps.value?.defaultValue, {
@@ -109,7 +109,7 @@ export default defineComponent({
           </span>
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -180,7 +180,7 @@ export default defineComponent({
           </Compact>
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

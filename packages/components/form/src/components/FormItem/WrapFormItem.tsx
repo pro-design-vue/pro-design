@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-16 14:49:33
+ * @LastEditTime: 2026-01-21 11:07:04
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -10,7 +10,7 @@ import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 import { Form, Tooltip } from 'ant-design-vue'
 import {
-  cloneDeep,
+  isString,
   merge,
   omit,
   omitUndefined,
@@ -19,7 +19,7 @@ import {
 } from '@pro-design-vue/utils'
 import { formItemProps } from 'ant-design-vue/es/form'
 import { useProvideFormItem } from '../../context/FormItemContext'
-import { usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
+import { useContent, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { useInjectForm } from '../../context/FormContext'
 type WrapFormItemProps = {
@@ -55,10 +55,11 @@ export default defineComponent({
       >,
     },
   },
-  setup(props, { attrs, slots }) {
+  setup(props, { attrs }) {
     const prefixCls = usePrefixCls('form-item')
     const { form } = useInjectForm()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
+    const renderContent = useContent()
     const renderParams = computed(() => ({
       form,
       mode: props.mode,
@@ -69,20 +70,19 @@ export default defineComponent({
       omit(merge({}, props), [...SLOT_KEYS, 'addonAfter', 'mode', 'addonBefore', 'tooltip']),
     )
 
+    const tooltip = computed(() => {
+      if (isString(props.tooltip)) {
+        return { title: props.tooltip }
+      }
+      return props.tooltip
+    })
+
     const mergeFormItemSlots = computed(() => {
-      const tooltipRender = renderContent('tooltip', {
-        slotFirst: true,
-        props,
-        params: renderParams.value,
-      })
       const slots: any = {
-        tooltip: tooltipRender
+        tooltip: tooltip.value
           ? () => {
               return (
-                <Tooltip
-                  getPopupContainer={() => document.body}
-                  v-slots={{ title: () => tooltipRender }}
-                >
+                <Tooltip getPopupContainer={() => document.body} {...tooltip.value}>
                   <QuestionCircleOutlined
                     class={`${prefixCls}-tooltip-icon`}
                     style="margin-inline-start: 3px"
@@ -93,7 +93,7 @@ export default defineComponent({
           : undefined,
       }
       SLOT_KEYS.forEach((key) => {
-        const render = renderContent(key, {
+        const render = renderVNodeJSX(key, {
           slotFirst: true,
           props,
           params: renderParams.value,
@@ -110,13 +110,14 @@ export default defineComponent({
 
     return () => {
       // console.log('namePath', props.name)
-      const addonAfterNode = renderContent('addonAfter', {
+      const children = renderContent('default', 'content')
+      const addonAfterNode = renderVNodeJSX('addonAfter', {
         slotFirst: true,
         props,
         params: renderParams.value,
       })
 
-      const addonBeforeNode = renderContent('addonBefore', {
+      const addonBeforeNode = renderVNodeJSX('addonBefore', {
         slotFirst: true,
         props,
         params: renderParams.value,
@@ -130,7 +131,7 @@ export default defineComponent({
             {...mergeFormItemProps.value}
             v-slots={{ ...mergeFormItemSlots.value }}
           >
-            {slots.default?.()}
+            {children}
           </Form.Item>
         )
       }
@@ -151,7 +152,7 @@ export default defineComponent({
             {addonBeforeNode?.length ? (
               <div style={{ marginInlineEnd: '8px', flexShrink: 0 }}>{addonBeforeNode}</div>
             ) : null}
-            {slots.default?.()}
+            {children}
             {addonAfterNode ? (
               <div style={{ marginInlineStart: '8px', flexShrink: 0 }}>{addonAfterNode}</div>
             ) : null}

@@ -40,19 +40,19 @@ export default defineComponent({
   },
   setup(props, { attrs }) {
     const prefixCls = usePrefixCls('label-tip')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
 
     const tooltipProps = computed(() =>
       typeof props.tooltip === 'string' ? { title: props.tooltip } : props.tooltip,
     )
 
     return () => {
-      const labelDom = renderContent('label', {
+      const labelDom = renderVNodeJSX('label', {
         slotFirst: true,
         props,
       })
 
-      const subTitleDom = renderContent('subTitle', {
+      const subTitleDom = renderVNodeJSX('subTitle', {
         slotFirst: true,
         props,
       })

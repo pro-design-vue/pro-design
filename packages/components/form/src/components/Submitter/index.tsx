@@ -2,15 +2,15 @@
  * @Author: shen
  * @Date: 2023-08-27 12:25:01
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 09:53:24
+ * @LastEditTime: 2026-01-21 09:13:40
  * @Description:
  */
 import type { CSSProperties, PropType, VNode } from 'vue'
+import type { SubmitterProps } from '../../type'
 
 import { computed, defineComponent } from 'vue'
 import { Button, theme } from 'ant-design-vue'
 import { omit } from '@pro-design-vue/utils'
-import type { SubmitterProps } from '../../type'
 import { useInjectForm } from '../../context/FormContext'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { useVNodeJSX } from '@pro-design-vue/hooks'
@@ -56,7 +56,7 @@ export default defineComponent({
     const intl = useIntl()
     const { form } = useInjectForm()
     const { token } = theme.useToken()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const submit = () => {
       form.submit()
       props.onSubmit?.()
@@ -119,7 +119,7 @@ export default defineComponent({
 
       const dom = [resetButton.value, submitButton.value].filter((btn) => !!btn)
 
-      const render = renderContent('render', {
+      const render = renderVNodeJSX('render', {
         slotFirst: true,
         params: { props: { ...props, form, submit, reset }, dom },
       })

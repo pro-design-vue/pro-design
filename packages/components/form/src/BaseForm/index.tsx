@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-15 17:10:14
+ * @LastEditTime: 2026-01-21 09:20:51
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -10,7 +10,7 @@ import type { SubmitterProps } from '../type'
 
 import { Form, Spin, type FormInstance } from 'ant-design-vue'
 import { computed, defineComponent, onMounted, ref, shallowRef } from 'vue'
-import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
+import { useContent, useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { baseFormProps } from '../props'
 import { useFetchData } from '../hooks/useFetchData'
 import { useProvideFormEditOrReadOnly } from '../context/EditOrReadOnlyContext'
@@ -40,6 +40,7 @@ export default defineComponent({
   setup(props, { slots, attrs, expose }) {
     const prefixCls = usePrefixCls('form')
     const formRef = ref<FormInstance>({} as any)
+    const renderContent = useContent()
     const [loading, setLoading] = useMergedState<boolean>(false, {
       onChange: props.onLoadingChange,
       value: computed(() => props.loading!),
@@ -127,7 +128,7 @@ export default defineComponent({
     })
 
     const items = computed(() => {
-      const children = slots.default?.()
+      let children = renderContent('default', 'content')
       return children?.map((item, index) => {
         if (index === 0 && isValidElement(item) && props.autoFocusFirstInput) {
           return cloneElement(item, {

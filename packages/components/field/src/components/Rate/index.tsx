@@ -34,7 +34,7 @@ export default defineComponent({
   setup(props, { slots, attrs, expose }) {
     const fieldRef = ref<HTMLInputElement>()
     const prefixCls = usePrefixCls('field-rate')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
     const [innerValue, setInnerValue] = useMergedState(undefined, {
       value: computed(() => fieldProps.value?.value),
@@ -63,7 +63,7 @@ export default defineComponent({
           />
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -90,7 +90,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

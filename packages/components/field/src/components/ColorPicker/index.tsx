@@ -62,7 +62,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const { token } = theme.useToken()
     const prefixCls = usePrefixCls('field-color-picker')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const formItemContext = Form.useInjectFormItemContext()
     const { mode, text, fieldProps } = toRefs(props)
     const color = ref(fieldProps?.value?.value ? tinycolor(fieldProps?.value?.value) : null)
@@ -139,7 +139,7 @@ export default defineComponent({
         </div>
       )
       if (mode.value === 'read' || fieldProps?.value?.disabled) {
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom: readDom },
           slotFirst: true,
         })
@@ -167,7 +167,7 @@ export default defineComponent({
           </Popover>
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

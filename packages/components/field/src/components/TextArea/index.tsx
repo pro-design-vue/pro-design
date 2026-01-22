@@ -37,7 +37,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-textarea')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
     const onChange: TextAreaProps['onChange'] = (e) => {
       fieldProps.value?.onChange?.(e.target.value, e)
@@ -52,7 +52,7 @@ export default defineComponent({
     return () => {
       if (mode.value === 'read') {
         const dom = <FieldTextAreaReadonly text={text.value} />
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -78,7 +78,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

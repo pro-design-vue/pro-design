@@ -50,7 +50,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-range-picker')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
     const genFormatText = (formatValue: dayjs.Dayjs) => {
       if (typeof fieldProps.value?.format === 'function') {
@@ -79,7 +79,7 @@ export default defineComponent({
     )
 
     const separatorNode = computed<VNode>(() => {
-      const separator = renderContent('separator', {
+      const separator = renderVNodeJSX('separator', {
         slotFirst: true,
         props: fieldProps.value,
       })
@@ -113,7 +113,7 @@ export default defineComponent({
             <div>{parsedText.value?.[1] || '-'}</div>
           </div>
         )
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -154,7 +154,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

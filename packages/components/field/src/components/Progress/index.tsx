@@ -52,7 +52,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-progress')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
     const realValue = computed(() =>
@@ -79,7 +79,7 @@ export default defineComponent({
             {...omit({ ...(fieldProps.value?.progressProps ?? {}) }, ['size', 'percent', 'status'])}
           />
         )
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -103,7 +103,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

@@ -37,7 +37,7 @@ export default defineComponent({
     const { mode, text, fieldProps } = toRefs(props)
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-cascader')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
     const { loading, options, fetchData, resetData } = useFieldFetchData(props)
 
@@ -88,7 +88,7 @@ export default defineComponent({
           ) as unknown as ProSchemaValueEnumObj,
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })
@@ -117,7 +117,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })

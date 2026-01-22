@@ -50,10 +50,10 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-text')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, emptyText, fieldProps } = toRefs(props)
     const prefixNode = computed<VNode>(() => {
-      const prefix = renderContent('prefix', {
+      const prefix = renderVNodeJSX('prefix', {
         slotFirst: true,
         props: fieldProps.value,
       })
@@ -62,7 +62,7 @@ export default defineComponent({
     })
 
     const suffixNode = computed<VNode>(() => {
-      const suffix = renderContent('suffix', {
+      const suffix = renderVNodeJSX('suffix', {
         slotFirst: true,
         props: fieldProps.value,
       })
@@ -95,7 +95,7 @@ export default defineComponent({
           </>
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -132,7 +132,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

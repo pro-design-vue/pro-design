@@ -36,7 +36,7 @@ export default defineComponent({
     const { token } = theme.useToken()
     const { mode, text, fieldProps } = toRefs(props)
     const prefixCls = usePrefixCls('field-checkbox')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
 
     const { loading, options, fetchData, resetData } = useFieldFetchData(props)
@@ -65,7 +65,7 @@ export default defineComponent({
           objectToMap(props.valueEnum || optionsValueEnum),
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })
@@ -99,7 +99,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })

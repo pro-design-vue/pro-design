@@ -36,7 +36,7 @@ export default defineComponent({
   setup(props, { slots, attrs, expose }) {
     const { mode, text, fieldProps } = toRefs(props)
     const prefixCls = usePrefixCls('field-radio')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
 
     const [innerValue, setInnerValue] = useMergedState(undefined, {
@@ -76,7 +76,7 @@ export default defineComponent({
           objectToMap(props.valueEnum || optionsValueEnum),
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -101,7 +101,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

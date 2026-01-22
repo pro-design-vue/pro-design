@@ -55,7 +55,7 @@ export default defineComponent({
     const { mode, text, fieldProps } = toRefs(props)
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-select')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const fieldRef = ref<HTMLInputElement>()
     const fetchDataOnSearch = computed(() => fieldProps?.value?.fetchDataOnSearch ?? true)
     const autoClearSearchValue = computed(() => fieldProps?.value?.autoClearSearchValue ?? true)
@@ -182,7 +182,7 @@ export default defineComponent({
           ) as unknown as ProSchemaValueEnumObj,
         )
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -327,7 +327,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

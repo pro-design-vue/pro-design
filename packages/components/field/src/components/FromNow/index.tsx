@@ -45,7 +45,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-from-now')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
     const dayValue = computed(() => parseValueToDay(fieldProps.value?.value as any) as dayjs.Dayjs)
     const onChange: any = (date, dateString) => {
@@ -69,7 +69,7 @@ export default defineComponent({
             {dayjs(text.value).fromNow()}
           </Tooltip>
         )
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -101,7 +101,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

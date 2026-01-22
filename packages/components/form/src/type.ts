@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-04 09:12:53
  * @LastEditors: shen
- * @LastEditTime: 2026-01-15 11:20:17
+ * @LastEditTime: 2026-01-20 13:37:16
  * @Description:
  */
 
@@ -328,3 +328,14 @@ export type ProFormItemCreateConfig = {
   /** @name 不使用默认的宽度 */
   ignoreWidth?: boolean
 } & ProFormItemProps
+
+export interface FormListOperation {
+  add: (defaultValue?: Entity, insertIndex?: number) => void
+  remove: (index: number | number[]) => void
+  move: (from: number, to: number) => void
+}
+
+export interface FormListFieldData {
+  name: number
+  key: number
+}

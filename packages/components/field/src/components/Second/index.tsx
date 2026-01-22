@@ -71,7 +71,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-digit')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
 
     expose({
@@ -84,7 +84,7 @@ export default defineComponent({
         const secondText = formatSecond(Number(text.value) as number)
         const dom = <span ref={ref}>{secondText}</span>
 
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -110,7 +110,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

@@ -42,7 +42,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-time-picker')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, fieldProps } = toRefs(props)
     const finalFormat = computed(() => fieldProps.value?.format || props.format || 'HH:mm:ss')
 
@@ -68,7 +68,7 @@ export default defineComponent({
     return () => {
       if (mode.value === 'read') {
         const dom = text.value ? dayjs(text.value).format(finalFormat.value) : '-'
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })
@@ -100,7 +100,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { text: text.value, mode: mode.value, ...fieldProps.value, dom },
           slotFirst: true,
         })

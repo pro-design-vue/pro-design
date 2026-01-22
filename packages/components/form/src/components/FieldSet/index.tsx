@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-19 17:22:46
+ * @LastEditTime: 2026-01-21 09:23:39
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -17,6 +17,7 @@ import { useInjectGrid, useProvideGrid } from '../../context/GridContext'
 import { createField } from '../../BaseForm/createField'
 import { formItemProps } from 'ant-design-vue/es/form'
 import RowWrapper from '../Grid/RowWrapper'
+import { useContent } from '@pro-design-vue/hooks'
 
 export type ProFormFieldSetProps<T = any> = ProFormItemProps & {
   value?: T[]
@@ -91,6 +92,7 @@ const BaseProFormFieldSet = defineComponent({
   },
   setup(props, { slots }) {
     const { grid, colProps, rowProps } = useInjectGrid()
+    const renderContent = useContent()
     const mergeGrid = computed(() => props.grid ?? grid?.value)
     const formItemContext = Form.useInjectFormItemContext()
     const fieldSetOnChange = (fileValue: any, index: number) => {
@@ -101,15 +103,9 @@ const BaseProFormFieldSet = defineComponent({
       formItemContext.onFieldChange()
     }
 
-    useProvideGrid({
-      grid: computed(() => mergeGrid.value!),
-      colProps,
-      rowProps,
-    })
-
-    return () => {
-      console.log(props)
-      const list = slots.default?.()?.map((item: any, index) => {
+    const list = computed(() => {
+      const children = renderContent('default', 'content') ?? []
+      return children.map((item: any, index) => {
         if (isValidElement(item)) {
           const forkProps = {
             key: index,
@@ -130,17 +126,24 @@ const BaseProFormFieldSet = defineComponent({
         }
         return item
       })
+    })
 
-      return mergeGrid.value ? (
+    useProvideGrid({
+      grid: computed(() => mergeGrid.value!),
+      colProps,
+      rowProps,
+    })
+
+    return () =>
+      mergeGrid.value ? (
         <RowWrapper grid={props.grid} rowProps={props.rowProps}>
-          {list}
+          {list.value}
         </RowWrapper>
       ) : (
         <Space {...omit(props.spaceProps ?? {}, ['align', 'wrap'])} align="start" wrap>
-          {list}
+          {list.value}
         </Space>
       )
-    }
   },
 })
 

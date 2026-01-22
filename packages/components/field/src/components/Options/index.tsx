@@ -35,12 +35,12 @@ export default defineComponent({
   },
   setup(props) {
     const prefixCls = usePrefixCls('field-option')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { token } = theme.useToken()
     const { mode, text, fieldProps } = toRefs(props)
 
     return () => {
-      let doms = renderContent('render', {
+      let doms = renderVNodeJSX('render', {
         params: { text: text.value, mode: mode.value, ...fieldProps.value },
         slotFirst: true,
       })

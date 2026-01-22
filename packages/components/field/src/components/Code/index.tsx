@@ -55,7 +55,7 @@ export default defineComponent({
     const intl = useIntl()
     const prefixCls = usePrefixCls('field-code')
     const fieldRef = ref<HTMLInputElement>()
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { token } = theme.useToken()
     const { mode, text, fieldProps } = toRefs(props)
     const code = computed(() =>
@@ -91,7 +91,7 @@ export default defineComponent({
             <code>{code.value}</code>
           </pre>
         )
-        const render = renderContent('render', {
+        const render = renderVNodeJSX('render', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })
@@ -124,7 +124,7 @@ export default defineComponent({
           />
         )
 
-        const renderFormItem = renderContent('renderFormItem', {
+        const renderFormItem = renderVNodeJSX('renderFormItem', {
           params: { mode: mode.value, ...fieldProps.value, text: text.value, dom },
           slotFirst: true,
         })

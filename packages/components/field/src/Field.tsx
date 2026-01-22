@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-12-05 15:58:31
  * @LastEditors: shen
- * @LastEditTime: 2026-01-19 17:09:36
+ * @LastEditTime: 2026-01-20 09:56:05
  * @Description:
  */
 import type { ProFieldRenderProps } from './type'
@@ -72,7 +72,7 @@ export default defineComponent({
   setup(props, { slots, attrs, emit }) {
     const fieldRef = ref(null)
     const prefixCls = usePrefixCls('field')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
     const { mode, text, emptyText, fieldProps: restFieldProps, valueType, readonly } = toRefs(props)
     const onChangeCallBack = (...restParams: any[]) => {
       restFieldProps.value?.onChange?.(...restParams)
@@ -133,8 +133,6 @@ export default defineComponent({
     })
 
     return () => {
-      console.log('🚀 ~ return ~ valueType.value:', valueType.value)
-
       const dataValue =
         mode.value === 'edit'
           ? (fieldProps.value?.value ?? text.value)
@@ -146,7 +144,7 @@ export default defineComponent({
         valueType.value !== 'switch'
       ) {
         if (typeof dataValue !== 'boolean' && typeof dataValue !== 'number' && !dataValue) {
-          const render = renderContent('render', {
+          const render = renderVNodeJSX('render', {
             params: { ...proFieldProps.value, text: dataValue, dom: <>{emptyText.value}</> },
             slotFirst: true,
           })

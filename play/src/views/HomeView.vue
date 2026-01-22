@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-01-19 17:31:28
+ * @LastEditTime: 2026-01-21 11:01:47
  * @Description:
 -->
 <script setup lang="tsx">
@@ -13,6 +13,7 @@ import {
   ProFormField,
   ProForm,
   ProFormFieldSet,
+  ProFormList,
 } from '@pro-design-vue/components'
 import { Space, Radio, Descriptions, Form, Input } from 'ant-design-vue'
 import { Fragment, ref } from 'vue'
@@ -148,7 +149,7 @@ const onChange = (...args) => {
         collapsible
         :col-props="{ span: 24 }"
       >
-        <ProForm.Field
+        <ProFormField
           label="姓名"
           tooltip="我是Pro Component"
           name="name"
@@ -169,7 +170,7 @@ const onChange = (...args) => {
           }"
         />
       </ProForm.Group>
-      <ProForm.Field
+      <ProFormField
         label="内部"
         tooltip="我是Pro Component"
         name="age"
@@ -179,6 +180,9 @@ const onChange = (...args) => {
         @change="onChange"
         :rules="[{ required: true }]"
       />
+      <ProFormList :name="['default', 'users']" label="用户信息" :tooltip="{ title: '111' }">
+        <ProFormField key="useMode" name="name" label="姓名" />
+      </ProFormList>
     </ProForm>
   </div>
 </template>

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-19 17:33:00
+ * @LastEditTime: 2026-01-21 09:34:32
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -11,7 +11,7 @@ import type { ProFormGroupProps } from '../../type'
 import { defineComponent, computed } from 'vue'
 import { Space } from 'ant-design-vue'
 import { useInjectField } from '../../context/FieldContext'
-import { useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
+import { useContent, useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useInjectForm } from '../../context/FormContext'
 import { cloneDeep, cloneElement, isValidElement, omit, type ProVNode } from '@pro-design-vue/utils'
 import { RightOutlined } from '@ant-design/icons-vue'
@@ -95,7 +95,8 @@ export default defineComponent({
     const { groupProps } = useInjectField()
     const { grid, colProps, rowProps } = useInjectGrid()
     const prefixCls = usePrefixCls('form-group')
-    const renderContent = useVNodeJSX()
+    const renderVNodeJSX = useVNodeJSX()
+    const renderContent = useContent()
     const [collapsed, setCollapsed] = useMergedState(() => props.defaultCollapsed || false, {
       value: computed(() => props.collapsed!),
       onChange: props.onCollapse,
@@ -109,7 +110,8 @@ export default defineComponent({
     const mergeGrid = computed(() => mergeProps.value.grid ?? grid?.value)
     const childrens = computed(() => {
       const hiddenChildren: ProVNode[] = []
-      const childrenList = slots.default?.()?.map((element, index) => {
+      const children = renderContent('default', 'content') ?? []
+      const childrenList = children.map((element, index) => {
         if (
           isValidElement(element) &&
           (element?.props?.hidden === true || element?.props?.hidden === '')
@@ -161,7 +163,7 @@ export default defineComponent({
         />
       )
 
-      const titleDom = renderContent('title', {
+      const titleDom = renderVNodeJSX('title', {
         slotFirst: true,
         props: {
           ...mergeProps.value,
@@ -177,7 +179,7 @@ export default defineComponent({
         },
       })
 
-      const extraDom = renderContent('extra', {
+      const extraDom = renderVNodeJSX('extra', {
         slotFirst: true,
         props: mergeProps.value,
         params: { props: mergeProps.value, formValues: cloneDeep(store.formValues.value) },
