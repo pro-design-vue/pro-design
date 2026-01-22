@@ -335,9 +335,7 @@ const useColumnDragHandler: ({
   const mouseUpHandler = (event: MouseEvent) => {
     handleMouseUpOrToucheEnd(event)
   }
-  const mergeColumnDrag = computed(
-    () => column.value.drag || (column.value.drag === undefined && columnDrag.value),
-  )
+  const mergeColumnDrag = computed(() => column.value.drag ?? columnDrag.value)
 
   onMounted(() => {
     nextTick(() => {

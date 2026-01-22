@@ -278,7 +278,11 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   prefixCls: String,
   columnDrag: {
     type: Boolean,
-    default: false,
+    default: undefined,
+  },
+  columnResizable: {
+    type: Boolean,
+    default: undefined,
   },
   animateRows: {
     type: Boolean,

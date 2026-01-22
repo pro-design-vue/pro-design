@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-05 12:12:38
  * @LastEditors: shen
- * @LastEditTime: 2025-12-01 14:33:01
+ * @LastEditTime: 2026-01-22 10:29:15
  * @Description:
  */
 import { inject, provide } from 'vue'
@@ -101,6 +101,7 @@ export interface TableContextProps
   onColumnDrag: (arg: DragColumnEventInfo) => void
   prefixCls: ComputedRef<string>
   columnDrag: ComputedRef<boolean>
+  columnResizable: ComputedRef<boolean>
   summaryFixed: ComputedRef<SummaryFixed>
   realHeaderHeight: Ref<number>
   bottomPaginationHeight: Ref<number>

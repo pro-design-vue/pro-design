@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 17:16:36
+ * @LastEditTime: 2026-01-22 10:34:57
  * @Description:
 -->
 <script lang="ts">
@@ -894,7 +894,8 @@ export default defineComponent({
         }
       },
       onColumnDrag: () => {},
-      columnDrag: computed(() => props.columnDrag),
+      columnDrag: computed(() => props.columnDrag ?? table?.value?.columnResizable),
+      columnResizable: computed(() => props.columnResizable ?? table?.value?.columnResizable),
       summaryFixed: mergedSummaryFixed,
       realHeaderHeight,
       bottomPaginationHeight,

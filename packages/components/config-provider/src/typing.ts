@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-27 14:45:23
+ * @LastEditTime: 2026-01-22 10:29:05
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
@@ -34,6 +34,8 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     selectRowByClick?: boolean
     rowKey?: string
     size?: DensitySize
+    columnDrag?: boolean
+    columnResizable?: boolean
     expandIconType?: ExpandIconType
     rowHover?: boolean
     summaryFixed?: boolean

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 16:03:18
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 08:54:01
+ * @LastEditTime: 2026-01-22 10:35:45
  * @Description:
 -->
 <script lang="ts">
@@ -57,6 +57,11 @@ export default defineComponent({
     const columnDragging = computed(
       () => tableContext.draggingColumnKey.value === props.column.columnKey,
     )
+
+    const mergeColumnResizable = computed(
+      () => props.column.resizable ?? tableContext.columnResizable.value,
+    )
+
     const autoHeight = inject<boolean>(AUTO_HEADER_HEIGHT, false)
     const domRef = ref<HTMLDivElement>()
 
@@ -273,6 +278,7 @@ export default defineComponent({
       tableContext,
       sorterInfo,
       getPopupContainer,
+      mergeColumnResizable,
       handleSortClick: (column: FinallyColumnType<any>, nextSortOrder: SortOrder) => {
         if (!column.sorter) return
         const sortState = {
@@ -363,7 +369,7 @@ export default defineComponent({
       </span>
     </component>
     <DragHandle
-      v-if="column.resizable && !(column.children && column.children.length)"
+      v-if="mergeColumnResizable && !(column.children && column.children.length)"
       :prefix-cls="prefixCls"
       :width="widths.width"
       :min-width="widths.minWidth"
