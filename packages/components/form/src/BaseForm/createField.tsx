@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2026-01-15 11:15:09
  * @LastEditors: shen
- * @LastEditTime: 2026-01-20 09:46:57
+ * @LastEditTime: 2026-01-26 10:06:15
  * @Description:
  */
 import type { ProFormFieldItemProps, ProFormItemCreateConfig } from '../type'
 
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import { useInjectField } from '../context/FieldContext'
 import { omit, omitUndefined, pick } from '@pro-design-vue/utils'
 import { pickProFormItemProps } from '../utils/pickProFormItemProps'
@@ -60,9 +60,6 @@ function createField<P extends ProFormFieldItemProps = any>(
       const { store, form, formProps } = useInjectForm()
       const { mode } = useInjectFormEditOrReadOnly()
       const namePath = computed(() => getNamePath(props.name!))
-      if (namePath.value?.length) {
-        store.initEntityValue(namePath.value, props.initialValue)
-      }
 
       const valueType = computed(() => tmpValueType || props.valueType)
       // 有些 valueType 不需要宽度
@@ -191,6 +188,12 @@ function createField<P extends ProFormFieldItemProps = any>(
           ...fieldProps.value,
           style: style.value,
           class: className.value,
+        }
+      })
+
+      onMounted(() => {
+        if (namePath.value?.length) {
+          store.initEntityValue(namePath.value, props.initialValue)
         }
       })
 

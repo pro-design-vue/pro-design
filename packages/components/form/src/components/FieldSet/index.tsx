@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 09:23:39
+ * @LastEditTime: 2026-01-26 13:33:48
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -12,7 +12,7 @@ import type { ProFormGridConfig } from '../../type'
 import { defineComponent, computed } from 'vue'
 import { Space, type SpaceProps } from 'ant-design-vue'
 import { Form } from 'ant-design-vue'
-import { cloneElement, isValidElement, omit } from '@pro-design-vue/utils'
+import { cloneElement, filterEmpty, isValidElement, omit } from '@pro-design-vue/utils'
 import { useInjectGrid, useProvideGrid } from '../../context/GridContext'
 import { createField } from '../../BaseForm/createField'
 import { formItemProps } from 'ant-design-vue/es/form'
@@ -104,7 +104,7 @@ const BaseProFormFieldSet = defineComponent({
     }
 
     const list = computed(() => {
-      const children = renderContent('default', 'content') ?? []
+      const children = filterEmpty(renderContent('default', 'content') ?? [])
       return children.map((item: any, index) => {
         if (isValidElement(item)) {
           const forkProps = {

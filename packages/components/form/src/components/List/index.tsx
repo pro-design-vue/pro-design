@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 11:05:10
+ * @LastEditTime: 2026-01-27 10:11:42
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
@@ -11,12 +11,12 @@ import type { Rule } from 'ant-design-vue/es/form'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
 import type { FormListActionGuard, ProFromListCommonProps } from './ListItem'
 
-import { computed, defineComponent, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, shallowRef, watchEffect } from 'vue'
 import { Form, Tooltip, type ButtonProps, type ColProps, type TooltipProps } from 'ant-design-vue'
 import { useInjectField } from '../../context/FieldContext'
 import { useContent, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useInjectForm } from '../../context/FormContext'
-import { isDeepEqual, isString, type Entity, type ProVNode } from '@pro-design-vue/utils'
+import { isDeepEqual, isNil, isString, type Entity, type ProVNode } from '@pro-design-vue/utils'
 import { useInjectGrid } from '../../context/GridContext'
 
 import ColWrapper from '../Grid/ColWrapper'
@@ -100,6 +100,7 @@ export type ProFormListProps = ProFromListCommonProps &
   }
 
 let prevProps = {}
+
 export default defineComponent({
   name: 'ProFormList',
   inheritAttrs: false,
@@ -223,15 +224,20 @@ export default defineComponent({
       default: undefined,
     },
   },
-  setup(props, { slots, attrs }) {
+  setup(props, { slots, attrs, expose }) {
     const { store, form } = useInjectForm()
     const { groupProps, setFieldValueType } = useInjectField()
     const { grid, colProps, rowProps } = useInjectGrid()
     const formListField = useInjectFormList()
     const intl = useIntl()
+    const formItemContext = Form.useInjectFormItemContext()
     const prefixCls = usePrefixCls('form-list')
     const renderVNodeJSX = useVNodeJSX()
     const renderContent = useContent()
+    const keyRef = shallowRef<{ keys: number[]; id: number }>({
+      keys: [],
+      id: 0,
+    })
     // 处理 list 的嵌套
     const name = computed(() => {
       const namePath = getNamePath(props.name)
@@ -260,6 +266,69 @@ export default defineComponent({
           transform: props.transform,
         },
       )
+    })
+
+    const onChange = (value: any[]) => {
+      store.updateValue(name.value, value)
+      // props.onChange?.(value, form)
+      formItemContext.onFieldChange()
+    }
+
+    const operations: FormListOperation = {
+      add: (defaultValue, index?: number) => {
+        // Mapping keys
+        const newValue = store.getFieldValue(name.value)
+        if (index! >= 0 && index! <= newValue.length) {
+          keyRef.value.keys = [
+            ...keyRef.value.keys.slice(0, index),
+            keyRef.value.id,
+            ...keyRef.value.keys.slice(index),
+          ]
+          onChange([...newValue.slice(0, index), defaultValue, ...newValue.slice(index)])
+        } else {
+          keyRef.value.keys = [...keyRef.value.keys, keyRef.value.id]
+          onChange([...newValue, defaultValue])
+        }
+        keyRef.value.id += 1
+        return true
+      },
+      remove: (index: number | number[]) => {
+        const newValue = store.getFieldValue(name.value)
+        const indexSet = new Set(Array.isArray(index) ? index : [index])
+        if (indexSet.size <= 0) {
+          return
+        }
+        keyRef.value.keys = keyRef.value.keys.filter((_, keysIndex) => !indexSet.has(keysIndex))
+        // Trigger store change
+        onChange(newValue.filter((_, valueIndex) => !indexSet.has(valueIndex)))
+      },
+      move(from: number, to: number) {
+        // if (from === to) {
+        //   return
+        // }
+        // const newValue = getNewValue()
+        // // Do not handle out of range
+        // if (from < 0 || from >= newValue.length || to < 0 || to >= newValue.length) {
+        //   return
+        // }
+        // keyManager.keys = move(keyManager.keys, from, to)
+        // // Trigger store change
+        // onChange(move(newValue, from, to))
+      },
+    }
+
+    expose({
+      ...operations,
+      get: (index: number) => {
+        return form.getFieldValue([...name.value, index])
+      },
+      getList: () => form.getFieldValue([...name.value]),
+    })
+
+    onMounted(() => {
+      if (name.value?.length && !isNil(props.initialValue)) {
+        store.initEntityValue(name.value, props.initialValue)
+      }
     })
 
     return () => {

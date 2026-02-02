@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 09:20:51
+ * @LastEditTime: 2026-01-26 13:38:26
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -16,6 +16,7 @@ import { useFetchData } from '../hooks/useFetchData'
 import { useProvideFormEditOrReadOnly } from '../context/EditOrReadOnlyContext'
 import {
   cloneElement,
+  filterEmpty,
   isValidElement,
   set,
   type ProFieldValueType,
@@ -119,8 +120,6 @@ export default defineComponent({
 
     const getPopupContainer = computed(() => {
       if (typeof window === 'undefined') return undefined
-      // 如果在 drawerForm 和  modalForm 里就渲染dom到父节点里
-      // modalForm 可能高度太小不适合
       if (props.formComponentType && ['DrawerForm'].includes(props.formComponentType)) {
         return (e: HTMLElement) => e.parentNode || document.body
       }
@@ -128,7 +127,7 @@ export default defineComponent({
     })
 
     const items = computed(() => {
-      const children = renderContent('default', 'content')
+      const children = filterEmpty(renderContent('default', 'content') ?? [])
       return children?.map((item, index) => {
         if (index === 0 && isValidElement(item) && props.autoFocusFirstInput) {
           return cloneElement(item, {
@@ -136,6 +135,7 @@ export default defineComponent({
             autoFocus: props.autoFocusFirstInput,
           })
         }
+
         return item
       })
     })

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 09:34:32
+ * @LastEditTime: 2026-01-26 13:33:31
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -13,7 +13,14 @@ import { Space } from 'ant-design-vue'
 import { useInjectField } from '../../context/FieldContext'
 import { useContent, useMergedState, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useInjectForm } from '../../context/FormContext'
-import { cloneDeep, cloneElement, isValidElement, omit, type ProVNode } from '@pro-design-vue/utils'
+import {
+  cloneDeep,
+  cloneElement,
+  filterEmpty,
+  isValidElement,
+  omit,
+  type ProVNode,
+} from '@pro-design-vue/utils'
 import { RightOutlined } from '@ant-design/icons-vue'
 import { useInjectGrid, useProvideGrid } from '../../context/GridContext'
 
@@ -110,7 +117,7 @@ export default defineComponent({
     const mergeGrid = computed(() => mergeProps.value.grid ?? grid?.value)
     const childrens = computed(() => {
       const hiddenChildren: ProVNode[] = []
-      const children = renderContent('default', 'content') ?? []
+      const children = filterEmpty(renderContent('default', 'content') ?? [])
       const childrenList = children.map((element, index) => {
         if (
           isValidElement(element) &&
@@ -125,6 +132,7 @@ export default defineComponent({
             autoFocus: mergeProps.value?.autoFocus,
           })
         }
+
         return element
       })
 

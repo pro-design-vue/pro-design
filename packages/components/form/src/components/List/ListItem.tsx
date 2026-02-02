@@ -1,4 +1,4 @@
-import type { ProVNode, SearchTransformKeyFn } from '@pro-design-vue/utils'
+import type { ProFormInstance, ProVNode, SearchTransformKeyFn } from '@pro-design-vue/utils'
 import type { FormListFieldData, FormListOperation } from '../../type'
 import type { ButtonProps } from 'ant-design-vue'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
@@ -170,4 +170,27 @@ export type ProFromListCommonProps = {
    * @name 盒子的样式
    */
   containerStyle?: CSSProperties
+}
+
+export type ProFormListItemProps = ProFromListCommonProps & {
+  formInstance: ProFormInstance
+  action: FormListOperation
+  actionGuard?: FormListActionGuard
+  fields: FormListFieldData[]
+  name: NamePath
+  originName: NamePath
+  fieldExtraRender?: (fieldAction: FormListOperation) => ProVNode
+  /** 列表当前条目数量 */
+  count: number
+  /**
+   * 数据新增成功回调
+   */
+  onAfterAdd?: (...params: [...Parameters<FormListOperation['add']>, number]) => void
+  /**
+   * 数据移除成功回调
+   */
+  onAfterRemove?: (...params: [...Parameters<FormListOperation['remove']>, number]) => void
+
+  /** 是否只读模式 */
+  readonly: boolean
 }

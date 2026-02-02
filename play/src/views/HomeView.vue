@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 11:01:47
+ * @LastEditTime: 2026-01-26 13:25:00
  * @Description:
 -->
 <script setup lang="tsx">
@@ -180,7 +180,12 @@ const onChange = (...args) => {
         @change="onChange"
         :rules="[{ required: true }]"
       />
-      <ProFormList :name="['default', 'users']" label="用户信息" :tooltip="{ title: '111' }">
+      <ProFormList
+        :name="['users']"
+        label="用户信息"
+        :tooltip="{ title: '111' }"
+        :initial-value="[{ name: '2131' }]"
+      >
         <ProFormField key="useMode" name="name" label="姓名" />
       </ProFormList>
     </ProForm>

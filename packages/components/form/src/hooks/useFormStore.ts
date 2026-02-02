@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2026-01-16 11:21:19
+ * @LastEditTime: 2026-01-26 13:21:52
  * @Description:
  */
 import type { InternalNamePath, NamePath } from 'ant-design-vue/es/form/interface'
 import { cloneDeep, get, isEqual, merge, set, type Entity } from '@pro-design-vue/utils'
-import { ref, shallowRef, toRaw, watch, type Ref } from 'vue'
+import { onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue'
 import { getNamePath } from '../utils/getNamePath'
 import { cloneByNamePathList } from '../utils/cloneByNamePathList'
 
@@ -132,6 +132,8 @@ export function useFormStore({
     initialValues.value = merge({}, initialValues.value, initialData.value)
     updateValues(initialValues.value)
   })
+
+  onMounted(() => {})
 
   return {
     formValues,
