@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-01-26 13:25:00
+ * @LastEditTime: 2026-02-06 14:56:01
  * @Description:
 -->
 <script setup lang="tsx">
@@ -15,7 +15,7 @@ import {
   ProFormFieldSet,
   ProFormList,
 } from '@pro-design-vue/components'
-import { Space, Radio, Descriptions, Form, Input } from 'ant-design-vue'
+import { Card } from 'ant-design-vue'
 import { Fragment, ref } from 'vue'
 import dayjs from 'dayjs'
 import { sleep } from '@pro-design-vue/utils'
@@ -91,7 +91,7 @@ const fetchaData = async () => {
 const formRef = ref<any>()
 const onValuesChange = (changedValues, formValues) => {
   // console.log('🚀 ~ onValuesChange ~ changedValues:', changedValues)
-  console.log('🚀 ~ onValuesChange ~ formValues:', formValues)
+  // console.log('🚀 ~ onValuesChange ~ formValues:', formValues)
 }
 
 const onFinish = async (values) => {
@@ -108,85 +108,42 @@ const onChange = (...args) => {
 <template>
   <div style="width: 1000px; padding: 50px 30px; margin: 100px; border: 1px solid #f1f1f1">
     <ProForm
-      grid
       :request="fetchaData"
       autoFocusFirstInput
       :formRef="(ref) => (formRef = ref)"
-      :col-props="{ span: 12 }"
       :row-props="{ gutter: 16 }"
       @values-change="onValuesChange"
       @finish="onFinish"
     >
-      <!-- <ProFormFieldSet
-        name="list"
-        readonly
-        label="组件列表"
-        :col-props="{ span: 12 }"
-        :initialValue="['0', 'red']"
-        :transform="(value: any) => ({
-          list: value,
-          startTime: value[0],
-          endTime: value[1],
-        })"
-        :rules="[{ required: true }]"
-      >
-        <ProFormField
-          value-type="select"
-          :col-props="{ span: 20 }"
-          :value-enum="{
-            0: {
-              text: '男',
-            },
-          }"
-        >
-        </ProFormField>
-        <ProFormField value-type="color" :col-props="{ span: 4 }" />
-      </ProFormFieldSet> -->
-      <ProForm.Group
-        title="分组标题"
-        tooltip="啊啊啊啊"
-        extra="extra"
-        collapsible
-        :col-props="{ span: 24 }"
-      >
-        <ProFormField
-          label="姓名"
-          tooltip="我是Pro Component"
-          name="name"
-          width="sm"
-          :rules="[{ required: true }]"
-          @change="onChange"
-        />
-        <ProFormField
-          label="性别"
-          initialValue="0"
-          value-type="select"
-          name="sex1"
-          @change="onChange"
-          :value-enum="{
-            0: {
-              text: '男',
-            },
-          }"
-        />
-      </ProForm.Group>
-      <ProFormField
-        label="内部"
-        tooltip="我是Pro Component"
-        name="age"
-        width="lg"
-        initial-value="123"
-        placeholder="请输入内部名称"
-        @change="onChange"
-        :rules="[{ required: true }]"
-      />
       <ProFormList
         :name="['users']"
         label="用户信息"
+        :col-props="{ span: 24 }"
         :tooltip="{ title: '111' }"
-        :initial-value="[{ name: '2131' }]"
+        :initial-value="[{ name: '2131' }, { name: '2131' }]"
+        :actionStyle="{
+          marginBlockEnd: 0,
+        }"
       >
-        <ProFormField key="useMode" name="name" label="姓名" />
+        <template #itemRender="{ listDom, actionDom, index }">
+          <Card :title="`用户${index + 1}`" bordered style="margin-bottom: 10px" :extra="actionDom">
+            <component :is="listDom" />
+          </Card>
+        </template>
+        <ProFormField name="name" label="姓名" :rules="[{ required: true }]" />
+        <ProFormField name="name2" label="姓名2" />
+        <ProFormField
+          value-type="select"
+          name="sex"
+          label="性别"
+          :value-enum="{
+            0: {
+              text: '男',
+            },
+          }"
+        />
+
+        <!-- <template #fieldExtraRender>asdasd</template> -->
       </ProFormList>
     </ProForm>
   </div>

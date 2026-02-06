@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-26 13:38:26
+ * @LastEditTime: 2026-02-05 10:48:52
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -18,6 +18,7 @@ import {
   cloneElement,
   filterEmpty,
   isValidElement,
+  omit,
   set,
   type ProFieldValueType,
   type SearchTransformKeyFn,
@@ -185,6 +186,7 @@ export default defineComponent({
     useProvideFormEditOrReadOnly({
       mode: computed(() => (props.readonly ? 'read' : 'edit')),
     })
+
     useProvideGrid({
       grid: computed(() => props.grid!),
       colProps: computed(() => props.colProps!),
@@ -236,6 +238,7 @@ export default defineComponent({
           ref={formRef}
           class={prefixCls}
           onFinish={onFinish}
+          {...omit(props, ['onFinish'])}
         >
           {content.value}
         </Form>

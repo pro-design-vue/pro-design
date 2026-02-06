@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-26 13:33:31
+ * @LastEditTime: 2026-02-05 15:29:57
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -155,7 +155,7 @@ export default defineComponent({
         />
       )
 
-      const label = (
+      const label = mergeProps.value.title ? (
         <ProLabelTip
           label={
             collapsibleButton ? (
@@ -169,7 +169,7 @@ export default defineComponent({
           }
           tooltip={mergeProps.value.tooltip}
         />
-      )
+      ) : null
 
       const titleDom = renderVNodeJSX('title', {
         slotFirst: true,
@@ -192,7 +192,6 @@ export default defineComponent({
         props: mergeProps.value,
         params: { props: mergeProps.value, formValues: cloneDeep(store.formValues.value) },
       })
-
       const [childrenDoms, hiddenDoms] = childrens.value
 
       return (

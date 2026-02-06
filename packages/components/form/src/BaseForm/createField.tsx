@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-15 11:15:09
  * @LastEditors: shen
- * @LastEditTime: 2026-01-26 10:06:15
+ * @LastEditTime: 2026-02-05 15:46:33
  * @Description:
  */
 import type { ProFormFieldItemProps, ProFormItemCreateConfig } from '../type'
@@ -18,6 +18,7 @@ import { getNamePath } from '../utils/getNamePath'
 import { useInjectFormEditOrReadOnly } from '../context/EditOrReadOnlyContext'
 import ColWrapper from '../components/Grid/ColWrapper'
 import ProFormItem from '../components/FormItem'
+import { useInjectFormList } from '../context/FormListContext'
 export const TYPE = Symbol('ProFormComponent')
 
 const WIDTH_SIZE_ENUM = {
@@ -53,6 +54,7 @@ function createField<P extends ProFormFieldItemProps = any>(
         defaultProps,
         ...defaultFormItemProps
       } = config ?? {}
+      const formListField = useInjectFormList()
       const prefixCls = usePrefixCls('form-field')
       const mergeProps = computed(() => ({ ...defaultProps, ...props }))
       const contextValue = useInjectField()
@@ -60,6 +62,13 @@ function createField<P extends ProFormFieldItemProps = any>(
       const { store, form, formProps } = useInjectForm()
       const { mode } = useInjectFormEditOrReadOnly()
       const namePath = computed(() => getNamePath(props.name!))
+      const name = computed(() => {
+        if (!namePath?.value?.length) return props.name
+        if (formListField.listName?.value !== undefined) {
+          return [formListField.listName?.value, namePath.value].flat(1) as string[]
+        }
+        return namePath.value
+      })
 
       const valueType = computed(() => tmpValueType || props.valueType)
       // 有些 valueType 不需要宽度
@@ -167,7 +176,7 @@ function createField<P extends ProFormFieldItemProps = any>(
       })
 
       const onChange = (value: any, ...args: any[]) => {
-        store.updateValue(namePath.value, value)
+        store.updateValue(name.value, value)
         props.fieldProps?.onChange?.(value, form, ...args)
         props.onChange?.(value, form, ...args)
       }
@@ -192,8 +201,8 @@ function createField<P extends ProFormFieldItemProps = any>(
       })
 
       onMounted(() => {
-        if (namePath.value?.length) {
-          store.initEntityValue(namePath.value, props.initialValue)
+        if (name.value?.length) {
+          store.initEntityValue(name.value, props.initialValue)
         }
       })
 

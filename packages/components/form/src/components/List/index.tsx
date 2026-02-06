@@ -2,29 +2,29 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-01-27 10:11:42
+ * @LastEditTime: 2026-02-06 14:43:23
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
-import type { FormListOperation, ProFormGridConfig } from '../../type'
+import type { FormListFieldData, FormListOperation, ProFormGridConfig } from '../../type'
 import type { Rule } from 'ant-design-vue/es/form'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
 import type { FormListActionGuard, ProFromListCommonProps } from './ListItem'
 
-import { computed, defineComponent, onMounted, shallowRef, watchEffect } from 'vue'
-import { Form, Tooltip, type ButtonProps, type ColProps, type TooltipProps } from 'ant-design-vue'
+import { computed, defineComponent, onMounted, ref, shallowRef, watchEffect } from 'vue'
+import { Form, Tooltip, type ColProps, type TooltipProps } from 'ant-design-vue'
 import { useInjectField } from '../../context/FieldContext'
 import { useContent, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useInjectForm } from '../../context/FormContext'
-import { isDeepEqual, isNil, isString, type Entity, type ProVNode } from '@pro-design-vue/utils'
+import { get, isDeepEqual, isNil, isString, type ProVNode } from '@pro-design-vue/utils'
 import { useInjectGrid } from '../../context/GridContext'
-
-import ColWrapper from '../Grid/ColWrapper'
-import RowWrapper from '../Grid/RowWrapper'
-import { useIntl } from '@pro-design-vue/components/config-provider'
 import { useInjectFormList } from '../../context/FormListContext'
 import { getNamePath } from '../../utils/getNamePath'
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
+import ColWrapper from '../Grid/ColWrapper'
+import RowWrapper from '../Grid/RowWrapper'
+import ListContainer from './ListContainer'
+import { watch } from 'vue'
 
 export type FormListActionType<T = any> = FormListOperation & {
   get: (index: number) => T | undefined
@@ -98,8 +98,6 @@ export type ProFormListProps = ProFromListCommonProps &
     className?: string
     readonly?: boolean
   }
-
-let prevProps = {}
 
 export default defineComponent({
   name: 'ProFormList',
@@ -203,6 +201,10 @@ export default defineComponent({
       type: Object as PropType<ProFormListProps['containerStyle']>,
       default: undefined,
     },
+    actionStyle: {
+      type: Object as PropType<ProFormListProps['actionStyle']>,
+      default: undefined,
+    },
     itemContainerRender: {
       type: Function as PropType<ProFormListProps['itemContainerRender']>,
       default: undefined,
@@ -224,35 +226,38 @@ export default defineComponent({
       default: undefined,
     },
   },
-  setup(props, { slots, attrs, expose }) {
+  setup(props, { attrs, expose, slots }) {
     const { store, form } = useInjectForm()
-    const { groupProps, setFieldValueType } = useInjectField()
-    const { grid, colProps, rowProps } = useInjectGrid()
+    const { setFieldValueType } = useInjectField()
+    const { grid } = useInjectGrid()
+    const fields = ref<FormListFieldData[]>([])
     const formListField = useInjectFormList()
-    const intl = useIntl()
     const formItemContext = Form.useInjectFormItemContext()
     const prefixCls = usePrefixCls('form-list')
     const renderVNodeJSX = useVNodeJSX()
     const renderContent = useContent()
-    const keyRef = shallowRef<{ keys: number[]; id: number }>({
+    const keyManager = shallowRef<{ keys: number[]; id: number }>({
       keys: [],
       id: 0,
     })
     // 处理 list 的嵌套
     const name = computed(() => {
       const namePath = getNamePath(props.name)
-      if (formListField.name?.value === undefined) {
+      if (formListField.listName?.value === undefined) {
         return [namePath].flat(1)
       }
-      return [formListField.name?.value, namePath].flat(1)
+      return [formListField.listName?.value, namePath].flat(1)
     })
-
+    const fieldValue = computed(() => get(store.formValues.value, name.value!))
     const tooltip = computed(() => {
       if (isString(props.tooltip)) {
         return { title: props.tooltip }
       }
       return props.tooltip
     })
+
+    const hideDeleteIcon = computed(() => fields.value.length === props.min)
+    const hideCopyIcon = computed(() => fields.value.length === props.max)
 
     watchEffect(() => {
       const namePath = getNamePath(props.name) as string[]
@@ -277,19 +282,19 @@ export default defineComponent({
     const operations: FormListOperation = {
       add: (defaultValue, index?: number) => {
         // Mapping keys
-        const newValue = store.getFieldValue(name.value)
+        const newValue = store.getFieldValue(name.value) ?? []
         if (index! >= 0 && index! <= newValue.length) {
-          keyRef.value.keys = [
-            ...keyRef.value.keys.slice(0, index),
-            keyRef.value.id,
-            ...keyRef.value.keys.slice(index),
+          keyManager.value.keys = [
+            ...keyManager.value.keys.slice(0, index),
+            keyManager.value.id,
+            ...keyManager.value.keys.slice(index),
           ]
           onChange([...newValue.slice(0, index), defaultValue, ...newValue.slice(index)])
         } else {
-          keyRef.value.keys = [...keyRef.value.keys, keyRef.value.id]
+          keyManager.value.keys = [...keyManager.value.keys, keyManager.value.id]
           onChange([...newValue, defaultValue])
         }
-        keyRef.value.id += 1
+        keyManager.value.id += 1
         return true
       },
       remove: (index: number | number[]) => {
@@ -298,7 +303,9 @@ export default defineComponent({
         if (indexSet.size <= 0) {
           return
         }
-        keyRef.value.keys = keyRef.value.keys.filter((_, keysIndex) => !indexSet.has(keysIndex))
+        keyManager.value.keys = keyManager.value.keys.filter(
+          (_, keysIndex) => !indexSet.has(keysIndex),
+        )
         // Trigger store change
         onChange(newValue.filter((_, valueIndex) => !indexSet.has(valueIndex)))
       },
@@ -316,6 +323,56 @@ export default defineComponent({
         // onChange(move(newValue, from, to))
       },
     }
+
+    const onAfterAdd = (defaultValue, insertIndex, count) => {
+      if (props.isValidateList) {
+        form.validateFields([name.value])
+      }
+      props.onAfterAdd?.(defaultValue, insertIndex, count)
+    }
+
+    const onAfterRemove = (index, count) => {
+      if (props.isValidateList) {
+        if (count === 0) {
+          form.validateFields([name.value])
+        }
+      }
+      props.onAfterRemove?.(index, count)
+    }
+
+    const getFields = () => {
+      let listValue = fieldValue.value || []
+      if (!Array.isArray(listValue)) {
+        listValue = []
+      }
+      listValue = listValue.map((__, index) => {
+        let key = keyManager.value.keys[index]
+        if (key === undefined) {
+          keyManager.value.keys[index] = keyManager.value.id
+          key = keyManager.value.keys[index]
+          keyManager.value.id += 1
+        }
+
+        return {
+          name: index,
+          key,
+          isListField: true,
+        }
+      })
+      return listValue
+    }
+
+    watch(
+      fieldValue,
+      (newVal, oldVal) => {
+        if (newVal?.length !== oldVal?.length) {
+          fields.value = getFields()
+        }
+      },
+      {
+        immediate: true,
+      },
+    )
 
     expose({
       ...operations,
@@ -335,13 +392,11 @@ export default defineComponent({
       if (!form) {
         return null
       }
-      isDeepEqual(prevProps, { ...props }, [], true)
-      prevProps = { ...props }
       const listContent = renderContent('default', 'content')
-      console.log('🚀 ~ return ~ listContent:', listContent)
       const label = renderVNodeJSX('label', {
         slotFirst: true,
       })
+
       return (
         <ColWrapper grid={grid?.value} colProps={props.colProps}>
           <div class={[prefixCls, attrs.class]} style={attrs.style as any}>
@@ -381,7 +436,38 @@ export default defineComponent({
                   : undefined,
               }}
             >
-              {listContent}
+              <RowWrapper>
+                <ListContainer
+                  name={name.value}
+                  readonly={!!props.readonly}
+                  originName={props.name}
+                  copyIconProps={props.copyIconProps}
+                  deleteIconProps={props.deleteIconProps}
+                  fields={fields.value}
+                  prefixCls={prefixCls}
+                  itemContainerRender={props.itemContainerRender}
+                  itemRender={props.itemRender}
+                  fieldExtraRender={props.fieldExtraRender}
+                  creatorButtonProps={props.creatorButtonProps}
+                  creatorRecord={props.creatorRecord}
+                  actionRender={props.actionRender}
+                  action={operations}
+                  actionGuard={props.actionGuard}
+                  alwaysShowItemLabel={props.alwaysShowItemLabel}
+                  min={props.min}
+                  max={props.max}
+                  hideDeleteIcon={hideDeleteIcon.value}
+                  hideCopyIcon={hideCopyIcon.value}
+                  onAfterAdd={onAfterAdd}
+                  onAfterRemove={onAfterRemove}
+                  containerClassName={props.containerClassName}
+                  containerStyle={props.containerStyle}
+                  actionStyle={props.actionStyle}
+                  v-slots={slots}
+                >
+                  {listContent}
+                </ListContainer>
+              </RowWrapper>
             </Form.Item>
           </div>
         </ColWrapper>

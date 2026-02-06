@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 10:36:49
  * @LastEditors: shen
- * @LastEditTime: 2026-01-21 09:27:37
+ * @LastEditTime: 2026-02-05 15:45:03
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -111,8 +111,8 @@ export default defineComponent({
     const namePath = computed(() => getNamePath(props.name))
     const name = computed(() => {
       if (!namePath?.value?.length) return props.name
-      if (formListField.name?.value !== undefined) {
-        return [formListField.name?.value, namePath.value].flat(1) as string[]
+      if (formListField.listName?.value !== undefined) {
+        return [formListField.listName?.value, namePath.value].flat(1) as string[]
       }
       return namePath.value
     })

@@ -1,8 +1,22 @@
-import type { ProFormInstance, ProVNode, SearchTransformKeyFn } from '@pro-design-vue/utils'
-import type { FormListFieldData, FormListOperation } from '../../type'
-import type { ButtonProps } from 'ant-design-vue'
+import {
+  cloneDeep,
+  cloneElement,
+  isValidElement,
+  type ProFormInstance,
+  type ProVNode,
+  type SearchTransformKeyFn,
+} from '@pro-design-vue/utils'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
-import type { CSSProperties } from 'vue'
+import type { FormListFieldData, FormListOperation } from '../../type'
+import { Tooltip, type ButtonProps } from 'ant-design-vue'
+import { computed, defineComponent, onUnmounted, ref, type CSSProperties, type PropType } from 'vue'
+import { useContent, useVNodeJSX } from '@pro-design-vue/hooks'
+import { useInjectFormList, useProvideFormList } from '../../context/FormListContext'
+import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
+import { useInjectForm } from '../../context/FormContext'
+import { CopyOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import { useIntl } from '@pro-design-vue/components/config-provider'
+import { useInjectGrid } from '../../context/GridContext'
 
 export type IconConfig = {
   /**
@@ -110,32 +124,32 @@ export type ProFromListCommonProps = {
    *   count>2?alert("最多三行！"):action.add({id:"xx"})}>删除
    * </a>
    */
-  actionRender?: (
-    field: FormListFieldData,
+  actionRender?: (params: {
+    field: FormListFieldData
     /**
      * 操作能力
      * @example  action.add(data) 新增一行
      * @example  action.remove(index) 删除一行
      * @example  action.move(formIndex,targetIndex) 移动一行
      */
-    action: FormListOperation,
+    action: FormListOperation
     /**
      * 默认的操作dom
      * [复制，删除]
      */
-    defaultActionDom: ProVNode[],
+    defaultActionDom: ProVNode[]
     /**
      * 当前共有几个列表项
      */
-    count: number,
-  ) => ProVNode[]
+    count: number
+  }) => ProVNode[]
   /**
    * @name list 的内容的渲染函数
    *
    * @example 全部包再一个卡片里面
    * itemContainerRender: (doms,listMeta) => <Card title={listMeta.field.name}>{doms}</Card>
    */
-  itemContainerRender?: (doms: ProVNode, listMeta: FormListListListMete) => ProVNode
+  itemContainerRender?: (params: FormListListListMete & { doms: ProVNode }) => ProVNode
   /**
    * @name 自定义Item，可以用来将 action 放到别的地方
    *
@@ -143,11 +157,10 @@ export type ProFromListCommonProps = {
    * itemRender: (dom,listMeta) => <Card extra={dom.action}  title={listMeta?.record?.name}>{dom.listDom}</Card>
    */
   itemRender?: (
-    dom: { listDom: ProVNode; action: ProVNode },
-    /**
-     * list 的基本信息
-     */
-    listMeta: FormListListListMete,
+    params: FormListListListMete & {
+      listDom: ProVNode
+      actionDom: ProVNode
+    },
   ) => ProVNode
   /**
    * @name 总是展示每一行的label
@@ -170,6 +183,10 @@ export type ProFromListCommonProps = {
    * @name 盒子的样式
    */
   containerStyle?: CSSProperties
+  /**
+   * @name 操作的样式
+   */
+  actionStyle?: CSSProperties
 }
 
 export type ProFormListItemProps = ProFromListCommonProps & {
@@ -181,7 +198,8 @@ export type ProFormListItemProps = ProFromListCommonProps & {
   originName: NamePath
   fieldExtraRender?: (fieldAction: FormListOperation) => ProVNode
   /** 列表当前条目数量 */
-  count: number
+  hideDeleteIcon: boolean
+  hideCopyIcon: boolean
   /**
    * 数据新增成功回调
    */
@@ -194,3 +212,329 @@ export type ProFormListItemProps = ProFromListCommonProps & {
   /** 是否只读模式 */
   readonly: boolean
 }
+
+export default defineComponent({
+  name: 'ProFormListItem',
+  inheritAttrs: false,
+  props: {
+    name: {
+      type: [String, Number, Array] as PropType<ProFormListItemProps['name']>,
+      default: undefined,
+    },
+    originName: {
+      type: [String, Number, Array] as PropType<ProFormListItemProps['originName']>,
+      default: undefined,
+    },
+    min: {
+      type: Number,
+      default: undefined,
+    },
+    max: {
+      type: Number,
+      default: undefined,
+    },
+    hideDeleteIcon: {
+      type: Boolean,
+      default: undefined,
+    },
+    hideCopyIcon: {
+      type: Boolean,
+      default: undefined,
+    },
+    index: {
+      type: Number,
+      default: undefined,
+    },
+    fieldName: {
+      type: [Number, String],
+      default: undefined,
+    },
+    fieldKey: {
+      type: [Number, String],
+      default: undefined,
+    },
+    field: {
+      type: Object as PropType<FormListFieldData>,
+      default: undefined,
+    },
+    prefixCls: {
+      type: String,
+      default: undefined,
+    },
+    fields: {
+      type: Array as PropType<FormListFieldData[]>,
+      default: undefined,
+    },
+    alwaysShowItemLabel: {
+      type: Boolean,
+      default: undefined,
+    },
+    action: {
+      type: Object as PropType<FormListOperation>,
+      default: undefined,
+    },
+    creatorRecord: {
+      type: [Object, Function] as PropType<ProFormListItemProps['creatorRecord']>,
+      default: undefined,
+    },
+    creatorButtonProps: {
+      type: [Object, Boolean] as PropType<ProFormListItemProps['creatorButtonProps']>,
+      default: undefined,
+    },
+    copyIconProps: {
+      type: [Object, String, Boolean] as PropType<ProFormListItemProps['copyIconProps']>,
+      default: undefined,
+    },
+    deleteIconProps: {
+      type: [Object, String, Boolean] as PropType<ProFormListItemProps['deleteIconProps']>,
+      default: undefined,
+    },
+    actionGuard: {
+      type: Object as PropType<ProFormListItemProps['actionGuard']>,
+      default: undefined,
+    },
+    containerClassName: {
+      type: String,
+      default: undefined,
+    },
+    actionRender: {
+      type: Function as PropType<ProFormListItemProps['actionRender']>,
+      default: undefined,
+    },
+    containerStyle: {
+      type: Object as PropType<ProFormListItemProps['containerStyle']>,
+      default: undefined,
+    },
+    actionStyle: {
+      type: Object as PropType<ProFormListItemProps['actionStyle']>,
+      default: undefined,
+    },
+    itemContainerRender: {
+      type: Function as PropType<ProFormListItemProps['itemContainerRender']>,
+      default: undefined,
+    },
+    itemRender: {
+      type: Function as PropType<ProFormListItemProps['itemRender']>,
+      default: undefined,
+    },
+  },
+  setup(props) {
+    const { form } = useInjectForm()
+    const intl = useIntl()
+    const unmountedRef = ref(false)
+    const loadingRemove = ref(false)
+    const loadingCopy = ref(false)
+    const formListField = useInjectFormList()
+    const renderContent = useContent()
+    const renderVNodeJSX = useVNodeJSX()
+    const { grid } = useInjectGrid()
+    const { mode } = useInjectFormEditOrReadOnly()
+
+    // const getCurrentRowData = () => {
+    //   return form.getFieldValue(
+    //     [formListField.listName.value, props.originName, props.index?.toString()]
+    //       .flat(1)
+    //       .filter((item) => item !== null && item !== undefined),
+    //   )
+    // }
+
+    // const formListAction = {
+    //   getCurrentRowData,
+    //   setCurrentRowData: (data: Record<string, any>) => {
+    //     const oldTableDate = form?.getFieldsValue?.() || {}
+    //     const rowKeyName = [formListField.listName.value, props.originName, props.index?.toString()]
+    //       .flat(1)
+    //       .filter((item) => item !== null && item !== undefined)
+    //     const updateValues = set(oldTableDate, rowKeyName, {
+    //       // 只是简单的覆盖，如果很复杂的话，需要自己处理
+    //       ...getCurrentRowData(),
+    //       ...(data || {}),
+    //     })
+    //     return form.setFieldsValue(updateValues)
+    //   },
+    // }
+
+    const childrenArray = computed(() => {
+      const children = renderContent('default', 'content')
+      return children.map((childrenItem, itemIndex) => {
+        if (isValidElement(childrenItem)) {
+          return cloneElement(childrenItem, {
+            key: childrenItem.key || childrenItem?.props?.name || itemIndex,
+            ...(childrenItem?.props || {}),
+          })
+        }
+        return childrenItem
+      })
+    })
+
+    const copyIcon = computed(() => {
+      if (mode?.value === 'read') return null
+      /** 复制按钮的配置 */
+      if (props.copyIconProps === false || props.hideCopyIcon) return null
+      const { tooltipText = intl.getMessage('copyThisLine', '复制此项') } =
+        (props.copyIconProps as IconConfig) ?? {}
+      return (
+        <Tooltip title={tooltipText} key="copy">
+          {loadingCopy.value ? (
+            <LoadingOutlined />
+          ) : (
+            <CopyOutlined
+              class={`${props.prefixCls}-action-icon action-copy`}
+              onClick={async () => {
+                loadingCopy.value = true
+                const row = form?.getFieldValue(
+                  [formListField.listName?.value, props.originName, props.fieldName]
+                    .filter((item) => item !== undefined)
+                    .flat(1),
+                )
+                await props.action?.add(cloneDeep(row))
+                loadingCopy.value = false
+              }}
+            />
+          )}
+        </Tooltip>
+      )
+    })
+
+    const deleteIcon = computed(() => {
+      if (mode?.value === 'read') return null
+      if (props.deleteIconProps === false || props.hideDeleteIcon) return null
+      const { tooltipText = intl.getMessage('deleteThisLine', '删除此项') } =
+        props.deleteIconProps ?? {}
+      return (
+        <Tooltip title={tooltipText} key="delete">
+          {loadingRemove.value ? (
+            <LoadingOutlined />
+          ) : (
+            <DeleteOutlined
+              class={`${props.prefixCls}-action-icon action-remove`}
+              onClick={async () => {
+                loadingRemove.value = true
+                await props.action?.remove(props.fieldName as any)
+                if (!unmountedRef.value) {
+                  loadingRemove.value = false
+                }
+              }}
+            />
+          )}
+        </Tooltip>
+      )
+    })
+
+    const defaultActionDom = computed(() =>
+      [copyIcon.value, deleteIcon.value].filter((item) => item !== null && item !== undefined),
+    )
+
+    const options = computed(() => ({
+      name: props.name,
+      field: {
+        name: props.fieldName,
+        key: props.fieldKey,
+      },
+      index: props.index,
+      record: form?.getFieldValue?.(
+        [formListField.listName?.value, props.originName, props.fieldName]
+          .filter((item) => item !== undefined)
+          .flat(1),
+      ),
+      fields: props.fields,
+      operation: props.action,
+    }))
+
+    useProvideFormList({
+      listName: computed(() =>
+        [formListField.listName?.value, props.originName, props.fieldName]
+          .filter((item) => item !== undefined)
+          .flat(1),
+      ),
+      name: computed(() => props.fieldName),
+      key: computed(() => props.fieldKey),
+    })
+
+    onUnmounted(() => {
+      unmountedRef.value = true
+    })
+
+    return () => {
+      const actions =
+        renderVNodeJSX('actionRender', {
+          slotFirst: true,
+          props,
+          params: {
+            field: {
+              name: props.fieldName,
+              key: props.fieldKey,
+            },
+            action: props.action,
+            defaultActionDom: defaultActionDom.value,
+            // count: props.count,
+          },
+        }) ?? defaultActionDom.value
+      const dom =
+        actions.length > 0 && mode?.value !== 'read' ? (
+          <div class={`${props.prefixCls}-action`} style={props.actionStyle}>
+            {actions}
+          </div>
+        ) : null
+
+      const itemContainer =
+        renderVNodeJSX('itemContainerRender', {
+          slotFirst: true,
+          props,
+          params: {
+            ...options.value,
+            doms: childrenArray.value,
+          },
+        }) ?? childrenArray.value
+
+      const contentDom = renderVNodeJSX('itemRender', {
+        slotFirst: true,
+        props,
+        params: {
+          ...options.value,
+          actionDom: dom,
+          listDom: (
+            <div
+              class={[`${props.prefixCls}-container`, props.containerClassName]}
+              style={{
+                width: grid?.value ? '100%' : undefined,
+                ...props.containerStyle,
+              }}
+            >
+              {itemContainer}
+            </div>
+          ),
+        },
+      })
+      if (contentDom) {
+        return contentDom
+      }
+      return (
+        <div
+          class={[
+            `${props.prefixCls}-item`,
+            {
+              [`${props.prefixCls}-item-default`]: props.alwaysShowItemLabel === undefined,
+              [`${props.prefixCls}-item-show-label`]: !!props.alwaysShowItemLabel,
+            },
+          ]}
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+          }}
+        >
+          <div
+            class={[`${props.prefixCls}-container`, props.containerClassName]}
+            style={{
+              width: grid?.value ? '100%' : undefined,
+              ...props.containerStyle,
+            }}
+          >
+            {itemContainer}
+          </div>
+          {dom}
+        </div>
+      )
+    }
+  },
+})

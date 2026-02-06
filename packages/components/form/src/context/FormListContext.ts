@@ -2,16 +2,15 @@
  * @Author: shen
  * @Date: 2026-01-06 16:38:46
  * @LastEditors: shen
- * @LastEditTime: 2026-01-06 17:02:54
+ * @LastEditTime: 2026-02-05 14:39:01
  * @Description:
  */
-import type { NamePath } from '@pro-design-vue/components/form11'
 import { inject, provide, type ComputedRef, type InjectionKey } from 'vue'
 
 export interface FormListContextProps {
   listName: ComputedRef<any>
-  name: ComputedRef<number>
-  key: ComputedRef<number>
+  name: ComputedRef<any>
+  key: ComputedRef<any>
 }
 
 export const FormListContextKey: InjectionKey<FormListContextProps> = Symbol('FormListContext')
