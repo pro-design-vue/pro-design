@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-02-06 14:43:43
+ * @LastEditTime: 2026-02-11 10:23:25
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
@@ -279,7 +279,6 @@ export default defineComponent({
     // })
 
     return () => {
-      console.log('ListContainer')
       if (mode?.value === 'read' || props.readonly === true) {
         return <>{itemList.value}</>
       }

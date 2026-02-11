@@ -9,7 +9,15 @@ import {
 import type { NamePath } from 'ant-design-vue/es/form/interface'
 import type { FormListFieldData, FormListOperation } from '../../type'
 import { Tooltip, type ButtonProps } from 'ant-design-vue'
-import { computed, defineComponent, onUnmounted, ref, type CSSProperties, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  onUnmounted,
+  ref,
+  type CSSProperties,
+  type PropType,
+} from 'vue'
 import { useContent, useVNodeJSX } from '@pro-design-vue/hooks'
 import { useInjectFormList, useProvideFormList } from '../../context/FormListContext'
 import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
@@ -22,7 +30,7 @@ export type IconConfig = {
   /**
    * 新的icon的组件，我们会将其实例化
    */
-  icon?: ProVNode
+  Icon?: any
   /**
    * tooltip 的提示文案
    */
@@ -354,6 +362,22 @@ export default defineComponent({
     //   },
     // }
 
+    const options = computed(() => ({
+      name: props.name,
+      field: {
+        name: props.fieldName,
+        key: props.fieldKey,
+      },
+      index: props.index,
+      record: form?.getFieldValue?.(
+        [formListField.listName?.value, props.originName, props.fieldName]
+          .filter((item) => item !== undefined)
+          .flat(1),
+      ),
+      fields: props.fields,
+      operation: props.action,
+    }))
+
     const childrenArray = computed(() => {
       const children = renderContent('default', 'content')
       return children.map((childrenItem, itemIndex) => {
@@ -371,14 +395,22 @@ export default defineComponent({
       if (mode?.value === 'read') return null
       /** 复制按钮的配置 */
       if (props.copyIconProps === false || props.hideCopyIcon) return null
-      const { tooltipText = intl.getMessage('copyThisLine', '复制此项') } =
+      const { Icon, tooltipText = intl.getMessage('copyThisLine', '复制此项') } =
         (props.copyIconProps as IconConfig) ?? {}
+
+      const dom =
+        renderContent('copyIcon', undefined, {
+          params: {
+            ...options.value,
+            defaultDom: DeleteOutlined,
+          },
+        }) ?? h(Icon ? Icon : CopyOutlined)
       return (
         <Tooltip title={tooltipText} key="copy">
           {loadingCopy.value ? (
             <LoadingOutlined />
           ) : (
-            <CopyOutlined
+            <div
               class={`${props.prefixCls}-action-icon action-copy`}
               onClick={async () => {
                 loadingCopy.value = true
@@ -390,7 +422,9 @@ export default defineComponent({
                 await props.action?.add(cloneDeep(row))
                 loadingCopy.value = false
               }}
-            />
+            >
+              {dom}
+            </div>
           )}
         </Tooltip>
       )
@@ -399,14 +433,22 @@ export default defineComponent({
     const deleteIcon = computed(() => {
       if (mode?.value === 'read') return null
       if (props.deleteIconProps === false || props.hideDeleteIcon) return null
-      const { tooltipText = intl.getMessage('deleteThisLine', '删除此项') } =
+      const { Icon, tooltipText = intl.getMessage('deleteThisLine', '删除此项') } =
         props.deleteIconProps ?? {}
+
+      const dom =
+        renderContent('deleteIcon', undefined, {
+          params: {
+            ...options.value,
+            defaultDom: DeleteOutlined,
+          },
+        }) ?? h(Icon ? Icon : DeleteOutlined)
       return (
         <Tooltip title={tooltipText} key="delete">
           {loadingRemove.value ? (
             <LoadingOutlined />
           ) : (
-            <DeleteOutlined
+            <div
               class={`${props.prefixCls}-action-icon action-remove`}
               onClick={async () => {
                 loadingRemove.value = true
@@ -415,7 +457,9 @@ export default defineComponent({
                   loadingRemove.value = false
                 }
               }}
-            />
+            >
+              {dom}
+            </div>
           )}
         </Tooltip>
       )
@@ -424,22 +468,6 @@ export default defineComponent({
     const defaultActionDom = computed(() =>
       [copyIcon.value, deleteIcon.value].filter((item) => item !== null && item !== undefined),
     )
-
-    const options = computed(() => ({
-      name: props.name,
-      field: {
-        name: props.fieldName,
-        key: props.fieldKey,
-      },
-      index: props.index,
-      record: form?.getFieldValue?.(
-        [formListField.listName?.value, props.originName, props.fieldName]
-          .filter((item) => item !== undefined)
-          .flat(1),
-      ),
-      fields: props.fields,
-      operation: props.action,
-    }))
 
     useProvideFormList({
       listName: computed(() =>
@@ -521,6 +549,7 @@ export default defineComponent({
           style={{
             display: 'flex',
             alignItems: 'flex-end',
+            width: '100%',
           }}
         >
           <div

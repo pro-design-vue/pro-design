@@ -247,7 +247,7 @@ export const useVNodeDefault = () => {
  */
 export const useContent = () => {
   const renderVNodeJSX = useVNodeJSX()
-  return function (name1: string, name2: string, options?: VNode | JSXRenderContext) {
+  return function (name1: string, name2: string | undefined, options?: VNode | JSXRenderContext) {
     // assemble params && defaulVNode
     const params = getParams(options)
     const defaulVNode = getDefaultNode(options)
@@ -255,7 +255,7 @@ export const useContent = () => {
     const toParams = params ? { params } : undefined
 
     const node1 = renderVNodeJSX(name1, toParams)
-    const node2 = renderVNodeJSX(name2, toParams)
+    const node2 = renderVNodeJSX(name2 as string, toParams)
 
     const res = isEmptyNode(node1) ? node2 : node1
     return isEmptyNode(res) ? defaulVNode : res

@@ -8,6 +8,52 @@
     }
   }
 
+  &-list {
+    &-item {
+      &&-default:not(:first-child)
+        div:first-of-type
+        .@{ant-prefix}-form-item
+        .@{ant-prefix}-form-item-label {
+        display: none;
+      }
+    }
+
+    &-creator-button-top {
+      margin-block-end: 24px;
+    }
+
+    &-empty {
+      .@{pro-prefix}-form-list-creator-button-top {
+        margin-block-end: 2px;
+      }
+    }
+
+    &-action {
+      display: flex;
+      height: 32px;
+      margin-block-end: 24px;
+      line-height: 32px;
+
+      &-icon {
+        margin-inline-start: 8px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: color 0.3s ease-in-out;
+      }
+    }
+
+    &-item-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-block-end: 6px;
+      font-size: 15px;
+      .@{pro-prefix}-form-list-action {
+        margin-block-end: 0;
+      }
+    }
+  }
+
   &-item-tooltip {
     margin-inline-start: 4px;
     font-size: 12px;
@@ -16,9 +62,9 @@
     writing-mode: horizontal-tb;
   }
 
-  .@{ant-prefix}-select.@{ant-prefix}-select-in-form-item {
-    width: auto;
-  }
+  // .@{ant-prefix}-select.@{ant-prefix}-select-in-form-item {
+  //   width: auto;
+  // }
 
   &-readonly {
     display: flex;
@@ -114,41 +160,6 @@
       .cm-editor .cm-gutters {
         background-color: hsl(var(--pro-background));
       }
-    }
-  }
-
-  &-list-creator-button-top {
-    margin-block-end: 24px;
-  }
-
-  &-list-empty {
-    .@{pro-prefix}-form-list-creator-button-top {
-      margin-block-end: 2px;
-    }
-  }
-
-  &-list-action {
-    display: flex;
-    height: 32px;
-    margin-block-end: 24px;
-    line-height: 32px;
-
-    &-icon {
-      margin-inline-start: 8px;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: color 0.3s ease-in-out;
-    }
-  }
-
-  &-list-item-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-block-end: 6px;
-    font-size: 15px;
-    .@{pro-prefix}-form-list-action {
-      margin-block-end: 0;
     }
   }
 

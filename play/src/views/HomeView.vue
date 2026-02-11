@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-02-06 14:56:01
+ * @LastEditTime: 2026-02-11 10:27:15
  * @Description:
 -->
 <script setup lang="tsx">
@@ -14,11 +14,13 @@ import {
   ProForm,
   ProFormFieldSet,
   ProFormList,
+  ProFormGroup,
 } from '@pro-design-vue/components'
 import { Card } from 'ant-design-vue'
 import { Fragment, ref } from 'vue'
 import dayjs from 'dayjs'
 import { sleep } from '@pro-design-vue/utils'
+import { CloseCircleOutlined, SmileOutlined } from '@ant-design/icons-vue'
 const state = ref<any>('read')
 const radio = ref('open')
 const numberRange = ref([123, 456])
@@ -112,36 +114,48 @@ const onChange = (...args) => {
       autoFocusFirstInput
       :formRef="(ref) => (formRef = ref)"
       :row-props="{ gutter: 16 }"
+      :col-props="{ span: 12 }"
       @values-change="onValuesChange"
       @finish="onFinish"
     >
       <ProFormList
         :name="['users']"
         label="用户信息"
-        :col-props="{ span: 24 }"
         :tooltip="{ title: '111' }"
-        :initial-value="[{ name: '2131' }, { name: '2131' }]"
-        :actionStyle="{
-          marginBlockEnd: 0,
+        :initial-value="[{ value: '333', label: '333' }]"
+        :col-props="{ span: 24 }"
+        :copyIconProps="{ Icon: SmileOutlined, tooltipText: '复制此项到末尾' }"
+        :deleteIconProps="{
+          Icon: CloseCircleOutlined,
+          tooltipText: '不需要这行了',
         }"
       >
-        <template #itemRender="{ listDom, actionDom, index }">
+        <!-- <template #itemRender="{ listDom, actionDom, index }">
           <Card :title="`用户${index + 1}`" bordered style="margin-bottom: 10px" :extra="actionDom">
             <component :is="listDom" />
           </Card>
-        </template>
-        <ProFormField name="name" label="姓名" :rules="[{ required: true }]" />
-        <ProFormField name="name2" label="姓名2" />
-        <ProFormField
-          value-type="select"
-          name="sex"
-          label="性别"
-          :value-enum="{
-            0: {
-              text: '男',
-            },
-          }"
-        />
+        </template> -->
+        <ProFormGroup :col-props="{ span: 24 }">
+          <ProFormField
+            name="value"
+            label="值"
+            :rules="[{ required: true, message: '请输入值' }]"
+          />
+          <ProFormField name="label" label="显示名称" />
+          <ProFormField
+            value-type="select"
+            name="status"
+            label="状态"
+            :value-enum="{
+              success: {
+                text: '成功',
+              },
+              error: {
+                text: '失败',
+              },
+            }"
+          />
+        </ProFormGroup>
 
         <!-- <template #fieldExtraRender>asdasd</template> -->
       </ProFormList>
