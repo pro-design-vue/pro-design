@@ -9,7 +9,7 @@ import {
 } from 'pro-design-vue'
 
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
-  0: { value: '0', text: '未知' },
+  0: { value: '0', text: '未知啊啊啊啊啊' },
   1: { value: '1', text: '男' },
   2: { value: '2', text: '女' },
 }
@@ -38,6 +38,9 @@ const columns: ProTableColumnType[] = [
     title: '性别',
     dataIndex: 'sex',
     valueEnum: SexValueEnum,
+    ellipsis: true,
+    tooltip: true,
+    width: 60,
   },
   {
     title: '邮箱',

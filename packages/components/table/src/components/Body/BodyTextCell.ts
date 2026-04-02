@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2025-12-02 17:15:26
+ * @LastEditTime: 2026-04-02 08:58:54
  * @Description:
  */
 import type { RangeCell } from '../../hooks/RangeInterface'
@@ -85,6 +85,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       ? column!.renderText(get(item, column!.dataIndex), item, rowIndex!)
       : get(item, column!.dataIndex)
     : undefined
+  let tooltipTitle = value
   const valueStatus = runFunction(column?.valueStatus, value, props.item, valueEnum?.[value])
   const recordIndexs = tableContext.getIndexsByKey(rowKey!)
 
@@ -151,6 +152,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     } else if (valueEnum) {
       const option = valueEnum[value]
       if (option && option.text) {
+        tooltipTitle = option.text
         if (option.status) {
           cellValue = createVNode(Badge, {
             status: option.status,
@@ -227,7 +229,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
       tooltipProps.title = tooltipProps.title(cellRenderArgs)
       showTooltip = !(!tooltipProps.title && tooltipProps.title !== 0)
     } else {
-      tooltipProps.title = value
+      tooltipProps.title = tooltipTitle
       showTooltip = !(!tooltipProps.title && tooltipProps.title !== 0)
     }
 
