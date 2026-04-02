@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2026-01-04 09:12:57
  * @LastEditors: shen
- * @LastEditTime: 2026-01-12 09:49:25
+ * @LastEditTime: 2026-03-02 13:37:19
  * @Description:
  */
 import type { FormProps } from 'ant-design-vue'
@@ -63,14 +63,14 @@ export const baseFormProps = {
     type: Boolean,
     default: undefined,
   },
-  showLoading: {
-    type: Boolean,
-    default: true,
-  },
-  submitOnLoading: {
-    type: Boolean,
-    default: true,
-  },
+  // showLoading: {
+  //   type: Boolean,
+  //   default: true,
+  // },
+  // submitOnLoading: {
+  //   type: Boolean,
+  //   default: true,
+  // },
   omitNil: { type: Boolean, default: true },
   readonly: Boolean,
   grid: Boolean,
@@ -82,10 +82,6 @@ export const baseFormProps = {
   autoFocusFirstInput: {
     type: Boolean,
     default: undefined,
-  },
-  customUi: {
-    type: Boolean,
-    default: true,
   },
   initialValues: {
     type: Object as PropType<BaseFormProps['initialValues']>,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-02-06 14:43:23
+ * @LastEditTime: 2026-02-26 09:45:38
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
@@ -11,7 +11,15 @@ import type { Rule } from 'ant-design-vue/es/form'
 import type { NamePath } from 'ant-design-vue/es/form/interface'
 import type { FormListActionGuard, ProFromListCommonProps } from './ListItem'
 
-import { computed, defineComponent, onMounted, ref, shallowRef, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  onRenderTriggered,
+  ref,
+  shallowRef,
+  watchEffect,
+} from 'vue'
 import { Form, Tooltip, type ColProps, type TooltipProps } from 'ant-design-vue'
 import { useInjectField } from '../../context/FieldContext'
 import { useContent, usePrefixCls, useVNodeJSX } from '@pro-design-vue/hooks'
@@ -25,6 +33,7 @@ import ColWrapper from '../Grid/ColWrapper'
 import RowWrapper from '../Grid/RowWrapper'
 import ListContainer from './ListContainer'
 import { watch } from 'vue'
+import { move } from '../../utils/move'
 
 export type FormListActionType<T = any> = FormListOperation & {
   get: (index: number) => T | undefined
@@ -248,7 +257,7 @@ export default defineComponent({
       }
       return [formListField.listName?.value, namePath].flat(1)
     })
-    const fieldValue = computed(() => get(store.formValues.value, name.value!))
+    const fieldValue = computed(() => form.getFieldValue(name.value!))
     const tooltip = computed(() => {
       if (isString(props.tooltip)) {
         return { title: props.tooltip }
@@ -310,17 +319,17 @@ export default defineComponent({
         onChange(newValue.filter((_, valueIndex) => !indexSet.has(valueIndex)))
       },
       move(from: number, to: number) {
-        // if (from === to) {
-        //   return
-        // }
-        // const newValue = getNewValue()
-        // // Do not handle out of range
-        // if (from < 0 || from >= newValue.length || to < 0 || to >= newValue.length) {
-        //   return
-        // }
-        // keyManager.keys = move(keyManager.keys, from, to)
-        // // Trigger store change
-        // onChange(move(newValue, from, to))
+        if (from === to) {
+          return
+        }
+        const newValue = store.getFieldValue(name.value)
+        // Do not handle out of range
+        if (from < 0 || from >= newValue.length || to < 0 || to >= newValue.length) {
+          return
+        }
+        keyManager.value.keys = move<number>(keyManager.value.keys, from, to)
+        // Trigger store change
+        onChange(move(newValue, from, to))
       },
     }
 
@@ -374,18 +383,24 @@ export default defineComponent({
       },
     )
 
-    expose({
-      ...operations,
-      get: (index: number) => {
-        return form.getFieldValue([...name.value, index])
-      },
-      getList: () => form.getFieldValue([...name.value]),
-    })
+    // expose({
+    //   ...operations,
+    //   get: (index: number) => {
+    //     return form.getFieldValue([...name.value, index])
+    //   },
+    //   getList: () => form.getFieldValue([...name.value]),
+    // })
 
     onMounted(() => {
       if (name.value?.length && !isNil(props.initialValue)) {
         store.initEntityValue(name.value, props.initialValue)
       }
+    })
+
+    onRenderTriggered((e) => {
+      console.log('组件更新被触发:', e)
+      // 在此处使用 debugger，可以查看 e.key, e.target, e.type
+      // debugger
     })
 
     return () => {

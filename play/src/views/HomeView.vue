@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-10-22 16:31:15
  * @LastEditors: shen
- * @LastEditTime: 2026-02-11 10:27:15
+ * @LastEditTime: 2026-02-26 09:15:00
  * @Description:
 -->
 <script setup lang="tsx">
@@ -122,6 +122,9 @@ const onChange = (...args) => {
         :name="['users']"
         label="用户信息"
         :tooltip="{ title: '111' }"
+        :creatorButtonProps="{
+          position: 'top',
+        }"
         :initial-value="[{ value: '333', label: '333' }]"
         :col-props="{ span: 24 }"
         :copyIconProps="{ Icon: SmileOutlined, tooltipText: '复制此项到末尾' }"

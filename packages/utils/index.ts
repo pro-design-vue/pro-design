@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-27 09:56:36
  * @LastEditors: shen
- * @LastEditTime: 2026-01-16 14:04:07
+ * @LastEditTime: 2026-02-26 09:10:06
  * @Description:
  */
 export * from './antd'
@@ -43,4 +43,5 @@ export {
   kebabCase,
   findIndex,
   camelCase,
+  differenceBy,
 } from 'lodash-unified'

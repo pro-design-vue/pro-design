@@ -1,6 +1,7 @@
 import {
   cloneDeep,
   cloneElement,
+  isDeepEqual,
   isValidElement,
   type ProFormInstance,
   type ProVNode,
@@ -13,8 +14,11 @@ import {
   computed,
   defineComponent,
   h,
+  onRenderTriggered,
   onUnmounted,
   ref,
+  shallowRef,
+  watch,
   type CSSProperties,
   type PropType,
 } from 'vue'
@@ -40,7 +44,7 @@ export type IconConfig = {
 export type FormListListListMete = {
   name: NamePath
   field: FormListFieldData
-  fields: FormListFieldData[]
+  // fields: FormListFieldData[]
   index: number
   operation: FormListOperation
   record: Record<string, any>
@@ -201,7 +205,7 @@ export type ProFormListItemProps = ProFromListCommonProps & {
   formInstance: ProFormInstance
   action: FormListOperation
   actionGuard?: FormListActionGuard
-  fields: FormListFieldData[]
+  // fields: FormListFieldData[]
   name: NamePath
   originName: NamePath
   fieldExtraRender?: (fieldAction: FormListOperation) => ProVNode
@@ -269,10 +273,10 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-    fields: {
-      type: Array as PropType<FormListFieldData[]>,
-      default: undefined,
-    },
+    // fields: {
+    //   type: Array as PropType<FormListFieldData[]>,
+    //   default: undefined,
+    // },
     alwaysShowItemLabel: {
       type: Boolean,
       default: undefined,
@@ -337,30 +341,20 @@ export default defineComponent({
     const renderVNodeJSX = useVNodeJSX()
     const { grid } = useInjectGrid()
     const { mode } = useInjectFormEditOrReadOnly()
+    const record = shallowRef<Record<string, any>>({})
+    const rowData = computed(() =>
+      form?.getFieldValue?.(
+        [formListField.listName?.value, props.originName, props.fieldName]
+          .filter((item) => item !== undefined)
+          .flat(1),
+      ),
+    )
 
-    // const getCurrentRowData = () => {
-    //   return form.getFieldValue(
-    //     [formListField.listName.value, props.originName, props.index?.toString()]
-    //       .flat(1)
-    //       .filter((item) => item !== null && item !== undefined),
-    //   )
-    // }
-
-    // const formListAction = {
-    //   getCurrentRowData,
-    //   setCurrentRowData: (data: Record<string, any>) => {
-    //     const oldTableDate = form?.getFieldsValue?.() || {}
-    //     const rowKeyName = [formListField.listName.value, props.originName, props.index?.toString()]
-    //       .flat(1)
-    //       .filter((item) => item !== null && item !== undefined)
-    //     const updateValues = set(oldTableDate, rowKeyName, {
-    //       // 只是简单的覆盖，如果很复杂的话，需要自己处理
-    //       ...getCurrentRowData(),
-    //       ...(data || {}),
-    //     })
-    //     return form.setFieldsValue(updateValues)
-    //   },
-    // }
+    watch(rowData, (newData, oldData) => {
+      if (!isDeepEqual(newData, oldData)) {
+        record.value = { ...newData }
+      }
+    })
 
     const options = computed(() => ({
       name: props.name,
@@ -369,12 +363,7 @@ export default defineComponent({
         key: props.fieldKey,
       },
       index: props.index,
-      record: form?.getFieldValue?.(
-        [formListField.listName?.value, props.originName, props.fieldName]
-          .filter((item) => item !== undefined)
-          .flat(1),
-      ),
-      fields: props.fields,
+      record: record.value,
       operation: props.action,
     }))
 
@@ -483,7 +472,15 @@ export default defineComponent({
       unmountedRef.value = true
     })
 
+    // 调试哪些属性触发了更新
+    // onRenderTriggered((e) => {
+    //   console.log('组件更新被触发ListItem:', props.index, e)
+    //   // 在此处使用 debugger，可以查看 e.key, e.target, e.type
+    //   // debugger
+    // })
+
     return () => {
+      // console.log('listitem-index', props.index)
       const actions =
         renderVNodeJSX('actionRender', {
           slotFirst: true,

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-08 14:51:29
  * @LastEditors: shen
- * @LastEditTime: 2026-02-11 10:23:25
+ * @LastEditTime: 2026-02-26 09:45:04
  * @Description:
  */
 import type { CSSProperties, PropType } from 'vue'
@@ -20,7 +20,7 @@ import {
 } from 'vue'
 import { Button } from 'ant-design-vue'
 import { useContent, useVNodeJSX } from '@pro-design-vue/hooks'
-import { omit, runFunction, type ProVNode } from '@pro-design-vue/utils'
+import { differenceBy, omit, runFunction, type ProVNode } from '@pro-design-vue/utils'
 import { useIntl } from '@pro-design-vue/components/config-provider'
 import { useInjectFormEditOrReadOnly } from '../../context/EditOrReadOnlyContext'
 import { PlusOutlined } from '@ant-design/icons-vue'
@@ -134,6 +134,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const loading = ref(false)
     const intl = useIntl()
+    // const itemList = ref<any[]>([])
     // const fieldKeyMap = shallowRef(new Map<string, string>())
     const renderVNodeJSX = useVNodeJSX()
     const renderContent = useContent()
@@ -236,6 +237,40 @@ export default defineComponent({
       ...props.containerStyle,
     }))
 
+    const genFieldItem = (field) => {
+      const children = renderContent('default', 'content')
+      return (
+        <ProFormListItem
+          {...omit(props, ['action', 'fields', 'fieldExtraRender', 'onAfterAdd', 'onAfterRemove'])}
+          key={field.key}
+          fieldName={field.name}
+          fieldKey={field.key}
+          index={field.name}
+          action={wrapperAction.value as FormListOperation}
+          v-slots={slots}
+        >
+          {children}
+        </ProFormListItem>
+      )
+    }
+
+    // watch(
+    //   () => props.fields,
+    //   (newFields, oldFields) => {
+    //     console.log('🚀 ~ watch ~ oldFields:', oldFields)
+    //     console.log('🚀 ~ watch ~ newFields:', newFields)
+    //     const deleted = differenceBy(oldFields ?? [], newFields ?? [], 'key')
+    //     const added = differenceBy(newFields ?? [], oldFields ?? [], 'key')
+    //     console.log('🚀 ~ setup ~ deleted:', deleted)
+    //     console.log('🚀 ~ setup ~ deleted:', added)
+    //     if (!!added?.length) {
+    //       added.forEach((add) => {
+    //         itemList.value.splice(add.name + 1, 0, genFieldItem(add))
+    //       })
+    //     }
+    //   },
+    // )
+
     const itemList = computed(() => {
       const children = renderContent('default', 'content')
       return props.fields?.map((field, index) =>
@@ -243,7 +278,13 @@ export default defineComponent({
           [field.key],
           () => (
             <ProFormListItem
-              {...omit(props, ['action', 'fieldExtraRender', 'onAfterAdd', 'onAfterRemove'])}
+              {...omit(props, [
+                'action',
+                'fields',
+                'fieldExtraRender',
+                'onAfterAdd',
+                'onAfterRemove',
+              ])}
               key={field.key}
               fieldName={field.name}
               fieldKey={field.key}
@@ -279,6 +320,7 @@ export default defineComponent({
     // })
 
     return () => {
+      // console.log('ListContainer')
       if (mode?.value === 'read' || props.readonly === true) {
         return <>{itemList.value}</>
       }

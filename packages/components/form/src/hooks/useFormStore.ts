@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-23 20:07:22
  * @LastEditors: shen
- * @LastEditTime: 2026-01-26 13:21:52
+ * @LastEditTime: 2026-02-12 14:08:47
  * @Description:
  */
 import type { InternalNamePath, NamePath } from 'ant-design-vue/es/form/interface'
@@ -35,7 +35,7 @@ export function useFormStore({
 
   const getFieldValue = (name: NamePath) => {
     const namePath: InternalNamePath = getNamePath(name)
-    return get(formValues.value, namePath)
+    return cloneDeep(get(formValues.value, namePath))
   }
 
   const getInitialValue = (namePath: InternalNamePath) => {
