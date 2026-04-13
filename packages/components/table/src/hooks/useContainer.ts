@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 10:14:14
  * @LastEditors: shen
- * @LastEditTime: 2025-11-26 10:57:37
+ * @LastEditTime: 2026-04-13 15:32:37
  * @Description:
  */
 import type { ColumnsState, DensitySize, Key, ProTableProps } from '../components/interface'
@@ -91,9 +91,7 @@ export const useContainer = (props: ProTableProps): ContainerContextProps => {
           console.warn(error)
         }
       }
-      return (
-        props.columnsState?.value || props.columnsState?.defaultValue || defaultColumnKeyMap.value
-      )
+      return props.columnsState?.value || defaultColumnKeyMap.value
     },
     {
       value: computed(() => props.columnsState?.value as any),

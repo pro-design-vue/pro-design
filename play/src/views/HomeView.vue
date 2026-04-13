@@ -13,6 +13,7 @@ import {
   type ProTableKey,
   type ProTableDensitySize,
   type ProFormItemType,
+  type ProColumnStateType,
 } from '@pro-design-vue/components'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
 import { sleep } from '@pro-design-vue/utils'
@@ -87,6 +88,7 @@ const columns: ProTableColumnType[] = [
   {
     title: '状态',
     dataIndex: 'status',
+    fixed: 'right',
     fieldType: ProFieldType.TREE_SELECT,
     valueEnum: StatusValueEnum,
     fieldProps: {
@@ -313,6 +315,14 @@ const formItems: ProFormItemType[] = [
   },
 ]
 
+const columnsState: ProColumnStateType = {
+  defaultValue: {
+    graduateDate: {
+      show: false,
+    },
+  },
+}
+
 const open = ref(false)
 </script>
 
@@ -320,12 +330,14 @@ const open = ref(false)
   <ProTable
     title="高级表格"
     :columns
+    :columnsState
     :request="fetchData"
     :sticky="{
       offsetHeader: 50,
     }"
     row-hover
     highlight-select-row
+    :scroll="{ x: 2600 }"
     :row-selection="rowSelection"
     :options="{
       fullScreen: true,
