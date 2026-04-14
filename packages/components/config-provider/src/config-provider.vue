@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-11-12 13:30:03
+ * @LastEditTime: 2026-04-14 16:01:57
  * @Description:
 -->
 <script setup lang="ts">
@@ -35,6 +35,7 @@ const {
   locale = antdDefaultLocale,
   theme,
   table,
+  page,
   drawer,
   modal,
   form,
@@ -116,6 +117,7 @@ ConfigProvider.config({
         :proPrefixCls
         :table
         :form
+        :page
         :locale
         :drawer
         :modal

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:36
  * @LastEditors: shen
- * @LastEditTime: 2025-11-10 17:18:55
+ * @LastEditTime: 2026-04-14 16:02:15
  * @Description:
 -->
 <script setup lang="ts">
@@ -25,6 +25,7 @@ useCssVariables(computed(() => props.dark))
 
 useProConfigProvide({
   table: computed(() => props.table),
+  page: computed(() => props.page),
   form: computed(() => props.form),
   modal: computed(() => props.modal),
   drawer: computed(() => props.drawer),

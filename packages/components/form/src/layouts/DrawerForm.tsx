@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 08:59:19
+ * @LastEditTime: 2026-04-14 15:37:39
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -114,7 +114,7 @@ export default defineComponent({
     })
 
     const submitterConfig = computed(() => {
-      if (props.submitter === false) {
+      if (props.submitter === false || props.readonly) {
         return false
       }
 
@@ -223,7 +223,7 @@ export default defineComponent({
           v-slots={{
             ...drawerSlots.value,
             footer:
-              props.submitter !== false
+              props.submitter !== false && !props.readonly
                 ? () => (
                     <div style="display: flex; justify-content: flex-end;" ref={footerRef}></div>
                   )

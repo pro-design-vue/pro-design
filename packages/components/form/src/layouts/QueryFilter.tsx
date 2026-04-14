@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-25 09:24:37
+ * @LastEditTime: 2026-04-14 15:29:02
  * @Description:
  */
 import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
@@ -11,7 +11,7 @@ import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { isBrowser, merge, omit, omitUndefined } from '@pro-design-vue/utils'
 import { ProFieldType } from '../fieldType'
 import { DownOutlined } from '@ant-design/icons-vue'
-import { useResizeObserver } from '@vueuse/core'
+import { useResizeObserver, useDebounceFn } from '@vueuse/core'
 import { useFormExpose } from '../hooks/useFormExpose'
 import { useIntl, useProConfigInject } from '@pro-design-vue/components/config-provider'
 import BaseForm from '../base/BaseForm'
@@ -134,14 +134,17 @@ export default defineComponent({
     const processedList = ref<ProFormItemType[]>([])
     const [width, setWidth] = useMergedState(defaultWidth)
     const formExpose = useFormExpose(formRef)
-    useResizeObserver(wrapEl, (entries) => {
-      const entry = entries[0]
-      const { width: newWidth, height } = entry?.contentRect || ({} as DOMRectReadOnly)
-      if (width.value !== newWidth && newWidth > 17) {
-        setWidth(newWidth)
-      }
-      emit('resize', newWidth, height)
-    })
+    useResizeObserver(
+      wrapEl,
+      useDebounceFn((entries) => {
+        const entry = entries[0]
+        const { width: newWidth, height } = entry?.contentRect || ({} as DOMRectReadOnly)
+        if (width.value !== newWidth && newWidth > 17) {
+          setWidth(newWidth)
+        }
+        emit('resize', newWidth, height)
+      }, 100),
+    )
 
     const spanSize = computed(() => getSpanConfig(props.layout, width.value + 16, props.span))
 

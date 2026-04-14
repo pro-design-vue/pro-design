@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2025-12-24 13:26:43
+ * @LastEditTime: 2026-04-14 16:29:00
  * @Description:
  */
 
@@ -19,7 +19,7 @@ import { useContainer } from '../hooks/useContainer'
 import { genProColumnToColumn } from '../utils/genProColumnToColumn'
 import { columnSort } from '../utils/columnSort'
 import { flatColumnsHandle } from '../utils/flatColumnsHandle'
-import { merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
+import { isObject, merge, omit, omitKeysAndUndefined } from '@pro-design-vue/utils'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import { promiseTimeout } from '@vueuse/core'
 import { isMacOsUserAgent, isIOSUserAgent } from '../utils/browser'
@@ -371,7 +371,7 @@ export default defineComponent({
       if (counter.hasFullScreen.value) {
         return false
       }
-      return props.cardProps !== false && !notNeedCardDom.value
+      return !!(props.cardProps ?? table?.value?.cardProps) && !notNeedCardDom.value
     })
 
     const cardBodyStyle = computed(() => {
@@ -598,6 +598,7 @@ export default defineComponent({
       )
 
       if (showTableCard.value) {
+        const cardProps = isObject(props.cardProps) ? props.cardProps : {}
         tableDom = (
           <Card
             bordered={isBordered(
@@ -605,7 +606,7 @@ export default defineComponent({
               props.cardBordered ?? table?.value?.cardBordered ?? dark?.value,
             )}
             bodyStyle={cardBodyStyle.value}
-            {...props.cardProps}
+            {...cardProps}
           >
             {tableDom}
           </Card>

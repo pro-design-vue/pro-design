@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2025-11-17 16:51:30
+ * @LastEditTime: 2026-04-14 15:28:00
  * @Description:
 -->
 <script lang="ts">
@@ -16,7 +16,7 @@ import { useVScrollSyncInject } from '../../hooks/useVScrollSync'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { RenderVNode, RenderSlot } from '../../utils/renderVNode'
 import { resize } from '@pro-design-vue/directives'
-import { useResizeObserver } from '@vueuse/core'
+import { useResizeObserver, useDebounceFn } from '@vueuse/core'
 import useTooltip from '../../hooks/useTooltip'
 import onClickOutside from '../../utils/onClickOutside'
 import BodyRows from './BodyRows.vue'
@@ -423,11 +423,23 @@ export default defineComponent({
     })
     const emptyStyle = computed<CSSProperties>(() => ({ width: `${props.bodyWidth}px` }))
 
-    useResizeObserver(measureDomRef as never, (entries) => {
-      const contentRect = entries[0]?.contentRect
-      emit('update:bodyWidth', contentRect?.width || 0)
-      emit('update:bodyHeight', contentRect?.height || 0)
-    })
+    useResizeObserver(
+      measureDomRef as never,
+      useDebounceFn((entries) => {
+        const contentRect = entries[0]?.contentRect
+        emit('update:bodyWidth', contentRect?.width || 0)
+        emit('update:bodyHeight', contentRect?.height || 0)
+      }, 100),
+    )
+
+    const handleBodyInnerResize = useDebounceFn((e: CustomEvent) => {
+      bodyInnerWidth.value = e.detail.width
+    }, 100)
+
+    const handleBodyScrollResize = (e: CustomEvent) => {
+      emit('update:bodyScrollWidth', e.detail.width)
+    }
+
     return {
       bodyContainerStyle,
       measureDomStyle: computed<any>(() => ({
@@ -471,12 +483,8 @@ export default defineComponent({
       centerColumns,
       rightColumns,
       bodyInnerWidth,
-      handleBodyInnerResize: (e: CustomEvent) => {
-        bodyInnerWidth.value = e.detail.width
-      },
-      handleBodyScrollResize: (e: CustomEvent) => {
-        emit('update:bodyScrollWidth', e.detail.width)
-      },
+      handleBodyInnerResize,
+      handleBodyScrollResize,
       bodyRef,
       measureDomRef,
       bodyInnerRef,

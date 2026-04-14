@@ -14,7 +14,7 @@ defineOptions({
   name: 'ProPage',
 })
 const {
-  autoContentHeight = false,
+  autoContentHeight,
   heightOffset = 0,
   headerClass = '',
   contentClass = '',
@@ -22,7 +22,7 @@ const {
   tabList = [],
   contentStyle,
   tabProps,
-  contentPadding = 16,
+  contentPadding,
 } = defineProps<PageProps>()
 
 const slots = useSlots()
@@ -31,32 +31,40 @@ const headerHeight = ref(0)
 const footerHeight = ref(0)
 const tabsHeight = ref(0)
 const shouldAutoHeight = ref(false)
-
-const { contentOffsetTop } = useProConfigInject()
+const { contentOffsetTop, page } = useProConfigInject()
 const tabActiveKey = defineModel<TabsProps['activeKey']>('activeKey')
 const headerRef = useTemplateRef<HTMLDivElement>('header')
 const footerRef = useTemplateRef<HTMLDivElement>('footer')
 const tabsRef = useTemplateRef<HTMLDivElement>('tabs')
+
+const mergeContentPadding = computed(() => contentPadding || page?.value?.contentPadding || 16)
+const mergeAutoContentHeight = computed(
+  () => autoContentHeight || page?.value?.autoContentHeight || false,
+)
+
 const headerCls = computed(() => ({
   [`${prefixCls}-header`]: true,
+  [page?.value?.headerClass || '']: true,
   [headerClass]: true,
 }))
 
 const contentCls = computed(() => ({
   [`${prefixCls}-content`]: true,
+  [page?.value?.contentClass || '']: true,
   [contentClass]: true,
 }))
 
 const footerCls = computed(() => ({
   [`${prefixCls}-footer`]: true,
+  [page?.value?.footerClass || '']: true,
   [footerClass]: true,
 }))
 
 const offset = computed(() => {
-  if (autoContentHeight) {
+  if (mergeAutoContentHeight.value) {
     return {
-      top: -contentPadding,
-      bottom: -contentPadding,
+      top: -mergeContentPadding.value,
+      bottom: -mergeContentPadding.value,
     }
   }
   return {
@@ -66,16 +74,18 @@ const offset = computed(() => {
 })
 
 const contentStyles = computed<StyleValue>(() => {
-  if (autoContentHeight) {
+  if (mergeAutoContentHeight.value) {
     return {
       height: `calc(var(${CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT}) - ${headerHeight.value}px - ${tabsHeight.value}px - ${typeof heightOffset === 'number' ? `${heightOffset}px` : heightOffset})`,
       overflowY: shouldAutoHeight.value ? 'auto' : 'unset',
-      padding: `${contentPadding || 0}px`,
+      padding: `${mergeContentPadding.value || 0}px`,
+      ...page?.value?.contentStyle,
       ...contentStyle,
     }
   }
   return {
-    padding: `${contentPadding || 0}px`,
+    padding: `${mergeContentPadding.value || 0}px`,
+    ...page?.value?.contentStyle,
     ...contentStyle,
   }
 })
@@ -112,7 +122,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="[prefixCls, tabList?.length ? `is-tabs` : '']">
+  <div :class="[prefixCls, tabList?.length ? `is-tabs` : '']" :style="page?.pageStyle">
     <div
       v-if="
         $slots.header || description || $slots.description || title || $slots.title || $slots.extra

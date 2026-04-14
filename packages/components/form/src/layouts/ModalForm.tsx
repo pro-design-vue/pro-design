@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2025-11-05 09:12:43
+ * @LastEditTime: 2026-04-14 15:36:44
  * @Description:
  */
 import { ref, computed, watch, defineComponent } from 'vue'
@@ -104,7 +104,7 @@ export default defineComponent({
     })
 
     const submitterConfig = computed(() => {
-      if (props.submitter === false) {
+      if (props.submitter === false || props.readonly) {
         return false
       }
 
@@ -212,7 +212,7 @@ export default defineComponent({
           v-slots={{
             ...modalSlots.value,
             footer:
-              props.submitter !== false
+              props.submitter !== false && !props.readonly
                 ? () => (
                     <div style="display: flex; justify-content: flex-end;" ref={footerRef}></div>
                   )

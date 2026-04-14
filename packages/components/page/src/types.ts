@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-02 14:21:21
  * @LastEditors: shen
- * @LastEditTime: 2025-08-11 10:39:29
+ * @LastEditTime: 2026-04-14 15:58:24
  * @Description:
  */
 import type { TabsProps, TabPaneProps, SpinProps } from 'ant-design-vue'
@@ -12,6 +12,7 @@ export interface PageProps {
   title?: string
   description?: string
   contentClass?: string
+  pageStyle?: CSSProperties
   contentStyle?: CSSProperties
   /**
    * 根据content可见高度自适应

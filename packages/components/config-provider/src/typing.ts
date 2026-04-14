@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-05-22 09:08:45
  * @LastEditors: shen
- * @LastEditTime: 2026-01-22 10:29:05
+ * @LastEditTime: 2026-04-14 16:29:26
  * @Description:
  */
 import type { AliasToken } from 'ant-design-vue/es/theme/interface'
@@ -16,6 +16,7 @@ import type {
   DensitySize,
   ExpandIconType,
 } from '@pro-design-vue/components/table/src/components/interface'
+import type { CSSProperties } from 'vue'
 
 interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
   intl?: IntlType
@@ -33,6 +34,7 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
     expandRowByClick?: boolean
     selectRowByClick?: boolean
     rowKey?: string
+    cardProps?: boolean
     size?: DensitySize
     columnDrag?: boolean
     columnResizable?: boolean
@@ -62,6 +64,16 @@ interface ProConfigProviderProps extends Omit<ConfigProviderProps, 'form'> {
   }
   drawer?: {
     showFullscreen?: boolean
+  }
+  page?: {
+    contentClass?: string
+    pageStyle?: CSSProperties
+    contentStyle?: CSSProperties
+    autoContentHeight?: boolean
+    headerClass?: string
+    footerClass?: string
+    heightOffset?: number
+    contentPadding?: number
   }
   app?: {
     message?: {

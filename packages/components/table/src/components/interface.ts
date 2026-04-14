@@ -660,7 +660,7 @@ export const tableProps = <T = DefaultRecordType>() => ({
   footer: Function,
   tooltip: String,
   cardProps: {
-    type: [Object, Boolean] as PropType<CardProps | false>,
+    type: [Object, Boolean] as PropType<CardProps | boolean>,
     default: undefined,
   },
   search: {
