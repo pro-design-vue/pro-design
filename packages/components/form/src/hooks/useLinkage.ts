@@ -21,7 +21,15 @@ export type Linkage = {
 export const useLinkage = (): Linkage => {
   const hiddenKeys = shallowRef<string[]>([])
   const disabledKeys = shallowRef<string[]>([])
-  const excludeKeys = computed(() => hiddenKeys.value.map((key) => key.split(':')[1]))
+
+  const hiddenExcludeSet = computed(() => {
+    const set = new Set<string>()
+    for (const key of hiddenKeys.value) {
+      const target = key.split(':')[1]
+      if (target) set.add(target)
+    }
+    return set
+  })
 
   const genNewKeys = (originKeys: string[], fieldKey: string, keys: string | string[]) => {
     if (!Array.isArray(keys)) {
@@ -41,16 +49,33 @@ export const useLinkage = (): Linkage => {
   }
 
   const allHiddenKeys = computed(() => {
-    return hiddenKeys.value
-      .filter((key) => !excludeKeys.value.includes(key.split(':')[0]))
-      .map((key) => key.split(':')[1])
+    const excludeSet = hiddenExcludeSet.value
+    const result: string[] = []
+    for (const key of hiddenKeys.value) {
+      const idx = key.indexOf(':')
+      const source = key.substring(0, idx)
+      const target = key.substring(idx + 1)
+      if (!excludeSet.has(source)) {
+        result.push(target)
+      }
+    }
+    return result
   })
 
   const allDisabledKeys = computed(() => {
-    return disabledKeys.value
-      .filter((key) => !excludeKeys.value.includes(key.split(':')[0]))
-      .map((key) => key.split(':')[1])
+    const excludeSet = hiddenExcludeSet.value
+    const result: string[] = []
+    for (const key of disabledKeys.value) {
+      const idx = key.indexOf(':')
+      const source = key.substring(0, idx)
+      const target = key.substring(idx + 1)
+      if (!excludeSet.has(source)) {
+        result.push(target)
+      }
+    }
+    return result
   })
+
   return {
     allHiddenKeys,
     hiddenKeys,

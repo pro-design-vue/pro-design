@@ -63,10 +63,18 @@ export default defineComponent({
   setup(props) {
     const formSlotsContext = useInjectSlots()
     const { formatItems, prefixCls, formData } = useInjectForm()
-    const items = computed(
-      () => formatItems?.(runFunction(props.items ?? [], formData.value)) ?? [],
-    )
-    const formItemProps = computed(() => runFunction(props.formItemProps, formData.value) ?? {})
+    const items = computed(() => {
+      const raw = props.items ?? []
+      const fields = (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
+      return formatItems?.(fields) ?? []
+    })
+    const formItemProps = computed(() => {
+      const raw = props.formItemProps
+      if (typeof raw === 'function') {
+        return runFunction(raw, formData.value) ?? {}
+      }
+      return raw ?? {}
+    })
     const isExistTitle = computed(() => {
       if (!props.title) {
         return false

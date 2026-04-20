@@ -16,7 +16,7 @@ import { useInjectForm } from '../context/FormContext'
 import { useInjectSlots } from '../context/FormSlotsContext'
 import { useInjectFormList, useProvideFormList } from '../context/FormListContext'
 import { ProFieldType } from '../fieldType'
-import { cloneDeep, RenderVNode, runFunction } from '@pro-design-vue/utils'
+import { RenderVNode, runFunction } from '@pro-design-vue/utils'
 
 import getSlot from '../utils/getSlot'
 import covertFormName from '../utils/namePath'
@@ -146,22 +146,23 @@ export default defineComponent({
     }
 
     const genListItems = (fields: ProFormItemType[]): ProFormItemType[] => {
-      return cloneDeep(fields)
+      return fields
         .filter((item) => !NOT_ALLOW_FIELD_TYPES.includes(item.fieldType ?? ''))
         .map((field) => {
-          if (field.fieldType === ProFieldType.GROUP) {
-            field.children = genListItems(runFunction(field.children ?? [], formData.value) ?? [])
-            return field
+          const cloned = { ...field }
+          if (cloned.fieldType === ProFieldType.GROUP) {
+            cloned.children = genListItems(runFunction(cloned.children ?? [], formData.value) ?? [])
+            return cloned
           }
-          const originName = field.originName ?? field.name
-          const originKey = field.originKey ?? field.key
-          const namePath = covertFormName(field.name)
-          const title = index.value === 0 || props.alwaysShowItemLabel ? field.title : undefined
+          const originName = cloned.originName ?? cloned.name
+          const originKey = cloned.originKey ?? cloned.key
+          const namePath = covertFormName(cloned.name)
+          const title = index.value === 0 || props.alwaysShowItemLabel ? cloned.title : undefined
           const item = {
-            ...field,
+            ...cloned,
             title,
             originKey,
-            key: `${listKey.value}_${field.key ?? namePath?.join('_')}`,
+            key: `${listKey.value}_${cloned.key ?? namePath?.join('_')}`,
             originName,
             name: [...(listName?.value ?? []), namePath]
               .filter((item) => item !== undefined)
@@ -176,7 +177,8 @@ export default defineComponent({
     }
 
     const items = computed(() => {
-      const fields = runFunction(props.items ?? [], formData.value) ?? []
+      const raw = props.items ?? []
+      const fields = (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
       return formatItems?.(genListItems(fields)) ?? []
     })
 

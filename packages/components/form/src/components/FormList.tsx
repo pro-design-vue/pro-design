@@ -198,9 +198,11 @@ export default defineComponent({
       }),
     )
 
-    const items = computed(
-      () => formatItems?.(runFunction(props.items ?? [], formData.value)) ?? [],
-    )
+    const items = computed(() => {
+      const raw = props.items ?? []
+      const fields = (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
+      return formatItems?.(fields) ?? []
+    })
 
     const slotsGetter = computed(() => {
       const temp = {}

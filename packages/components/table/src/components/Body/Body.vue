@@ -81,9 +81,9 @@ export default defineComponent({
 
     const summaryHeight = ref(0)
 
-    const leftColumns = computed(() => tableContext.leftColumns.value)
-    const centerColumns = computed(() => tableContext.centerColumns.value)
-    const rightColumns = computed(() => tableContext.rightColumns.value)
+    const leftColumns = tableContext.leftColumns
+    const centerColumns = tableContext.centerColumns
+    const rightColumns = tableContext.rightColumns
     const showWatermark = computed(() => tableContext.status.value.code !== 4)
 
     const leftPopupContainer = ref<HTMLDivElement>()
@@ -155,8 +155,8 @@ export default defineComponent({
       target.style.top = `${rightPos}px`
     }
 
-    const showYScrollbar = computed(() => tableContext.showVerticalScrollbar.value)
-    const showXScrollbar = computed(() => tableContext.showHorizontalScrollbar.value)
+    const showYScrollbar = tableContext.showVerticalScrollbar
+    const showXScrollbar = tableContext.showHorizontalScrollbar
 
     watch(
       [tableContext.centerWidth, tableContext.rightWidth, () => props.bodyWidth],
@@ -319,12 +319,8 @@ export default defineComponent({
       [`${props.prefixCls}-center`]: true,
       [`${props.prefixCls}-no-columns`]: !centerColumns.value.length,
     }))
-    const summaryViewportClass = computed(() => ({
-      [`${props.prefixCls}-center-viewport`]: true,
-    }))
-    const containerClass = computed(() => ({
-      [`${props.prefixCls}-center-container`]: true,
-    }))
+    const summaryViewportClass = { [`${props.prefixCls}-center-viewport`]: true }
+    const containerClass = { [`${props.prefixCls}-center-container`]: true }
     const viewportHeight = computed(
       () =>
         tableContext.viewportHeight.value +
@@ -442,7 +438,7 @@ export default defineComponent({
 
     return {
       bodyContainerStyle,
-      measureDomStyle: computed<any>(() => ({
+      measureDomStyle: {
         width: '100%',
         height: '100%!important',
         position: 'absolute!important',
@@ -459,7 +455,7 @@ export default defineComponent({
         transform: 'unset!important',
         visibility: 'visible!important',
         zIndex: '999!important',
-      })),
+      } as any,
       isEmpty,
       emptyStyle,
       handleEmptyHeight: (e: CustomEvent) => {

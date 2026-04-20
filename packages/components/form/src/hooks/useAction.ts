@@ -197,6 +197,7 @@ export function useAction({
   props,
   formRef,
   formData,
+  formDataVersion,
   initialValues,
   hasInitial,
   transformerMap,
@@ -207,6 +208,7 @@ export function useAction({
   props: ProFormProps
   formRef: Ref<FormInstance | undefined>
   formData: Ref<Entity>
+  formDataVersion: Ref<number>
   initialValues: ShallowRef<Entity>
   hasInitial: Ref<boolean>
   transformerMap: ShallowRef<TransformerMapType>
@@ -265,6 +267,7 @@ export function useAction({
     const namePath = covertFormName(name)
     if (!namePath) throw new Error('name is require')
     set(formData.value, namePath, value)
+    formDataVersion.value++
   }
 
   const setFieldsValue = (values: Entity, isMerge: boolean = true) => {
@@ -274,6 +277,7 @@ export function useAction({
     } else {
       formData.value = cloneDeep(values)
     }
+    formDataVersion.value++
   }
   const resetInitialValues = (values: Entity) => {
     if (!values) throw new Error('values is require')
@@ -286,6 +290,7 @@ export function useAction({
     hasInitial.value = true
     formRef.value?.clearValidate()
     formData.value = cloneDeep(convertKeyInitialValue(initialValues.value, transformerMap.value))
+    formDataVersion.value++
     Promise.resolve().then(() => {
       hasInitial.value = false
       onReset?.(transformKeySubmitValue(formData.value, transformerMap.value, props.omitNil))
@@ -297,6 +302,7 @@ export function useAction({
     if (!namePath) throw new Error('name is require')
     formRef.value?.clearValidate(name)
     set(formData.value, name, cloneDeep(get(initialValues.value, name)))
+    formDataVersion.value++
   }
 
   const clearValidate = (name?: NamePath) => {

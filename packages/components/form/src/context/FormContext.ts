@@ -27,6 +27,7 @@ export interface FormContextProps extends Linkage {
   mountedRef: Ref<boolean>
   initialValues?: ShallowRef<Entity>
   formData: Ref<Entity>
+  formDataVersion: Ref<number>
   hasInitial: Ref<boolean>
   theme: ComputedRef<Theme>
   customUi: ComputedRef<boolean>

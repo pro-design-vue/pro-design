@@ -7,12 +7,29 @@
  */
 import { inject, provide } from 'vue'
 
-import type { FinallyColumnType, Key } from '../interface'
-import type { Ref, InjectionKey } from 'vue'
+import type { FinallyColumnType, Key, ExpandIconType } from '../interface'
+import type { Ref, InjectionKey, ComputedRef, ShallowRef } from 'vue'
+import type { TableContextProps } from './TableContext'
+import type { BodyContextProps } from './BodyContext'
+import type { ContextSlots } from './TableSlotsContext'
+import type ResizeObserver from 'resize-observer-polyfill'
 
 export interface BodyRowsContextProps {
   columns: Ref<FinallyColumnType[]>
   columnStartIndex: Ref<number>
+  nestExpandable: ComputedRef<boolean>
+  expandIconColumnIndex: ComputedRef<number>
+  indentSize: ComputedRef<number>
+  expandIconType: ComputedRef<ExpandIconType>
+  xVirtual: ComputedRef<boolean>
+  cellClass: Record<string, boolean>
+  popupContainer: ComputedRef<HTMLDivElement | null>
+  rowSelectionType: ComputedRef<string | undefined>
+  sharedResizeObserver: ShallowRef<ResizeObserver | undefined>
+  tableContext: TableContextProps
+  tableSlotsContext: ContextSlots
+  bodyContext: BodyContextProps
+  level: number | undefined
 }
 export const BodyRowsContextKey: InjectionKey<BodyRowsContextProps> = Symbol('BodyRowsContextProps')
 export const useProvideBodyRows = (props: BodyRowsContextProps) => {

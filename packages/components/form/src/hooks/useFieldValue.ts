@@ -10,7 +10,7 @@ import type { NamePath, SearchConvertKeyFn, SearchTransformKeyFn } from '../type
 
 import { computed, shallowRef, watch } from 'vue'
 import { useInjectForm } from '../context/FormContext'
-import { cloneDeep, set, get } from '@pro-design-vue/utils'
+import { set, get, cloneDeep } from '@pro-design-vue/utils'
 
 export function useFieldValue<T>({
   namePath,
@@ -28,35 +28,37 @@ export function useFieldValue<T>({
 } {
   const fieldValue = shallowRef<T | undefined>()
 
-  const { formData, initialValues } = useInjectForm()
+  const { formData, formDataVersion, initialValues } = useInjectForm()
 
-  const modelValue = computed(() => get(formData.value, namePath.value) as T)
+  const modelValue = computed(() => {
+    void formDataVersion.value
+    return get(formData.value, namePath.value) as T
+  })
 
   const onValueChange = (value: T) => {
     set(formData.value, namePath.value, value)
+    formDataVersion.value++
   }
 
   watch(
     modelValue,
     (newValue) => {
-      fieldValue.value = cloneDeep(newValue)
+      fieldValue.value = newValue
     },
     {
       immediate: true,
-      deep: true,
     },
   )
 
   const initFieldInitialValue = () => {
     if (
-      // !mountedRef.value &&
       typeof modelValue.value === 'undefined' &&
       typeof initialValue !== 'undefined'
     ) {
       const value = convertValue ? (convertValue(initialValue, namePath.value) as T) : initialValue
       set(initialValues?.value ?? {}, namePath.value, cloneDeep(initialValue))
       set(formData.value, namePath.value, cloneDeep(value))
-      fieldValue.value = value
+      fieldValue.value = get(formData.value, namePath.value) as T
     }
   }
   initFieldInitialValue()

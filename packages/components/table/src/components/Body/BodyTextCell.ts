@@ -11,10 +11,7 @@ import type { FinallyColumnType, RowType } from '../interface'
 
 import { withDirectives, createVNode, mergeProps, cloneVNode } from 'vue'
 import { Badge, Tag } from 'ant-design-vue'
-import { useInjectSlots } from '../context/TableSlotsContext'
-import { useInjectTable } from '../context/TableContext'
-import { useInjectBody } from '../context/BodyContext'
-import { useInjectLevel } from '../../hooks/useLevel'
+import { useInjectBodyRows } from '../context/BodyRowsContext'
 import { isValidElement, ensureValidVNode } from '../../utils/util'
 import { isEventSupported } from '../../utils/events'
 import { isIOSUserAgent } from '../../utils/browser'
@@ -63,10 +60,11 @@ const ValueStatusEnum = {
 
 const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const { table } = useProConfigInject()
-  const tableSlotsContext = useInjectSlots()
-  const tableContext = useInjectTable()
-  const { onBodyCellContextmenu } = useInjectBody()
-  const level = useInjectLevel()
+  const bodyRowsCtx = useInjectBodyRows()
+  const tableSlotsContext = bodyRowsCtx.tableSlotsContext
+  const tableContext = bodyRowsCtx.tableContext
+  const { onBodyCellContextmenu } = bodyRowsCtx.bodyContext
+  const level = bodyRowsCtx.level
   const { prefixCls, column, wrapText, rowKey, item, rowIndex, hasAppendNode, tooltipOpen } = props
   const columnKey = column!.columnKey
   const valueEnum = runFunction(column?.valueEnum, props.item)
@@ -129,7 +127,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     text: value,
     value,
     index: rowIndex!,
-    recordIndexs: tableContext.getIndexsByKey(rowKey!),
+    recordIndexs,
     key,
     valueStatus,
     cancelEditable: tableContext.cancelEditable,

@@ -2,11 +2,11 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-04-14 16:29:00
+ * @LastEditTime: 2026-04-17 09:01:28
  * @Description:
  */
 
-import { defineComponent, ref, computed, watch, unref, onMounted, nextTick } from 'vue'
+import { defineComponent, ref, shallowRef, computed, watch, unref, onMounted, nextTick } from 'vue'
 import { Card } from 'ant-design-vue'
 import { theme } from './config'
 import { useProvideHover } from '../hooks/useHover'
@@ -230,38 +230,32 @@ export default defineComponent({
       counter.setSortKeyColumns(newColumns)
       props['onUpdate:columns']?.(rawColumns as ColumnsType, action)
     }
-    const formItems = computed(() => {
-      if (props.search === false) {
-        return []
-      }
-      if (props.search?.items?.length) {
-        return props.search?.items
-      }
-      return flatColumnsHandle(props.columns)
-        .filter((item) => {
-          if (item.hideInSearch) {
-            return false
-          }
-          return true
-        })
-        .map((item) => {
-          const mergeItem = merge(
-            {
-              ...item,
+    const flatSearchColumns = computed(() =>
+      props.search === false
+        ? []
+        : flatColumnsHandle(props.columns).filter((item) => !item.hideInSearch),
+    )
 
-              width: undefined,
-              tooltip: item.headerTooltip,
-              name: item.dataIndex,
-            },
-            item.search,
-          )
-          return omitKeysAndUndefined(mergeItem, [
-            'dataIndex',
-            'width',
-            'headerTooltip',
-            'search',
-          ]) as ProFormItemType
-        })
+    const formItems = computed(() => {
+      if (props.search === false) return []
+      if (props.search?.items?.length) return props.search.items
+      return flatSearchColumns.value.map((item) => {
+        const mergeItem = merge(
+          {
+            ...item,
+            width: undefined,
+            tooltip: item.headerTooltip,
+            name: item.dataIndex,
+          },
+          item.search,
+        )
+        return omitKeysAndUndefined(mergeItem, [
+          'dataIndex',
+          'width',
+          'headerTooltip',
+          'search',
+        ]) as ProFormItemType
+      })
     })
 
     /** SelectedRowKeys受控处理selectRows */
@@ -299,18 +293,25 @@ export default defineComponent({
       },
     )
 
-    const rowSelection = computed<TableRowSelection>(() => ({
-      selectedRowKeys: selectedRowKeys.value,
-      preserveSelectedRowKeys: true,
-      ...props.rowSelection,
-      onChange: (selectedRowKeys: Key[], selectedRows: any[]) => {
-        if (props.rowSelection && props.rowSelection.onChange) {
-          props.rowSelection.onChange(selectedRowKeys, selectedRows)
+    const onSelectionChange = (keys: Key[], rows: any[]) => {
+      props.rowSelection?.onChange?.(keys, rows)
+      props['onUpdate:selectedRowKeys']?.(keys, rows)
+      setSelectedRowKeys(keys)
+    }
+
+    const rowSelection = shallowRef<TableRowSelection>({})
+    watch(
+      [selectedRowKeys, () => props.rowSelection],
+      ([keys, sel]) => {
+        rowSelection.value = {
+          selectedRowKeys: keys,
+          preserveSelectedRowKeys: true,
+          ...sel,
+          onChange: onSelectionChange,
         }
-        props['onUpdate:selectedRowKeys']?.(selectedRowKeys, selectedRows)
-        setSelectedRowKeys(selectedRowKeys)
       },
-    }))
+      { immediate: true },
+    )
 
     const selectedRows = computed(() =>
       selectedRowKeys.value?.map((key) => preserveRecordsRef.value?.get(key)),
@@ -473,22 +474,22 @@ export default defineComponent({
       saveEditable: (recordKey: Key) => {
         return tableRef.value?.saveEditable(recordKey)
       },
-      scrollLeft: computed(() => {
+      get scrollLeft() {
         return unref(tableRef.value?.scrollLeft)
-      }),
-      scrollTop: computed(() => {
+      },
+      get scrollTop() {
         return unref(tableRef.value?.scrollTop)
-      }),
+      },
 
-      bodyRef: computed(() => {
+      get bodyRef() {
         return unref(tableRef.value?.bodyRef)
-      }),
-      rootRef: computed(() => {
+      },
+      get rootRef() {
         return unref(tableRef.value?.rootRef)
-      }),
-      paginationRef: computed(() => {
+      },
+      get paginationRef() {
         return unref(tableRef.value?.paginationRef)
-      }),
+      },
       clearDataSource: () => {
         dataSource.value = []
       },
@@ -500,9 +501,9 @@ export default defineComponent({
       reload,
       reset,
       calcTableHeight,
-      formAction: computed(() => {
+      get formAction() {
         return unref(formAction.value)
-      }),
+      },
       formSearchSubmit: () => {
         const fieldValues = formAction.value?.getFieldsValue() ?? {}
         actions.setFormSearch({

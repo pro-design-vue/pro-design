@@ -25,6 +25,7 @@ import {
 } from '@pro-design-vue/utils'
 
 import BaseForm from '../base/BaseForm'
+import { useFormExpose } from '../hooks/useFormExpose'
 
 export default defineComponent({
   name: 'ProDrawerForm',
@@ -37,7 +38,7 @@ export default defineComponent({
     },
   },
   emits: ['update:open'],
-  setup(props, { slots, emit }) {
+  setup(props, { slots, emit, expose }) {
     const _open = ref(false)
     const loading = ref(false)
     const valuesChanged = ref(false)
@@ -180,6 +181,8 @@ export default defineComponent({
         formRef.value?.reset?.()
       }
     }
+
+    expose(useFormExpose(formRef))
 
     const onFinishHandle = async (values: any) => {
       const response = props.onFinish?.(values)

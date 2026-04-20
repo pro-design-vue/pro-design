@@ -7,14 +7,14 @@
  */
 import type { ProFormPropsType, Entity } from '../type'
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, shallowRef } from 'vue'
 import { useFetchData } from './useFetchData'
 import { merge } from '@pro-design-vue/utils'
 
 export const useInitialValues = (props: ProFormPropsType) => {
   const hasInitial = ref(true)
   const requestLoading = ref(false)
-  const initialValues = ref<Entity>({ ...props.initialValues })
+  const initialValues = shallowRef<Entity>({ ...props.initialValues })
   const fetchData = useFetchData({ request: props.request })
 
   onMounted(async () => {

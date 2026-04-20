@@ -46,6 +46,7 @@ export default defineComponent({
     const formRef = ref<FormInstance>()
     const prefixCls = usePrefixCls('form')
     const formData = ref<Entity>({})
+    const formDataVersion = ref(0)
     const formItems = ref<ProFormItemType[]>([])
     const formKey = computed(() => {
       return props.formKey ?? requestFormCacheId.toString()
@@ -95,7 +96,10 @@ export default defineComponent({
             'submitOnLoading',
             'onLoadingChange',
             'onFinish',
+            'onFinishFailed',
+            'onReset',
             'onValuesChange',
+            'onInit',
           ]),
         ),
         layout: props.layout ?? 'vertical',
@@ -148,6 +152,7 @@ export default defineComponent({
       (newValues, oldValues) => {
         if (!isEqual(newValues, oldValues)) {
           formData.value = cloneDeep(convertKeyInitialValue(newValues, transformerMap.value))
+          formDataVersion.value++
           if (!props.request || props.requestAbort) {
             Promise.resolve().then(() => {
               hasInitial.value = false
@@ -157,7 +162,6 @@ export default defineComponent({
       },
       {
         immediate: true,
-        deep: true,
       },
     )
     const onValuesChange = debounce(() => {
@@ -190,14 +194,11 @@ export default defineComponent({
     }
 
     watch(
-      formData,
+      formDataVersion,
       () => {
         if (!hasInitial.value) {
           onValuesChange()
         }
-      },
-      {
-        deep: true,
       },
     )
 
@@ -206,6 +207,7 @@ export default defineComponent({
       props,
       formRef,
       formData,
+      formDataVersion,
       initialValues,
       hasInitial,
       transformerMap,
@@ -283,6 +285,7 @@ export default defineComponent({
       prefixCls,
       initialValues,
       formData,
+      formDataVersion,
       hasInitial,
       theme: computed(() => props.theme),
       customUi: computed(() => props.customUi),

@@ -10,7 +10,6 @@ import type { Ref, ShallowRef } from 'vue'
 import type { RangeCell } from './RangeInterface'
 
 import { shallowRef, watch } from 'vue'
-import { findIndex } from '@pro-design-vue/utils'
 
 export default function useData(
   _props: ProTableProps,
@@ -41,36 +40,44 @@ export default function useData(
       const newPos: number[] = []
       const recordPositionArr: [FlatRecord, number][] = []
       const newRowKeyIndexMap: Record<Key, number> = {}
-      const lastIndex = Math.min(startIndex.value + 2e3, endIndex.value + 1)
-      const sliceData = flattenData.value?.slice(startIndex.value, lastIndex) || []
-      const sliceRowPosition = rowPosition.value.slice(startIndex.value, lastIndex) || []
-      const flattenIndex = getRowFlattenIndexByKey(draggingRowKey.value as Key) as number
+      const start = startIndex.value
+      const lastIndex = Math.min(start + 2e3, endIndex.value + 1)
+      const allFlattenData = flattenData.value
+      const allRowPosition = rowPosition.value
 
-      if (
-        flattenData.value[flattenIndex] &&
-        (flattenIndex < startIndex.value || flattenIndex >= lastIndex)
-      ) {
-        sliceData.push(flattenData.value[flattenIndex])
-        sliceRowPosition.push(rowPosition.value[flattenIndex]!)
-      }
-
-      if (latestRangeStartCell.value) {
-        const rowIndex = latestRangeStartCell.value.rowIndex
-        if (flattenData.value[rowIndex] && (rowIndex < startIndex.value || rowIndex >= lastIndex)) {
-          sliceData.push(flattenData.value[rowIndex])
-          sliceRowPosition.push(rowPosition.value[rowIndex]!)
+      const addExtraRow = (idx: number) => {
+        if (allFlattenData[idx] && (idx < start || idx >= lastIndex)) {
+          const record = allFlattenData[idx]!
+          const rowKeyIndex = rowKeyIndexMap[record.rowKey]
+          if (rowKeyIndex !== undefined) {
+            newData[rowKeyIndex] = record
+            newPos[rowKeyIndex] = allRowPosition[idx]!
+            newRowKeyIndexMap[record.rowKey] = rowKeyIndex
+          } else {
+            recordPositionArr.push([record, allRowPosition[idx]!])
+          }
         }
       }
-      sliceData.forEach((record, index) => {
+
+      for (let i = start; i < lastIndex; i++) {
+        const record = allFlattenData[i]
+        if (!record) continue
         const rowKeyIndex = rowKeyIndexMap[record.rowKey]
         if (rowKeyIndex !== undefined) {
           newData[rowKeyIndex] = record
-          newPos[rowKeyIndex] = sliceRowPosition[index]!
+          newPos[rowKeyIndex] = allRowPosition[i]!
           newRowKeyIndexMap[record.rowKey] = rowKeyIndex
         } else {
-          recordPositionArr.push([record, sliceRowPosition[index]!])
+          recordPositionArr.push([record, allRowPosition[i]!])
         }
-      })
+      }
+
+      const flattenIndex = getRowFlattenIndexByKey(draggingRowKey.value as Key) as number
+      addExtraRow(flattenIndex)
+
+      if (latestRangeStartCell.value) {
+        addExtraRow(latestRangeStartCell.value.rowIndex)
+      }
 
       const firstRecord = recordPositionArr[0]
       if (draggingRowKey.value !== undefined && useAnimate.value && firstRecord) {
@@ -81,8 +88,15 @@ export default function useData(
         exchange = !exchange
       }
       let formIndex = 0
-      recordPositionArr.forEach(([record, rowPos]) => {
-        const index = findIndex(newData, (value) => !value, formIndex)
+      for (let j = 0; j < recordPositionArr.length; j++) {
+        const [record, rowPos] = recordPositionArr[j]!
+        let index = -1
+        for (let k = formIndex; k < newData.length; k++) {
+          if (!newData[k]) {
+            index = k
+            break
+          }
+        }
         if (index !== -1) {
           formIndex = index
           newData[index] = record
@@ -93,10 +107,23 @@ export default function useData(
           newData.push(record)
           newPos.push(rowPos)
         }
-      })
+      }
       rowKeyIndexMap = newRowKeyIndexMap
-      data.value = newData
-      pos.value = newPos
+
+      // Compact sparse arrays into dense arrays for V8 optimization
+      const compactData: any[] = []
+      const compactPos: number[] = []
+      const compactRowKeyIndexMap: Record<Key, number> = {}
+      for (let i = 0; i < newData.length; i++) {
+        if (newData[i]) {
+          compactRowKeyIndexMap[newData[i].rowKey] = compactData.length
+          compactData.push(newData[i])
+          compactPos.push(newPos[i]!)
+        }
+      }
+      rowKeyIndexMap = compactRowKeyIndexMap
+      data.value = compactData
+      pos.value = compactPos
     },
     { immediate: true },
   )

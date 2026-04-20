@@ -7,7 +7,7 @@
  */
 
 import { objectToEmpty } from '@pro-design-vue/utils'
-import { provide, reactive, watch, defineComponent, inject } from 'vue'
+import { provide, shallowReactive, watch, defineComponent, inject } from 'vue'
 
 import type { InjectionKey, PropType } from 'vue'
 
@@ -31,7 +31,7 @@ export default defineComponent({
     },
   },
   setup(props: { value?: ContextSlots }, { slots }) {
-    const currentValue = reactive<ContextSlots>({})
+    const currentValue = shallowReactive<ContextSlots>({})
 
     watch(
       () => props.value,

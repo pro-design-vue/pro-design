@@ -1,4 +1,4 @@
-import { shallowRef, watchEffect, watch } from 'vue'
+import { shallowRef, watch } from 'vue'
 
 import type { Ref, UnwrapRef } from 'vue'
 import type {
@@ -46,12 +46,6 @@ export default function useFlattenRecords<RecordType = DefaultRecordType>(
   const pageDataRowKeys = shallowRef<Key[]>([])
   const pageDataEnableRowKeys = shallowRef<Key[]>([])
   const checkboxPropsMap = shallowRef<Map<Key, Partial<CheckboxProps>>>(new Map())
-  const getCheckboxProps = shallowRef<TableRowSelection<RecordType>['getCheckboxProps']>(noop)
-
-  watchEffect(() => {
-    getCheckboxProps.value = mergedRowSelection.value?.getCheckboxProps || noop
-  })
-
   watch(
     [pageDataRef, childrenColumnNameRef, getRowKeyRef, expandedKeysRef],
     () => {
@@ -59,6 +53,10 @@ export default function useFlattenRecords<RecordType = DefaultRecordType>(
       const expandedKeys = expandedKeysRef.value
       const childrenColumnName = childrenColumnNameRef.value
       const expandTypeValue = expandType.value
+      const hasCheckboxProps = !!mergedRowSelection.value?.getCheckboxProps
+      const getCheckboxPropsFn = hasCheckboxProps
+        ? (mergedRowSelection.value!.getCheckboxProps as (record: RecordType) => Partial<CheckboxProps>)
+        : null
       const newKeyEntities: KeyEntities = {}
       const newPageDataRowKeys: Key[] = []
       const newPageDataEnableRowKeys: Key[] = []
@@ -72,10 +70,8 @@ export default function useFlattenRecords<RecordType = DefaultRecordType>(
         keyEntitie: KeyEntities[Key] | null = null,
       ): FlatRecord<RecordType>[] => {
         const newRecords: FlatRecord<RecordType>[] = []
-        const getCheckboxPropsFn = getCheckboxProps.value
         records.forEach((record, index) => {
           const rowKey = getRowKey(record, index)
-          const checkboxProps = getCheckboxPropsFn?.(record)
           const pos = getPosition(keyEntitie ? keyEntitie.pos : '0', index)
           const isRoot = root && expandedKeys?.has(rowKey)
           const newRecord: FlatRecord<RecordType> = {
@@ -90,8 +86,13 @@ export default function useFlattenRecords<RecordType = DefaultRecordType>(
           const newKeyEntitie = Object.assign({ parent: keyEntitie }, newRecord)
           newKeyEntities[rowKey] = newKeyEntitie as KeyEntities[Key]
           newPageDataRowKeys.push(rowKey)
-          newCheckboxPropsMap.set(rowKey, checkboxProps!)
-          if (!checkboxProps?.disabled) {
+          if (getCheckboxPropsFn) {
+            const checkboxProps = getCheckboxPropsFn(record)
+            newCheckboxPropsMap.set(rowKey, checkboxProps!)
+            if (!checkboxProps?.disabled) {
+              newPageDataEnableRowKeys.push(rowKey)
+            }
+          } else {
             newPageDataEnableRowKeys.push(rowKey)
           }
           if (newKeyEntitie.parent) {

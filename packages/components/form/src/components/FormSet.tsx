@@ -93,7 +93,13 @@ export default defineComponent({
       transform: props.transform,
     })
 
-    const formItemProps = computed(() => runFunction(props.formItemProps, formData.value) ?? {})
+    const formItemProps = computed(() => {
+      const raw = props.formItemProps
+      if (typeof raw === 'function') {
+        return runFunction(raw, formData.value) ?? {}
+      }
+      return raw ?? {}
+    })
     const restItemProps = computed(() =>
       omitUndefined({
         ...pickKeys(formItemProps.value, ALL_ANTD_PROP_KEYS),
@@ -101,7 +107,8 @@ export default defineComponent({
     )
 
     const items = computed(() => {
-      let children: ProFormItemType[] = runFunction(props.items ?? [], formData.value) ?? []
+      const raw = props.items ?? []
+      let children: ProFormItemType[] = (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
       if (Array.isArray(props.initialValue) && props.initialValue.length) {
         children = children
           .filter((item) => !NOT_ALLOW_FIELD_TYPES.includes(item.fieldType ?? ''))

@@ -73,6 +73,7 @@ export default defineComponent({
       formKey,
       prefixCls,
       formData,
+      formDataVersion,
       readonly,
       readonlyProps,
       disabledKeys,
@@ -86,6 +87,7 @@ export default defineComponent({
     } = useInjectForm()
     const { isList, listKey, listName, rowData } = useInjectFormList()
     const formSlotsContext = useInjectSlots()
+    const formItemContext = Form.useInjectFormItemContext()
     const { fieldValue, onValueChange } = useFieldValue<any>({
       isList,
       namePath: computed(() => props.item.name!),
@@ -96,9 +98,13 @@ export default defineComponent({
     const fieldRef = ref()
     const mergeGrid = computed(() => props.grid ?? grid?.value)
     const fieldType = computed(() => props.item.fieldType ?? 'text')
-    const mergeReadonly = computed(() =>
-      runFunction(props.item.readonly ?? readonly?.value, formData.value, rowData?.value),
-    )
+    const mergeReadonly = computed(() => {
+      const readonlyProp = props.item.readonly ?? readonly?.value
+      if (typeof readonlyProp === 'function') {
+        return runFunction(readonlyProp, formData.value, rowData?.value)
+      }
+      return readonlyProp
+    })
     const mergeReadonlyProps = computed(() =>
       merge({}, readonlyProps?.value, props.item.readonlyProps),
     )
@@ -107,11 +113,16 @@ export default defineComponent({
     const isIgnoreWidth = computed(
       () => props.item.ignoreWidth ?? IGNORE_WIDTH_VALUE_TYPE.includes(fieldType.value),
     )
-    const formItemProps = computed(
-      () => runFunction(props.item.formItemProps, formData.value, rowData?.value) ?? {},
-    )
-    const restItemProps = computed(() =>
-      omitUndefined({
+    const formItemProps = computed(() => {
+      const raw = props.item.formItemProps
+      if (typeof raw === 'function') {
+        return runFunction(raw, formData.value, rowData?.value) ?? {}
+      }
+      return raw ?? {}
+    })
+    const restItemProps = computed(() => {
+      const rulesProp = props.item.rules ?? formItemProps.value.rules
+      return omitUndefined({
         ...pickKeys(formItemProps.value, ALL_ANTD_PROP_KEYS),
         labelCol: formItemProps.value?.labelCol ?? labelCol?.value,
         wrapperCol: formItemProps.value?.wrapperCol ?? wrapperCol?.value,
@@ -121,20 +132,16 @@ export default defineComponent({
           : (formItemProps.value?.htmlFor ?? `form-${formKey.value ?? ''}-${props.item.key}`),
         rules: mergeReadonly.value
           ? undefined
-          : runFunction(
-              props.item.rules ?? formItemProps.value.rules,
-              formData.value,
-              action,
-              rowData?.value,
-            ),
-      }),
-    )
+          : runFunction(rulesProp, formData.value, action, rowData?.value),
+      })
+    })
 
     const clearOnChange = (newValue: any) => {
       const { clear } = props.item.linkage ?? {}
       if (clear) {
         const clearNamePaths = runFunction(clear, newValue, formData.value, rowData?.value) ?? []
         if (clearNamePaths.length > 0) {
+          let changed = false
           clearNamePaths.forEach((namePath) => {
             const path = isList
               ? [...(listName?.value ?? [])!, ...covertFormName(namePath)!]
@@ -144,15 +151,20 @@ export default defineComponent({
             const value = get(formData.value, path!)
             if (typeof value !== 'undefined') {
               set(formData.value, path!, undefined)
+              changed = true
             }
           })
+          if (changed) {
+            formDataVersion.value++
+          }
         }
       }
     }
 
     const fieldProps = computed(() => {
+      const raw = props.item.fieldProps
       const baseProps = runFunction(
-        props.item.fieldProps ?? {},
+        raw ?? {},
         formData.value,
         action,
         rowData?.value,
@@ -183,6 +195,7 @@ export default defineComponent({
         onChange: (value: any, ...args) => {
           clearOnChange(value)
           onValueChange(value)
+          formItemContext.onFieldChange()
           props.item.onChange?.(value, ...args, action)
         },
         ...(fieldPropsMap[fieldType.value]
@@ -192,9 +205,8 @@ export default defineComponent({
     })
 
     const fieldStyle = computed(() => {
-      const baseProps = runFunction(props.item.fieldProps ?? {}, formData.value, rowData?.value)
       const newStyle = {
-        ...baseProps?.style,
+        ...fieldProps.value?.style,
       }
 
       if (props.item.width && !fieldWidthSizeMap[props.item.width]) {
@@ -302,8 +314,10 @@ export default defineComponent({
 
     watch(
       () => restItemProps.value?.rules,
-      () => {
-        action.clearValidate(props.item.name)
+      (newRules, oldRules) => {
+        if (!isEqual(newRules, oldRules)) {
+          action.clearValidate(props.item.name)
+        }
       },
     )
 

@@ -14,7 +14,6 @@ import {
   onBeforeUnmount,
   computed,
   nextTick,
-  watchEffect,
 } from 'vue'
 import { useInjectTable } from '../context/TableContext'
 import { useInjectBody } from '../context/BodyContext'
@@ -25,8 +24,6 @@ import { useInjectHover } from '../../hooks/useHover'
 import { addClass, removeClass } from '../../utils/class'
 import { useEditInject } from '../../hooks/useEdit'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
-import ResizeObserver from 'resize-observer-polyfill'
-import eagerComputed from '../../utils/eagerComputed'
 import classNames from '../../utils/classNames'
 import BodyCell from './BodyCell.vue'
 import ExpandedRow from './ExpandedRow.vue'
@@ -112,34 +109,24 @@ export default defineComponent({
       { flush: 'post' },
     )
 
-    const resizeObserver: ResizeObserver = new ResizeObserver(() => {
-      calMaxHeight()
-    })
+    // ---- shared values from BodyRowsContext (computed once per BodyRows, not per row) ----
+    const bodyRowsCtx = useInjectBodyRows()
+    const { columns, columnStartIndex, nestExpandable, expandIconColumnIndex, indentSize, expandIconType, xVirtual, popupContainer, sharedResizeObserver } = bodyRowsCtx
 
-    const { columns, columnStartIndex } = useInjectBodyRows()
+    const resizeObserver = sharedResizeObserver
+
     const mergedColumns = computed(() =>
       (props.type === 'center'
-        ? tableContext.centerRowColumnsMap.value.get(props.rowKey)
-        : columns.value)!.filter((item) => !!item),
+        ? (tableContext.centerRowColumnsMap.value.get(props.rowKey) ?? columns.value)
+        : columns.value).filter((item) => !!item),
     )
 
-    const { tooltipOpen, leftPopupContainer, centerPopupContainer, rightPopupContainer } =
-      useInjectBody()
+    const { tooltipOpen } = useInjectBody()
     const { handleCellBlur, handleCellHover, hoverRowKey, hoverColumnKey, rowHover } =
       useInjectHover()
 
-    const popupContainer = computed(() =>
-      props.type === 'left'
-        ? leftPopupContainer.value
-        : props.type === 'center'
-          ? centerPopupContainer.value
-          : props.type === 'right'
-            ? rightPopupContainer.value
-            : null,
-    )
-
-    const isDragging = eagerComputed(() => tableContext.draggingRowKey.value === props.rowKey)
-    const isRowHover = eagerComputed(() => hoverRowKey.value === props.rowKey)
+    const isDragging = computed(() => tableContext.draggingRowKey.value === props.rowKey)
+    const isRowHover = computed(() => hoverRowKey.value === props.rowKey)
 
     watch(
       [isRowHover, bodyRow],
@@ -153,17 +140,16 @@ export default defineComponent({
       { immediate: true, flush: 'post' },
     )
 
-    const mergedTooltipOpen = eagerComputed(() => tooltipOpen.value && isRowHover.value)
+    const mergedTooltipOpen = computed(() => tooltipOpen.value && isRowHover.value)
 
     let timer: any
     onBeforeUnmount(() => {
       isUnmount = true
-      resizeObserver.disconnect()
       clearTimeout(timer)
       tableContext.removeRowHeight(rowUniId)
     })
 
-    const hasMultiRowSpanInfo = eagerComputed(() => {
+    const hasMultiRowSpanInfo = computed(() => {
       return !tableContext.hasMultiRowSpanInfo.value[props.rowKey!]
     })
 
@@ -171,19 +157,12 @@ export default defineComponent({
       return tableContext.props.customRow?.(props.record!, props.rowIndex)
     })
 
-    const rowSelectionType = computed(() => {
-      return tableContext.props.rowSelection?.type
-    })
-
     const isExpanded = ref(false)
     const expandedRowKeys = computed(() => tableContext.expandedRowKeys.value)
-    const expandIconType = computed(() => tableContext.expandIconType.value)
-    const expanded = eagerComputed(() => expandedRowKeys.value.has?.(props.rowKey!))
-    const expandIconColumnIndex = computed(() => tableContext.expandIconColumnIndex.value || 0)
-    const indentSize = computed(() => tableContext.indentSize.value)
+    const expanded = computed(() => expandedRowKeys.value.has?.(props.rowKey!))
 
-    watchEffect(() => {
-      if (expanded.value) {
+    watch(expanded, (val) => {
+      if (val) {
         isExpanded.value = true
       }
     })
@@ -193,8 +172,6 @@ export default defineComponent({
         tableContext.expandType.value === 'row' &&
         tableContext.props.rowExpandable?.(props.record!),
     )
-
-    const nestExpandable = computed(() => tableContext.expandType.value === 'nest')
 
     const hasNestChildren = computed(
       () =>
@@ -211,8 +188,8 @@ export default defineComponent({
 
     const mergedRowHeights = computed(() => tableContext.mergedRowHeights.value)
 
-    const height = eagerComputed(() => mergedRowHeights.value[props.rowKey!])
-    const cellHeight = eagerComputed(() => tableContext.rowHeights.value[props.rowKey!])
+    const height = computed(() => mergedRowHeights.value[props.rowKey!])
+    const cellHeight = computed(() => tableContext.rowHeights.value[props.rowKey!])
 
     const isSelected = computed(() => {
       const highlightSelectRow =
@@ -255,10 +232,6 @@ export default defineComponent({
       )
     })
 
-    const expandColumnWidth = eagerComputed(() => {
-      return tableContext.allCellProps.value[props.rowKey!]?.[ExpandColumnKey]?.props?.style?.width
-    })
-
     const rowStyle = computed<CSSProperties>(() => {
       const style: CSSProperties = {
         opacity: 1,
@@ -275,20 +248,23 @@ export default defineComponent({
         style.height = `${tableContext.baseHeight.value}px`
       }
       if (props.isExpandRow && columnStartIndex.value === 0) {
-        style.width = expandColumnWidth.value
+        style.width = tableContext.allCellProps.value[props.rowKey!]?.[ExpandColumnKey]?.props?.style?.width
         style.minWidth = '100%'
       }
       return style
     })
 
+    let prevTop: any
+    let prevHeight: any
+    let prevTransform: any
     watch(
-      () => ({ ...rowStyle.value }),
-      (newStyle, oldStyle = {}) => {
+      rowStyle,
+      (newStyle) => {
         if (tableContext.animateRows.value && !tableContext.useAnimate.value) {
           if (
-            newStyle.top !== oldStyle.top ||
-            newStyle.height !== oldStyle.height ||
-            newStyle.transform !== oldStyle.transform
+            newStyle.top !== prevTop ||
+            newStyle.height !== prevHeight ||
+            newStyle.transform !== prevTransform
           ) {
             nextTick(() => {
               clearTimeout(timer)
@@ -303,6 +279,9 @@ export default defineComponent({
             })
           }
         }
+        prevTop = newStyle.top
+        prevHeight = newStyle.height
+        prevTransform = newStyle.transform
       },
       { immediate: true },
     )
@@ -315,10 +294,10 @@ export default defineComponent({
       rowKey: computed(() => props.rowKey),
     })
 
-    const cellClass = computed(() => ({
+    const cellClass = {
       [`${props.prefixCls}-cell`]: true,
       [`${props.prefixCls}-position-absolute`]: true,
-    }))
+    }
 
     return {
       rowClass,
@@ -334,7 +313,6 @@ export default defineComponent({
           tableContext.props.expandRowByClick ?? table?.value?.expandRowByClick
         expandRowByClick && mergedExpandable.value && onInternalTriggerExpand(props.record, event)
       },
-      rowSelectionType,
       nestExpandable,
       hasNestChildren,
       mergedExpandable,
@@ -350,7 +328,7 @@ export default defineComponent({
       height,
       cellHeight,
       columnStartIndex,
-      resizeObserver,
+      resizeObserver: computed(() => resizeObserver.value),
       calMaxHeight,
       bodyRow,
       editCellKeys,
@@ -361,7 +339,7 @@ export default defineComponent({
       closeEditor,
       hoverRowKey,
       hoverColumnKey,
-      xVirtual: eagerComputed(() => tableContext.xVirtual.value),
+      xVirtual,
       getPopupContainer: () => popupContainer.value!,
       mergedTooltipOpen,
     }

@@ -6,10 +6,13 @@
  * @Description:
 -->
 <script lang="ts">
-import { defineComponent, watchEffect, computed, shallowRef } from 'vue'
+import { defineComponent, watchEffect, computed, shallowRef, onBeforeUnmount } from 'vue'
 import { useInjectTable } from '../context/TableContext'
+import { useInjectBody } from '../context/BodyContext'
+import { useInjectSlots } from '../context/TableSlotsContext'
+import { useInjectLevel } from '../../hooks/useLevel'
 import { useProvideBodyRows } from '../context/BodyRowsContext'
-import eagerComputed from '../../utils/eagerComputed'
+import ResizeObserver from 'resize-observer-polyfill'
 import Row from './BodyRow.vue'
 
 import type { PropType } from 'vue'
@@ -27,8 +30,11 @@ export default defineComponent({
   },
   setup(props) {
     const tableContext = useInjectTable()
-    const data = computed(() => tableContext.data.value)
-    const rowPosition = computed(() => tableContext.dataRowPosition.value)
+    const bodyContext = useInjectBody()
+    const tableSlotsContext = useInjectSlots()
+    const level = useInjectLevel()
+    const { leftPopupContainer, centerPopupContainer, rightPopupContainer } = bodyContext
+
     const columns = shallowRef<FinallyColumnType[]>([])
     const columnStartIndex = shallowRef(0)
 
@@ -46,17 +52,97 @@ export default defineComponent({
       }
     })
 
+    const nestExpandable = computed(() => tableContext.expandType.value === 'nest')
+    const expandIconColumnIndex = computed(() => tableContext.expandIconColumnIndex.value || 0)
+    const indentSize = computed(() => tableContext.indentSize.value)
+    const expandIconType = computed(() => tableContext.expandIconType.value)
+    const xVirtual = computed(() => tableContext.xVirtual.value)
+    const cellClass = { [`${props.prefixCls}-cell`]: true, [`${props.prefixCls}-position-absolute`]: true }
+    const popupContainer = computed((): HTMLDivElement | null =>
+      props.type === 'left'
+        ? leftPopupContainer.value ?? null
+        : props.type === 'center'
+          ? centerPopupContainer.value ?? null
+          : props.type === 'right'
+            ? rightPopupContainer.value ?? null
+            : null,
+    )
+
+    const rowSelectionType = computed(() => tableContext.props.rowSelection?.type)
+
+    const sharedResizeObserver = shallowRef<ResizeObserver | undefined>(undefined)
+    let pendingEntries: ResizeObserverEntry[] = []
+    let resizeRafId: number | null = null
+
+    const flushResizeEntries = () => {
+      resizeRafId = null
+      const entries = pendingEntries
+      pendingEntries = []
+      const rowHeightMap = new Map<string, number>()
+      for (let i = 0; i < entries.length; i++) {
+        const target = entries[i]!.target as HTMLElement
+        const rowKey = target.dataset.rowKeyRef
+          || (target.closest(`[data-row-key]`) as HTMLElement | null)?.getAttribute('data-row-key')
+        if (!rowKey) continue
+        if (rowHeightMap.has(rowKey)) continue
+        const row = target.closest(`[data-row-key]`) as HTMLElement | null
+        if (!row) continue
+        const autoCells = row.querySelectorAll('div[data-cell-auto=true]') as NodeListOf<HTMLDivElement>
+        if (!autoCells.length) continue
+        let rowHeight = 0
+        autoCells.forEach((autoCell: HTMLDivElement) => {
+          const { offsetWidth, offsetHeight } = autoCell
+          let autoCellHeight = offsetWidth ? offsetHeight : 0
+          const parentStyle = getComputedStyle(autoCell.parentNode as Element)
+          autoCellHeight +=
+            parseFloat(parentStyle.getPropertyValue('border-top-width')) +
+            parseFloat(parentStyle.getPropertyValue('border-bottom-width'))
+          rowHeight = rowHeight > autoCellHeight ? rowHeight : autoCellHeight
+        })
+        rowHeightMap.set(rowKey, rowHeight)
+      }
+      rowHeightMap.forEach((height, rowKey) => {
+        tableContext.addRowHeight(`shared_${props.type}_${rowKey}`, rowKey as any, height)
+      })
+    }
+
+    sharedResizeObserver.value = new ResizeObserver((entries) => {
+      pendingEntries = pendingEntries.concat(entries)
+      if (resizeRafId === null) {
+        resizeRafId = requestAnimationFrame(flushResizeEntries)
+      }
+    })
+
+    onBeforeUnmount(() => {
+      sharedResizeObserver.value?.disconnect()
+      sharedResizeObserver.value = undefined
+      if (resizeRafId !== null) {
+        cancelAnimationFrame(resizeRafId)
+        resizeRafId = null
+      }
+    })
+
     useProvideBodyRows({
       columns,
       columnStartIndex,
+      nestExpandable,
+      expandIconColumnIndex,
+      indentSize,
+      expandIconType,
+      xVirtual,
+      cellClass,
+      popupContainer,
+      rowSelectionType,
+      sharedResizeObserver,
+      tableContext,
+      tableSlotsContext,
+      bodyContext,
+      level,
     })
 
     return {
-      data,
-      columns,
-      rowPosition,
-      transitionName: computed(() => `${props.prefixCls}-row`),
-      virtual: eagerComputed(() => tableContext.virtual.value),
+      data: tableContext.data,
+      rowPosition: tableContext.dataRowPosition,
     }
   },
 })

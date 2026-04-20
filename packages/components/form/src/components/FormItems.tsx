@@ -73,86 +73,88 @@ export default defineComponent({
     const { grid, allHiddenKeys } = useInjectForm()
     const formSlotsContext = useInjectSlots()
     const mergeGrid = computed(() => props.grid ?? grid?.value)
-    const getItemsDom = computed(() => {
-      return props.list
-        .filter((item) => !allHiddenKeys.value.includes(item.key as string))
-        .map((item) => {
-          if (item.fieldType === ProFieldType.GROUP) {
-            return (
-              <FormGroup
-                key={item.key}
-                items={item.children}
-                title={item.title}
-                tooltip={item.tooltip}
-                colProps={item.colProps}
-                rowProps={item.rowProps}
-                spaceProps={item.spaceProps}
-                grid={item.grid}
-                item={item}
-                formItemProps={item.formItemProps}
-              />
-            )
+
+    const visibleList = computed(() =>
+      props.list.filter((item) => !allHiddenKeys.value.includes(item.key as string)),
+    )
+
+    const renderItem = (item: ProFormItemType) => {
+      if (item.fieldType === ProFieldType.GROUP) {
+        return (
+          <FormGroup
+            key={item.key}
+            items={item.children}
+            title={item.title}
+            tooltip={item.tooltip}
+            colProps={item.colProps}
+            rowProps={item.rowProps}
+            spaceProps={item.spaceProps}
+            grid={item.grid}
+            item={item}
+            formItemProps={item.formItemProps}
+          />
+        )
+      }
+      if (item.fieldType === ProFieldType.FORM_SET) {
+        return (
+          <FormSet
+            key={item.key}
+            name={item.name}
+            items={item.children}
+            title={item.title}
+            tooltip={item.tooltip}
+            colProps={item.colProps}
+            rowProps={item.rowProps}
+            spaceProps={item.spaceProps}
+            formItemProps={item.formItemProps}
+            initialValue={item.initialValue}
+            convertValue={item.convertValue}
+            transform={item.transform}
+          />
+        )
+      }
+      if (item.fieldType === ProFieldType.FORM_LIST) {
+        const fieldProps = omitUndefined(pickKeys(item.fieldProps ?? {}, LIST_PROP_KEYS))
+        const slotsGetter = {}
+        LIST_SLOT_NAMES.forEach((name) => {
+          const slot = getSlot(item.fieldProps?.[`${name}Render`], formSlotsContext)
+          if (slot) {
+            slotsGetter[name] = (args) => <RenderVNode vnode={slot} props={args} />
           }
-          if (item.fieldType === ProFieldType.FORM_SET) {
-            return (
-              <FormSet
-                key={item.key}
-                name={item.name}
-                items={item.children}
-                title={item.title}
-                tooltip={item.tooltip}
-                colProps={item.colProps}
-                rowProps={item.rowProps}
-                spaceProps={item.spaceProps}
-                formItemProps={item.formItemProps}
-                initialValue={item.initialValue}
-                convertValue={item.convertValue}
-                transform={item.transform}
-              />
-            )
-          }
-          if (item.fieldType === ProFieldType.FORM_LIST) {
-            const fieldProps = omitUndefined(pickKeys(item.fieldProps ?? {}, LIST_PROP_KEYS))
-            const slotsGetter = {}
-            LIST_SLOT_NAMES.forEach((name) => {
-              const slot = getSlot(item.fieldProps?.[`${name}Render`], formSlotsContext)
-              if (slot) {
-                slotsGetter[name] = (args) => <RenderVNode vnode={slot} props={args} />
-              }
-            })
-            return (
-              <FormList
-                key={item.key}
-                name={item.name}
-                originName={item.originName}
-                items={item.children}
-                title={item.title}
-                tooltip={item.tooltip}
-                rules={item.rules}
-                colProps={item.colProps}
-                rowProps={item.rowProps}
-                formItemProps={item.formItemProps}
-                initialValue={item.initialValue}
-                convertValue={item.convertValue}
-                transform={item.transform}
-                {...fieldProps}
-                v-slots={{ ...slotsGetter }}
-              />
-            )
-          }
-          return <FormItem key={item.key} item={item} grid={mergeGrid.value} />
         })
-    })
+        return (
+          <FormList
+            key={item.key}
+            name={item.name}
+            originName={item.originName}
+            items={item.children}
+            title={item.title}
+            tooltip={item.tooltip}
+            rules={item.rules}
+            colProps={item.colProps}
+            rowProps={item.rowProps}
+            formItemProps={item.formItemProps}
+            initialValue={item.initialValue}
+            convertValue={item.convertValue}
+            transform={item.transform}
+            {...fieldProps}
+            v-slots={{ ...slotsGetter }}
+          />
+        )
+      }
+      return <FormItem key={item.key} item={item} grid={mergeGrid.value} />
+    }
 
     return () => {
+      const items = visibleList.value.map(renderItem)
       if (props.type === 'space' && !mergeGrid?.value) {
         return (
           <Space {...props.spaceProps} align="start">
-            {getItemsDom.value}
+            {items}
           </Space>
         )
       }
-      return getItemsDom.value
+      return items
     }
   },
 })

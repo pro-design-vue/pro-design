@@ -10,11 +10,11 @@ import type { CSSProperties, PropType, VNode } from 'vue'
 import type { Entity, ProFormItemType } from '../type'
 
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
-import { Form, Button } from 'ant-design-vue'
+import { Button, Form } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useInjectForm } from '../context/FormContext'
 import { useFieldValue } from '../hooks/useFieldValue'
-import { RenderVNode, cloneDeep, isEqual, omit, runFunction } from '@pro-design-vue/utils'
+import { RenderVNode, cloneDeep, omit, runFunction } from '@pro-design-vue/utils'
 
 import FormListItem from './FormListItem'
 
@@ -141,19 +141,21 @@ export default defineComponent({
   emits: ['after-add', 'after-remvoe'],
   setup(props, { slots }) {
     const loading = ref(false)
-    const listValues = ref<Entity[]>([])
     const { prefixCls } = useInjectForm()
+    const formItemContext = Form.useInjectFormItemContext()
     const keyRef = shallowRef<{ keys: number[]; id: number }>({
       keys: [],
       id: 0,
     })
+    // action 操作（add/remove）会手动维护 keyRef，通过版本号让 watcher 跳过
+    let lastActionVersion = 0
+    let watchedActionVersion = 0
     const { fieldValue, onValueChange } = useFieldValue<any>({
       namePath: computed(() => props.name!),
       initialValue: props.initialValue,
       convertValue: props.convertValue,
       transform: props.transform,
     })
-    const formItemContext = Form.useInjectFormItemContext()
     const count = computed(() => fieldValue.value?.length ?? 0)
 
     const action: ListOperations = {
@@ -164,23 +166,26 @@ export default defineComponent({
             return false
           }
         }
-        const newValue: Entity[] = cloneDeep(fieldValue.value ?? [])
+        const newValue: Entity[] = fieldValue.value ? [...fieldValue.value] : []
         if (index !== undefined && index >= 0 && index <= newValue.length) {
-          keyRef.value.keys = [
-            ...keyRef.value.keys.slice(0, index),
-            keyRef.value.id,
-            ...keyRef.value.keys.slice(index),
-          ]
-          onValueChange(
-            cloneDeep([...newValue.slice(0, index), defaultValue, ...newValue.slice(index)]),
-          )
-          formItemContext.onFieldChange()
+          keyRef.value = {
+            keys: [
+              ...keyRef.value.keys.slice(0, index),
+              keyRef.value.id,
+              ...keyRef.value.keys.slice(index),
+            ],
+            id: keyRef.value.id + 1,
+          }
+          onValueChange([...newValue.slice(0, index), defaultValue, ...newValue.slice(index)])
         } else {
-          keyRef.value.keys = [...keyRef.value.keys, keyRef.value.id]
-          onValueChange(cloneDeep([...newValue, defaultValue]))
-          formItemContext.onFieldChange()
+          keyRef.value = {
+            keys: [...keyRef.value.keys, keyRef.value.id],
+            id: keyRef.value.id + 1,
+          }
+          onValueChange([...newValue, defaultValue])
         }
-        keyRef.value.id += 1
+        lastActionVersion++
+        formItemContext.onFieldChange()
         Promise.resolve().then(() => {
           props.onAfterAdd?.(defaultValue, index!, count.value)
         })
@@ -193,15 +198,18 @@ export default defineComponent({
             return false
           }
         }
-        const newValue: Entity[] = cloneDeep(fieldValue.value ?? [])
+        const newValue: Entity[] = fieldValue.value ? [...fieldValue.value] : []
         const indexSet = new Set(Array.isArray(index) ? index : [index])
 
         if (indexSet.size <= 0) {
           return false
         }
-        keyRef.value.keys = keyRef.value.keys.filter((_, keysIndex) => !indexSet.has(keysIndex))
-        const value = newValue.filter((_, valueIndex) => !indexSet.has(valueIndex))
-        onValueChange(value)
+        keyRef.value = {
+          keys: keyRef.value.keys.filter((_, keysIndex) => !indexSet.has(keysIndex)),
+          id: keyRef.value.id,
+        }
+        onValueChange(newValue.filter((_, valueIndex) => !indexSet.has(valueIndex)))
+        lastActionVersion++
         formItemContext.onFieldChange()
         Promise.resolve().then(() => {
           props.onAfterRemove?.(index, count.value)
@@ -228,11 +236,31 @@ export default defineComponent({
       await action.add(cloneDeep(fieldValue.value[index]), count.value + 1)
     }
 
+    // add/remove 操作会手动维护 keyRef，此 watcher 只处理外部数据变化（如 reset、initialValues 变化）
     watch(
       fieldValue,
-      () => {
-        if (!isEqual(listValues.value, fieldValue.value)) {
-          listValues.value = cloneDeep(fieldValue.value ?? [])
+      (newVal, oldVal) => {
+        // add/remove 已经同步更新了 keyRef 和 lastActionVersion
+        // watcher 异步触发时检查版本号，如果变了说明是 action 操作，跳过
+        if (lastActionVersion !== watchedActionVersion) {
+          watchedActionVersion = lastActionVersion
+          return
+        }
+        const len = newVal?.length ?? 0
+        const keysLen = keyRef.value.keys.length
+        if (keysLen !== len) {
+          const newKeys: number[] = []
+          for (let i = 0; i < len; i++) {
+            newKeys.push(keyRef.value.keys[i] ?? keyRef.value.id++)
+          }
+          keyRef.value = { keys: newKeys, id: keyRef.value.id }
+        } else if (newVal !== oldVal) {
+          // 长度相同但引用变了（reset 场景）：强制生成全新 key，销毁重建子组件
+          const newKeys: number[] = []
+          for (let i = 0; i < len; i++) {
+            newKeys.push(keyRef.value.id++)
+          }
+          keyRef.value = { keys: newKeys, id: keyRef.value.id }
         }
       },
       {
@@ -274,21 +302,21 @@ export default defineComponent({
     })
 
     return () => {
-      if (props.readonly && !listValues.value?.length) {
-        listValues.value = [{}]
-      }
+      const listData = props.readonly && !fieldValue.value?.length
+        ? [{}]
+        : (fieldValue.value ?? [])
       return (
         <div
           style="width: max-content; max-width: 100%; min-width: 100%; "
           class={{
             [`${prefixCls}-list-container`]: true,
-            [`${prefixCls}-list-empty`]: (fieldValue.value ?? [])?.length == 0,
+            [`${prefixCls}-list-empty`]: listData.length === 0,
           }}
         >
           {props.creatorButtonProps !== false &&
             props.creatorButtonProps?.position === 'top' &&
             creatorButton.value}
-          {(listValues.value ?? []).map((record, index) => {
+          {listData.map((record, index) => {
             let key = keyRef.value.keys[index]
             if (key === undefined) {
               keyRef.value.keys[index] = keyRef.value.id
