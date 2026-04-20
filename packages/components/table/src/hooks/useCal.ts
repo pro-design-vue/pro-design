@@ -78,10 +78,7 @@ export default function useCal(
       if (virtual.value) {
         if (scrollHeight.value) {
           let newStartIndex =
-            binSearchStartIndex<number>(
-              positions,
-              (value) => value >= scrollTop.value - Y_BUFF,
-            ) - 1
+            binSearchStartIndex<number>(positions, (value) => value >= scrollTop.value - Y_BUFF) - 1
           newStartIndex = newStartIndex < 0 ? 0 : newStartIndex
           startIndex.value =
             newStartIndex > maxStartIndex.value ? maxStartIndex.value : newStartIndex
@@ -95,8 +92,7 @@ export default function useCal(
             }
           }
           newEndIndex = newEndIndex >= 0 ? newEndIndex : positions.length - 1
-          endIndex.value =
-            newEndIndex > positions.length - 1 ? positions.length - 1 : newEndIndex
+          endIndex.value = newEndIndex > positions.length - 1 ? positions.length - 1 : newEndIndex
         } else {
           startIndex.value = 0
           endIndex.value = -1

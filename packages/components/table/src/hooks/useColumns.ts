@@ -523,8 +523,12 @@ export default function useColumns({
   const rightWidth = ref(0)
   const bodyMaxWidth = computed(() => leftWidth.value + centerWidth.value + rightWidth.value)
   watchEffect(() => {
-    let lw = 0, cw = 0, rw = 0
-    const lc = leftColumns.value, cc = centerColumns.value, rc = rightColumns.value
+    let lw = 0,
+      cw = 0,
+      rw = 0
+    const lc = leftColumns.value,
+      cc = centerColumns.value,
+      rc = rightColumns.value
     for (let i = 0; i < lc.length; i++) lw += lc[i]?.finallyWidth || 0
     for (let i = 0; i < cc.length; i++) cw += cc[i]?.finallyWidth || 0
     for (let i = 0; i < rc.length; i++) rw += rc[i]?.finallyWidth || 0

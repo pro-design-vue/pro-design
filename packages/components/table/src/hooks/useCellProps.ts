@@ -226,8 +226,27 @@ const useCellProps = ({
       }
     } else {
       genColumnsCellProps(0, curLeft, rowKey, rowIndex, record, overflow, out, spanOut)
-      genColumnsCellProps(curLeftW, curCenter, rowKey, rowIndex, record, overflow, out, spanOut, colMap)
-      genColumnsCellProps(curLeftW + curCenterW, curRight, rowKey, rowIndex, record, overflow, out, spanOut)
+      genColumnsCellProps(
+        curLeftW,
+        curCenter,
+        rowKey,
+        rowIndex,
+        record,
+        overflow,
+        out,
+        spanOut,
+        colMap,
+      )
+      genColumnsCellProps(
+        curLeftW + curCenterW,
+        curRight,
+        rowKey,
+        rowIndex,
+        record,
+        overflow,
+        out,
+        spanOut,
+      )
     }
   }
 
@@ -260,10 +279,20 @@ const useCellProps = ({
         }
       }
       computeRowCellProps(
-        curLeft, curCenter, curRight,
-        curLeftW, curCenterW, curBodyW,
-        curMergedH, rowKey, rowIndex, record, isExpandRow,
-        rawAllCellProps, rawRowSpanInfo, colMap,
+        curLeft,
+        curCenter,
+        curRight,
+        curLeftW,
+        curCenterW,
+        curBodyW,
+        curMergedH,
+        rowKey,
+        rowIndex,
+        record,
+        isExpandRow,
+        rawAllCellProps,
+        rawRowSpanInfo,
+        colMap,
       )
     }
 
@@ -285,7 +314,16 @@ const useCellProps = ({
   let rafHandle: any
 
   watch(
-    [leftColumns, rightColumns, visibleCenterColumns, mergedRowHeights, bodyWidth, leftWidth, centerWidth, contextCustomCell],
+    [
+      leftColumns,
+      rightColumns,
+      visibleCenterColumns,
+      mergedRowHeights,
+      bodyWidth,
+      leftWidth,
+      centerWidth,
+      contextCustomCell,
+    ],
     () => {
       forceFullRecalc = true
       raf.cancel(rafHandle)

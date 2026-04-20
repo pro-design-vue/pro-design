@@ -57,14 +57,17 @@ export default defineComponent({
     const indentSize = computed(() => tableContext.indentSize.value)
     const expandIconType = computed(() => tableContext.expandIconType.value)
     const xVirtual = computed(() => tableContext.xVirtual.value)
-    const cellClass = { [`${props.prefixCls}-cell`]: true, [`${props.prefixCls}-position-absolute`]: true }
+    const cellClass = {
+      [`${props.prefixCls}-cell`]: true,
+      [`${props.prefixCls}-position-absolute`]: true,
+    }
     const popupContainer = computed((): HTMLDivElement | null =>
       props.type === 'left'
-        ? leftPopupContainer.value ?? null
+        ? (leftPopupContainer.value ?? null)
         : props.type === 'center'
-          ? centerPopupContainer.value ?? null
+          ? (centerPopupContainer.value ?? null)
           : props.type === 'right'
-            ? rightPopupContainer.value ?? null
+            ? (rightPopupContainer.value ?? null)
             : null,
     )
 
@@ -81,13 +84,16 @@ export default defineComponent({
       const rowHeightMap = new Map<string, number>()
       for (let i = 0; i < entries.length; i++) {
         const target = entries[i]!.target as HTMLElement
-        const rowKey = target.dataset.rowKeyRef
-          || (target.closest(`[data-row-key]`) as HTMLElement | null)?.getAttribute('data-row-key')
+        const rowKey =
+          target.dataset.rowKeyRef ||
+          (target.closest(`[data-row-key]`) as HTMLElement | null)?.getAttribute('data-row-key')
         if (!rowKey) continue
         if (rowHeightMap.has(rowKey)) continue
         const row = target.closest(`[data-row-key]`) as HTMLElement | null
         if (!row) continue
-        const autoCells = row.querySelectorAll('div[data-cell-auto=true]') as NodeListOf<HTMLDivElement>
+        const autoCells = row.querySelectorAll(
+          'div[data-cell-auto=true]',
+        ) as NodeListOf<HTMLDivElement>
         if (!autoCells.length) continue
         let rowHeight = 0
         autoCells.forEach((autoCell: HTMLDivElement) => {

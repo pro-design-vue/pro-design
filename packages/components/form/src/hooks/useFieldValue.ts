@@ -51,10 +51,7 @@ export function useFieldValue<T>({
   )
 
   const initFieldInitialValue = () => {
-    if (
-      typeof modelValue.value === 'undefined' &&
-      typeof initialValue !== 'undefined'
-    ) {
+    if (typeof modelValue.value === 'undefined' && typeof initialValue !== 'undefined') {
       const value = convertValue ? (convertValue(initialValue, namePath.value) as T) : initialValue
       set(initialValues?.value ?? {}, namePath.value, cloneDeep(initialValue))
       set(formData.value, namePath.value, cloneDeep(value))

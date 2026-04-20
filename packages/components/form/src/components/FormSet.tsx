@@ -108,7 +108,8 @@ export default defineComponent({
 
     const items = computed(() => {
       const raw = props.items ?? []
-      let children: ProFormItemType[] = (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
+      let children: ProFormItemType[] =
+        (typeof raw === 'function' ? runFunction(raw, formData.value) : raw) ?? []
       if (Array.isArray(props.initialValue) && props.initialValue.length) {
         children = children
           .filter((item) => !NOT_ALLOW_FIELD_TYPES.includes(item.fieldType ?? ''))

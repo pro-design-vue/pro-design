@@ -111,14 +111,25 @@ export default defineComponent({
 
     // ---- shared values from BodyRowsContext (computed once per BodyRows, not per row) ----
     const bodyRowsCtx = useInjectBodyRows()
-    const { columns, columnStartIndex, nestExpandable, expandIconColumnIndex, indentSize, expandIconType, xVirtual, popupContainer, sharedResizeObserver } = bodyRowsCtx
+    const {
+      columns,
+      columnStartIndex,
+      nestExpandable,
+      expandIconColumnIndex,
+      indentSize,
+      expandIconType,
+      xVirtual,
+      popupContainer,
+      sharedResizeObserver,
+    } = bodyRowsCtx
 
     const resizeObserver = sharedResizeObserver
 
     const mergedColumns = computed(() =>
       (props.type === 'center'
         ? (tableContext.centerRowColumnsMap.value.get(props.rowKey) ?? columns.value)
-        : columns.value).filter((item) => !!item),
+        : columns.value
+      ).filter((item) => !!item),
     )
 
     const { tooltipOpen } = useInjectBody()
@@ -248,7 +259,8 @@ export default defineComponent({
         style.height = `${tableContext.baseHeight.value}px`
       }
       if (props.isExpandRow && columnStartIndex.value === 0) {
-        style.width = tableContext.allCellProps.value[props.rowKey!]?.[ExpandColumnKey]?.props?.style?.width
+        style.width =
+          tableContext.allCellProps.value[props.rowKey!]?.[ExpandColumnKey]?.props?.style?.width
         style.minWidth = '100%'
       }
       return style

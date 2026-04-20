@@ -55,7 +55,9 @@ export default function useFlattenRecords<RecordType = DefaultRecordType>(
       const expandTypeValue = expandType.value
       const hasCheckboxProps = !!mergedRowSelection.value?.getCheckboxProps
       const getCheckboxPropsFn = hasCheckboxProps
-        ? (mergedRowSelection.value!.getCheckboxProps as (record: RecordType) => Partial<CheckboxProps>)
+        ? (mergedRowSelection.value!.getCheckboxProps as (
+            record: RecordType,
+          ) => Partial<CheckboxProps>)
         : null
       const newKeyEntities: KeyEntities = {}
       const newPageDataRowKeys: Key[] = []

@@ -193,14 +193,11 @@ export default defineComponent({
       }
     }
 
-    watch(
-      formDataVersion,
-      () => {
-        if (!hasInitial.value) {
-          onValuesChange()
-        }
-      },
-    )
+    watch(formDataVersion, () => {
+      if (!hasInitial.value) {
+        onValuesChange()
+      }
+    })
 
     const linkage = useLinkage()
     const action = useAction({

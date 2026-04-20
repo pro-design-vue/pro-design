@@ -163,12 +163,7 @@ export default defineComponent({
 
     const fieldProps = computed(() => {
       const raw = props.item.fieldProps
-      const baseProps = runFunction(
-        raw ?? {},
-        formData.value,
-        action,
-        rowData?.value,
-      )
+      const baseProps = runFunction(raw ?? {}, formData.value, action, rowData?.value)
       const mergeProps = {
         ...baseProps,
         id: baseProps?.id ?? `form-${formKey.value ?? ''}-${props.item.key}`,

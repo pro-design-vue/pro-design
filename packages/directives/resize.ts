@@ -53,7 +53,12 @@ function getSharedObserver(arg: string | undefined): ResizeObserver {
     sharedObservers[key] = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       for (let i = 0; i < entries.length; i++) {
         const target = entries[i]!.target as ResizableElement
-        resizeHandler(target, target.__resizeObserver__arg, target.getBoundingClientRect(), target.__resizeObserver__rect || {})
+        resizeHandler(
+          target,
+          target.__resizeObserver__arg,
+          target.getBoundingClientRect(),
+          target.__resizeObserver__rect || {},
+        )
       }
     })
     observerRefCounts[key] = 0

@@ -302,9 +302,7 @@ export default defineComponent({
     })
 
     return () => {
-      const listData = props.readonly && !fieldValue.value?.length
-        ? [{}]
-        : (fieldValue.value ?? [])
+      const listData = props.readonly && !fieldValue.value?.length ? [{}] : (fieldValue.value ?? [])
       return (
         <div
           style="width: max-content; max-width: 100%; min-width: 100%; "
