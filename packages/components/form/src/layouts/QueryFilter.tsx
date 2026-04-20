@@ -5,7 +5,7 @@
  * @LastEditTime: 2026-04-14 15:29:02
  * @Description:
  */
-import { ref, computed, defineComponent, watch, useTemplateRef } from 'vue'
+import { ref, computed, defineComponent, useTemplateRef } from 'vue'
 import { queryFilterProps } from '../props'
 import { useMergedState, usePrefixCls } from '@pro-design-vue/hooks'
 import { isBrowser, merge, omit, omitUndefined } from '@pro-design-vue/utils'
@@ -89,7 +89,7 @@ const flatMapItems = (items: ProFormItemType[], ignoreRules?: boolean): ProFormI
   return items
     ?.flatMap((item: any) => {
       if (item.fieldType === ProFieldType.GROUP && !item.title) {
-        return item.props.children
+        return item.children
       }
       if (ignoreRules) {
         return {
@@ -121,17 +121,10 @@ export default defineComponent({
   emits: ['collapse', 'resize'],
   setup(props, { slots, emit, expose, attrs }) {
     const { form } = useProConfigInject()
-    // totalSpan 统计控件占的位置，计算 offset 保证查询按钮在最后一列
-    const totalSpan = ref(0)
-    // totalSize 统计控件占的份数
-    const totalSize = ref(0)
-    // for split compute
-    const currentSpan = ref(0)
     const intl = useIntl()
     const prefixCls = usePrefixCls('query-filter')
     const wrapEl = useTemplateRef<HTMLDivElement>('wrapper')
     const formRef = ref<InstanceType<typeof BaseForm> & ProFormActionType>()
-    const processedList = ref<ProFormItemType[]>([])
     const [width, setWidth] = useMergedState(defaultWidth)
     const formExpose = useFormExpose(formRef)
     useResizeObserver(
@@ -159,25 +152,6 @@ export default defineComponent({
           : props.defaultColsNumber
       }
       return Math.max(1, 24 / spanSize.value.span - 1)
-    })
-
-    const hiddenNum = computed(
-      () => props.showHiddenNum && processedList.value.filter((item) => item.hidden).length,
-    )
-
-    const needCollapse = computed(() => {
-      if (totalSpan.value < 24 || totalSize.value <= showLength.value) {
-        return false
-      }
-      return true
-    })
-
-    const offset = computed(() => {
-      const offsetSpan = (currentSpan.value % 24) + spanSize.value.span
-      if (offsetSpan > 24) {
-        return 24 - spanSize.value.span
-      }
-      return 24 - offsetSpan
     })
 
     /** 计算最大宽度防止溢出换行 */
@@ -210,6 +184,78 @@ export default defineComponent({
         },
       },
     )
+
+    const processedResult = computed(() => {
+      let _totalSpan = 0
+      let _totalSize = 0
+      let _currentSpan = 0
+      let list: ProFormItemType[] = []
+
+      if (props.items?.length) {
+        let firstRowFull = false
+        list = flatMapItems(props.items, props.ignoreRules).map((item, index) => {
+          const colSize = item.colSize ?? 1
+          const colSpan = Math.min(spanSize.value.span * (colSize || 1), 24)
+          _totalSpan += colSpan
+          _totalSize += colSize
+
+          if (index === 0) {
+            firstRowFull = colSpan === 24 && !item.hidden
+          }
+
+          const hidden: boolean | undefined =
+            item.hidden ||
+            (collapsed.value &&
+              (firstRowFull || _totalSize > showLength.value) &&
+              !!index)
+
+          if (hidden) {
+            if (!props.preserve) {
+              return { ...item, colProps: { span: 0 }, hidden: true }
+            }
+            return { ...item, colProps: { span: colSpan }, hidden: true }
+          }
+
+          if (24 - (_currentSpan % 24) < colSpan) {
+            _totalSpan += 24 - (_currentSpan % 24)
+            _currentSpan += 24 - (_currentSpan % 24)
+          }
+
+          _currentSpan += colSpan
+          return {
+            ...item,
+            hidden,
+            formItemProps: {
+              ...(item.title ? formItemFixStyle.value : {}),
+              ...item.formItemProps,
+            },
+            colProps: { span: colSpan },
+          }
+        })
+      }
+
+      return {
+        list,
+        totalSpan: _totalSpan,
+        totalSize: _totalSize,
+        currentSpan: _currentSpan,
+      }
+    })
+
+    const needCollapse = computed(() => {
+      if (processedResult.value.totalSpan < 24 || processedResult.value.totalSize <= showLength.value) {
+        return false
+      }
+      return true
+    })
+
+    const offset = computed(() => {
+      const offsetSpan = (processedResult.value.currentSpan % 24) + spanSize.value.span
+      if (offsetSpan > 24) {
+        return 24 - spanSize.value.span
+      }
+      return 24 - offsetSpan
+    })
 
     const formProps = computed(() => {
       return {
@@ -270,78 +316,8 @@ export default defineComponent({
       )
     })
 
-    watch(
-      [spanSize, collapsed, () => props.items],
-      () => {
-        let firstRowFull = false
-        currentSpan.value = 0
-        totalSize.value = 0
-        totalSpan.value = 0
-        if (props.items?.length) {
-          processedList.value = flatMapItems(props.items, props.ignoreRules).map((item, index) => {
-            // 如果 formItem 自己配置了 hidden，默认使用它自己的
-            const colSize = item.colSize ?? 1
-            const colSpan = Math.min(spanSize.value.span * (colSize || 1), 24)
-            // 计算总的 totalSpan 长度
-            totalSpan.value += colSpan
-            // 计算总的 colSize 长度
-            totalSize.value += colSize
-
-            if (index === 0) {
-              firstRowFull = colSpan === 24 && !item.hidden
-            }
-
-            const hidden: boolean | undefined =
-              item.hidden ||
-              // 如果收起了
-
-              (collapsed.value &&
-                (firstRowFull ||
-                  // 如果 超过显示长度 且 总长度超过了 24
-                  totalSize.value > showLength.value) &&
-                !!index)
-
-            if (hidden) {
-              if (!props.preserve) {
-                return {
-                  ...item,
-                  colProps: { span: 0 },
-                  hidden: true,
-                }
-              }
-              return {
-                ...item,
-                colProps: { span: colSpan },
-                hidden: true,
-              }
-            }
-
-            if (24 - (currentSpan.value % 24) < colSpan) {
-              // 如果当前行空余位置放不下，那么折行
-              totalSpan.value += 24 - (currentSpan.value % 24)
-              currentSpan.value += 24 - (currentSpan.value % 24)
-            }
-
-            currentSpan.value += colSpan
-            return {
-              ...item,
-              hidden,
-              formItemProps: {
-                ...(item.title ? formItemFixStyle.value : {}),
-                ...item.formItemProps,
-              },
-              colProps: {
-                span: colSpan,
-              },
-            }
-          })
-        } else {
-          processedList.value = []
-        }
-      },
-      {
-        immediate: true,
-      },
+    const hiddenNum = computed(
+      () => props.showHiddenNum && processedResult.value.list.filter((item) => item.hidden).length,
     )
 
     expose({
@@ -365,7 +341,7 @@ export default defineComponent({
           isKeyPressSubmit={props.isKeyPressSubmit ?? true}
           showLoading={false}
           submitter={submitterConfig.value}
-          items={processedList.value}
+          items={processedResult.value.list}
           layout={spanSize.value.layout}
           v-slots={{
             ...slots,

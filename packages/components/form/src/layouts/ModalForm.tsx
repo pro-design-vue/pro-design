@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-28 13:01:45
  * @LastEditors: shen
- * @LastEditTime: 2026-04-14 15:36:44
+ * @LastEditTime: 2026-04-20 10:01:09
  * @Description:
  */
 import { ref, computed, watch, defineComponent } from 'vue'
@@ -94,7 +94,7 @@ export default defineComponent({
         ...omit(props.modalProps ?? {}, ['title', 'width', 'footer', 'onCancel', 'afterClose']),
         width: props.width,
         title: props.title,
-        footer: props.submitter === false ? null : undefined,
+        footer: props.readonly || props.submitter === false ? null : undefined,
       }),
     )
 
@@ -214,17 +214,18 @@ export default defineComponent({
           }}
           v-slots={{
             ...modalSlots.value,
-            footer:
-              props.submitter !== false && !props.readonly
-                ? () => (
+            ...(props.submitter !== false && !props.readonly
+              ? {
+                  footer: () => (
                     <div style="display: flex; justify-content: flex-end;" ref={footerRef}></div>
-                  )
-                : undefined,
+                  ),
+                }
+              : {}),
           }}
         >
           <BaseForm
             {...formProps.value}
-            submitter={submitterConfig.value}
+            submitter={props.readonly ? false : submitterConfig.value}
             v-slots={formSlots.value}
             onFinish={async (values) => {
               const result = await onFinishHandle(values)

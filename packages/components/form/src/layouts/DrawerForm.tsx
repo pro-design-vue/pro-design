@@ -225,17 +225,18 @@ export default defineComponent({
           }}
           v-slots={{
             ...drawerSlots.value,
-            footer:
-              props.submitter !== false && !props.readonly
-                ? () => (
+            ...(props.submitter !== false && !props.readonly
+              ? {
+                  footer: () => (
                     <div style="display: flex; justify-content: flex-end;" ref={footerRef}></div>
-                  )
-                : undefined,
+                  ),
+                }
+              : {}),
           }}
         >
           <BaseForm
             {...formProps.value}
-            submitter={submitterConfig.value}
+            submitter={props.readonly ? false : submitterConfig.value}
             v-slots={formSlots.value}
             onFinish={async (values) => {
               const result = await onFinishHandle(values)
