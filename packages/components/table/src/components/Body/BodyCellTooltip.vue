@@ -49,8 +49,9 @@ export default defineComponent({
       const range = document.createRange()
       range.setStart(firstChild, 0)
       range.setEnd(firstChild, firstChild.childNodes.length)
-      let rangeWidth = range.getBoundingClientRect().width
-      let rangeHeight = range.getBoundingClientRect().height
+      const rangeRect = range.getBoundingClientRect()
+      let rangeWidth = rangeRect.width
+      let rangeHeight = rangeRect.height
       rangeWidth - Math.floor(rangeWidth) < 1e-3 && (rangeWidth = Math.floor(rangeWidth))
       rangeHeight - Math.floor(rangeHeight) < 1e-3 && (rangeHeight = Math.floor(rangeHeight))
       const {

@@ -21,8 +21,8 @@ export default defineComponent({
     rowIndex: { type: Number as PropType<number>, required: true },
     flattenRowIndex: { type: Number, required: true },
     rowKey: { type: [Number, String] },
-    column: { type: Object as PropType<FinallyColumnType>, default: () => ({}) },
-    item: { type: Object as PropType<any>, default: () => ({}) },
+    column: { type: Object as PropType<FinallyColumnType>, required: true as const },
+    item: { type: Object as PropType<any>, required: true as const },
     wrapText: { type: Boolean as PropType<boolean>, default: false },
     type: { type: String as PropType<RowType> },
     height: Number as PropType<number>,
@@ -152,7 +152,20 @@ export default defineComponent({
   </template>
   <template v-else>
     <BodyTextCell
-      v-bind="props"
+      :prefixCls="prefixCls"
+      :rowIndex="rowIndex"
+      :flattenRowIndex="flattenRowIndex"
+      :rowKey="rowKey"
+      :column="column"
+      :item="item"
+      :wrapText="wrapText"
+      :type="type"
+      :height="height"
+      :hasAppendNode="hasAppendNode"
+      :resizeObserver="resizeObserver"
+      :calMaxHeight="calMaxHeight"
+      :tooltipOpen="tooltipOpen"
+      :getPopupContainer="getPopupContainer"
       :style="{ cursor: editable ? 'poiner' : '' }"
       @click="onCellEvent($event, 'click')"
       @dblClick="onCellEvent($event, 'dblClick')"
