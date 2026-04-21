@@ -205,9 +205,7 @@ export default defineComponent({
 
           const hidden: boolean | undefined =
             item.hidden ||
-            (collapsed.value &&
-              (firstRowFull || _totalSize > showLength.value) &&
-              !!index)
+            (collapsed.value && (firstRowFull || _totalSize > showLength.value) && !!index)
 
           if (hidden) {
             if (!props.preserve) {
@@ -243,7 +241,10 @@ export default defineComponent({
     })
 
     const needCollapse = computed(() => {
-      if (processedResult.value.totalSpan < 24 || processedResult.value.totalSize <= showLength.value) {
+      if (
+        processedResult.value.totalSpan < 24 ||
+        processedResult.value.totalSize <= showLength.value
+      ) {
         return false
       }
       return true

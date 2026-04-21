@@ -122,12 +122,12 @@ for (let i = 0; i < 2000; i++) {
       email: ['w.cezkdudy@qq.com', 'r.nmgw@qq.com', 'p.cumx@qq.com'][i % 3],
     },
     graduateDate: ['2024-01-01', '2012-02-01', '2025-03-01', '2002-04-01'][i % 4],
-    children: [
-      {
-        id: '111111111' + i,
-        children: [],
-      },
-    ],
+    // children: [
+    //   {
+    //     id: '111111111' + i,
+    //     children: [],
+    //   },
+    // ],
   })
 }
 
