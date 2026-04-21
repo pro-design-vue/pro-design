@@ -40,8 +40,15 @@ export default defineComponent({
 
     const { onBodyCellContextmenu } = useInjectBody()
 
-    const cellClass = { [`${props.prefixCls}-cell`]: true }
-    const cellInnerClass = { [`${props.prefixCls}-cell-inner`]: true }
+    const cellClass = computed(() => {
+      const { prefixCls } = props
+      return { [`${prefixCls}-cell`]: true }
+    })
+
+    const cellInnerClass = computed(() => {
+      const { prefixCls } = props
+      return { [`${prefixCls}-cell-inner`]: true }
+    })
 
     const mergedCellProps = computed(() => ({
       ...renderedCell.value.props,

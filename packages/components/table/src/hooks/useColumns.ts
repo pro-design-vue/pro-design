@@ -155,9 +155,11 @@ export default function useColumns({
   const maxRowSpan = shallowRef<number>(1)
   const headerHeight = shallowRef<number[]>([])
   const keyColumnMap = shallowRef<Map<Key, FinallyColumnType>>(new Map())
-  const maxHeaderHeight = computed<number>(() =>
-    headerHeight.value.reduce((pre, current) => pre + current, 0),
-  )
+  const maxHeaderHeight = shallowRef<number>(0)
+
+  watchEffect(() => {
+    maxHeaderHeight.value = headerHeight.value.reduce((pre, current) => pre + current, 0)
+  })
 
   const columnWidthByString = useColumnWidthByString()
 
@@ -464,7 +466,6 @@ export default function useColumns({
   const allColumns = shallowRef<FinallyColumnType[]>([])
   let cacheColumnKeyPositonMap = {}
   const columnKeyIndexMap = shallowRef<Record<Key, number>>({})
-
   watchEffect(() => {
     cacheColumnKeyPositonMap = {}
     const newColumnKeyIndexMap: Record<Key, number> = {}
@@ -521,20 +522,20 @@ export default function useColumns({
   const leftWidth = ref(0)
   const centerWidth = ref(0)
   const rightWidth = ref(0)
-  const bodyMaxWidth = computed(() => leftWidth.value + centerWidth.value + rightWidth.value)
+  const bodyMaxWidth = eagerComputed(() => leftWidth.value + centerWidth.value + rightWidth.value)
   watchEffect(() => {
-    let lw = 0,
-      cw = 0,
-      rw = 0
-    const lc = leftColumns.value,
-      cc = centerColumns.value,
-      rc = rightColumns.value
-    for (let i = 0; i < lc.length; i++) lw += lc[i]?.finallyWidth || 0
-    for (let i = 0; i < cc.length; i++) cw += cc[i]?.finallyWidth || 0
-    for (let i = 0; i < rc.length; i++) rw += rc[i]?.finallyWidth || 0
-    leftWidth.value = lw
-    centerWidth.value = cw
-    rightWidth.value = rw
+    leftWidth.value = leftColumns.value.reduce(
+      (preWidth: number, column: FinallyColumnType) => preWidth + (column.finallyWidth || 0),
+      0,
+    )
+    centerWidth.value = centerColumns.value.reduce(
+      (preWidth: number, column: FinallyColumnType) => preWidth + (column.finallyWidth || 0),
+      0,
+    )
+    rightWidth.value = rightColumns.value.reduce(
+      (preWidth: number, column: FinallyColumnType) => preWidth + (column.finallyWidth || 0),
+      0,
+    )
   })
 
   const getColumnPosition = (index: number, colSpan = 1) => {
@@ -586,9 +587,8 @@ export default function useColumns({
         newScrollLeft - X_BUFF,
         newLeftCenterWidth + newScrollLeft + X_BUFF,
       )
-      const visibleSet = new Set(visibleColumns)
       const autoHeightVisibleColumns: FinallyColumnType[] = autoHeightColumns.value.filter(
-        (autoCol) => !visibleSet.has(autoCol),
+        (autoCol) => !visibleColumns.find((visibleCol) => autoCol === visibleCol),
       )
 
       visibleCenterColumns.value = getValidColumns(

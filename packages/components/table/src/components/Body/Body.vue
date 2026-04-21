@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-06 22:03:08
  * @LastEditors: shen
- * @LastEditTime: 2026-04-20 16:08:43
+ * @LastEditTime: 2025-11-17 16:51:30
  * @Description:
 -->
 <script lang="ts">
@@ -16,7 +16,7 @@ import { useVScrollSyncInject } from '../../hooks/useVScrollSync'
 import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { RenderVNode, RenderSlot } from '../../utils/renderVNode'
 import { resize } from '@pro-design-vue/directives'
-import { useResizeObserver, useDebounceFn } from '@vueuse/core'
+import { useResizeObserver } from '@vueuse/core'
 import useTooltip from '../../hooks/useTooltip'
 import onClickOutside from '../../utils/onClickOutside'
 import BodyRows from './BodyRows.vue'
@@ -81,9 +81,9 @@ export default defineComponent({
 
     const summaryHeight = ref(0)
 
-    const leftColumns = tableContext.leftColumns
-    const centerColumns = tableContext.centerColumns
-    const rightColumns = tableContext.rightColumns
+    const leftColumns = computed(() => tableContext.leftColumns.value)
+    const centerColumns = computed(() => tableContext.centerColumns.value)
+    const rightColumns = computed(() => tableContext.rightColumns.value)
     const showWatermark = computed(() => tableContext.status.value.code !== 4)
 
     const leftPopupContainer = ref<HTMLDivElement>()
@@ -155,8 +155,8 @@ export default defineComponent({
       target.style.top = `${rightPos}px`
     }
 
-    const showYScrollbar = tableContext.showVerticalScrollbar
-    const showXScrollbar = tableContext.showHorizontalScrollbar
+    const showYScrollbar = computed(() => tableContext.showVerticalScrollbar.value)
+    const showXScrollbar = computed(() => tableContext.showHorizontalScrollbar.value)
 
     watch(
       [tableContext.centerWidth, tableContext.rightWidth, () => props.bodyWidth],
@@ -319,8 +319,12 @@ export default defineComponent({
       [`${props.prefixCls}-center`]: true,
       [`${props.prefixCls}-no-columns`]: !centerColumns.value.length,
     }))
-    const summaryViewportClass = { [`${props.prefixCls}-center-viewport`]: true }
-    const containerClass = { [`${props.prefixCls}-center-container`]: true }
+    const summaryViewportClass = computed(() => ({
+      [`${props.prefixCls}-center-viewport`]: true,
+    }))
+    const containerClass = computed(() => ({
+      [`${props.prefixCls}-center-container`]: true,
+    }))
     const viewportHeight = computed(
       () =>
         tableContext.viewportHeight.value +
@@ -419,26 +423,14 @@ export default defineComponent({
     })
     const emptyStyle = computed<CSSProperties>(() => ({ width: `${props.bodyWidth}px` }))
 
-    useResizeObserver(
-      measureDomRef as never,
-      useDebounceFn((entries) => {
-        const contentRect = entries[0]?.contentRect
-        emit('update:bodyWidth', contentRect?.width || 0)
-        emit('update:bodyHeight', contentRect?.height || 0)
-      }, 100),
-    )
-
-    const handleBodyInnerResize = useDebounceFn((e: CustomEvent) => {
-      bodyInnerWidth.value = e.detail.width
-    }, 100)
-
-    const handleBodyScrollResize = (e: CustomEvent) => {
-      emit('update:bodyScrollWidth', e.detail.width)
-    }
-
+    useResizeObserver(measureDomRef as never, (entries) => {
+      const contentRect = entries[0]?.contentRect
+      emit('update:bodyWidth', contentRect?.width || 0)
+      emit('update:bodyHeight', contentRect?.height || 0)
+    })
     return {
       bodyContainerStyle,
-      measureDomStyle: {
+      measureDomStyle: computed<any>(() => ({
         width: '100%',
         height: '100%!important',
         position: 'absolute!important',
@@ -455,7 +447,7 @@ export default defineComponent({
         transform: 'unset!important',
         visibility: 'visible!important',
         zIndex: '999!important',
-      } as any,
+      })),
       isEmpty,
       emptyStyle,
       handleEmptyHeight: (e: CustomEvent) => {
@@ -479,8 +471,12 @@ export default defineComponent({
       centerColumns,
       rightColumns,
       bodyInnerWidth,
-      handleBodyInnerResize,
-      handleBodyScrollResize,
+      handleBodyInnerResize: (e: CustomEvent) => {
+        bodyInnerWidth.value = e.detail.width
+      },
+      handleBodyScrollResize: (e: CustomEvent) => {
+        emit('update:bodyScrollWidth', e.detail.width)
+      },
       bodyRef,
       measureDomRef,
       bodyInnerRef,

@@ -10,7 +10,7 @@ import type { Ref } from 'vue'
 import type { KeyEntities } from './useFlattenRecords'
 
 import { ref, shallowRef, computed, watch, watchEffect, onBeforeUnmount } from 'vue'
-import { isNumber } from 'lodash-es'
+import { findLastIndex, findIndex, isNumber } from 'lodash-es'
 import { Y_BUFF } from '../utils/constant'
 import raf from '../utils/raf'
 import devWarning from '../utils/devWarning'
@@ -39,6 +39,7 @@ export default function useCal(
 ): CalType {
   const rowPosition = shallowRef<number[]>([])
   const rowHeights = shallowRef<Record<Key, number>>({})
+  const cacheRowHeights: Record<Key, number> = {}
   const mergedRowHeights = shallowRef<Record<Key, number>>({})
   const viewportHeight = ref(0)
 
@@ -60,39 +61,42 @@ export default function useCal(
   const maxStartIndex = ref(0)
 
   watchEffect(() => {
-    const threshold = viewportHeight.value - scrollHeight.value - Y_BUFF
-    const positions = rowPosition.value
-    let maxIndex = -1
-    for (let i = positions.length - 1; i >= 0; i--) {
-      if (positions[i]! < threshold) {
-        maxIndex = i
-        break
-      }
-    }
+    const maxIndex = findLastIndex(
+      rowPosition.value,
+      (pos) => pos < viewportHeight.value - scrollHeight.value - Y_BUFF,
+    )
     maxStartIndex.value = maxIndex < 0 ? 0 : maxIndex
   })
 
+  const newScrollTop = ref(0)
+  watch(
+    scrollTop,
+    () => {
+      newScrollTop.value = scrollTop.value
+    },
+    { immediate: true },
+  )
+
   watchEffect(() => {
-    const positions = rowPosition.value
-    if (flattenData.value.length === positions.length) {
+    if (flattenData.value.length === rowPosition.value.length) {
       if (virtual.value) {
         if (scrollHeight.value) {
           let newStartIndex =
-            binSearchStartIndex<number>(positions, (value) => value >= scrollTop.value - Y_BUFF) - 1
+            binSearchStartIndex<number>(
+              rowPosition.value,
+              (value) => value >= newScrollTop.value - Y_BUFF,
+            ) - 1
           newStartIndex = newStartIndex < 0 ? 0 : newStartIndex
           startIndex.value =
             newStartIndex > maxStartIndex.value ? maxStartIndex.value : newStartIndex
-
-          const endThreshold = scrollTop.value + scrollHeight.value + Y_BUFF
-          let newEndIndex = -1
-          for (let i = startIndex.value, len = positions.length; i < len; i++) {
-            if (positions[i]! >= endThreshold) {
-              newEndIndex = i
-              break
-            }
-          }
-          newEndIndex = newEndIndex >= 0 ? newEndIndex : positions.length - 1
-          endIndex.value = newEndIndex > positions.length - 1 ? positions.length - 1 : newEndIndex
+          let newEndIndex = findIndex(
+            rowPosition.value,
+            (value) => value >= newScrollTop.value + scrollHeight.value + Y_BUFF,
+            startIndex.value,
+          )
+          newEndIndex = newEndIndex >= 0 ? newEndIndex : rowPosition.value.length - 1
+          endIndex.value =
+            newEndIndex > rowPosition.value.length - 1 ? rowPosition.value.length - 1 : newEndIndex
         } else {
           startIndex.value = 0
           endIndex.value = -1
@@ -194,6 +198,7 @@ export default function useCal(
   const calculationRowHeights = (data: FlatRecord[]) => {
     const newRowHeights: Record<Key, number> = {}
     const defaultHeight = currentSizeHeight.value
+    const newCacheRowHeights = {}
     const newCurrentRowHeights: Record<Key, number> = {}
     const crhs = currentRowHeights.value
     const len = data.length
@@ -203,6 +208,7 @@ export default function useCal(
         let rowHeight = props.rowHeight(record, isExpandRow, defaultHeight)
         rowHeight = isNumber(rowHeight) ? rowHeight : undefined
         newRowHeights[rowKey] = rowHeight!
+        newCacheRowHeights[rowKey] = rowKey in cacheRowHeights ? cacheRowHeights[rowKey] : undefined
         newCurrentRowHeights[rowKey] = rowHeight ?? crhs[rowKey] ?? 0
       }
     } else {
@@ -212,17 +218,22 @@ export default function useCal(
           const { rowKey, isExpandRow = false } = data[i]!
           isExpandRow && (rowHeight = undefined)
           newRowHeights[rowKey] = rowHeight!
+          newCacheRowHeights[rowKey] =
+            rowKey in cacheRowHeights ? cacheRowHeights[rowKey] : undefined
           newCurrentRowHeights[rowKey] = rowHeight ?? crhs[rowKey] ?? 0
         }
       } else {
         for (let i = 0; i < len; i++) {
           const { rowKey } = data[i]!
           newRowHeights[rowKey] = undefined as any
+          newCacheRowHeights[rowKey] =
+            rowKey in cacheRowHeights ? cacheRowHeights[rowKey] : undefined
           newCurrentRowHeights[rowKey] = crhs[rowKey]!
         }
       }
     }
     rowHeights.value = newRowHeights
+    // cacheRowHeights.value = newCacheRowHeights
     currentRowHeights.value = newCurrentRowHeights
   }
 

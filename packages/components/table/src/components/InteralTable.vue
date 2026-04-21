@@ -39,6 +39,7 @@ import { useInjectContainer } from '../hooks/useContainer'
 import useKVMap from '../hooks/useKVMap'
 import useLicense from '../hooks/useLicense'
 import devWarning from '../utils/devWarning'
+import eagerComputed from '../utils/eagerComputed'
 import getScrollBarSize from '../utils/getScrollBarSize'
 import useColumns from '../hooks/useColumns'
 import useSorter from '../hooks/useSorter'
@@ -192,16 +193,16 @@ export default defineComponent({
     const paginationRef = ref<HTMLDivElement>()
     const measureWidthRef = shallowRef<HTMLDivElement>()
 
-    const mergedScrollX = computed(() => props.scrollX ?? props.scroll?.x)
-    const mergedScrollY = computed(() => props.scroll?.y ?? props.height ?? props.maxHeight)
+    const mergedScrollX = eagerComputed(() => props.scrollX ?? props.scroll?.x)
+    const mergedScrollY = eagerComputed(() => props.scroll?.y ?? props.height ?? props.maxHeight)
     const bodyScrollWidth = ref(typeof mergedScrollX.value == 'number' ? mergedScrollX.value : 0)
 
     watch(mergedScrollX, () => {
       bodyScrollWidth.value = typeof mergedScrollX.value == 'number' ? mergedScrollX.value : 0
     })
 
-    const virtual = computed<boolean>(() => !(props.virtual === false || !mergedScrollY.value))
-    const xVirtual = computed<boolean>(
+    const virtual = eagerComputed<boolean>(() => !(props.virtual === false || !mergedScrollY.value))
+    const xVirtual = eagerComputed<boolean>(
       () => props.xVirtual || (props.virtual !== false && props.xVirtual !== false),
     )
 
@@ -231,7 +232,7 @@ export default defineComponent({
           { immediate: true, deep: !!props.deepWatchDataSource },
         )
       },
-      { immediate: true },
+      { immediate: true, deep: true },
     )
 
     watch(
@@ -244,10 +245,10 @@ export default defineComponent({
             rawColumns.value = toRaw(props.columns) || EMPTY_LIST
             triggerRef(rawColumns)
           },
-          { immediate: true, deep: !!props.deepWatchColumns },
+          { immediate: true, deep: true },
         )
       },
-      { immediate: true },
+      { immediate: true, deep: !!props.deepWatchColumns },
     )
 
     watch(rawData, (newData) => {
@@ -317,14 +318,14 @@ export default defineComponent({
       props.size === 'small' ? 39 : props.size === 'middle' ? 47 : 55,
     )
     const expandedRowRender = computed(() => props.expandedRowRender)
-    const expandType = computed(() =>
+    const expandType = eagerComputed(() =>
       rawData.value.some((column) => column?.[childrenColumnName.value]?.length)
         ? 'nest'
         : expandedRowRender.value
           ? 'row'
           : null,
     )
-    const expandable = computed(() => !!props.expandedRowRender)
+    const expandable = eagerComputed(() => !!props.expandedRowRender)
 
     const columns = useColumns({
       props,
@@ -360,7 +361,7 @@ export default defineComponent({
       },
     )
 
-    const total = computed(() => filterData.value.length)
+    const total = eagerComputed(() => filterData.value.length)
     const paginationParam = computed(() => {
       if (props.pagination === false) {
         return {}
@@ -490,21 +491,24 @@ export default defineComponent({
       }
     }
 
+    const useAnimate = ref(false)
     const animateRows = computed(() => {
       return !!(props.animateRows ?? table?.value?.animateRows)
     })
 
-    const useAnimate = ref(animateRows.value)
-    let animateTimer: any
-
-    watch(animateRows, (newVal) => {
-      useAnimate.value = newVal
-    })
+    let timer: any
+    watch(
+      animateRows,
+      (newVal) => {
+        useAnimate.value = newVal
+      },
+      { immediate: true },
+    )
 
     const updateAnimate = () => {
       useAnimate.value = false
-      clearTimeout(animateTimer)
-      animateTimer = setTimeout(() => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
         useAnimate.value = animateRows.value
       }, 100)
     }
@@ -530,14 +534,18 @@ export default defineComponent({
       latestRangeStartCell,
     )
 
-    const pingedLeft = computed(() => supportSticky && !!scrollLeft.value)
-    const pingedRight = computed(
-      () =>
+    const pingedLeft = ref(false)
+    const pingedRight = ref(false)
+    const noPinged = ref(false)
+
+    watchEffect(() => {
+      pingedLeft.value = supportSticky && !!scrollLeft.value
+      pingedRight.value =
         supportSticky &&
         centerWidth.value - (bodyWidth.value - leftWidth.value - rightWidth.value) >
-          scrollLeft.value,
-    )
-    const noPinged = computed(() => !pingedLeft.value && !pingedRight.value)
+          scrollLeft.value
+      noPinged.value = !pingedLeft.value && !pingedRight.value
+    })
 
     const rootClass = computed(() =>
       classNames({
@@ -570,10 +578,10 @@ export default defineComponent({
       debounceFn()
     })
 
-    const showVerticalScrollbar = computed(
+    const showVerticalScrollbar = eagerComputed(
       () => !!mergedScrollY.value && bodyHeight.value + 0.9 < viewportHeight.value,
     )
-    const scrollToFirstRow = computed(
+    const scrollToFirstRow = eagerComputed(
       () => !props.scroll || (props.scroll && props.scroll.scrollToFirstRowOnChange !== false),
     )
 
@@ -924,7 +932,7 @@ export default defineComponent({
       watermarkMsg,
       rootStyle,
       rootClass,
-      watermarkStyle: {
+      watermarkStyle: computed<any>(() => ({
         minWidth: '100px!important',
         minHeight: '40px!important',
         position: 'absolute!important',
@@ -939,7 +947,7 @@ export default defineComponent({
         margin: '0px!important',
         padding: '0px!important',
         transform: 'unset!important',
-      },
+      })),
       mergedPagination,
       pos,
       onPaginationChange,
