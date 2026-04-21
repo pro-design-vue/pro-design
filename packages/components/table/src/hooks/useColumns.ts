@@ -293,30 +293,18 @@ export default function useColumns({
           minWidth,
           maxWidth,
         } = originColumn
-        const columnWidth = columnWidthByString(
-          measureWidthRef.value,
-          bodyScrollWidth.value,
-          width,
-        )
+        const columnWidth = columnWidthByString(measureWidthRef.value, bodyScrollWidth.value, width)
         const columnMinWidth = columnWidthByString(
           measureWidthRef.value,
           bodyScrollWidth.value,
           minWidth,
         )
         const columnMaxWidth = maxWidth
-          ? columnWidthByString(
-              measureWidthRef.value,
-              bodyScrollWidth.value,
-              maxWidth,
-            )
+          ? columnWidthByString(measureWidthRef.value, bodyScrollWidth.value, maxWidth)
           : 1 / 0
-        const finallyWidth = Math.min(
-          Math.max(columnWidth, columnMinWidth),
-          columnMaxWidth,
-        )
+        const finallyWidth = Math.min(Math.max(columnWidth, columnMinWidth), columnMaxWidth)
         const columnPos = getColumnPos(i, pos)
-        const columnKey =
-          originColumn.columnKey || originColumn.key || columnPos
+        const columnKey = originColumn.columnKey || originColumn.key || columnPos
         const parseFiexed = fixed === true ? 'left' : fixed
         const finallyColumn = Object.assign({}, originColumn, {
           finallyWidth,
@@ -324,9 +312,7 @@ export default function useColumns({
           originColumn,
           showTitle:
             !tooltip &&
-            (ellipsis === true ||
-              (typeof ellipsis === 'object' &&
-                ellipsis?.showTitle !== false)),
+            (ellipsis === true || (typeof ellipsis === 'object' && ellipsis?.showTitle !== false)),
           fixed: parseFiexed,
           hidden: true === originColumn.hidden,
         })
@@ -388,13 +374,8 @@ export default function useColumns({
       ? autoWidthColumns
       : newLeftColumns
           .concat(newCenterColumns, newRightColumns)
-          .filter(
-            (column) =>
-              !column.resizable || !column.__Internal__Column__,
-          )
-    const widthDiffAverage = Math.floor(
-      differenceWidth / nonResizableColumns.length,
-    )
+          .filter((column) => !column.resizable || !column.__Internal__Column__)
+    const widthDiffAverage = Math.floor(differenceWidth / nonResizableColumns.length)
     if (differenceWidth > 0) {
       for (let i = 0, len = nonResizableColumns.length; i < len; i++) {
         const column = nonResizableColumns[i]!
@@ -403,10 +384,7 @@ export default function useColumns({
           finallyWidth = column.finallyWidth! + differenceWidth
         } else {
           finallyWidth = Math.max(
-            Math.min(
-              column.finallyWidth! + widthDiffAverage,
-              column.maxWidth ?? 1 / 0,
-            ),
+            Math.min(column.finallyWidth! + widthDiffAverage, column.maxWidth ?? 1 / 0),
             column.minWidth ?? 50,
           )
         }
@@ -416,10 +394,7 @@ export default function useColumns({
     } else {
       for (let i = 0, len = autoWidthColumns.length; i < len; i++) {
         const column = autoWidthColumns[i]!
-        column.finallyWidth = Math.min(
-          column.minWidth ?? 50,
-          column.maxWidth ?? 1 / 0,
-        )
+        column.finallyWidth = Math.min(column.minWidth ?? 50, column.maxWidth ?? 1 / 0)
       }
     }
     if (props.headerHeight !== undefined) {
@@ -428,9 +403,7 @@ export default function useColumns({
           .concat(new Array(newMaxRowSpan).fill(baseHeight.value))
           .slice(0, newMaxRowSpan)
       } else {
-        headerHeight.value = new Array(newMaxRowSpan).fill(
-          props.headerHeight,
-        )
+        headerHeight.value = new Array(newMaxRowSpan).fill(props.headerHeight)
       }
     } else {
       headerHeight.value = new Array(newMaxRowSpan).fill(baseHeight.value)
@@ -469,10 +442,7 @@ export default function useColumns({
     }
 
     genHeaderColumns(
-      newLeftHeaderColumns.concat(
-        newCenterHeaderColumns,
-        newRightHeaderColumns,
-      ),
+      newLeftHeaderColumns.concat(newCenterHeaderColumns, newRightHeaderColumns),
       0,
       0,
       newMaxRowSpan,
