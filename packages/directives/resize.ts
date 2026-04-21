@@ -52,11 +52,12 @@ function getSharedObserver(arg: string | undefined): ResizeObserver {
   if (!sharedObservers[key]) {
     sharedObservers[key] = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       for (let i = 0; i < entries.length; i++) {
-        const target = entries[i]!.target as ResizableElement
+        const entry = entries[i]!
+        const target = entry.target as ResizableElement
         resizeHandler(
           target,
           target.__resizeObserver__arg,
-          target.getBoundingClientRect(),
+          entry.contentRect,
           target.__resizeObserver__rect || {},
         )
       }

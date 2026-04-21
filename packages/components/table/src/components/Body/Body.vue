@@ -17,6 +17,7 @@ import { useHScrollSyncInject } from '../../hooks/useHScrollSync'
 import { RenderVNode, RenderSlot } from '../../utils/renderVNode'
 import { resize } from '@pro-design-vue/directives'
 import { useResizeObserver } from '@vueuse/core'
+import raf from '../../utils/raf'
 import useTooltip from '../../hooks/useTooltip'
 import onClickOutside from '../../utils/onClickOutside'
 import BodyRows from './BodyRows.vue'
@@ -423,10 +424,24 @@ export default defineComponent({
     })
     const emptyStyle = computed<CSSProperties>(() => ({ width: `${props.bodyWidth}px` }))
 
+    let resizeRafFrame: any
+    let pendingWidth = 0
+    let pendingHeight = 0
     useResizeObserver(measureDomRef as never, (entries) => {
       const contentRect = entries[0]?.contentRect
-      emit('update:bodyWidth', contentRect?.width || 0)
-      emit('update:bodyHeight', contentRect?.height || 0)
+      const w = Math.floor(contentRect?.width || 0)
+      const h = Math.floor(contentRect?.height || 0)
+      if (w === pendingWidth && h === pendingHeight) return
+      pendingWidth = w
+      pendingHeight = h
+      raf.cancel(resizeRafFrame)
+      resizeRafFrame = raf(() => {
+        emit('update:bodyWidth', pendingWidth)
+        emit('update:bodyHeight', pendingHeight)
+      })
+    })
+    onBeforeUnmount(() => {
+      raf.cancel(resizeRafFrame)
     })
     return {
       bodyContainerStyle,
