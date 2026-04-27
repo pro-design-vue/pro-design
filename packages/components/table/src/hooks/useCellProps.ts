@@ -77,12 +77,15 @@ const useCellProps = ({
 
   const EMPTY_OBJ: Record<string, any> = Object.freeze({})
 
-  let cellPropsCache = new Map<Key, {
-    cellProps: Record<string, RenderedCell>
-    hasRowSpan: boolean
-    centerColumns: FinallyColumnType[] | undefined
-    overflow: string
-  }>()
+  const cellPropsCache = new Map<
+    Key,
+    {
+      cellProps: Record<string, RenderedCell>
+      hasRowSpan: boolean
+      centerColumns: FinallyColumnType[] | undefined
+      overflow: string
+    }
+  >()
   let prevLeftCols: FinallyColumnType[] = []
   let prevRightCols: FinallyColumnType[] = []
   let prevCenterCols: FinallyColumnType[] = []
@@ -104,7 +107,7 @@ const useCellProps = ({
     const cellProps: RenderedCell = {}
     const hasCustomCell = !!(customCell || contextCustomCell.value)
     const customCellProps: Record<string, any> = hasCustomCell
-      ? (customCell || contextCustomCell.value)!({ record, rowIndex, column }) ?? EMPTY_OBJ
+      ? ((customCell || contextCustomCell.value)!({ record, rowIndex, column }) ?? EMPTY_OBJ)
       : EMPTY_OBJ
 
     if (customCellProps === EMPTY_OBJ && !customRender) {
@@ -119,12 +122,14 @@ const useCellProps = ({
       return cellProps
     }
 
-    const mergeCellStyles: CSSProperties = customCellProps !== EMPTY_OBJ
-      ? Object.assign({ overflow }, parseStyleText(customCellProps.style || {}))
-      : { overflow }
-    const copyCustomCellProps = customCellProps !== EMPTY_OBJ
-      ? Object.assign({}, customCellProps)
-      : {} as Record<string, any>
+    const mergeCellStyles: CSSProperties =
+      customCellProps !== EMPTY_OBJ
+        ? Object.assign({ overflow }, parseStyleText(customCellProps.style || {}))
+        : { overflow }
+    const copyCustomCellProps =
+      customCellProps !== EMPTY_OBJ
+        ? Object.assign({}, customCellProps)
+        : ({} as Record<string, any>)
 
     if (customRender) {
       const value = getPathValue(record, dataIndex!)
@@ -322,7 +327,10 @@ const useCellProps = ({
     hasMultiRowSpanInfo.value = rawRowSpanInfo
     centerRowColumnsMap.value = rowColumnsMap
     if (perf.enabled.value) {
-      const totalCells = Object.values(rawAllCellProps).reduce((sum, row) => sum + Object.keys(row).length, 0)
+      const totalCells = Object.values(rawAllCellProps).reduce(
+        (sum, row) => sum + Object.keys(row).length,
+        0,
+      )
       perf.captureMemory(len, totalCells)
     }
     perf.markEnd('useCellProps')

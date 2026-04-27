@@ -68,37 +68,41 @@ const latestTimings = computed(() => {
 <style scoped>
 .perf-overlay {
   position: fixed;
-  bottom: 12px;
   right: 12px;
+  bottom: 12px;
   z-index: 99999;
-  background: rgba(0, 0, 0, 0.82);
-  color: #0f0;
-  font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+  min-width: 220px;
+  padding: 8px 12px;
+  font-family: 'SF Mono', Menlo, Monaco, monospace;
   font-size: 11px;
   line-height: 1.5;
-  padding: 8px 12px;
-  border-radius: 6px;
-  min-width: 220px;
+  color: #0f0;
   pointer-events: none;
+  background: rgb(0 0 0 / 82%);
+  border-radius: 6px;
   backdrop-filter: blur(4px);
 }
+
 .perf-overlay-title {
-  color: #fff;
-  font-weight: 600;
-  font-size: 12px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 4px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 1px solid rgb(255 255 255 / 15%);
 }
+
 .perf-row {
   display: flex;
-  justify-content: space-between;
   gap: 12px;
+  justify-content: space-between;
 }
+
 .perf-label {
   color: #aaa;
   white-space: nowrap;
 }
+
 .perf-value {
   color: #0f0;
   text-align: right;

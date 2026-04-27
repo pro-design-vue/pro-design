@@ -98,9 +98,10 @@ export function createPerfContext(enabled: ShallowRef<boolean>): PerfContext {
     pendingMarks.delete(label)
     const duration = performance.now() - startTime
     const current = metrics.value
-    const entries = current.entries.length >= MAX_ENTRIES
-      ? current.entries.slice(-MAX_ENTRIES + 1)
-      : [...current.entries]
+    const entries =
+      current.entries.length >= MAX_ENTRIES
+        ? current.entries.slice(-MAX_ENTRIES + 1)
+        : [...current.entries]
     entries.push({ label, duration, timestamp: Date.now() })
     metrics.value = { ...current, entries }
   }
@@ -129,7 +130,14 @@ export function createPerfContext(enabled: ShallowRef<boolean>): PerfContext {
 
   if (enabled.value) start()
 
-  const ctx: PerfContext = { enabled, metrics, markStart, markEnd, captureMemory, recordScrollEvent }
+  const ctx: PerfContext = {
+    enabled,
+    metrics,
+    markStart,
+    markEnd,
+    captureMemory,
+    recordScrollEvent,
+  }
   _activeCtx = ctx
   return ctx
 }
@@ -146,8 +154,12 @@ export function usePerf(): PerfContext {
   const injected = inject(PERF_KEY, null)
   if (injected) return injected
   return {
-    get enabled() { return _activeCtx.enabled },
-    get metrics() { return _activeCtx.metrics },
+    get enabled() {
+      return _activeCtx.enabled
+    },
+    get metrics() {
+      return _activeCtx.metrics
+    },
     markStart: (l: string) => _activeCtx.markStart(l),
     markEnd: (l: string) => _activeCtx.markEnd(l),
     captureMemory: (r: number, c: number) => _activeCtx.captureMemory(r, c),
