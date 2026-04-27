@@ -57,7 +57,6 @@ export function createPerfContext(enabled: ShallowRef<boolean>): PerfContext {
 
   let scrollCount = 0
   let frameCount = 0
-  let fpsRaf: number | null = null
   let lastFpsTime = 0
   const pendingMarks = new Map<string, number>()
 
@@ -75,7 +74,7 @@ export function createPerfContext(enabled: ShallowRef<boolean>): PerfContext {
       lastFpsTime = now
     }
     if (enabled.value) {
-      fpsRaf = requestAnimationFrame(fpsLoop)
+      requestAnimationFrame(fpsLoop)
     }
   }
 
@@ -83,7 +82,7 @@ export function createPerfContext(enabled: ShallowRef<boolean>): PerfContext {
     lastFpsTime = performance.now()
     frameCount = 0
     scrollCount = 0
-    fpsRaf = requestAnimationFrame(fpsLoop)
+    requestAnimationFrame(fpsLoop)
   }
 
   const markStart = (label: string) => {
