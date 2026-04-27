@@ -54,6 +54,7 @@ import useData from '../hooks/useData'
 import supportSticky from '../utils/supportSticky'
 import classNames from '../utils/classNames'
 import useCellProps from '../hooks/useCellProps'
+import { createPerfContext, providePerfContext } from '../hooks/usePerf'
 import TableSlotsContextProvider from './context/TableSlotsContext'
 import MeasureWidth from './MeasureWidth.vue'
 import PopupContainer from './PopupContainer.vue'
@@ -131,6 +132,9 @@ export default defineComponent({
   slots: {} as CustomSlotsType<ContextSlots>,
   setup(props, { expose, emit, slots }) {
     const { table } = useProConfigInject()
+    const perfEnabled = shallowRef(!!props.perf)
+    const perfContext = createPerfContext(perfEnabled)
+    providePerfContext(perfContext)
     const counter = useInjectContainer()
     const rowKey = computed(() => props.rowKey ?? table?.value?.rowKey ?? 'id')
     const popupContainer = shallowRef<any>(null)

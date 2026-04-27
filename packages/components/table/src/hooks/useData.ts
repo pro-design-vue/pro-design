@@ -11,6 +11,7 @@ import type { RangeCell } from './RangeInterface'
 
 import { shallowRef, watch } from 'vue'
 import { findIndex } from '@pro-design-vue/utils'
+import { usePerf } from './usePerf'
 
 export default function useData(
   _props: ProTableProps,
@@ -28,6 +29,7 @@ export default function useData(
 } {
   const data = shallowRef<any[]>([])
   const pos = shallowRef<number[]>([])
+  const perf = usePerf()
   let rowKeyIndexMap: Record<Key, number> = {}
   let exchange = true
 
@@ -37,6 +39,7 @@ export default function useData(
       if (flattenData.value.length !== rowPosition.value.length) {
         return
       }
+      perf.markStart('useData-slice')
       const newData: any[] = []
       const newPos: number[] = []
       const recordPositionArr: [FlatRecord, number][] = []
@@ -97,6 +100,7 @@ export default function useData(
       rowKeyIndexMap = newRowKeyIndexMap
       data.value = newData
       pos.value = newPos
+      perf.markEnd('useData-slice')
     },
     { immediate: true },
   )

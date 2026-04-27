@@ -7,6 +7,7 @@
  */
 import { onBeforeUnmount, provide, inject, watch } from 'vue'
 import raf from '../utils/raf'
+import { usePerf } from './usePerf'
 
 import type { Ref, InjectionKey } from 'vue'
 
@@ -28,6 +29,7 @@ export const useHScrollSyncProvide = ({
   onScroll: (e: UIEvent) => void
   bodyWidth: Ref<number>
 }) => {
+  const perf = usePerf()
   const domsSet = new Set<HTMLElement>()
   const setAllDoms = (scrollLeft: number) => {
     const left = Math.max(0, Math.min(scrollLeft, maxScrollLeft.value))
@@ -39,6 +41,7 @@ export const useHScrollSyncProvide = ({
   const handle = (e: Event) => {
     const left = (e.target as HTMLElement)?.scrollLeft
     if (left !== scrollLeft.value) {
+      perf.recordScrollEvent()
       setAllDoms(left)
       scrollLeft.value = left
       onScroll(e as UIEvent)
@@ -48,6 +51,7 @@ export const useHScrollSyncProvide = ({
     const left = (e.target as HTMLElement)?.scrollLeft
     if (left !== scrollLeft.value) {
       raf.cancel(rafFrame)
+      perf.recordScrollEvent()
       rafFrame = raf(() => {
         scrollLeft.value = left
         onScroll(e as UIEvent)

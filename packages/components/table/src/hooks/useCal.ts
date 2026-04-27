@@ -15,6 +15,7 @@ import { Y_BUFF } from '../utils/constant'
 import raf from '../utils/raf'
 import devWarning from '../utils/devWarning'
 import binSearchStartIndex from '../utils/binSearchStartIndex'
+import { usePerf } from './usePerf'
 
 export interface CalType {
   rowPosition: Ref<number[]>
@@ -37,6 +38,7 @@ export default function useCal(
   virtual: Ref<boolean>,
   keyEntities: Ref<KeyEntities>,
 ): CalType {
+  const perf = usePerf()
   const rowPosition = shallowRef<number[]>([])
   const rowHeights = shallowRef<Record<Key, number>>({})
   const cacheRowHeights: Record<Key, number> = {}
@@ -160,6 +162,7 @@ export default function useCal(
     raf.cancel(refreshRaf)
     refreshRaf = raf(
       () => {
+        perf.markStart('rowPositionRecalc')
         const defaultHeight = currentSizeHeight.value
         const crhs = currentRowHeights.value
         const rhs = rowHeights.value
@@ -185,6 +188,7 @@ export default function useCal(
         mergedRowHeights.value = newMergedRowHeights
         viewportHeight.value = newViewportHeight
         rowPosition.value = newRowPosition
+        perf.markEnd('rowPositionRecalc')
       },
       isRaf.value ? 0 : 1,
     )
@@ -196,6 +200,7 @@ export default function useCal(
   })
 
   const calculationRowHeights = (data: FlatRecord[]) => {
+    perf.markStart('calculationRowHeights')
     const newRowHeights: Record<Key, number> = {}
     const defaultHeight = currentSizeHeight.value
     const newCacheRowHeights = {}
@@ -235,6 +240,7 @@ export default function useCal(
     rowHeights.value = newRowHeights
     // cacheRowHeights.value = newCacheRowHeights
     currentRowHeights.value = newCurrentRowHeights
+    perf.markEnd('calculationRowHeights')
   }
 
   watch(

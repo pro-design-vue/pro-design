@@ -18,6 +18,7 @@ import { shallowRef, watchEffect, isVNode } from 'vue'
 import { ExpandColumnKey } from './useColumns'
 import { getPathValue, parseStyleText } from '../utils/util'
 import { isArray, isObject } from '@pro-design-vue/utils'
+import { usePerf } from './usePerf'
 
 interface UseCellProps {
   leftColumns: Ref<FinallyColumnType[]>
@@ -72,6 +73,25 @@ const useCellProps = ({
   const allCellProps = shallowRef<Record<string, Record<string, RenderedCell>>>({})
   const hasMultiRowSpanInfo = shallowRef<Record<string, boolean>>({})
   const centerRowColumnsMap = shallowRef<Map<Key, FinallyColumnType[]>>(new Map())
+  const perf = usePerf()
+
+  const EMPTY_OBJ: Record<string, any> = Object.freeze({})
+
+  let cellPropsCache = new Map<Key, {
+    cellProps: Record<string, RenderedCell>
+    hasRowSpan: boolean
+    centerColumns: FinallyColumnType[] | undefined
+    overflow: string
+  }>()
+  let prevLeftCols: FinallyColumnType[] = []
+  let prevRightCols: FinallyColumnType[] = []
+  let prevCenterCols: FinallyColumnType[] = []
+  let prevAllCols: FinallyColumnType[] = []
+  let prevBodyWidth = 0
+  let prevLeftWidth = 0
+  let prevCenterWidth = 0
+  let prevCustomCell: any = undefined
+  let prevMergedRowHeights: Record<Key, number> = {}
 
   const computedCellProps = (
     offsetLeft: number,
@@ -82,13 +102,29 @@ const useCellProps = ({
   ) => {
     const { customRender, originColumn, dataIndex, columnIndex, left, customCell } = column
     const cellProps: RenderedCell = {}
-    const customCellProps: Record<string, any> =
-      (customCell || contextCustomCell.value)?.({ record, rowIndex, column }) ?? {}
-    const mergeCellStyles: CSSProperties = Object.assign(
-      { overflow },
-      parseStyleText(customCellProps.style || {}),
-    )
-    const copyCustomCellProps = Object.assign({}, customCellProps)
+    const hasCustomCell = !!(customCell || contextCustomCell.value)
+    const customCellProps: Record<string, any> = hasCustomCell
+      ? (customCell || contextCustomCell.value)!({ record, rowIndex, column }) ?? EMPTY_OBJ
+      : EMPTY_OBJ
+
+    if (customCellProps === EMPTY_OBJ && !customRender) {
+      const { width } = getColumnPosition(columnIndex, 1)
+      const style: CSSProperties = {
+        overflow,
+        width: `${width}px`,
+        left: `${left! - offsetLeft}px`,
+      }
+      if (width === 0) style.display = 'none'
+      cellProps.props = { colSpan: 1, rowSpan: 1, style }
+      return cellProps
+    }
+
+    const mergeCellStyles: CSSProperties = customCellProps !== EMPTY_OBJ
+      ? Object.assign({ overflow }, parseStyleText(customCellProps.style || {}))
+      : { overflow }
+    const copyCustomCellProps = customCellProps !== EMPTY_OBJ
+      ? Object.assign({}, customCellProps)
+      : {} as Record<string, any>
 
     if (customRender) {
       const value = getPathValue(record, dataIndex!)
@@ -137,6 +173,42 @@ const useCellProps = ({
   }
 
   watchEffect(() => {
+    perf.markStart('useCellProps')
+
+    const curLeft = leftColumns.value
+    const curRight = rightColumns.value
+    const curCenter = visibleCenterColumns.value
+    const curAll = allColumns.value
+    const curBodyW = bodyWidth.value
+    const curLeftW = leftWidth.value
+    const curCenterW = centerWidth.value
+    const curCustomCell = contextCustomCell.value
+    const curMergedH = mergedRowHeights.value
+
+    const columnsChanged =
+      curLeft !== prevLeftCols ||
+      curRight !== prevRightCols ||
+      curCenter !== prevCenterCols ||
+      curAll !== prevAllCols ||
+      curBodyW !== prevBodyWidth ||
+      curLeftW !== prevLeftWidth ||
+      curCenterW !== prevCenterWidth ||
+      curCustomCell !== prevCustomCell ||
+      curMergedH !== prevMergedRowHeights
+
+    if (columnsChanged) {
+      cellPropsCache.clear()
+      prevLeftCols = curLeft
+      prevRightCols = curRight
+      prevCenterCols = curCenter
+      prevAllCols = curAll
+      prevBodyWidth = curBodyW
+      prevLeftWidth = curLeftW
+      prevCenterWidth = curCenterW
+      prevCustomCell = curCustomCell
+      prevMergedRowHeights = curMergedH
+    }
+
     const rawAllCellProps: Record<string, Record<string, RenderedCell>> = {}
     const rawRowSpanInfo: Record<string, boolean> = {}
     const genAllCellProps = (
@@ -199,8 +271,17 @@ const useCellProps = ({
     for (let i = 0; i < len; i++) {
       if (!data.value[i]) continue
       const { record, isExpandRow, rowKey, rowIndex } = data.value[i]!
-      rawAllCellProps[rowKey] = {}
       const overflow: string = mergedRowHeights.value[rowKey] ? 'hidden' : 'initial'
+
+      const cached = cellPropsCache.get(rowKey)
+      if (cached && cached.overflow === overflow) {
+        rawAllCellProps[rowKey] = cached.cellProps
+        if (cached.hasRowSpan) rawRowSpanInfo[rowKey] = true
+        if (cached.centerColumns) rowColumnsMap.set(rowKey, cached.centerColumns)
+        continue
+      }
+
+      rawAllCellProps[rowKey] = {}
       if (isExpandRow) {
         rawAllCellProps[rowKey][ExpandColumnKey] = {
           props: {
@@ -229,10 +310,22 @@ const useCellProps = ({
           overflow,
         )
       }
+
+      cellPropsCache.set(rowKey, {
+        cellProps: rawAllCellProps[rowKey],
+        hasRowSpan: !!rawRowSpanInfo[rowKey],
+        centerColumns: rowColumnsMap.get(rowKey),
+        overflow,
+      })
     }
     allCellProps.value = rawAllCellProps
     hasMultiRowSpanInfo.value = rawRowSpanInfo
     centerRowColumnsMap.value = rowColumnsMap
+    if (perf.enabled.value) {
+      const totalCells = Object.values(rawAllCellProps).reduce((sum, row) => sum + Object.keys(row).length, 0)
+      perf.captureMemory(len, totalCells)
+    }
+    perf.markEnd('useCellProps')
   })
 
   return { allCellProps, hasMultiRowSpanInfo, centerRowColumnsMap }

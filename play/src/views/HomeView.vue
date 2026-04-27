@@ -18,6 +18,10 @@ import {
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
 import { sleep } from '@pro-design-vue/utils'
 import { ref } from 'vue'
+import { usePerf } from '../../../packages/components/table/src/hooks/usePerf'
+import PerfOverlay from './PerfOverlay.vue'
+
+const perfContext = usePerf()
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '未知' },
   1: { value: '1', text: '男' },
@@ -335,20 +339,19 @@ const open = ref(false)
     :columns
     :columnsState
     :request="fetchData"
+    perf
     :sticky="{
       offsetHeader: 50,
     }"
+    virtual
+    :height="500"
     row-hover
     highlight-select-row
     :row-selection="rowSelection"
     :options="{
       fullScreen: true,
     }"
-    :pagination="{
-      fieldNames: {
-        pageSize: 'size1',
-      },
-    }"
+    :pagination="false"
     :search="{
       cardProps: {
         size: 'small',
@@ -394,4 +397,5 @@ const open = ref(false)
   </ProTable>
   <ProModal title="高级表格" v-model:open="open">asdasd</ProModal>
   <!-- <ProDrawer v-model:open="open">asdasd</ProDrawer> -->
+  <PerfOverlay :perf-context="perfContext" />
 </template>

@@ -275,6 +275,7 @@ export const baseTableProps = <T = DefaultRecordType>() => ({
   showHeaderScrollbar: Boolean,
   deepWatchDataSource: Boolean,
   deepWatchColumns: Boolean,
+  perf: Boolean,
   prefixCls: String,
   columnDrag: {
     type: Boolean,
