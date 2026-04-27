@@ -43,12 +43,14 @@ const columns: ProTableColumnType[] = [
     title: '姓名',
     dataIndex: 'name',
     disable: true,
+    minWidth: 100,
     fieldProps: {
       prefix: 'aaa',
     },
   },
   {
     title: '年龄',
+    minWidth: 100,
     hideInSearch: true,
     dataIndex: 'age',
     sorter: true,
@@ -57,6 +59,7 @@ const columns: ProTableColumnType[] = [
   {
     title: '性别',
     dataIndex: 'sex',
+    minWidth: 100,
     hideInSearch: true,
     valueEnum: SexValueEnum,
     filters: [
@@ -68,7 +71,7 @@ const columns: ProTableColumnType[] = [
   {
     title: '邮箱',
     hideInSearch: true,
-    width: 200,
+    minWidth: 100,
     ellipsis: true,
     renderText: () => '11111111',
     tooltip: {
@@ -337,7 +340,6 @@ const open = ref(false)
     }"
     row-hover
     highlight-select-row
-    :scroll="{ x: 2600 }"
     :row-selection="rowSelection"
     :options="{
       fullScreen: true,

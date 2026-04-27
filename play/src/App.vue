@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-17 10:11:59
  * @LastEditors: shen
- * @LastEditTime: 2026-04-17 09:21:25
+ * @LastEditTime: 2026-04-27 10:00:26
  * @Description:
 -->
 <script setup lang="ts">
@@ -50,9 +50,9 @@ const handleDark = () => {
     }"
     :table="{
       // cardBordered: true,
+      cardProps: false,
       columnResizable: true,
       columnDrag: true,
-      bordered: true,
       options: {
         fullScreen: false,
       },

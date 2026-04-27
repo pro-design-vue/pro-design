@@ -29,8 +29,8 @@ const cellProps = {
   rowIndex: { type: Number as PropType<number>, required: true },
   flattenRowIndex: { type: Number, required: true },
   rowKey: { type: [Number, String] },
-  column: { type: Object as PropType<FinallyColumnType> },
-  item: { type: Object as PropType<any> },
+  column: { type: Object as PropType<FinallyColumnType>, default: () => ({}) },
+  item: { type: Object as PropType<any>, default: () => ({}) },
   wrapText: { type: Boolean as PropType<boolean>, default: false },
   type: { type: String as PropType<RowType> },
   height: Number as PropType<number>,
@@ -61,40 +61,6 @@ const ValueStatusEnum = {
   warning: '#eb8903',
 }
 
-let cachedPrefixCls = ''
-let cls = {
-  cellInner: '',
-  cellContent: '',
-  cellWrapText: '',
-  cellTextEllipsis: '',
-  cell: '',
-  firstCell: '',
-  bodyCell: '',
-  cellMulti: '',
-  cellHidden: '',
-  columnSort: '',
-  withAppend: '',
-}
-function getCls(prefixCls: string) {
-  if (prefixCls !== cachedPrefixCls) {
-    cachedPrefixCls = prefixCls
-    cls = {
-      cellInner: `${prefixCls}-cell-inner`,
-      cellContent: `${prefixCls}-cell-content`,
-      cellWrapText: `${prefixCls}-cell-wrap-text`,
-      cellTextEllipsis: `${prefixCls}-cell-text-ellipsis`,
-      cell: `${prefixCls}-cell`,
-      firstCell: `${prefixCls}-first-cell`,
-      bodyCell: `${prefixCls}-body-cell`,
-      cellMulti: `${prefixCls}-cell-multi`,
-      cellHidden: `${prefixCls}-cell-hidden`,
-      columnSort: `${prefixCls}-column-sort`,
-      withAppend: `${prefixCls}-with-append`,
-    }
-  }
-  return cls
-}
-
 const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const { table } = useProConfigInject()
   const tableSlotsContext = useInjectSlots()
@@ -123,13 +89,11 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const valueStatus = runFunction(column?.valueStatus, value, props.item, valueEnum?.[value])
   const recordIndexs = tableContext.getIndexsByKey(rowKey!)
 
-  const c = getCls(prefixCls!)
-  const cellInnerClass = c.cellInner
-  const isWrapText = column!.wrapText === undefined ? wrapText : column!.wrapText
+  const cellInnerClass = { [`${prefixCls}-cell-inner`]: true }
   const cellContentClass = {
-    [c.cellContent]: true,
-    [c.cellWrapText]: isWrapText,
-    [c.cellTextEllipsis]: !!column!.ellipsis,
+    [`${prefixCls}-cell-content`]: true,
+    [`${prefixCls}-cell-wrap-text`]: column!.wrapText === undefined ? wrapText : column!.wrapText,
+    [`${prefixCls}-cell-text-ellipsis`]: !!column!.ellipsis,
   }
 
   const cellContentStyle = {
@@ -150,13 +114,13 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const cellRowSpan = cellProps.rowSpan!
 
   const cellClass = {
-    [c.cell]: true,
-    [c.firstCell]: column!.columnIndex === 0,
-    [c.bodyCell]: true,
-    [c.cellMulti]: cellRowSpan > 1,
-    [c.cellHidden]: cellRowSpan === 0,
-    [c.columnSort]: sorterInfo.sorterOrder,
-    [c.withAppend]: hasAppendNode,
+    [`${prefixCls}-cell`]: true,
+    [`${prefixCls}-first-cell`]: column!.columnIndex === 0,
+    [`${prefixCls}-body-cell`]: true,
+    [`${prefixCls}-cell-multi`]: cellRowSpan > 1,
+    [`${prefixCls}-cell-hidden`]: cellRowSpan === 0,
+    [`${prefixCls}-column-sort`]: sorterInfo.sorterOrder,
+    [`${prefixCls}-with-append`]: hasAppendNode,
   }
 
   const cellRenderArgs: any = {
@@ -165,7 +129,7 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     text: value,
     value,
     index: rowIndex!,
-    recordIndexs,
+    recordIndexs: tableContext.getIndexsByKey(rowKey!),
     key,
     valueStatus,
     cancelEditable: tableContext.cancelEditable,
@@ -244,12 +208,14 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
     [
       createVNode(
         'div',
-        {
-          class: cellContentClass,
-          style: cellContentStyle,
-          title: altTitle,
-          ...cellKeyProps,
-        },
+        mergeProps(
+          {
+            class: cellContentClass,
+            style: cellContentStyle,
+            title: altTitle,
+          },
+          cellKeyProps,
+        ),
         [hasAppendNode ? slots.appendNode?.() : null, bodyCell],
       ),
     ],

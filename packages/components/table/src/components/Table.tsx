@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-04-21 09:18:38
+ * @LastEditTime: 2026-04-27 09:59:48
  * @Description:
  */
 
@@ -371,8 +371,9 @@ export default defineComponent({
       if (counter.hasFullScreen.value) {
         return false
       }
-      return !!(props.cardProps ?? table?.value?.cardProps) && !notNeedCardDom.value
+      return !!(props.cardProps ?? table?.value?.cardProps ?? true) && !notNeedCardDom.value
     })
+
     const cardBodyStyle = computed(() => {
       if (!showTableCard.value) return {}
 
@@ -598,6 +599,7 @@ export default defineComponent({
 
       if (showTableCard.value) {
         const cardProps = isObject(props.cardProps) ? props.cardProps : {}
+
         tableDom = (
           <Card
             bordered={isBordered(

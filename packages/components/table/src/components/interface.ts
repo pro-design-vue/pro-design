@@ -1201,7 +1201,7 @@ export type ColumnStateType = {
 }
 
 export type SearchConfig = ProQueryFilterProps & {
-  cardProps?: CardProps | false
+  cardProps?: CardProps | boolean
   tabName?: string
   style?: CSSProperties
 }

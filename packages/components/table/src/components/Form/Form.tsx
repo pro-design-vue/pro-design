@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-07 15:07:59
  * @LastEditors: shen
- * @LastEditTime: 2025-12-09 17:34:12
+ * @LastEditTime: 2026-04-27 09:56:01
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -106,7 +106,7 @@ export default defineComponent({
             items={props.items}
             loading={props.loading}
             style={{
-              marginBlockEnd: props.search?.cardProps !== false && props.tableShowCard ? 0 : '16px',
+              marginBlockEnd: isCard.value ? 0 : '16px',
               ...props.search?.style,
             }}
             onReset={props.onReset}
