@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-04-27 09:59:48
+ * @LastEditTime: 2026-04-28 09:55:34
  * @Description:
  */
 
@@ -599,7 +599,6 @@ export default defineComponent({
 
       if (showTableCard.value) {
         const cardProps = isObject(props.cardProps) ? props.cardProps : {}
-
         tableDom = (
           <Card
             bordered={isBordered(

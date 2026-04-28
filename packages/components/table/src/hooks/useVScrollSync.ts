@@ -7,7 +7,6 @@
  */
 import { onBeforeUnmount, provide, inject, watch } from 'vue'
 import raf from '../utils/raf'
-import { usePerf } from './usePerf'
 
 import type { Ref, InjectionKey } from 'vue'
 
@@ -30,7 +29,6 @@ export const useVScrollSyncProvide = ({
   onScroll: (e: UIEvent) => void
   updateAnimate: () => void
 }) => {
-  const perf = usePerf()
   const domsSet = new Set<HTMLElement>()
   const setAllDoms = (scrollTop: number) => {
     const top = Math.max(0, Math.min(scrollTop, maxScrollTop.value))
@@ -43,7 +41,6 @@ export const useVScrollSyncProvide = ({
   const handle = (e: Event) => {
     const top = (e.target as HTMLElement)?.scrollTop
     if (top !== scrollTop.value) {
-      perf.recordScrollEvent()
       updateAnimate()
       setAllDoms(top)
       scrollTop.value = top
@@ -68,7 +65,6 @@ export const useVScrollSyncProvide = ({
     const top = (e.target as HTMLElement)?.scrollTop
     if (top !== scrollTop.value) {
       raf.cancel(rafFrame)
-      perf.recordScrollEvent()
       updateAnimate()
       rafFrame = raf(() => {
         scrollTop.value = top
