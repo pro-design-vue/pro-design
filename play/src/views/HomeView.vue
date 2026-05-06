@@ -5,6 +5,7 @@ import {
   ProFieldType,
   ProModal,
   ProDrawer,
+  ProPage,
   ProModalForm,
   type ProTableValueEnumType,
   type ProTableProps,
@@ -159,162 +160,125 @@ const rowSelection: ProTableProps['rowSelection'] = {
 
 const formItems: ProFormItemType[] = [
   {
-    title: '基本信息',
     fieldType: ProFieldType.GROUP,
+    title: '账号信息',
     colProps: { span: 24 },
     children: [
       {
-        name: 'sid',
-        title: '设备号',
-        placeholder: '请输入15位数字设备号',
-        rules: [{ required: true, message: '请输入15位数字设备号', trigger: 'change' }],
+        name: 'userName',
+        title: 'aaa',
+        rules: [{ required: true, message: '请输入用户名', trigger: 'change' }],
         fieldProps: {
-          maxlength: 15,
-          showCount: true,
-          addonAfter: 'sidAddonAfter',
+          maxlength: 40,
+          autocomplete: 'off',
         },
       },
       {
-        name: 'iccid',
-        title: 'SIM卡号',
-        placeholder: '请输入13位数字SIM卡号',
-        rules: [{ required: true, message: '请输入13位数字SIM卡号', trigger: 'change' }],
+        name: 'password',
+        title: '密码',
+        fieldType: ProFieldType.PASSWORD,
+        rules: [{ required: true, message: '请输入密码', trigger: 'change' }],
         fieldProps: {
-          maxlength: 13,
+          autocomplete: 'new-password',
         },
       },
       {
-        name: 'vin',
-        title: '车辆VIN',
-        placeholder: '请输入17位字母和数字VIN',
-        fieldProps: {
-          maxlength: 17,
-        },
-      },
-      {
-        name: 'ein',
-        title: '车辆EIN',
-        placeholder: '请输入17位字母和数字EIN',
-        fieldProps: {
-          maxlength: 17,
-        },
-      },
-      {
-        name: 'engineModel',
-        title: '发动机型号',
-        placeholder: '请选择发动机型号',
-        fieldType: ProFieldType.SELECT,
-        rules: [{ required: true, message: '请选择发动机型号', trigger: 'change' }],
-      },
-      {
-        name: 'carType',
-        title: '匹配车型',
-        placeholder: '请输入匹配车型',
-        fieldProps: {
-          maxlength: 10,
-        },
-      },
-      {
-        name: 'carUse',
-        title: '车辆用途',
-        placeholder: '请输入车辆用途',
-        fieldProps: {
-          maxlength: 10,
-        },
-      },
-      {
-        name: 'dataNum',
-        title: '数据号',
-        placeholder: '请输入数据号',
-        fieldProps: {
-          maxlength: 20,
-        },
-      },
-      {
-        name: 'contactPerson',
-        title: '联系人',
-        placeholder: '请输入联系人',
-        fieldProps: {
-          maxlength: 10,
-        },
-      },
-      {
-        name: 'tel',
-        title: '电话',
-        placeholder: '请输入联系电话',
-        fieldProps: {
-          maxlength: 11,
-        },
-      },
-      {
-        name: 'ownedUser',
-        title: '所属客户',
-        placeholder: '请输入所属客户',
-      },
-      {
-        name: 'terrainType',
-        title: '地势类别',
-        placeholder: '请选择地势类别',
-        fieldType: ProFieldType.SELECT,
-        options: ['中原', '平原', '高原'],
-      },
-      {
-        name: 'dataConfigUuid',
-        title: '采集配置名称',
-        placeholder: '请选择采集配置文件',
-        fieldType: ProFieldType.SELECT,
-      },
-      {
-        name: 'status',
-        title: '设备状态',
-        initialValue: '0',
-        fieldType: ProFieldType.RADIO_GROUP,
+        name: 'confirmPassword',
+        title: '确认密码',
+        fieldType: ProFieldType.PASSWORD,
+        rules: (formData) => [
+          { required: true, message: '请输入确认密码', trigger: 'change' },
+          {
+            validator: async (_rule: any, value: string) => {
+              if (value === '') {
+                return Promise.reject('请输入确认密码')
+              } else if (value !== formData.password) {
+                return Promise.reject('两次密码输入不一致!')
+              } else {
+                return Promise.resolve()
+              }
+            },
+            trigger: 'change',
+          },
+        ],
       },
     ],
   },
   {
-    title: '关联电控',
-    name: 'ecuModelList',
+    fieldType: ProFieldType.GROUP,
+    title: '个人信息',
     colProps: { span: 24 },
-    fieldType: ProFieldType.FORM_LIST,
-    formItemProps: {
-      // labelCol: { span: 24 },
-    },
-    fieldProps: {
-      rowTitle: '电控',
-      rowTitleStyle: {
-        width: '80px',
-        textAlign: 'right',
-      },
-      alwaysShowItemLabel: true,
-      copyIconProps: false,
-      creatorButtonProps: {
-        type: 'default',
-        block: false,
-        creatorButtonText: '添加电控',
-      },
-    },
     children: [
       {
-        name: 'ecuModel',
-        title: '电控型号',
-        placeholder: '例如：6DC4',
-        rules: [{ required: true, message: '电控型号不能为空', trigger: 'change' }],
+        name: 'fullName',
+        title: '姓名',
+        rules: [{ required: true, message: '请输入姓名', trigger: 'change' }],
       },
       {
-        name: 'ecuType',
-        title: '电控厂家',
-        placeholder: '请输入电控厂家',
+        name: 'phone',
+        title: '手机号',
       },
       {
-        name: 'ecuFactory',
-        title: '电控类型',
-        placeholder: '例如：发动机电控',
+        name: 'aaaaa',
+        title: '邮箱',
       },
       {
-        name: 'ecuRemark',
-        title: '备注',
-        placeholder: '请输入备注',
+        name: 'nickName',
+        title: '昵称',
+      },
+      {
+        name: 'sex',
+        title: '性别',
+        fieldType: ProFieldType.SELECT,
+        initialValue: '0',
+      },
+      {
+        name: 'birthday',
+        title: '生日',
+        fieldType: ProFieldType.DATE,
+      },
+      {
+        name: 'idCard',
+        title: '身份证号',
+      },
+      {
+        name: 'school',
+        title: '学校',
+      },
+      {
+        name: 'education',
+        title: '学历',
+        fieldType: ProFieldType.SELECT,
+      },
+      {
+        name: 'graduationTime',
+        title: '毕业时间',
+        fieldType: ProFieldType.DATE,
+      },
+      {
+        name: 'address',
+        title: '地址',
+      },
+      {
+        name: 'orderNum',
+        title: '排序',
+        fieldType: ProFieldType.DIGIT,
+        initialValue: 1,
+        rules: [{ required: true, message: '请输入排序', trigger: 'change' }],
+        fieldProps: {
+          min: 1,
+          formatter: (value) => (value ? parseInt(value) : value),
+        },
+      },
+      {
+        title: '简介',
+        fieldType: ProFieldType.TEXTAREA,
+        name: 'description',
+        colProps: { span: 24 },
+        fieldProps: {
+          maxlength: 200,
+          showCount: true,
+        },
       },
     ],
   },
@@ -332,66 +296,68 @@ const open = ref(false)
 </script>
 
 <template>
-  <ProTable
-    title="高级表格"
-    :columns
-    :columnsState
-    :request="fetchData"
-    perf
-    :sticky="{
-      offsetHeader: 50,
-    }"
-    virtual
-    :height="500"
-    row-hover
-    highlight-select-row
-    :row-selection="rowSelection"
-    :options="{
-      fullScreen: true,
-    }"
-    :pagination="false"
-    :search="{
-      cardProps: {
-        size: 'small',
-        activeTabKey: 'tab1',
-        tabList: [
-          {
-            key: 'tab1',
-            tab: '全部',
-          },
-          {
-            key: 'tab2',
-            tab: '未激活',
-          },
-        ],
-      },
-      tabName: 'status',
-      resetOnSubmit: true,
-      layout: 'horizontal',
-    }"
-  >
-    <template #toolbarActions>
-      <ProModalForm
-        grid
-        :width="1000"
-        :colon="false"
-        :label-col="{ style: { width: '90px' } }"
-        :col-props="{ span: 12 }"
-        title="新建"
-        :items="formItems"
-        :modal-props="{ destroyOnClose: true }"
-      >
-        <template #trigger>
-          <ProButton type="primary">新建</ProButton>
-        </template>
-      </ProModalForm>
-      <ProButton>
-        <template #icon><EllipsisOutlined /></template>
-      </ProButton>
-    </template>
-    <template #aaa>
-      <span style="color: red">asdasd</span>
-    </template>
-  </ProTable>
+  <ProPage :loading="false" :contentLoading="true" title="123123" autoContentHeight>
+    <ProTable
+      title="高级表格"
+      :columns
+      :columnsState
+      :request="fetchData"
+      perf
+      :sticky="{
+        offsetHeader: 50,
+      }"
+      virtual
+      :height="500"
+      row-hover
+      highlight-select-row
+      :row-selection="rowSelection"
+      :options="{
+        fullScreen: true,
+      }"
+      :pagination="false"
+      :search="{
+        cardProps: {
+          size: 'small',
+          activeTabKey: 'tab1',
+          tabList: [
+            {
+              key: 'tab1',
+              tab: '全部',
+            },
+            {
+              key: 'tab2',
+              tab: '未激活',
+            },
+          ],
+        },
+        tabName: 'status',
+        resetOnSubmit: true,
+        layout: 'horizontal',
+      }"
+    >
+      <template #toolbarActions>
+        <ProModalForm
+          grid
+          :width="1000"
+          :colon="false"
+          :label-col="{ style: { width: '90px' } }"
+          :col-props="{ span: 12 }"
+          title="新建"
+          :items="formItems"
+          :modal-props="{ destroyOnClose: true }"
+        >
+          <template #trigger>
+            <ProButton type="primary">新建</ProButton>
+          </template>
+        </ProModalForm>
+        <ProButton>
+          <template #icon><EllipsisOutlined /></template>
+        </ProButton>
+      </template>
+      <template #aaa>
+        <span style="color: red">asdasd</span>
+      </template>
+    </ProTable>
+  </ProPage>
   <ProModal title="高级表格" v-model:open="open">asdasd</ProModal>
 </template>

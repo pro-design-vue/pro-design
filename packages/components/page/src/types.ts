@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-02 14:21:21
  * @LastEditors: shen
- * @LastEditTime: 2026-04-14 15:58:24
+ * @LastEditTime: 2026-05-06 16:56:55
  * @Description:
  */
 import type { TabsProps, TabPaneProps, SpinProps } from 'ant-design-vue'
@@ -35,9 +35,11 @@ export interface PageProps {
   /** @name tabs 的其他配置 */
   tabProps?: TabsProps
   /**
-   * 只加载内容区域
-   *
    * @name loading 是否加载
    */
   loading?: boolean | SpinProps
+  /**
+   * @name contentLoading 是否加载
+   */
+  contentLoading?: boolean | SpinProps
 }
