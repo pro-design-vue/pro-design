@@ -3,7 +3,7 @@ import type { StyleValue } from 'vue'
 import type { TabsProps } from 'ant-design-vue'
 import type { PageProps } from './types'
 
-import { computed, nextTick, onMounted, ref, useSlots, useTemplateRef } from 'vue'
+import { computed, nextTick, onMounted, ref, useSlots, useTemplateRef, watch } from 'vue'
 import { Tabs, TabPane, Spin } from 'ant-design-vue'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import { omit } from '@pro-design-vue/utils'
@@ -75,7 +75,7 @@ const offset = computed(() => {
 const contentStyles = computed<StyleValue>(() => {
   if (mergeAutoContentHeight.value) {
     return {
-      height: `calc(${contentHeight.value}px - ${typeof heightOffset === 'number' ? `${heightOffset}px` : heightOffset})`,
+      height: `${contentHeight.value}px`,
       overflowY: shouldAutoHeight.value ? 'auto' : 'unset',
       padding: `${mergeContentPadding.value || 0}px`,
       ...page?.value?.contentStyle,
@@ -116,11 +116,13 @@ async function calcContentHeight() {
     return
   }
   await nextTick()
-  await nextTick()
   footerHeight.value = footerRef.value?.offsetHeight || 0
 
   contentHeight.value =
-    window.innerHeight - (contentRef.value?.getBoundingClientRect()?.top || 0) - footerHeight.value
+    window.innerHeight -
+    (contentRef.value?.getBoundingClientRect()?.top || 0) -
+    footerHeight.value -
+    heightOffset
 
   setTimeout(() => {
     shouldAutoHeight.value = true
@@ -134,6 +136,8 @@ const tabComp = computed(() => {
   }
   return null
 })
+
+watch([() => loading, () => contentLoading], calcContentHeight)
 
 onMounted(() => {
   calcContentHeight()
@@ -154,6 +158,7 @@ onMounted(() => {
         "
         ref="header"
         :class="headerCls"
+        :style="headerStyle"
       >
         <slot name="header">
           <div :class="`${prefixCls}-header-wrap`">

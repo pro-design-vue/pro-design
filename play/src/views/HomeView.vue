@@ -297,7 +297,8 @@ const columnsState: ProColumnStateType = {
 const open = ref(false)
 
 const handleTest = () => {
-  tableRef.value?.reset()
+  open.value = true
+  // tableRef.value?.reset()
 }
 </script>
 
