@@ -116,9 +116,8 @@ async function calcContentHeight() {
     return
   }
   await nextTick()
-  // headerHeight.value = headerRef.value?.offsetHeight || 0
+  await nextTick()
   footerHeight.value = footerRef.value?.offsetHeight || 0
-  // tabsHeight.value = tabsRef.value?.offsetHeight || 0
 
   contentHeight.value =
     window.innerHeight - (contentRef.value?.getBoundingClientRect()?.top || 0) - footerHeight.value
@@ -194,7 +193,6 @@ onMounted(() => {
           </slot>
         </div>
       </Spin>
-
       <div v-if="$slots.footer" ref="footer" :class="footerCls">
         <slot name="footer"></slot>
       </div>

@@ -15,12 +15,14 @@ import {
   type ProTableDensitySize,
   type ProFormItemType,
   type ProColumnStateType,
+  type ProTableInstance,
 } from '@pro-design-vue/components'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
 import { sleep } from '@pro-design-vue/utils'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import PerfOverlay from './PerfOverlay.vue'
 
+const tableRef = useTemplateRef<ProTableInstance>('table')
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '未知' },
   1: { value: '1', text: '男' },
@@ -293,11 +295,16 @@ const columnsState: ProColumnStateType = {
 }
 
 const open = ref(false)
+
+const handleTest = () => {
+  tableRef.value?.reset()
+}
 </script>
 
 <template>
-  <ProPage :loading="false" :contentLoading="true" title="123123" autoContentHeight>
+  <ProPage title="123123" autoContentHeight>
     <ProTable
+      ref="table"
       title="高级表格"
       :columns
       :columnsState
@@ -314,7 +321,6 @@ const open = ref(false)
       :options="{
         fullScreen: true,
       }"
-      :pagination="false"
       :search="{
         cardProps: {
           size: 'small',
@@ -336,6 +342,9 @@ const open = ref(false)
       }"
     >
       <template #toolbarActions>
+        <ProButton @click="handleTest">
+          <template #icon><EllipsisOutlined /></template>
+        </ProButton>
         <ProModalForm
           grid
           :width="1000"
@@ -359,5 +368,15 @@ const open = ref(false)
       </template>
     </ProTable>
   </ProPage>
-  <ProModal title="高级表格" v-model:open="open">asdasd</ProModal>
+  <!-- <ProModal title="高级表格" v-model:open="open">asdasd</ProModal> -->
+  <ProDrawer title="高级表格" v-model:open="open" :width="1000" :body-style="{ padding: 0 }">
+    <ProPage
+      title="高级表格"
+      style="padding: 0"
+      autoContentHeight
+      :contentStyle="{ backgroundColor: 'transparent', padding: '16px' }"
+    >
+      asdasd
+    </ProPage>
+  </ProDrawer>
 </template>

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-04-28 09:55:34
+ * @LastEditTime: 2026-05-07 15:17:14
  * @Description:
  */
 
@@ -498,7 +498,10 @@ export default defineComponent({
         return tableRef.value?.appendCellToSelectedRange(params)
       },
       reload,
-      reset,
+      reset: () => {
+        reset()
+        formAction.value?.reset()
+      },
       calcTableHeight,
       formAction: computed(() => {
         return unref(formAction.value)
