@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-12 12:24:29
  * @LastEditors: shen
- * @LastEditTime: 2025-12-22 10:25:28
+ * @LastEditTime: 2026-05-08 17:17:40
  * @Description:
  */
 import type { SpinProps } from 'ant-design-vue/es/spin'
@@ -503,9 +503,10 @@ export const useFetchData = (
     pollingLoading,
     pagination,
     reset: async () => {
-      const { pagination: optionPageInfo } = props || {}
-      const { current = 1, pageSize = 10 } = optionPageInfo || {}
+      const optionPageInfo = mergePropsAndPagination(intl, contextTablePagination.value)
+      const { current = 1, pageSize = 10, ...rest } = optionPageInfo || {}
       const initialPageInfo = {
+        ...rest,
         current,
         total: 0,
         pageSize,

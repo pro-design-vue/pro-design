@@ -28,11 +28,11 @@ const {
 
 const slots = useSlots()
 const prefixCls = usePrefixCls('page')
-const footerHeight = ref(0)
 const contentHeight = ref(0)
 const shouldAutoHeight = ref(false)
 const { contentOffsetTop, page } = useProConfigInject()
 const tabActiveKey = defineModel<TabsProps['activeKey']>('activeKey')
+const rootRef = useTemplateRef<HTMLDivElement>('root')
 const footerRef = useTemplateRef<HTMLDivElement>('footer')
 const contentRef = useTemplateRef<HTMLDivElement>('content')
 
@@ -116,12 +116,14 @@ async function calcContentHeight() {
     return
   }
   await nextTick()
-  footerHeight.value = footerRef.value?.offsetHeight || 0
+  const rootBottomPadding = parseFloat(getComputedStyle(rootRef.value!).paddingBottom)
+  const footerHeight = footerRef.value?.offsetHeight || 0
 
   contentHeight.value =
     window.innerHeight -
     (contentRef.value?.getBoundingClientRect()?.top || 0) -
-    footerHeight.value -
+    rootBottomPadding -
+    footerHeight -
     heightOffset
 
   setTimeout(() => {
@@ -145,7 +147,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="[prefixCls, tabList?.length ? `is-tabs` : '']" :style="page?.pageStyle">
+  <div ref="root" :class="[prefixCls, tabList?.length ? `is-tabs` : '']" :style="page?.pageStyle">
     <Spin v-bind="loadingProps">
       <div
         v-if="

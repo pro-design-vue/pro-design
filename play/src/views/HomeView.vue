@@ -297,13 +297,13 @@ const columnsState: ProColumnStateType = {
 const open = ref(false)
 
 const handleTest = () => {
-  open.value = true
-  // tableRef.value?.reset()
+  // open.value = true
+  tableRef.value?.reset()
 }
 </script>
 
 <template>
-  <ProPage title="123123" autoContentHeight>
+  <ProPage title="123123" autoContentHeight style="padding: 20px">
     <ProTable
       ref="table"
       title="高级表格"
