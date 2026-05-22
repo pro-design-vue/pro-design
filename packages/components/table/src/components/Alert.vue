@@ -2,13 +2,13 @@
  * @Author: shen
  * @Date: 2023-11-16 10:57:27
  * @LastEditors: shen
- * @LastEditTime: 2025-11-14 10:23:29
+ * @LastEditTime: 2026-05-22 14:18:01
  * @Description:
 -->
 <script lang="ts">
 import type { PropType } from 'vue'
 import type { Key } from './interface'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { Space } from 'ant-design-vue'
 import type { UseFetchDataAction } from '../hooks/useFetchData'
 
@@ -29,8 +29,14 @@ export default defineComponent({
   },
   inheritAttrs: false,
   components: { Space },
-  emits: ['cleanSelected'],
-  setup(_, { slots }) {
+  emits: ['cleanSelected', 'toggle'],
+  setup(_, { slots, emit }) {
+    onMounted(() => {
+      emit('toggle')
+    })
+    onUnmounted(() => {
+      emit('toggle')
+    })
     return {
       slots,
     }

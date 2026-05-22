@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-05-08 17:18:12
+ * @LastEditTime: 2026-05-22 14:18:35
  * @Description:
  */
 
@@ -568,6 +568,7 @@ export default defineComponent({
                 onCleanSelected={onCleanSelected}
                 actionsRef={actions}
                 v-slots={{ info: slots.alertInfo, actions: slots.alertActions, alert: slots.alert }}
+                onToggle={calcTableHeight}
               />
             )}
           <InteralTable
