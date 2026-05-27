@@ -2,14 +2,14 @@
  * @Author: shen
  * @Date: 2022-04-12 15:45:46
  * @LastEditors: shen
- * @LastEditTime: 2026-04-16 10:00:00
+ * @LastEditTime: 2025-08-29 14:34:14
  * @Description:
  */
 import type { Directive } from 'vue'
 import ResizeObserver from 'resize-observer-polyfill'
 
 type ResizableElement = HTMLElement & {
-  __resizeObserver__arg?: string
+  __resizeObserver__listeners?: ResizeObserver
   __resizeObserver__rect?: {
     height: number
     width: number
@@ -44,72 +44,45 @@ function resizeHandler(
   target.__resizeObserver__rect = { width: newWidth, height: newHeight }
 }
 
-const sharedObservers: Record<string, ResizeObserver> = {}
-const observerRefCounts: Record<string, number> = {}
-
-function getSharedObserver(arg: string | undefined): ResizeObserver {
-  const key = arg || '__default__'
-  if (!sharedObservers[key]) {
-    sharedObservers[key] = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i]!
-        const target = entry.target as ResizableElement
-        resizeHandler(
-          target,
-          target.__resizeObserver__arg,
-          entry.contentRect,
-          target.__resizeObserver__rect || {},
-        )
-      }
-    })
-    observerRefCounts[key] = 0
+function resizeDisconnect(el: any) {
+  if (el.__resizeObserver__listeners) {
+    el.__resizeObserver__listeners.unobserve(el)
+    el.__resizeObserver__listeners.disconnect()
+    el.__resizeObserver__listeners = null
   }
-  return sharedObservers[key]
 }
 
-function sharedObserve(el: ResizableElement, arg: string | undefined) {
-  const key = arg || '__default__'
-  el.__resizeObserver__arg = arg
-  const observer = getSharedObserver(arg)
-  observer.observe(el)
-  observerRefCounts[key] = (observerRefCounts[key] || 0) + 1
-}
-
-function sharedUnobserve(el: ResizableElement, arg: string | undefined) {
-  const key = arg || '__default__'
-  const observer = sharedObservers[key]
-  if (observer) {
-    observer.unobserve(el)
-    observerRefCounts[key]!--
-    if (observerRefCounts[key]! <= 0) {
-      observer.disconnect()
-      delete sharedObservers[key]
-      delete observerRefCounts[key]
-    }
+function resizeCallbackFactory(arg: string | undefined): ResizeObserverCallback {
+  return function (entries: ResizeObserverEntry[]) {
+    const target = entries[0]!.target as ResizableElement
+    resizeHandler(target, arg, target.getBoundingClientRect(), target.__resizeObserver__rect || {})
   }
-  el.__resizeObserver__arg = undefined
 }
 
 export const resize: Directive = {
   created(el, binding) {
     const { arg, value = true } = binding
     if (value) {
-      sharedObserve(el, arg)
+      const resizeObserver: ResizeObserver = new ResizeObserver(resizeCallbackFactory(arg))
+      resizeObserver.observe(el)
+      el.__resizeObserver__listeners = resizeObserver
     }
   },
   updated(el, binding) {
     const { arg, value = true } = binding
-    if (value && el.__resizeObserver__arg === undefined) {
-      sharedObserve(el, arg)
-    } else if (!value && el.__resizeObserver__arg !== undefined) {
-      sharedUnobserve(el, arg)
+    if (value && !el.__resizeObserver__listeners) {
+      const resizeObserver: ResizeObserver = new ResizeObserver(resizeCallbackFactory(arg))
+      resizeObserver.observe(el)
+      el.__resizeObserver__listeners = resizeObserver
+    } else if (!value) {
+      resizeDisconnect(el)
     }
   },
   beforeUnmount(el, binding) {
     const { arg, value = true } = binding
     if (value) {
       resizeHandler(el, arg, { width: 0, height: 0 }, el.__resizeObserver__rect || {})
-      sharedUnobserve(el, arg)
+      resizeDisconnect(el)
     }
   },
 }
