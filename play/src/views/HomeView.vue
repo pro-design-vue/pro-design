@@ -214,72 +214,25 @@ const formItems: ProFormItemType[] = [
       {
         name: 'fullName',
         title: '姓名',
+        disabled: false,
         rules: [{ required: true, message: '请输入姓名', trigger: 'change' }],
       },
       {
-        name: 'phone',
-        title: '手机号',
-      },
-      {
-        name: 'aaaaa',
-        title: '邮箱',
-      },
-      {
-        name: 'nickName',
-        title: '昵称',
-      },
-      {
-        name: 'sex',
-        title: '性别',
-        fieldType: ProFieldType.SELECT,
-        initialValue: '0',
-      },
-      {
-        name: 'birthday',
-        title: '生日',
-        fieldType: ProFieldType.DATE,
-      },
-      {
-        name: 'idCard',
-        title: '身份证号',
-      },
-      {
-        name: 'school',
-        title: '学校',
-      },
-      {
-        name: 'education',
-        title: '学历',
-        fieldType: ProFieldType.SELECT,
-      },
-      {
-        name: 'graduationTime',
-        title: '毕业时间',
-        fieldType: ProFieldType.DATE,
-      },
-      {
-        name: 'address',
-        title: '地址',
-      },
-      {
-        name: 'orderNum',
-        title: '排序',
-        fieldType: ProFieldType.DIGIT,
-        initialValue: 1,
-        rules: [{ required: true, message: '请输入排序', trigger: 'change' }],
-        fieldProps: {
-          min: 1,
-          formatter: (value) => (value ? parseInt(value) : value),
+        name: 'images',
+        title: '校区图片',
+        disabled: false,
+        fieldType: ProFieldType.UPLOAD_PICTURE_LIST,
+        colProps: {
+          span: 24,
         },
-      },
-      {
-        title: '简介',
-        fieldType: ProFieldType.TEXTAREA,
-        name: 'description',
-        colProps: { span: 24 },
+        formItemProps: {
+          extra: '最多上传6张，支持JPG、JPEG、PNG，单张图片不超过4MB',
+        },
         fieldProps: {
-          maxlength: 200,
-          showCount: true,
+          crossOrigin: 'anonymous',
+          maxCount: 2,
+          multiple: true,
+          accept: '.png,.jpeg,.jpg',
         },
       },
     ],
@@ -303,7 +256,7 @@ const handleTest = () => {
 </script>
 
 <template>
-  <ProPage title="123123" autoContentHeight style="padding: 20px">
+  <ProPage title="123123" style="padding: 20px">
     <ProTable
       ref="table"
       title="高级表格"
@@ -312,10 +265,12 @@ const handleTest = () => {
       :request="fetchData"
       perf
       :sticky="{
-        offsetHeader: 50,
+        offsetHeader: 0,
       }"
-      virtual
-      :height="500"
+      :paginationSticky="{
+        offsetBottom: 0,
+      }"
+      :scroll="{ x: 1600 }"
       row-hover
       highlight-select-row
       :row-selection="rowSelection"
@@ -349,6 +304,7 @@ const handleTest = () => {
         <ProModalForm
           grid
           :width="1000"
+          :disabled="true"
           :colon="false"
           :label-col="{ style: { width: '90px' } }"
           :col-props="{ span: 12 }"

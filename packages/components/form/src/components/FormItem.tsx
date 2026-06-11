@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2025-12-09 14:15:51
+ * @LastEditTime: 2026-06-11 11:05:45
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -164,17 +164,16 @@ export default defineComponent({
     const fieldProps = computed(() => {
       const raw = props.item.fieldProps
       const baseProps = runFunction(raw ?? {}, formData.value, action, rowData?.value)
+      const disabled = runFunction(
+        props.item.disabled ?? baseProps?.disabled,
+        formData.value,
+        rowData?.value,
+      )
       const mergeProps = {
         ...baseProps,
         id: baseProps?.id ?? `form-${formKey.value ?? ''}-${props.item.key}`,
         disabled:
-          (runFunction(
-            props.item.disabled ?? baseProps?.disabled,
-            formData.value,
-            rowData?.value,
-          ) ?? allDisabledKeys.value.includes(props.item.key as string))
-            ? true
-            : undefined,
+          (disabled ?? allDisabledKeys.value.includes(props.item.key as string)) ? true : disabled,
         placeholder: props.item.placeholder ?? baseProps?.placeholder,
         options: props.item.options ?? baseProps?.options ?? baseProps?.treeData,
         allowClear: props.item.allowClear ?? baseProps?.allowClear ?? true,
