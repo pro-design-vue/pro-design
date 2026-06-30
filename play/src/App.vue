@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-17 10:11:59
  * @LastEditors: shen
- * @LastEditTime: 2026-04-27 10:00:26
+ * @LastEditTime: 2026-06-30 14:30:31
  * @Description:
 -->
 <script setup lang="ts">
@@ -38,6 +38,7 @@ const handleDark = () => {
     :token
     pro-prefix-cls="pro1"
     prefix-cls="pro-ant"
+    :access-codes="new Set(['admin', 'user'])"
     :modal="{
       showFullscreen: true,
       draggable: false,

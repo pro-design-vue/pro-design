@@ -248,7 +248,18 @@ const columnsState: ProColumnStateType = {
 }
 
 const open = ref(false)
-
+const tabList = ref([
+  {
+    key: 'tab1',
+    tab: '全部',
+    accessCode: 'admin',
+  },
+  {
+    key: 'tab2',
+    tab: '未激活',
+    accessCode: 'user',
+  },
+])
 const handleTest = () => {
   // open.value = true
   tableRef.value?.reset()
@@ -256,7 +267,7 @@ const handleTest = () => {
 </script>
 
 <template>
-  <ProPage title="123123" style="padding: 20px">
+  <ProPage title="123123" :tab-list="tabList" style="padding: 20px">
     <ProTable
       ref="table"
       title="高级表格"
@@ -298,7 +309,23 @@ const handleTest = () => {
       }"
     >
       <template #toolbarActions>
-        <ProButton @click="handleTest">
+        <ProButton
+          mode="dropdown"
+          :dropdown-props="{
+            placement: 'bottomLeft',
+          }"
+          :items="[
+            {
+              key: '01',
+              label: '按钮1',
+              accessCode: 'admin1',
+            },
+            {
+              key: '02',
+              label: '按钮2',
+            },
+          ]"
+        >
           <template #icon><EllipsisOutlined /></template>
         </ProButton>
         <ProModalForm

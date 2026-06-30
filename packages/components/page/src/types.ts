@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-07-02 14:21:21
  * @LastEditors: shen
- * @LastEditTime: 2026-05-07 17:15:22
+ * @LastEditTime: 2026-06-30 14:19:04
  * @Description:
  */
 import type { TabsProps, TabPaneProps, SpinProps } from 'ant-design-vue'
@@ -28,7 +28,7 @@ export interface PageProps {
    */
   heightOffset?: number
   contentPadding?: number
-  tabList?: (TabPaneProps & { key?: string })[]
+  tabList?: (TabPaneProps & { key?: string; accessCode?: string })[]
   // /** @name tabActiveKey 当前选中 tab 的 key */
   // tabActiveKey?: TabsProps['activeKey']
   /** @name tab 修改时触发 */

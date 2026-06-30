@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2025-12-22 10:44:51
+ * @LastEditTime: 2026-06-30 14:33:55
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -90,7 +90,7 @@ export default defineComponent({
       default: undefined,
     },
     items: {
-      type: Array as PropType<ItemType[]>,
+      type: Array as PropType<(ItemType & { accessCode?: string })[]>,
       default: () => [],
     },
     onClick: Function as PropType<(e: MouseEvent, data?: any) => void>,
@@ -211,6 +211,13 @@ export default defineComponent({
       }
 
       if (props.mode === 'dropdown') {
+        const items = props.items.filter((item) => {
+          if (item.accessCode && accessCodes?.value?.size) {
+            return accessCodes?.value.has(item.accessCode)
+          }
+          return true
+        })
+        console.log('🚀 ~ items ~ items:', items)
         return (
           <Dropdown
             {...props.dropdownProps}
@@ -218,7 +225,7 @@ export default defineComponent({
               overlay: () => (
                 <Menu
                   {...props.menuProps}
-                  items={props.items}
+                  items={items}
                   onClick={(...args) => props.onMenuClick?.(...args, props.data)}
                 />
               ),

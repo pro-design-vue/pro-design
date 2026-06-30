@@ -18,8 +18,8 @@ const {
   headerClass = '',
   contentClass = '',
   footerClass = '',
-  tabList = [],
   loading = false,
+  tabList: propsTabList = [],
   contentLoading = false,
   contentStyle,
   tabProps,
@@ -30,12 +30,19 @@ const slots = useSlots()
 const prefixCls = usePrefixCls('page')
 const contentHeight = ref(0)
 const shouldAutoHeight = ref(false)
-const { contentOffsetTop, page } = useProConfigInject()
+const { contentOffsetTop, page, accessCodes } = useProConfigInject()
 const tabActiveKey = defineModel<TabsProps['activeKey']>('activeKey')
 const rootRef = useTemplateRef<HTMLDivElement>('root')
 const footerRef = useTemplateRef<HTMLDivElement>('footer')
 const contentRef = useTemplateRef<HTMLDivElement>('content')
-
+const tabList = computed(() =>
+  propsTabList.filter((item) => {
+    if (item.accessCode && accessCodes?.value?.size) {
+      return accessCodes?.value.has(item.accessCode)
+    }
+    return true
+  }),
+)
 const mergeContentPadding = computed(() => contentPadding || page?.value?.contentPadding || 16)
 const mergeAutoContentHeight = computed(
   () => autoContentHeight || page?.value?.autoContentHeight || false,
@@ -132,8 +139,8 @@ async function calcContentHeight() {
 }
 
 const tabComp = computed(() => {
-  if (tabList?.length) {
-    const key = tabActiveKey.value ?? tabList[0]!.key!
+  if (tabList.value?.length) {
+    const key = tabActiveKey.value ?? tabList.value[0]!.key!
     return slots[key]
   }
   return null
