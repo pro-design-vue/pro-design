@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2026-06-30 14:33:55
+ * @LastEditTime: 2026-06-30 15:58:06
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -217,7 +217,6 @@ export default defineComponent({
           }
           return true
         })
-        console.log('🚀 ~ items ~ items:', items)
         return (
           <Dropdown
             {...props.dropdownProps}
