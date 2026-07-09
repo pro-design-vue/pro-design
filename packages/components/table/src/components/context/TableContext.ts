@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-05 12:12:38
  * @LastEditors: shen
- * @LastEditTime: 2026-01-22 13:21:57
+ * @LastEditTime: 2026-07-09 16:06:41
  * @Description:
  */
 import { inject, provide } from 'vue'
@@ -31,6 +31,7 @@ import type {
   TableRowSelection,
   TriggerEventHandler,
   ExpandIconType,
+  TablePaginationConfig,
 } from '../interface'
 
 type PaginationPos = {
@@ -111,6 +112,9 @@ export interface TableContextProps
   startEditable: (recordKey: Key, recordValue?: any) => boolean
   saveEditable: (recordKey: Key) => Promise<boolean>
   isEditable: (recordKey: Key) => boolean
+  paginationInfo: ComputedRef<
+    Omit<TablePaginationConfig, 'onChange' | 'onShowSizeChange' | 'position' | 'fieldNames'>
+  >
 }
 
 export const TableContextKey: InjectionKey<TableContextProps> = Symbol('TableContextProps')

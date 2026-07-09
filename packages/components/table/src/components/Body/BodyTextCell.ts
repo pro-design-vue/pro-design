@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2026-04-02 08:58:54
+ * @LastEditTime: 2026-07-09 16:16:31
  * @Description:
  */
 import type { RangeCell } from '../../hooks/RangeInterface'
@@ -67,7 +67,16 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const tableContext = useInjectTable()
   const { onBodyCellContextmenu } = useInjectBody()
   const level = useInjectLevel()
-  const { prefixCls, column, wrapText, rowKey, item, rowIndex, hasAppendNode, tooltipOpen } = props
+  const {
+    prefixCls,
+    column,
+    wrapText,
+    rowKey,
+    item,
+    rowIndex = 0,
+    hasAppendNode,
+    tooltipOpen,
+  } = props
   const columnKey = column!.columnKey
   const valueEnum = runFunction(column?.valueEnum, props.item)
   const rowDrag =
@@ -80,9 +89,11 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
   const sorterOrder = sorterState ? sorterState.sortOrder : null
   const sorterInfo = { columnKey, sorterState, sorterOrder }
   const key = `${props.rowKey} ${columnKey}`
+  const { current, pageSize } = tableContext.paginationInfo.value ?? {}
+  const pageIndex = current && pageSize ? (current - 1) * pageSize + rowIndex + 1 : rowIndex + 1
   const value = column!.dataIndex
     ? column!.renderText
-      ? column!.renderText(get(item, column!.dataIndex), item, rowIndex!)
+      ? column!.renderText(get(item, column!.dataIndex), item, rowIndex, pageIndex)
       : get(item, column!.dataIndex)
     : undefined
   let tooltipTitle = value

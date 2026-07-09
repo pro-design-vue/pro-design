@@ -990,7 +990,12 @@ export interface ColumnType<RecordType = DefaultRecordType>
   valueStatus?:
     | ((value: any, row: RecordType, valueEnum?: ValueEnumType) => ValueStatus)
     | ValueStatus
-  renderText?: (text: any, record: RecordType, rowIndex: number) => string | number
+  renderText?: (
+    text: any,
+    record: RecordType,
+    rowIndex: number,
+    pageIndex: number,
+  ) => string | number
   /** @name 列设置的 disabled */
   disable?:
     | boolean

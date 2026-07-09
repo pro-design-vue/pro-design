@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:29:27
  * @LastEditors: shen
- * @LastEditTime: 2026-05-27 10:29:58
+ * @LastEditTime: 2026-07-09 16:15:34
  * @Description:
 -->
 <script lang="ts">
@@ -900,6 +900,7 @@ export default defineComponent({
       realHeaderHeight,
       bottomPaginationHeight,
       pos,
+      paginationInfo: paginationProps,
     })
 
     const tabGuardTopRef = ref()
