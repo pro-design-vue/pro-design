@@ -22,6 +22,7 @@ import { sleep } from '@pro-design-vue/utils'
 import { ref, useTemplateRef } from 'vue'
 import PerfOverlay from './PerfOverlay.vue'
 
+const status = ref('1')
 const tableRef = useTemplateRef<ProTableInstance>('table')
 const SexValueEnum: Record<string, ProTableValueEnumType> = {
   0: { value: '0', text: '未知' },
@@ -36,13 +37,11 @@ const StatusValueEnum: Record<string, ProTableValueEnumType> = {
 
 const columns: ProTableColumnType[] = [
   {
-    dataIndex: 'index',
     width: 100,
-    hideInSetting: true,
-    hideInSearch: true,
-    renderText(text, record, rowIndex) {
-      return rowIndex + 1
-    },
+    key: 'serial-number',
+    // renderText(text, record, rowIndex, pageIndex) {
+    //   return pageIndex
+    // },
   },
   {
     title: '姓名',
@@ -119,7 +118,7 @@ const columns: ProTableColumnType[] = [
 ]
 
 const data: ProTableProps['dataSource'] = []
-for (let i = 0; i < 2000; i++) {
+for (let i = 0; i < 52; i++) {
   data.push({
     id: i + 1,
     name: ['王五', '张三', '李四'][i % 3],
@@ -216,6 +215,7 @@ const formItems: ProFormItemType[] = [
         title: '姓名',
         disabled: false,
         rules: [{ required: true, message: '请输入姓名', trigger: 'change' }],
+        render: '::aaaaaa',
       },
       {
         name: 'images',
@@ -342,13 +342,16 @@ const handleTest = () => {
           <template #trigger>
             <ProButton type="primary">新建</ProButton>
           </template>
+          <template #aaa>
+            <span style="color: red">asdasd</span>
+          </template>
+          <template #aaaaaa v-if="status === '11'">
+            <span style="color: red">asdasd</span>
+          </template>
         </ProModalForm>
         <ProButton>
           <template #icon><EllipsisOutlined /></template>
         </ProButton>
-      </template>
-      <template #aaa>
-        <span style="color: red">asdasd</span>
       </template>
     </ProTable>
   </ProPage>

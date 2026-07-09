@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2025-06-09 13:52:09
  * @LastEditors: shen
- * @LastEditTime: 2025-10-10 09:04:45
+ * @LastEditTime: 2026-07-09 16:34:26
  * @Description:
  */
 /** layout content 组件的高度 */
@@ -27,3 +27,9 @@ export const DEFAULT_NAMESPACE = 'pro'
  * @zh_CN 默认多语言
  */
 export const DEFAULT_LOCALE = 'zh-CN'
+
+/**
+ * @zh_CN 特殊列key
+ */
+export const SERIAL_NUMBER_COLUMN_KEY = 'serial-number'
+export const OPERATION_COLUMN_KEY = 'operation'

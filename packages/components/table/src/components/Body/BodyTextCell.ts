@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-09 11:37:05
  * @LastEditors: shen
- * @LastEditTime: 2026-07-09 16:16:31
+ * @LastEditTime: 2026-07-09 16:33:39
  * @Description:
  */
 import type { RangeCell } from '../../hooks/RangeInterface'
@@ -23,6 +23,7 @@ import { cellResize } from '@pro-design-vue/directives'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 import RowHandler from '../Drag/RowHandler.vue'
 import BodyCellTooltip from './BodyCellTooltip'
+import { SERIAL_NUMBER_COLUMN_KEY } from '@pro-design-vue/constants'
 
 const cellProps = {
   prefixCls: String as PropType<string>,
@@ -158,34 +159,38 @@ const BodyCell: FunctionalComponent<CellProps> = (props, { slots, emit }) => {
 
   if (!ensureValidVNode(bodyCell)) {
     let cellValue
-    if (cellRender.children) {
-      cellValue = cellRender.children
-    } else if (valueEnum) {
-      const option = valueEnum[value]
-      if (option && option.text) {
-        tooltipTitle = option.text
-        if (option.status) {
-          cellValue = createVNode(Badge, {
-            status: option.status,
-            text: option.text,
-          })
-        } else if (option.color) {
-          cellValue = createVNode(
-            Tag,
-            {
-              color: option.color,
-              bordered: false,
-            },
-            () => option.text,
-          )
+    if (columnKey === SERIAL_NUMBER_COLUMN_KEY) {
+      cellValue = pageIndex
+    } else {
+      if (cellRender.children) {
+        cellValue = cellRender.children
+      } else if (valueEnum) {
+        const option = valueEnum[value]
+        if (option && option.text) {
+          tooltipTitle = option.text
+          if (option.status) {
+            cellValue = createVNode(Badge, {
+              status: option.status,
+              text: option.text,
+            })
+          } else if (option.color) {
+            cellValue = createVNode(
+              Tag,
+              {
+                color: option.color,
+                bordered: false,
+              },
+              () => option.text,
+            )
+          } else {
+            cellValue = option.text
+          }
         } else {
-          cellValue = option.text
+          cellValue = value === null || value === undefined || value === '' ? emptyText : value
         }
       } else {
         cellValue = value === null || value === undefined || value === '' ? emptyText : value
       }
-    } else {
-      cellValue = value === null || value === undefined || value === '' ? emptyText : value
     }
     bodyCell = [
       (typeof cellValue === 'object' && isValidElement(cellValue)) || typeof cellValue !== 'object'

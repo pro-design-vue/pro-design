@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-01 09:26:05
  * @LastEditors: shen
- * @LastEditTime: 2026-05-22 14:18:35
+ * @LastEditTime: 2026-07-09 16:36:42
  * @Description:
  */
 
@@ -44,6 +44,7 @@ import type {
 import type { AppendCellRange } from '../hooks/RangeInterface'
 import type { CustomSlotsType } from '../utils/type'
 import type { ContextSlots } from './context/TableSlotsContext'
+import { OPERATION_COLUMN_KEY, SERIAL_NUMBER_COLUMN_KEY } from '@pro-design-vue/constants'
 
 export default defineComponent({
   name: 'ProTable',
@@ -240,6 +241,9 @@ export default defineComponent({
       return flatColumnsHandle(props.columns)
         .filter((item) => {
           if (item.hideInSearch) {
+            return false
+          }
+          if (item.key === SERIAL_NUMBER_COLUMN_KEY || item.key === OPERATION_COLUMN_KEY) {
             return false
           }
           return true
