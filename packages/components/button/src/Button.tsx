@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2026-06-30 15:58:06
+ * @LastEditTime: 2026-07-20 13:45:28
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -186,16 +186,16 @@ export default defineComponent({
         </Button>
       )
 
-      if (props.disabled) {
-        return defaultDom
-      }
-
       if (props.tooltip) {
         defaultDom = (
           <Tooltip {...props.tooltipProps} title={props.tooltip}>
             {defaultDom}
           </Tooltip>
         )
+      }
+
+      if (props.disabled) {
+        return defaultDom
       }
 
       if (props.mode === 'popconfirm') {
