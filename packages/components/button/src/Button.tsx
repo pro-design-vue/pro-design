@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2026-07-20 13:45:28
+ * @LastEditTime: 2026-07-30 09:40:19
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -16,7 +16,6 @@ import {
   type DropdownProps,
   Menu,
   type MenuProps,
-  type ItemType,
   type ModalFuncProps,
   type ButtonProps,
 } from 'ant-design-vue'
@@ -26,6 +25,14 @@ import { ProIcon } from '@pro-design-vue/components/icon'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
 
 type ConfirmType = 'danger' | 'warning'
+type ButtonItemType = {
+  key: string | number
+  label: string
+  accessCode?: string
+  hidden?: boolean | ((data: any) => boolean)
+  disabled?: boolean | ((data: any) => boolean)
+  [key: string]: any
+}
 export default defineComponent({
   name: 'ProButton',
   inheritAttrs: false,
@@ -90,7 +97,7 @@ export default defineComponent({
       default: undefined,
     },
     items: {
-      type: Array as PropType<(ItemType & { accessCode?: string })[]>,
+      type: Array as PropType<ButtonItemType[]>,
       default: () => [],
     },
     onClick: Function as PropType<(e: MouseEvent, data?: any) => void>,
@@ -211,14 +218,32 @@ export default defineComponent({
       }
 
       if (props.mode === 'dropdown') {
-        const items = props.items.filter((item) => {
-          if (item.accessCode && accessCodes?.value?.size) {
-            return accessCodes?.value.has(item.accessCode)
-          }
-          return true
-        })
-        return (
+        const items = props.items
+          .filter((item) => {
+            let hidden = false
+            if (item.accessCode && accessCodes?.value?.size) {
+              hidden = !accessCodes?.value.has(item.accessCode)
+            }
+            if (hidden) {
+              return false
+            }
+            if (item.hidden !== undefined) {
+              if (typeof item.hidden === 'function') {
+                hidden = item.hidden(props.data)
+              } else {
+                hidden = item.hidden
+              }
+            }
+            return !hidden
+          })
+          .map((item) => ({
+            ...item,
+            disabled:
+              typeof item.disabled === 'function' ? item.disabled(props.data) : item.disabled,
+          })) as any[]
+        return items.length ? (
           <Dropdown
+            placement="bottomRight"
             {...props.dropdownProps}
             v-slots={{
               overlay: () => (
@@ -232,7 +257,7 @@ export default defineComponent({
           >
             {defaultDom}
           </Dropdown>
-        )
+        ) : null
       }
 
       return defaultDom

@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-11-15 09:12:16
  * @LastEditors: shen
- * @LastEditTime: 2025-07-30 09:00:54
+ * @LastEditTime: 2026-07-30 08:45:08
  * @Description:
 -->
 <script lang="ts">
@@ -54,7 +54,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Dropdown trigger="click" :overlayStyle="{ width: '80px' }">
+  <Dropdown trigger="click" :overlayStyle="{ width: '80px' }" placement="bottomRight">
     <Tooltip :title="intl.getMessage('tableToolBar.density', '密度')">
       <div :class="`${prefixCls}-toolbar-actions-item`">
         <ColumnHeightOutlined />

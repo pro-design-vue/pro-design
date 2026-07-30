@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-09 16:56:49
  * @LastEditors: shen
- * @LastEditTime: 2026-06-11 11:05:45
+ * @LastEditTime: 2026-07-30 09:41:34
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -334,7 +334,10 @@ export default defineComponent({
           <RenderVNode
             vnode={renderFormItem}
             props={{
+              style: fieldStyle.value,
+              class: fieldClassName.value,
               value: fieldValue.value,
+              fieldProps: fieldProps.value,
               onChange: fieldProps.value.onChange,
               defaultDom,
               formData: formData.value,
