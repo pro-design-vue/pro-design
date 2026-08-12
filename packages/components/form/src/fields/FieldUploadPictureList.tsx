@@ -2,19 +2,18 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2026-06-11 11:08:11
+ * @LastEditTime: 2026-08-12 16:57:05
  * @Description:
  */
 import type { PropType } from 'vue'
 import type { UploadProps } from 'ant-design-vue'
 
 import { computed, defineComponent, ref, watch } from 'vue'
-import { Form, Upload, Modal } from 'ant-design-vue'
+import { Form, Upload, Image, ImagePreviewGroup } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { commonFieldProps } from '../props'
 import { useInjectForm } from '../context/FormContext'
 import { isEqual } from '@pro-design-vue/utils'
-import { useIntl } from '@pro-design-vue/components/config-provider'
 
 export default defineComponent({
   name: 'FieldUploadPictureList',
@@ -49,8 +48,7 @@ export default defineComponent({
   setup(props, { attrs }) {
     const fileList = ref<any[]>([])
     const previewVisible = ref(false)
-    const previewImage = ref('')
-    const intl = useIntl()
+    const previewCurrent = ref(0)
     const { prefixCls, disabled } = useInjectForm()
     const formItemContext = Form.useInjectFormItemContext()
     const mergeDisabled = computed(() => {
@@ -82,20 +80,17 @@ export default defineComponent({
       return newProps
     })
 
-    const getBase64 = (file: File) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve(reader.result)
-        reader.onerror = (error) => reject(error)
-      })
-    }
+    // const getBase64 = (file: File) => {
+    //   return new Promise((resolve, reject) => {
+    //     const reader = new FileReader()
+    //     reader.readAsDataURL(file)
+    //     reader.onload = () => resolve(reader.result)
+    //     reader.onerror = (error) => reject(error)
+    //   })
+    // }
 
     const handlePreview = async (file) => {
-      if (!file.url && !file.preview) {
-        file.preview = (await getBase64(file.originFileObj)) as string
-      }
-      previewImage.value = file.url || file.preview
+      previewCurrent.value = fileList.value.findIndex((item) => item.uid === file.uid)
       previewVisible.value = true
     }
 
@@ -122,6 +117,7 @@ export default defineComponent({
 
     watch(fileList, () => {
       props.onChange?.(fileList.value)
+      console.log(fileList.value)
       formItemContext.onFieldChange()
     })
 
@@ -147,19 +143,20 @@ export default defineComponent({
         >
           {showPlusIcon.value && <PlusOutlined />}
         </Upload>
-        <Modal
-          v-model:open={previewVisible.value}
-          width={800}
-          title={intl.getMessage('upload.picture.viewModalTitle', '查看图片')}
-          footer={null}
-        >
-          <img
-            alt="preview"
-            style="width: 100%"
-            crossorigin={props.crossOrigin}
-            src={previewImage.value}
-          />
-        </Modal>
+        <div style="display: none" key={fileList.value?.length}>
+          <ImagePreviewGroup
+            preview={{
+              current: previewCurrent.value,
+              getContainer: () => document.body,
+              visible: previewVisible.value,
+              onVisibleChange: (vis) => (previewVisible.value = vis),
+            }}
+          >
+            {fileList.value?.map((item) => (
+              <Image key={item.uid} src={item.url || item.thumbUrl} />
+            ))}
+          </ImagePreviewGroup>
+        </div>
       </>
     )
   },

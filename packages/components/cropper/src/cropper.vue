@@ -2,12 +2,12 @@
  * @Author: shen
  * @Date: 2023-09-28 09:28:44
  * @LastEditors: shen
- * @LastEditTime: 2025-08-28 11:04:44
+ * @LastEditTime: 2026-08-12 09:57:50
  * @Description:
 -->
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { Slider } from 'ant-design-vue'
 import { usePrefixCls } from '@pro-design-vue/hooks'
 import Cropper from 'cropperjs'
@@ -49,7 +49,6 @@ const onZoom = (type: string) => {
   } else {
     newValue = scale.value + 0.1
   }
-  cropper.zoom(newValue - scale.value)
   scale.value = newValue
 }
 
@@ -60,9 +59,17 @@ const getCroppedCanvas = (file: File, options?: Cropper.GetCroppedCanvasOptions)
   const croppedData = cropper.getCroppedCanvas(options).toDataURL(file.type)
   return croppedData
 }
+
+watch(scale, (newValue, oldValue) => {
+  cropper.zoom(newValue - oldValue)
+})
 onMounted(() => {
   if (imgRef.value) {
-    cropper = new Cropper(imgRef.value, props.cropperProps ?? {})
+    const cropperProps = props.cropperProps ?? {}
+    if (props.cropperWidth && props.cropperHeight) {
+      cropperProps.aspectRatio = props.cropperWidth / props.cropperHeight
+    }
+    cropper = new Cropper(imgRef.value, cropperProps)
   }
 })
 

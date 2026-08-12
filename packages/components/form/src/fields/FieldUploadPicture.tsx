@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2023-08-10 14:34:03
  * @LastEditors: shen
- * @LastEditTime: 2025-08-27 11:22:38
+ * @LastEditTime: 2026-08-12 16:28:58
  * @Description:
  */
 import type { PropType } from 'vue'
@@ -153,6 +153,12 @@ export default defineComponent({
 
     const onUploadChange = (info: UploadChangeParam) => {
       originFile.value = info.file.originFileObj!
+      if (info.file.status === 'uploading') {
+        loading.value = true
+      }
+      if (info.file.status === 'done' || info.file.status === 'error') {
+        loading.value = false
+      }
       if (props.isCropper) {
         const reader = new FileReader()
         reader.onload = function (e: any) {
