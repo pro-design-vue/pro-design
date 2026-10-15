@@ -49,7 +49,19 @@ ProStepsForm 提供了与 [ProForm](./form.md) 相同的 API，以下的是 ProS
 
 ### Events
 
-| 事件名         | 说明                                                                                  | 类型                                     |
-| -------------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
-| current-change | current 发生改变的事件                                                                | `(current:number) => void	`               |
-| finish         | 表单最后一步提交成功触发，如果返回`true`就会自动重置表单（包括`StepsForm`变回第一步） | `(values:T) => Promise<void \| boolean>` |
+| 事件名         | 说明                                                                                  | 类型                                           |
+| -------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| current-change | current 发生改变的事件                                                                | `(current: number) => void`                    |
+| finish         | 表单最后一步提交成功触发，如果返回`true`就会自动重置表单（包括`StepsForm`变回第一步） | `(values: T) => Promise<void \| boolean>`       |
+| init           | 表单初始化后回调事件                                                                  | `(values: any, action: ProFormActionType) => void` |
+| reset          | 点击重置按钮的回调                                                                    | `() => void`                                   |
+| finish-failed  | 提交表单且数据验证失败后回调事件                                                      | `({ values, errorFields }) => void`            |
+| values-change  | 表单字段值变化时的回调                                                                | `(values: any) => void`                        |
+| loading-change | 加载动画变化后的回调事件                                                              | `(loading: boolean) => void`                   |
+
+### Slots
+
+| 插槽名    | 说明       | 类型                           |
+| --------- | ---------- | ------------------------------ |
+| submitter | 提交按钮区 | `{ props, action, defaultDoms }` |
+

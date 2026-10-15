@@ -43,6 +43,10 @@ const token = ref({
       pagination: {
         pageSize: 25,
         pageSizeOptions: ['5', '10', '25', '50'],
+        fieldNames: {
+          current: 'pageNum',
+          pageSize: 'limit',
+        },
       },
     }"
   >
@@ -58,19 +62,23 @@ const token = ref({
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | ---- | ---| --- |
 | autoInsertSpaceInButton  | 设置为 `false` 时，移除按钮中 2 个汉字之间的空格 | `boolean`| `true`|
+| accessCodes | 权限码集合，用于按钮、标签页等组件的权限控制 | `Set<string>` | - |
 | dark | 暗黑模式，内部实现`theme.darkAlgorithm` | `boolean`| - |
 | compact | 紧凑模式算法，内部实现`theme.compactAlgorithm` | `boolean`| - |
+| contentOffsetTop | 内容区域距离顶部的偏移量，用于 Layout 中计算内容区域的高度偏移 | `number` | - |
 | token | 同`theme.token` | `AliasToken` | - |
 | theme | 设置主题，参考 [定制主题](https://www.antdv.com/docs/vue/customize-theme-cn) | `Theme` | - |
 | componentSize | 设置 antd 组件大小  | `'small'` \| `'middle'` \| `'large'`| - |
 | csp | 设置 [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) 配置 | `{ nonce: string }` | - |
 | direction| 设置文本展示方向。| `ltr` \| `rtl`| `ltr` |
 | dropdownMatchSelectWidth | 下拉菜单和选择器同宽。默认将设置 `min-width`，当值小于选择框宽度时会被忽略。`false` 时会关闭虚拟滚动     | boolean \| `number`  | - |
-| form | 设置 Form 组件的通用属性 | `{  validateMessages?: ValidateMessages, requiredMark?: boolean \| 'optional', colon?: boolean, resetOnSubmit?: boolean, labelWidth?: number \| 'auto', searchText?: string, resetText?: string}` | - |
+| form | 设置 Form 组件的通用属性 | `{ validateMessages?: ValidateMessages, requiredMark?: boolean \| 'optional', colon?: boolean, resetOnSubmit?: boolean, labelWidth?: number \| 'auto', searchText?: string, resetText?: string, labelAlign?: FormLabelAlign, labelCol?: ColProps, wrapperCol?: ColProps }` | - |
 | getPopupContainer| 弹出框（Select, Tooltip, Menu 等等）渲染父节点，默认渲染到 body 上。| `Function(triggerNode, dialogContext)`| `() => document.body` |
 | getTargetContainer | 配置 Affix、Anchor 滚动监听容器。 | `() => HTMLElement` | `() => window`|
 | input| 设置 Input 组件的通用属性 | `{ autocomplete?: string }` | - |
+| intl | 用于 Pro 组件的国际化类型配置，内部会根据 antd locale key 自动匹配对应的国际化文案 | `{ locale: string, getMessage: (id: string, defaultMessage: string) => string }` | - |
 | locale | 语言包配置，语言包可到 [ant-design-vue/es/locale](http://unpkg.com/ant-design-vue/es/locale/) 目录下寻找 | `object`| - |
+| page | 设置 Page 组件的通用属性 | `{ contentClass?: string, pageStyle?: CSSProperties, contentStyle?: CSSProperties, autoContentHeight?: boolean, headerClass?: string, footerClass?: string, heightOffset?: number, contentPadding?: number }` | - |
 | pageHeader| 统一设置 pageHeader 的 ghost| `{ ghost: boolean }` | `true`|
 | prefixCls | 设置统一样式前缀。注意：需要配合 `less` 变量 `@ant-prefix` 使用 | `string` | `'ant'` |
 | proPrefixCls | 设置`pro`组件统一样式前缀。注意：需要配合 `less` 变量 `@pro-prefix` 使用 | `string`| `'pro'` |
@@ -78,7 +86,7 @@ const token = ref({
 | transformCellText | Table 数据渲染前可以再次改变，一般用户空数据的默认配置 | `Function({ text, column, record, index }) => any` | - |
 | virtual | 设置 `false` 时关闭虚拟滚动 | `boolean`  | - |
 | wave | 设置水波纹特效  | `{ disabled?: boolean }`| -  |
-| table | 设置 Table 组件的通用属性 | `{ animateRows?: boolean, bordered?: boolean, childrenColumnName?: string,  expandRowByClick?: boolean, rowKey?: string, rowHover?: boolean, summaryFixed?: boolean, columnEmptyText?: string, highlightSelectRow?: boolean, pagination?: ProTablePaginationConfig }` | - |
+| table | 设置 Table 组件的通用属性 | `{ animateRows?: boolean, bordered?: boolean, cardBordered?: Bordered, childrenColumnName?: string, columnDrag?: boolean, columnResizable?: boolean, expandIconType?: ExpandIconType, expandRowByClick?: boolean, selectRowByClick?: boolean, rowKey?: string, cardProps?: boolean, size?: DensitySize, rowHover?: boolean, summaryFixed?: boolean, columnEmptyText?: string, highlightSelectRow?: boolean, options?: OptionConfig \| false, pagination?: ProTablePaginationConfig }` | - |
 | modal | 设置 Modal 组件的通用属性 | `{ draggable?: boolean, showFullscreen?: boolean }`| - |
 | drawer | 设置 Drawer 组件的通用属性 | `{ showFullscreen?: boolean }`| - |
 | app | 设置 App 组件的通用属性 | `{ message?: { top?: number \| string, duration?: number, prefixCls?: string, getContainer?: () => HTMLElement, transitionName?: string, maxCount?: number, rtl?: boolean }, notification?: { top?: number \| string, bottom?: number \| string, prefixCls?: string, getContainer?: () => HTMLElement, placement?: NotificationPlacement, maxCount?: number, rtl?: boolean } }` | - |

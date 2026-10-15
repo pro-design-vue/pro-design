@@ -232,7 +232,7 @@ table/custom-style
 单元格默认使用 row[dataIndex] 渲染数据内容，自定义单元格有以下 3 种方式：
 
 - 【推荐】使用 `customRender` 作为渲染函数，函数参数为：`({ value, text, record, index, column }) => { props: {key, class,    style, colSpan, rowSpan }, children: VNode } | VNode`。
-- 使用 `bodyCell` 插槽，插槽参数为：`#bodyCell="{ record, column, text, value, index, oldValue, recordIndexs }"`，根据`column.key`判断自定义渲染那一列。
+- 使用 `bodyCell` 插槽，插槽参数为：`#bodyCell="{ record, column, text, value, index, recordIndexs }"`，根据`column.key`判断自定义渲染那一列。
 - 使用 `renderText` 渲染函数，函数参数为：`({text, record, rowIndex}) => string | number`，只支持返回`字符串`，适合`拼接｜计算`等操作。
 
 :::demo
@@ -341,6 +341,36 @@ table/expand-tree
 
 :::
 
+### 轮询更新数据
+
+配置表格属性 `polling` 可开启定时轮询请求，`polling` 最低不能小于 `2000` ms。轮询模式下不显示 loading。
+
+:::demo
+
+table/polling
+
+:::
+
+### 列状态保持
+
+配置表格属性 `columnsState` 让用户对列宽、顺序等设置进行持久化缓存。`persistenceType` 支持 `localStorage` 和 `sessionStorage`。
+
+:::demo
+
+table/columns-state
+
+:::
+
+### 上下文菜单
+
+配置表格属性 `hasContextmenuPopup=true` 开启单元格右键菜单，通过 `contextmenuPopup` 插槽自定义菜单内容。
+
+:::demo
+
+table/context-menu
+
+:::
+
 ## API
 
 ### Props
@@ -401,6 +431,19 @@ table/expand-tree
 | show-header               | 是否显示表头                                                                                                     | `boolean`                                                                                                                                                | `true`                                                          |
 | always-show-alert         | 总是展示 `alert`，默认无选择不展示（`rowSelection`内置属性）                                                     | `boolean`                                                                                                                                                | `true`                                                          |
 | highlight-select-row      | 单选或多选时是否高亮选中行                                                                                       | `boolean`                                                                                                                                                | `false`                                                         |
+| card-props                | 表格外层 Card 的属性，设为 `false` 时不包裹 Card                                                                | `CardProps` \\| `boolean`                                                                                                                                 | -                                                               |
+| card-bordered             | Card 是否有边框                                                                                                 | `boolean`                                                                                                                                                | -                                                               |
+| column-drag               | 开启全列拖拽排序（排除选择、展开列）                                                                             | `boolean`                                                                                                                                                | `false`                                                         |
+| animate-rows              | 数据变化时是否动画过渡                                                                                           | `boolean`                                                                                                                                                | `false`                                                         |
+| column-empty-text         | 空值时的显示，不设置时显示 `-`， `false` 可以关闭此功能                                                          | `false` \\| `string`                                                                                                                                      | `'-'`                                                           |
+| columns-state             | 列状态持久化配置，用于缓存列宽、顺序等用户设置                                                                    | `{ persistenceType?: 'localStorage' \\| 'sessionStorage', persistenceKey?: string }`                                                                     | -                                                               |
+| default-data              | 未请求时的默认数据                                                                                               | `RecordType[]`                                                                                                                                           | `[]`                                                            |
+| manual                    | 是否手动触发首次请求                                                                                             | `boolean`                                                                                                                                                | `false`                                                         |
+| debounce-time             | 搜索防抖时间 (ms)                                                                                                | `number`                                                                                                                                                 | -                                                               |
+| summary-fixed             | 总结栏是否固定，支持 `true` `'top'` `'bottom'`                                                                   | `boolean` \\| `'top'` \\| `'bottom'`                                                                                                                       | -                                                               |
+| has-contextmenu-popup     | 是否开启单元格右键菜单                                                                                           | `boolean`                                                                                                                                                | `false`                                                         |
+| direction                 | 表格排版方向，支持 RTL                                                                                           | `'rtl'`                                                                                                                                                  | -                                                               |
+| show-header-scrollbar     | 是否在表头也显示滚动条                                                                                           | `boolean`                                                                                                                                                | `false`                                                         |
 
 - `expandFixed`
   - 当设置为 true 或 `left` 且 `expandIconColumnIndex` 未设置或为 0 时，开启固定
@@ -417,6 +460,16 @@ table/expand-tree
 | rowDragEnd         | 拖拽行结束时触发                                           | `(opt: [DragRowEventInfo](#dragroweventinfo)) => boolean \| Promise \| void`          |
 | columnDragEnd      | 拖拽列结束时触发                                           | `(opt: [DragColumnEventInfo](#dragcolumneventinfo)) => boolean \| Promise \| void`    |
 | cellClick          | 单元格点击事件                                             | `(event: MouseEvent, params: [CellRenderArgs](#cellrenderargs)) => void`              |
+| cellKeydown       | 单元格按键事件                                             | `(event: KeyboardEvent, params: CellRenderArgs) => void`                              |
+| rowDragEnter       | 拖拽行进入当前行时触发                                     | `(params: { record: RecordType, rowIndex: number, column: ColumnType }) => void`      |
+| rowDragLeave       | 拖拽行离开当前行时触发                                     | `(params: { record: RecordType, rowIndex: number, column: ColumnType }) => void`      |
+| load               | 数据加载完成时触发                                          | `(dataSource: RecordType[], extra: any) => void`                                      |
+| loadingChange      | loading 状态变化时触发                                      | `(loading: boolean \\| SpinProps) => void`                                             |
+| requestError       | 请求出错时触发                                              | `(error: Error) => void`                                                              |
+| sizeChange         | 表格尺寸变更时触发                                         | `(size: 'large' \\| 'middle' \\| 'small') => void`                                     |
+| scroll             | 表格滚动时触发                                             | `(event: UIEvent) => void`                                                            |
+| submit             | 搜索表单提交时触发                                          | `(params: Record<string, any>) => void`                                               |
+| reset              | 搜索表单重置时触发                                          | `(params: Record<string, any>) => void`                                               |
 
 ### Exposes
 
@@ -445,7 +498,11 @@ table/expand-tree
 | menuIcon             | 自定义筛选菜单图标                                          | `{column, filtered}`                        |
 | expandedRowRender    | 额外的展开行                                                | `{record, index, indent, expanded}`         |
 | expandIcon           | 自定义展开图标                                              | `props`                                     |
-| footer               | 表格尾部                                                    | `currentPageData`                           |
+| contextmenuPopup     | 单元格右键菜单内容，需配合 `hasContextmenuPopup`                | `{ rowKey, record, hidePopup, event }`      |
+| toolbarActions       | 工具栏操作区                                                  | -                                           |
+| toolbar              | 工具栏内容区                                                  | -                                           |
+| alertInfo            | 选择提示信息（配合 `rowSelection`）                            | -                                           |
+| alertActions         | 选择提示操作区（配合 rowSelection）                         | -                                           |
 
 ### Column {#column}
 
@@ -483,8 +540,30 @@ table/expand-tree
 | customHeaderCell  | 设置头部单元格属性                                                                                                                                                                                                                           | `Function(column)`                                                                                                                                              | -        |
 | customRender      | 生成复杂数据的渲染函数，参数分别为当前行的值，当前行数据，行索引，@return 里面可以设置表格行/列合并,可参考 demo 表格行/列合并                                                                                                                | `Function({text, record, index, column}) {}`                                                                                                                    | -        |
 | rowDrag           | 当前列添加拖拽手柄                                                                                                                                                                                                                           | `boolean \| (arg: { record: RecordType; column: ColumnType }) => boolean`                                                                                       | -        |
-| drag              | 单元格是否可编辑                                                                                                                                                                                                                             | `boolean`                                                                                                                                                       | -        |
-| children          | 表格分组使使用                                                                                                                                                                                                                               | `ProTableColumnType[]`                                                                                                                                          | -        |
+| drag              | 当前列允许拖拽排序，配合表格 `columnDrag` 属性使用                                                                                                                                                                                           | `boolean`                                                                                                                                                       | -        |
+| flex              | CSS flex-grow 值，用于 flex 布局时列宽分配                                                                                                                                                                                                    | `number`                                                                                                                                                        | -        |
+| wrapText          | 列文本是否换行，会与 `autoHeight` 互斥                                                                                                                                                                                                        | `boolean`                                                                                                                                                       | `false`  |
+| class             | 列的类名                                                                                                                                                                                                                                     | `string`                                                                                                                                                        | -        |
+| showFilter        | 列头是否显示筛选图标                                                                                                                                                                                                                         | `boolean`                                                                                                                                                       | `true`   |
+| showMenu          | 列头是否显示菜单图标                                                                                                                                                                                                                         | `boolean`                                                                                                                                                       | `true`   |
+| filterIcon        | 自定义筛选图标                                                                                                                                                                                                                               | `(params: {filtered: boolean, column: ColumnType}) => VNode`                                                                                                    | -        |
+| filterDropdown    | 自定义筛选菜单                                                                                                                                                                                                                               | `(props: FilterDropdownProps) => VNode`                                                                                                                         | -        |
+| filterDropdownOpen | 筛选菜单手动控制展开                                                                                                                                                                                                                        | `boolean`                                                                                                                                                       | -        |
+| onFilterDropdownOpenChange | 筛选菜单展开/关闭回调                                                                                                                                                                                                              | `(open: boolean) => void`                                                                                                                                       | -        |
+| customFilterDropdown | 自定义整列筛选，菜单需要自行控制关闭                                                                                                                                                                                                       | `boolean`                                                                                                                                                       | `false`  |
+| filtered          | 标识当前列是否已筛选                                                                                                                                                                                                                         | `boolean`                                                                                                                                                       | -        |
+| filteredValue     | 筛选的受控属性，外部控制筛选值                                                                                                                                                                                                               | `(string \\| number)[]`                                                                                                                                          | -        |
+| defaultFilteredValue | 默认筛选值                                                                                                                                                                                                                                 | `(string \\| number)[]`                                                                                                                                          | -        |
+| sortOrder         | 排序的受控属性                                                                                                                                                                                                                               | `'ascend'` \\| `'descend'`                                                                                                                                        | -        |
+| defaultSortOrder  | 默认排序                                                                                                                                                                                                                                     | `'ascend'` \\| `'descend'`                                                                                                                                        | -        |
+| sortDirections    | 支持的排序方式，如 `['ascend', 'descend']`                                                                                                                                                                                                   | `('ascend' \\| 'descend')[]`                                                                                                                                     | `['ascend', 'descend']` |
+| search            | 搜索表单中为此列单独配置，可覆盖全局 search 的列配置                                                                                                                                                                                         | `ProFormItemType`                                                                                                                                                | -        |
+| fieldType         | 查询表单组件类型，参考 [表单 fieldType](/component/form#fieldtype-列表)                                                                                                                                                                      | `ProFieldType`                                                                                                                                                  | -        |
+| initialValue      | 查询表单项的初始值                                                                                                                                                                                                                           | `any`                                                                                                                                                           | -        |
+| label             | 列的标签，表格和查询表单均可使用                                                                                                                                                                                                             | `string`                                                                                                                                                        | -        |
+| options           | 查询表单中 Select/Radio 等组件选项                                                                                                                                                                                                           | `{ label: string, value: any }[]`                                                                                                                               | -        |
+| placeholder       | 查询表单项的 placeholder                                                                                                                                                                                                                     | `string`                                                                                                                                                        | -        |
+| children          | 表格分组使用                                                                                                                                                                                                                                 | `ProTableColumnType[]`                                                                                                                                          | -        |
 
 ### Scroll
 
@@ -598,11 +677,8 @@ export type CellRenderArgs = {
   column: ColumnType<DefaultRecordType> | ColumnGroupType<DefaultRecordType>
   text: any
   value: any
-  oldValue?: any // 4.2.5+ only for beforeCloseEditor，组件不会对 oldValue 进行复制，请注意引用类型的数据
   index: number
   recordIndexs: number[]
-  openEditor: () => void
-  closeEditor: () => void
 }
 ```
 

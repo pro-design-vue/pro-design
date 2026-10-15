@@ -63,26 +63,35 @@ ProModalForm或ProDrawerForm 提供了与 [ProForm](./form.md) 相同的 API，�
 
 ### Props
 
-| 参数                     | 说明                                                         | 类型                 | 默认值 |
-| ------------------------ | ------------------------------------------------------------ | -------------------- | ------ |
-| open(v-model)            | 是否打开                                                     | `boolean`            | -      |
-| title                    | 弹框的标题                                                   | `string`             | -      |
-| width                    | 弹框的宽度                                                   | `string` \| `number` | 800    |
-| submit-timeout           | 提交数据时，禁用取消按钮的超时时间（毫秒）                   | `number`             | -      |
-| confirm-on-values-change | 数据变化后，关闭弹窗时是否需要确认                           | `boolean`            | `true` |
-| modal-props              | Modal 的 props，使用方式与 [ProModal](./modal#api) 相同。    | `ModalProps`         | -      |
-| drawer-props             | Drawer 的 props，使用方式与 [ProDrawer](./drawer#api) 相同。 | `DrawerProps`        | -      |
+| 参数                     | 说明                                                              | 类型                    | 默认值  |
+| ------------------------ | ----------------------------------------------------------------- | ----------------------- | ------- |
+| open(v-model)            | 是否打开                                                          | `boolean`               | -       |
+| title                    | 弹框的标题                                                        | `string`                | -       |
+| width                    | 弹框的宽度                                                        | `string` \| `number`    | `800`   |
+| submit-timeout           | 提交数据时，禁用取消按钮的超时时间（毫秒）                        | `number`                | -       |
+| confirm-on-values-change | 数据变化后，关闭弹窗时是否需要确认                                | `boolean`               | `true`  |
+| close-on-finish          | 提交成功后是否自动关闭弹窗                                        | `boolean`               | `true`  |
+| modal-props              | [ProModalForm 独有] Modal 的 props，使用方式与 [ProModal](./modal) 相同，会与 width/title 合并 | `ProModalProps`         | -       |
+| drawer-props             | [ProDrawerForm 独有] Drawer 的 props，使用方式与 [ProDrawer](./drawer) 相同，会与 width/title 合并 | `ProDrawerProps`        | -       |
 
 ### Events
 
-| 事件名      | 说明                                            | 类型                      |
-| ----------- | ----------------------------------------------- | ------------------------- |
-| finish      | 提交数据时触发，如果返回一个 true。会关掉浮层。 | `async (values)=>boolean` |
-| open-change | 浮层打开关闭后的回调事件                        | `(open: boolean) => void` |
+| 事件名         | 说明                                                | 类型                                    |
+| -------------- | --------------------------------------------------- | --------------------------------------- |
+| finish         | 提交数据时触发，如果返回一个 true，会关掉浮层       | `(values: T) => Promise<void \| boolean \| any>` |
+| init           | 表单初始化后回调事件，可通过第二个参数获取 form action | `(values: any, action: ProFormActionType) => void` |
+| reset          | 点击重置按钮的回调                                  | `() => void`                            |
+| finish-failed  | 提交表单且数据验证失败后回调事件                    | `({ values, errorFields }) => void`     |
+| values-change  | 表单字段值变化时的回调                              | `(values: any) => void`                 |
+| loading-change | 加载动画变化后的回调事件                            | `(loading: boolean) => void`            |
+| open-change    | 浮层打开关闭后的回调事件                            | `(open: boolean) => void`               |
 
 ### Slots
 
-| 插槽名  | 说明                                               | 类型 |
-| ------- | -------------------------------------------------- | ---- |
-| trigger | 用于触发 Modal \| Drawer 打开的 dom，一般是 button | -    |
-| title   | 浮层的标题                                         | -    |
+| 插槽名    | 说明                                               | 类型 |
+| --------- | -------------------------------------------------- | ---- |
+| trigger   | 用于触发 Modal \| Drawer 打开的 dom，一般是 button | -    |
+| title     | 浮层的标题                                         | -    |
+| closeIcon | 自定义关闭图标（ProModalForm 有效）                | -    |
+| extra     | 浮层右上角额外内容（ProDrawerForm 有效）           | -    |
+| footer    | 自定义底部内容                                     | -    |

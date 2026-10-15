@@ -44,15 +44,17 @@ export function MarkdownTransform(): Plugin {
       if (!id.endsWith('.md')) return
 
       const componentId = path.basename(id, '.md')
+      const isComponentDoc = compPaths.some((compPath) => id.startsWith(compPath))
+
       const append: Append = {
         headers: [],
         footers: [],
-        scriptSetups: getExampleImports(componentId),
+        scriptSetups: isComponentDoc ? getExampleImports(componentId) : [],
       }
 
       code = transformVpScriptSetup(code, append)
 
-      if (compPaths.some((compPath) => id.startsWith(compPath))) {
+      if (isComponentDoc) {
         code = transformComponentMarkdown(id, componentId, code, append)
       }
 

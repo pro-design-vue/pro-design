@@ -24,6 +24,7 @@ modal/basic
 | 参数                | 说明                                              | 类型                                                            | 默认值                |
 | ------------------- | ------------------------------------------------- | --------------------------------------------------------------- | --------------------- |
 | description         | 对话框描述                                        | `string`                                                        | -                     |
+| top                 | 距离页面顶部的距离（px）                        | `number`                                                        | 100                   |
 | show-fullscreen     | 显示全屏按钮                                      | `boolean`                                                       | `true`                |
 | default-fullscreen  | 默认全屏显示                                      | `boolean`                                                       | `false`               |
 | draggable           | 开启对话框页头拖动                                | `boolean`                                                       | `false`               |
@@ -34,7 +35,7 @@ modal/basic
 | centered            | 垂直居中展示 Modal                                | `boolean`                                                       | `false`               |
 | closable            | 是否显示右上角的关闭按钮                          | `boolean`                                                       | `true`                |
 | confirm-loading     | 确定按钮 loading                                  | `boolean`                                                       | -                     |
-| destroy-on-close    | 关闭时销毁 Modal 里的子元素                       | `boolean`                                                       | `false`               |
+| destroy-on-close    | 关闭时销毁 Modal 里的子元素                       | `boolean`                                                       | `true`               |
 | footer              | 当不需要默认底部按钮时，可以设为 `:footer="null"` | `string`                                                        | `确定取消按钮`        |
 | force-render        | 强制渲染 Modal                                    | `boolean`                                                       | `false`               |
 | get-container       | 指定 Modal 挂载的 HTML 节点                       | `(instance): HTMLElement`                                       | `() => document.body` |

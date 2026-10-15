@@ -26,12 +26,12 @@ drawer/basic
 | description           | 抽屉描述                                                                   | `string`                                       | -                   |
 | show-fullscreen       | 显示全屏按钮                                                               | `boolean`                                      | `true`              |
 | default-fullscreen    | 默认全屏显示                                                               | `boolean`                                      | `false`             |
-| autofocus             | 抽屉展开后是否将焦点切换至其 Dom 节点                                      | `boolean`                                      | `true`              |
+| autofocus             | 抽屉展开后是否将焦点切换至其 Dom 节点                                      | `boolean`                                      | `false`              |
 | body-style            | 可用于设置 Drawer 内容部分的样式                                           | `CSSProperties`                                | -                   |
 | class                 | Drawer 容器外层 className 设置，如果需要设置最外层，请使用 rootClassName   | `string`                                       | -                   |
 | closable              | 是否显示左上角的关闭按钮                                                   | `boolean`                                      | `true`              |     |
 | content-wrapper-style | 可用于设置 Drawer 包裹内容部分的样式                                       | `CSSProperties`                                | -                   |
-| destroy-on-close      | 关闭时销毁 Drawer 里的子元素                                               | `boolean`                                      | `false`             |
+| destroy-on-close      | 关闭时销毁 Drawer 里的子元素                                               | `boolean`                                      | `true`             |
 | footer-style          | 抽屉页脚部件的样式                                                         | `CSSProperties`                                | -                   |
 | force-render          | 预渲染 Drawer 内元素                                                       | `boolean`                                      | `false`             |
 | get-container         | 指定 Drawer 挂载的节点，**并在容器内展现**                                 | `() => HTMLElement` \| `Selectors`             | `'body'`            |
