@@ -44,7 +44,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.7.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
@@ -54,7 +54,7 @@ jobs:
           commit-message: website deploy
 
       - name: Deploy to vercel
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.7.1
         with:
           token: ${{ secrets.PRO_BOT_TOKEN }}
           branch: main
@@ -62,3 +62,4 @@ jobs:
           repository-name: pro-design-vue/staging
           git-config-name: xh-shen
           git-config-email: 9509394@qq.com
+          clean: true
