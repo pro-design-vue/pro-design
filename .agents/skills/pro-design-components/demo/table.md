@@ -32,7 +32,7 @@ const dataSource = ref(
     status: `${i % 2}`,
     sex: `${i % 3}`,
     detail: { email: `user${i}@example.com` },
-  }))
+  })),
 )
 </script>
 
@@ -81,13 +81,7 @@ const request = async (params: any, sorters: any, filter: any) => {
 </script>
 
 <template>
-  <ProTable
-    ref="tableRef"
-    :columns
-    :request
-    row-key="id"
-    stripe
-  />
+  <ProTable ref="tableRef" :columns :request row-key="id" stripe />
 </template>
 ```
 
@@ -101,12 +95,23 @@ import { ProFieldType } from 'pro-design-vue'
 const columns: ProTableColumnType[] = [
   { title: '姓名', dataIndex: 'name', hideInSearch: false },
   { title: '年龄', dataIndex: 'age', hideInSearch: false, fieldType: ProFieldType.DIGIT },
-  { title: '状态', dataIndex: 'status', valueEnum: {
-    0: { text: '禁用' },
-    1: { text: '启用' },
-  }, hideInSearch: false, fieldType: ProFieldType.SELECT },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    valueEnum: {
+      0: { text: '禁用' },
+      1: { text: '启用' },
+    },
+    hideInSearch: false,
+    fieldType: ProFieldType.SELECT,
+  },
   { title: '邮箱', dataIndex: 'email' },
-  { title: '创建时间', dataIndex: 'createTime', hideInSearch: false, fieldType: ProFieldType.DATE_RANGE },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    hideInSearch: false,
+    fieldType: ProFieldType.DATE_RANGE,
+  },
 ]
 </script>
 
@@ -135,19 +140,15 @@ const columns: ProTableColumnType[] = [
 ]
 
 const options = {
-  density: true,   // 显示密度切换
-  reload: true,    // 显示刷新按钮
-  setting: true,   // 显示列设置
-  search: true,    // 显示搜索按钮（切换查询表单显示）
+  density: true, // 显示密度切换
+  reload: true, // 显示刷新按钮
+  setting: true, // 显示列设置
+  search: true, // 显示搜索按钮（切换查询表单显示）
 }
 </script>
 
 <template>
-  <ProTable
-    :columns
-    :request="request"
-    :options
-  >
+  <ProTable :columns :request="request" :options>
     <!-- 工具栏左侧操作按钮 -->
     <ProButton type="primary">新建</ProButton>
     <ProButton>导出</ProButton>
@@ -196,29 +197,27 @@ const columns: ProTableColumnType[] = [
 
 const dataSource = [
   {
-    id: 1, name: '父节点1', age: 60, address: '杭州市',
+    id: 1,
+    name: '父节点1',
+    age: 60,
+    address: '杭州市',
     children: [
       { id: 11, name: '子节点1-1', age: 30, address: '西湖区' },
       { id: 12, name: '子节点1-2', age: 28, address: '滨江区' },
     ],
   },
   {
-    id: 2, name: '父节点2', age: 50, address: '北京市',
-    children: [
-      { id: 21, name: '子节点2-1', age: 25, address: '朝阳区' },
-    ],
+    id: 2,
+    name: '父节点2',
+    age: 50,
+    address: '北京市',
+    children: [{ id: 21, name: '子节点2-1', age: 25, address: '朝阳区' }],
   },
 ]
 </script>
 
 <template>
-  <ProTable
-    :columns
-    :dataSource
-    :tool-bar="false"
-    :search="false"
-    row-key="id"
-  />
+  <ProTable :columns :dataSource :tool-bar="false" :search="false" row-key="id" />
 </template>
 ```
 

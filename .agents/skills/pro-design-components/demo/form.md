@@ -62,8 +62,11 @@ const formItems: ProFormItemType[] = [
     fieldType: ProFieldType.CASCADER,
     request: async () => [
       {
-        value: 'zhejiang', label: '浙江',
-        children: [{ value: 'hangzhou', label: '杭州', children: [{ value: 'xihu', label: '西湖' }] }],
+        value: 'zhejiang',
+        label: '浙江',
+        children: [
+          { value: 'hangzhou', label: '杭州', children: [{ value: 'xihu', label: '西湖' }] },
+        ],
       },
     ],
   },
@@ -75,12 +78,7 @@ const handleFinish = async (val: Record<string, any>) => {
 </script>
 
 <template>
-  <ProForm
-    ref="formRef"
-    :items="formItems"
-    layout="vertical"
-    @finish="handleFinish"
-  />
+  <ProForm ref="formRef" :items="formItems" layout="vertical" @finish="handleFinish" />
 </template>
 ```
 
@@ -134,7 +132,7 @@ const formItems: ProFormItemType[] = [
     fieldType: ProFieldType.TEXTAREA,
     // 使用 linkage 配置联动
     linkage: {
-      hidden: (value, formData) => formData.type === 'a' ? ['address'] : [],
+      hidden: (value, formData) => (formData.type === 'a' ? ['address'] : []),
     },
   },
 ]
@@ -179,11 +177,7 @@ const fetchDetail = async (params: Record<string, any>) => {
 </script>
 
 <template>
-  <ProForm
-    :items="formItems"
-    :request="fetchDetail"
-    :params="{ id: '100' }"
-  />
+  <ProForm :items="formItems" :request="fetchDetail" :params="{ id: '100' }" />
 </template>
 ```
 

@@ -18,32 +18,32 @@ metadata:
 
 以下组件均来自 `pro-design-vue`，完整 API 定义见对应的文档文件：
 
-| 组件 | 导入名 | 文档路径 |
-|------|--------|----------|
-| Button | ProButton | `docs/button.md` |
-| Clipboard | ProClipboard | `docs/clipboard.md` |
-| ConfigProvider | ProConfigProvider | `docs/config-provider.md` |
-| Counter | ProCounter | `docs/counter.md` |
-| Cropper | ProCropper | `docs/cropper.md` |
-| Drawer | ProDrawer | `docs/drawer.md` |
-| Form | ProForm | `docs/form.md` |
-| DrawerForm | ProDrawerForm | `docs/modal-form.md` |
-| ModalForm | ProModalForm | `docs/modal-form.md` |
-| QueryFilter | ProQueryFilter | `docs/query-filter.md` |
-| StepsForm | ProStepsForm | `docs/steps-form.md` |
-| Icon | ProIcon | `docs/icon.md` |
-| Layout | ProLayout | `docs/layout.md` |
-| Loading | ProLoading | `docs/loading.md` |
-| Modal | ProModal | `docs/modal.md` |
-| Page | ProPage | `docs/page.md` |
-| Spinner | ProSpinner | `docs/spinner.md` |
-| Slot | ProSlot | `docs/slot.md` |
-| Table | ProTable | `docs/table.md` |
-| TableColumn | ProTableColumn | `docs/table.md` |
-| TableColumnGroup | ProTableColumnGroup | `docs/table.md` |
-| TableSummary | ProTableSummary | `docs/table.md` |
-| TableSummaryRow | ProTableSummaryRow | `docs/table.md` |
-| TableSummaryCell | ProTableSummaryCell | `docs/table.md` |
+| 组件             | 导入名              | 文档路径                  |
+| ---------------- | ------------------- | ------------------------- |
+| Button           | ProButton           | `docs/button.md`          |
+| Clipboard        | ProClipboard        | `docs/clipboard.md`       |
+| ConfigProvider   | ProConfigProvider   | `docs/config-provider.md` |
+| Counter          | ProCounter          | `docs/counter.md`         |
+| Cropper          | ProCropper          | `docs/cropper.md`         |
+| Drawer           | ProDrawer           | `docs/drawer.md`          |
+| Form             | ProForm             | `docs/form.md`            |
+| DrawerForm       | ProDrawerForm       | `docs/modal-form.md`      |
+| ModalForm        | ProModalForm        | `docs/modal-form.md`      |
+| QueryFilter      | ProQueryFilter      | `docs/query-filter.md`    |
+| StepsForm        | ProStepsForm        | `docs/steps-form.md`      |
+| Icon             | ProIcon             | `docs/icon.md`            |
+| Layout           | ProLayout           | `docs/layout.md`          |
+| Loading          | ProLoading          | `docs/loading.md`         |
+| Modal            | ProModal            | `docs/modal.md`           |
+| Page             | ProPage             | `docs/page.md`            |
+| Spinner          | ProSpinner          | `docs/spinner.md`         |
+| Slot             | ProSlot             | `docs/slot.md`            |
+| Table            | ProTable            | `docs/table.md`           |
+| TableColumn      | ProTableColumn      | `docs/table.md`           |
+| TableColumnGroup | ProTableColumnGroup | `docs/table.md`           |
+| TableSummary     | ProTableSummary     | `docs/table.md`           |
+| TableSummaryRow  | ProTableSummaryRow  | `docs/table.md`           |
+| TableSummaryCell | ProTableSummaryCell | `docs/table.md`           |
 
 ## 使用方式
 
@@ -83,7 +83,11 @@ import {
 ```ts
 import {
   // 组件
-  ProTable, ProForm, ProButton, ProModal, ProDrawer,
+  ProTable,
+  ProForm,
+  ProButton,
+  ProModal,
+  ProDrawer,
   // 类型
   type ProTableColumnType,
   type ProTableExposeType,
@@ -97,33 +101,35 @@ import {
   dayjs,
   registerField,
   // 表格常量
-  SELECTION_ALL, SELECTION_INVERT, SELECTION_NONE,
+  SELECTION_ALL,
+  SELECTION_INVERT,
+  SELECTION_NONE,
 } from 'pro-design-vue'
 ```
 
 常用类型和工具：
 
-| 导出项 | 分类 | 说明 |
-|--------|------|------|
-| `ProFieldType` | 枚举 | 表单字段类型枚举（TEXT/SELECT/DATE 等） |
-| `ProFormActionType` | 类型 | Form ref 暴露的方法类型 |
-| `ProTableExposeType` | 类型 | Table ref 暴露的方法类型 |
-| `ProTableColumnType` | 类型 | 表格列配置类型 |
-| `ProTableValueEnumType` | 类型 | 值枚举类型 |
-| `ProTableRowSelection` | 类型 | 行选择配置类型 |
-| `dayjs` | 工具 | 时间处理库 |
-| `registerField` | 工具 | 注册自定义表单组件 |
-| `SELECTION_ALL/SELECTION_INVERT/SELECTION_NONE` | 常量 | 表格选择操作常量 |
-| `setLicenseKey` | 工具 | 设置 Table 许可证密钥 |
-| `setConfig` | 工具 | 设置 Table 全局配置 |
+| 导出项                                          | 分类 | 说明                                    |
+| ----------------------------------------------- | ---- | --------------------------------------- |
+| `ProFieldType`                                  | 枚举 | 表单字段类型枚举（TEXT/SELECT/DATE 等） |
+| `ProFormActionType`                             | 类型 | Form ref 暴露的方法类型                 |
+| `ProTableExposeType`                            | 类型 | Table ref 暴露的方法类型                |
+| `ProTableColumnType`                            | 类型 | 表格列配置类型                          |
+| `ProTableValueEnumType`                         | 类型 | 值枚举类型                              |
+| `ProTableRowSelection`                          | 类型 | 行选择配置类型                          |
+| `dayjs`                                         | 工具 | 时间处理库                              |
+| `registerField`                                 | 工具 | 注册自定义表单组件                      |
+| `SELECTION_ALL/SELECTION_INVERT/SELECTION_NONE` | 常量 | 表格选择操作常量                        |
+| `setLicenseKey`                                 | 工具 | 设置 Table 许可证密钥                   |
+| `setConfig`                                     | 工具 | 设置 Table 全局配置                     |
 
 ## Demo 示例
 
 详细 Demo 代码见 `demo/` 目录：
 
-| 文件 | 涵盖场景 |
-|------|----------|
-| `demo/form.md` | 基本表单 / 栅格布局 / 表单联动 / 远程加载 / 自定义渲染 |
+| 文件            | 涵盖场景                                                                            |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `demo/form.md`  | 基本表单 / 栅格布局 / 表单联动 / 远程加载 / 自定义渲染                              |
 | `demo/table.md` | 基础表格 / 远程加载数据 / 查询表单 / 工具栏 / 虚拟滚动 / 树形表格 / 行选择 / 列拖拽 |
 
 遇到具体需求时，优先参考对应 demo 文件中的完整代码片段。
