@@ -40,30 +40,21 @@ const dataSource = ref(
         <div
           style="padding: 6px 8px; cursor: pointer; border-radius: 4px"
           class="hover:bg-gray-100"
-          @click="
-            message.info(`查看: ${record!.name}`)
-            hidePopup()
-          "
+          @click="(message.info(`查看: ${record!.name}`), hidePopup())"
         >
           查看详情
         </div>
         <div
           style="padding: 6px 8px; cursor: pointer; border-radius: 4px"
           class="hover:bg-gray-100"
-          @click="
-            message.success(`编辑: ${record!.name}`)
-            hidePopup()
-          "
+          @click="(message.success(`编辑: ${record!.name}`), hidePopup())"
         >
           编辑
         </div>
         <div
           style="padding: 6px 8px; color: #ff4d4f; cursor: pointer; border-radius: 4px"
           class="hover:bg-gray-100"
-          @click="
-            message.warning(`删除: ${record!.name}`)
-            hidePopup()
-          "
+          @click="(message.warning(`删除: ${record!.name}`), hidePopup())"
         >
           删除
         </div>
