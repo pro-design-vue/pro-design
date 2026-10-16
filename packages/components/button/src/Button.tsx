@@ -2,7 +2,7 @@
  * @Author: shen
  * @Date: 2024-03-09 11:41:13
  * @LastEditors: shen
- * @LastEditTime: 2026-07-30 09:40:19
+ * @LastEditTime: 2026-10-16 08:43:08
  * @Description:
  */
 import { type PropType, defineComponent, type CSSProperties } from 'vue'
@@ -148,7 +148,7 @@ export default defineComponent({
     }
 
     return () => {
-      if (props.accessCode && accessCodes?.value?.size) {
+      if (props.accessCode && accessCodes?.value) {
         if (!accessCodes?.value.has(props.accessCode)) {
           return null
         }
@@ -221,7 +221,7 @@ export default defineComponent({
         const items = props.items
           .filter((item) => {
             let hidden = false
-            if (item.accessCode && accessCodes?.value?.size) {
+            if (item.accessCode && accessCodes?.value) {
               hidden = !accessCodes?.value.has(item.accessCode)
             }
             if (hidden) {

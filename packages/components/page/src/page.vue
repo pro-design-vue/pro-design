@@ -37,7 +37,7 @@ const footerRef = useTemplateRef<HTMLDivElement>('footer')
 const contentRef = useTemplateRef<HTMLDivElement>('content')
 const tabList = computed(() =>
   propsTabList.filter((item) => {
-    if (item.accessCode && accessCodes?.value?.size) {
+    if (item.accessCode && accessCodes?.value) {
       return accessCodes?.value.has(item.accessCode)
     }
     return true

@@ -120,8 +120,6 @@ import {
 | `dayjs`                                         | 工具 | 时间处理库                              |
 | `registerField`                                 | 工具 | 注册自定义表单组件                      |
 | `SELECTION_ALL/SELECTION_INVERT/SELECTION_NONE` | 常量 | 表格选择操作常量                        |
-| `setLicenseKey`                                 | 工具 | 设置 Table 许可证密钥                   |
-| `setConfig`                                     | 工具 | 设置 Table 全局配置                     |
 
 ## Demo 示例
 
