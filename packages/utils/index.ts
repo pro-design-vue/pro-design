@@ -26,8 +26,8 @@ export * from './render-vnode'
 export * from './clone-element'
 export * from './render-slot-fragments'
 export * from './object-to-empty'
+export { cloneDeep } from './clone-deep'
 export {
-  cloneDeep,
   merge,
   debounce,
   get,

@@ -12,6 +12,51 @@ import { generatorColorVariables } from '@pro-design-vue/utils'
 import { updateCSSVariables } from './update-css-variables'
 import { defaultDarkToken, defaultToken } from './defaultToken'
 
+// 缓存色盘计算结果，避免相同颜色重复执行 getColors() 等 CPU 密集操作
+const colorVariablesCache = new Map<string, Record<string, string>>()
+
+function getCacheKey(color: string, dark: boolean): string {
+  return `${color}:${dark}`
+}
+
+function cachedGeneratorColorVariables(
+  colorItems: Array<{ alias: string; color: string; name: string; key: string }>,
+  dark: boolean,
+  namespace: string,
+): Record<string, string> {
+  const result: Record<string, string> = {}
+
+  for (const item of colorItems) {
+    const cacheKey = getCacheKey(item.color, dark)
+    if (colorVariablesCache.has(cacheKey)) {
+      // 使用缓存的色盘结果，按 key 过滤
+      const cached = colorVariablesCache.get(cacheKey)!
+      for (const [varName, value] of Object.entries(cached)) {
+        if (varName.includes(`--${namespace}-${item.name}-`)) {
+          result[varName] = value
+        }
+        if (
+          item.alias &&
+          item.alias !== item.name &&
+          varName.includes(`--${namespace}-${item.alias}-`)
+        ) {
+          result[varName] = value
+        }
+        // alias 主色（如 --pro-primary）
+        if (item.alias && varName === `--${namespace}-${item.alias}`) {
+          result[varName] = value
+        }
+      }
+    } else {
+      const generated = generatorColorVariables([item], dark, namespace)
+      colorVariablesCache.set(cacheKey, generated)
+      Object.assign(result, generated)
+    }
+  }
+
+  return result
+}
+
 export function useCssVariables(isDark: ComputedRef<boolean>) {
   const { useToken } = theme
   const { token } = useToken()
@@ -32,12 +77,12 @@ export function useCssVariables(isDark: ComputedRef<boolean>) {
           (newToken[item.key] === defaultColor && oldColor !== defaultColor)
         )
       })
-      const colorVariables = generatorColorVariables(
+      const colorVariables = cachedGeneratorColorVariables(
         changedColorVariables,
         false,
         DEFAULT_NAMESPACE,
       )
-      const darkColorVariables = generatorColorVariables(
+      const darkColorVariables = cachedGeneratorColorVariables(
         changedColorVariables,
         true,
         DEFAULT_NAMESPACE,

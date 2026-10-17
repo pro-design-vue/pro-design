@@ -28,6 +28,7 @@ import FieldUploadButton from './fields/FieldUploadButton'
 import FieldUploadDragger from './fields/FieldUploadDragger'
 import FieldUploadPicture from './fields/FieldUploadPicture'
 import FieldUploadPictureList from './fields/FieldUploadPictureList'
+import FieldColor from './fields/FieldColor'
 // import FieldEditor from './fields/FieldEditor'
 
 export const fieldComponentMap: Partial<Record<`${ProFieldType}`, any>> = {
@@ -53,5 +54,6 @@ export const fieldComponentMap: Partial<Record<`${ProFieldType}`, any>> = {
   uploadDragger: FieldUploadDragger,
   uploadPicture: FieldUploadPicture,
   uploadPictureList: FieldUploadPictureList,
+  color: FieldColor,
   // editor: FieldEditor
 }

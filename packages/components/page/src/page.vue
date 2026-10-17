@@ -133,9 +133,9 @@ async function calcContentHeight() {
     footerHeight -
     heightOffset
 
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     shouldAutoHeight.value = true
-  }, 30)
+  })
 }
 
 const tabComp = computed(() => {

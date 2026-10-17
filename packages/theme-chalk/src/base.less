@@ -104,3 +104,12 @@ input[type='number']::-webkit-outer-spin-button {
   overscroll-behavior: none;
   color: inherit;
 }
+
+/* 主题切换期间禁用所有过渡和动画，避免数百个元素同时过渡导致布局抖动和丢帧 */
+.disable-transitions,
+.disable-transitions *,
+.disable-transitions *::before,
+.disable-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+}

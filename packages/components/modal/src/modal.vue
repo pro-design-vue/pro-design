@@ -69,6 +69,7 @@ const bodyWidth = ref(0)
 const modalHeaderEl = useTemplateRef<HTMLElement>('modalHeaderRef')
 const { width } = useElementBounding(modalHeaderEl)
 useResizeObserver(document.body, (entries) => {
+  if (!props.open) return
   const entry = entries[0]
   const { width } = entry?.contentRect || ({} as DOMRectReadOnly)
   bodyWidth.value = width
@@ -81,7 +82,7 @@ const hasFullscreen = computed(() => isMobile.value || fullscreen.value)
 const hasDraggable = computed(() => mergeDraggable.value && !hasFullscreen.value)
 
 const { style } = useDraggable(modalHeaderEl, {
-  disabled: computed(() => !hasDraggable.value),
+  disabled: computed(() => !hasDraggable.value || !props.open),
   onMove() {
     isDrag.value = true
   },

@@ -46,6 +46,13 @@ import type { CustomSlotsType } from '../utils/type'
 import type { ContextSlots } from './context/TableSlotsContext'
 import { OPERATION_COLUMN_KEY, SERIAL_NUMBER_COLUMN_KEY } from '@pro-design-vue/constants'
 
+const INTERNAL_TABLE_OMIT_KEYS = [
+  'onChange',
+  'onUpdate:pagination',
+  'onUpdate:selectedRowKeys',
+  'onUpdate:columns',
+] as const
+
 export default defineComponent({
   name: 'ProTable',
   inheritAttrs: false,
@@ -406,6 +413,10 @@ export default defineComponent({
       return {}
     })
 
+    const interalTableProps = computed(() => omit(props, INTERNAL_TABLE_OMIT_KEYS))
+
+    const computedCardProps = computed(() => (isObject(props.cardProps) ? props.cardProps : {}))
+
     const [formAction, setFormAction] = useState<ProFormActionType>()
 
     const [mergeShowAlert, setMergeShowAlert] = useMergedState<boolean>(
@@ -577,12 +588,7 @@ export default defineComponent({
             )}
           <InteralTable
             ref={tableRef}
-            {...omit(props, [
-              'onChange',
-              'onUpdate:pagination',
-              'onUpdate:selectedRowKeys',
-              'onUpdate:columns',
-            ])}
+            {...interalTableProps.value}
             height={tableHeight.value}
             virtual={virtual.value}
             prefixCls={mergedPrefixCls.value}
@@ -606,7 +612,7 @@ export default defineComponent({
       )
 
       if (showTableCard.value) {
-        const cardProps = isObject(props.cardProps) ? props.cardProps : {}
+        const cardProps = computedCardProps.value
         tableDom = (
           <Card
             bordered={isBordered(

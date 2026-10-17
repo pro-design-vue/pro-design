@@ -42,4 +42,5 @@ export enum ProFieldType {
   UPLOAD_PICTURE = 'uploadPicture',
   UPLOAD_PICTURE_LIST = 'uploadPictureList',
   EDITOR = 'editor',
+  COLOR = 'color',
 }

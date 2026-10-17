@@ -5,7 +5,7 @@
  * @LastEditTime: 2026-10-16 08:43:08
  * @Description:
  */
-import { type PropType, defineComponent, type CSSProperties } from 'vue'
+import { type PropType, defineComponent, type CSSProperties, computed } from 'vue'
 import {
   Button,
   Tooltip,
@@ -23,6 +23,25 @@ import { usePrefixCls } from '@pro-design-vue/hooks'
 import { confirm, ensureValidVNode, omit } from '@pro-design-vue/utils'
 import { ProIcon } from '@pro-design-vue/components/icon'
 import { useProConfigInject } from '@pro-design-vue/components/config-provider'
+
+const BUTTON_OMIT_KEYS = [
+  'items',
+  'permission',
+  'iconStyle',
+  'icon',
+  'stop',
+  'confirmProps',
+  'popconfirmProps',
+  'menuProps',
+  'dropdownProps',
+  'tooltipProps',
+  'tooltip',
+  'mode',
+  'onConfirm',
+  'onClick',
+  'onCancel',
+  'onMenuClick',
+] as const
 
 type ConfirmType = 'danger' | 'warning'
 type ButtonItemType = {
@@ -147,6 +166,35 @@ export default defineComponent({
       }
     }
 
+    const omittedButtonProps = computed(() => omit(props, BUTTON_OMIT_KEYS))
+
+    const dropdownItems = computed(
+      () =>
+        props.items
+          .filter((item) => {
+            let hidden = false
+            if (item.accessCode && accessCodes?.value) {
+              hidden = !accessCodes?.value.has(item.accessCode)
+            }
+            if (hidden) {
+              return false
+            }
+            if (item.hidden !== undefined) {
+              if (typeof item.hidden === 'function') {
+                hidden = item.hidden(props.data)
+              } else {
+                hidden = item.hidden
+              }
+            }
+            return !hidden
+          })
+          .map((item) => ({
+            ...item,
+            disabled:
+              typeof item.disabled === 'function' ? item.disabled(props.data) : item.disabled,
+          })) as any[],
+    )
+
     return () => {
       if (props.accessCode && accessCodes?.value) {
         if (!accessCodes?.value.has(props.accessCode)) {
@@ -159,24 +207,7 @@ export default defineComponent({
       }
 
       const buttonProps = {
-        ...omit(props, [
-          'items',
-          'permission',
-          'iconStyle',
-          'icon',
-          'stop',
-          'confirmProps',
-          'popconfirmProps',
-          'menuProps',
-          'dropdownProps',
-          'tooltipProps',
-          'tooltip',
-          'mode',
-          'onConfirm',
-          'onClick',
-          'onCancel',
-          'onMenuClick',
-        ]),
+        ...omittedButtonProps.value,
         onClick: handleClick,
       }
 
@@ -218,29 +249,7 @@ export default defineComponent({
       }
 
       if (props.mode === 'dropdown') {
-        const items = props.items
-          .filter((item) => {
-            let hidden = false
-            if (item.accessCode && accessCodes?.value) {
-              hidden = !accessCodes?.value.has(item.accessCode)
-            }
-            if (hidden) {
-              return false
-            }
-            if (item.hidden !== undefined) {
-              if (typeof item.hidden === 'function') {
-                hidden = item.hidden(props.data)
-              } else {
-                hidden = item.hidden
-              }
-            }
-            return !hidden
-          })
-          .map((item) => ({
-            ...item,
-            disabled:
-              typeof item.disabled === 'function' ? item.disabled(props.data) : item.disabled,
-          })) as any[]
+        const items = dropdownItems.value
         return items.length ? (
           <Dropdown
             placement="bottomRight"

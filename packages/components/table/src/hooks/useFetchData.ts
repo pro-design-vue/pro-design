@@ -144,6 +144,8 @@ export const useFetchData = (
   const sorters = ref<SorterResult<any>[]>()
   const filter = ref<Record<string, any>>()
   const searchParams = ref<Record<string, any>>()
+  /** 前端分页标记：请求响应中无 total 字段且 pagination 有效时为 true */
+  const isFrontendPaging = ref(false)
   const keywordName = computed(() => {
     if (props.options !== false && props.options!.search !== false) {
       return props.options!.search === true || !props.options!.search!.name
@@ -231,7 +233,8 @@ export const useFetchData = (
 
     const { current, pageSize } = pagination.value
     const params: Record<string, any> = { ...innerParams.value, ...formSearch.value }
-    if (contextTablePagination.value !== false) {
+
+    if (contextTablePagination.value !== false && !isFrontendPaging.value) {
       const { fieldNames } = contextTablePagination.value ?? {}
       params[fieldNames?.current ?? 'current'] = current
       params[fieldNames?.pageSize ?? 'pageSize'] = pageSize
@@ -245,12 +248,13 @@ export const useFetchData = (
       filter: toRaw(filter.value),
     }
     try {
-      const {
-        data = [],
-        success,
-        total = 0,
-        ...rest
-      } = (await getData.value?.(params, toRaw(sorters.value), toRaw(filter.value), abort)) || {}
+      const response: Partial<RequestData> =
+        (await getData.value?.(params, toRaw(sorters.value), toRaw(filter.value), abort)) || {}
+      // 根据响应中是否包含 total 字段判定前端/后端分页模式
+      if (contextTablePagination.value !== false) {
+        isFrontendPaging.value = !('total' in response)
+      }
+      const { data = [], success, total = 0, ...rest } = response
       // 如果失败了，直接返回，不走剩下的逻辑了
       if (abort.signal.aborted) return
       if (success === false) return []
@@ -354,10 +358,7 @@ export const useFetchData = (
         return
       }
 
-      if (
-        (props.pagination && tableDataList.value && tableDataList.value?.length > pageSize) ||
-        0
-      ) {
+      if (isFrontendPaging.value) {
         return
       }
 
@@ -372,6 +373,10 @@ export const useFetchData = (
     () => pagination.value.pageSize,
     () => {
       if (!prePageSize.value) {
+        return
+      }
+      // 前端分页模式下 pageSize 变化仅调整显示，无需请求后端
+      if (isFrontendPaging.value) {
         return
       }
       abortFetch()

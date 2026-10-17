@@ -10,7 +10,7 @@ import type { ProConfigProviderProps } from './typing'
 import { ConfigProvider, App, theme as antTheme } from 'ant-design-vue'
 import { DEFAULT_LOCALE } from '@pro-design-vue/constants'
 import { zhCNIntl } from './intl'
-import { computed, nextTick, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { isArray, omit } from '@pro-design-vue/utils'
 import dayjs from 'dayjs'
 import ConfigProviderContainer from './config-provider-container.vue'
@@ -82,12 +82,42 @@ const mergerTheme = computed(() => {
   }
 })
 
+const isFirstThemeRender = ref(true)
+
 watch(
   () => dark,
   async () => {
+    // 等待 Vue 完成响应式更新（包括 ConfigProvider 主题计算和 CSS 变量注入）
     await nextTick()
     const root = document.documentElement
-    root.classList.toggle('dark', dark)
+
+    // 首次渲染仅设置初始状态，不需要动画
+    if (isFirstThemeRender.value) {
+      root.classList.toggle('dark', dark)
+      isFirstThemeRender.value = false
+      return
+    }
+
+    // 切换阶段：临时禁用所有 CSS 过渡/动画，避免大量元素同时过渡导致布局抖动和丢帧
+    const doToggle = () => {
+      root.classList.add('disable-transitions')
+      root.classList.toggle('dark', dark)
+    }
+
+    // 使用 View Transitions API 实现平滑主题切换
+    // 即使 ::view-transition 伪元素设置了 animation: none，浏览器仍会
+    // 将旧状态和新状态的渲染批处理到单帧中，从而避免中间态导致的闪烁和卡顿
+    if ('startViewTransition' in document) {
+      const transition = document.startViewTransition(() => doToggle())
+      await transition.finished
+    } else {
+      doToggle()
+    }
+
+    // 切换完成后等待一帧再恢复过渡，确保新样式已经提交到屏幕
+    requestAnimationFrame(() => {
+      root.classList.remove('disable-transitions')
+    })
   },
   {
     immediate: true,

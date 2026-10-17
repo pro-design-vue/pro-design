@@ -609,6 +609,7 @@ export const fieldPropsMap: Partial<Record<`${ProFieldType}`, string[]>> = {
     'onReady',
     'onUpdate',
   ],
+  color: ['allowClear', 'placeholder', 'disabled'],
 }
 
 export default fieldPropsMap

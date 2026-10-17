@@ -15,6 +15,8 @@ import getSlot from '../utils/getSlot'
 import { useInjectForm } from '../context/FormContext'
 import { useInjectFormList } from '../context/FormListContext'
 
+import FieldReadonly from './FieldReadonly'
+
 const SLOT_NAMES = ['addonAfter', 'addonBefore', 'suffix', 'prefix']
 
 export default defineComponent({
@@ -70,13 +72,25 @@ export default defineComponent({
       return temp
     })
 
-    return () => (
-      <Input.Password
-        v-model:value={internalValue.value}
-        {...attrs}
-        placeholder={props.placeholder || intl.getMessage('form.inputPlaceholder', '请输入')}
-        v-slots={slotsGetter.value}
-      />
-    )
+    return () => {
+      if (props.readonly) {
+        return (
+          <FieldReadonly
+            text={'••••••'}
+            class={attrs.class}
+            style={attrs.style}
+            {...props.readonlyProps}
+          />
+        )
+      }
+      return (
+        <Input.Password
+          v-model:value={internalValue.value}
+          {...attrs}
+          placeholder={props.placeholder || intl.getMessage('form.inputPlaceholder', '请输入')}
+          v-slots={slotsGetter.value}
+        />
+      )
+    }
   },
 })

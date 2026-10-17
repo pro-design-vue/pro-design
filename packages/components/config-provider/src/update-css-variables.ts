@@ -31,11 +31,9 @@ function updateCSSVariables(
   // 将样式文本赋值给内联样式表
   styleElement.textContent = cssText
 
-  // 将内联样式表添加到文档头部
+  // 将内联样式表添加到文档头部（同步执行，避免与主题 class 切换之间出现闪烁）
   if (!document.querySelector(`#${id}`)) {
-    setTimeout(() => {
-      document.head.append(styleElement)
-    })
+    document.head.append(styleElement)
   }
 }
 
